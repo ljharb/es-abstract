@@ -38,7 +38,9 @@
 		"jscs": "~1.9.0",
 		"editorconfig-tools": "~0.0.1",
 		"nsp": "~0.5.2",
-		"eslint": "~0.11.0"
+		"eslint": "~0.11.0",
+		"object-is": "~1.0.1",
+		"foreach": "~2.0.5"
 	},
 	"testling": {
 		"files": "test/index.js",
