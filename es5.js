@@ -3,19 +3,11 @@
 var toStr = Object.prototype.toString;
 
 var $isNaN = Number.isNaN || function (a) { return a !== a; };
-var $isFinite = Number.isFinite || function (x) { return typeof x === 'number' && !$isNaN(x) && x !== Infinity && x !== -Infinity; };
+var $isFinite = require('./helpers/isFinite');
 
-var sign = function (number) {
-	return number >= 0 ? 1 : -1;
-};
-var mod = function (number, modulo) {
-	var remain = number % modulo;
-	return Math.floor(remain >= 0 ? remain : remain + modulo);
-};
-
-var isPrimitive = function (value) {
-	return value === null || typeof value !== 'object';
-};
+var sign = require('./helpers/sign');
+var mod = require('./helpers/mod');
+var isPrimitive = require('./helpers/isPrimitive');
 
 var IsCallable = function IsCallable(fn) {
 	// some older engines say that typeof /abc/ === 'function'

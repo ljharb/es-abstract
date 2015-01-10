@@ -5,29 +5,13 @@ var hasSymbols = typeof Symbol === 'function' && typeof Symbol.iterator === 'sym
 var symbolToStr = hasSymbols ? Symbol.prototype.toString : toStr;
 
 var $isNaN = Number.isNaN || function (a) { return a !== a; };
-var $isFinite = Number.isFinite || function (x) { return typeof x === 'number' && !$isNaN(x) && x !== Infinity && x !== -Infinity; };
+var $isFinite = require('./helpers/isFinite');
 var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1;
 
-var assign = function (target, source) {
-	for (var key in source) {
-		if (Object.prototype.hasOwnProperty.call(source, key)) {
-			target[key] = source[key];
-		}
-	}
-	return target;
-};
-
-var sign = function (number) {
-	return number >= 0 ? 1 : -1;
-};
-var mod = function (number, modulo) {
-	var remain = number % modulo;
-	return Math.floor(remain >= 0 ? remain : remain + modulo);
-};
-
-var isPrimitive = function (value) {
-	return value === null || typeof value !== 'object';
-};
+var assign = require('./helpers/assign');
+var sign = require('./helpers/sign');
+var mod = require('./helpers/mod');
+var isPrimitive = require('./helpers/isPrimitive');
 
 var ES5 = require('./es5');
 

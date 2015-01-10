@@ -1,15 +1,6 @@
 'use strict';
 
-var has = Object.prototype.hasOwnProperty;
-
-var assign = function (target, source) {
-	for (var key in source) {
-		if (has.call(source, key)) {
-			target[key] = source[key];
-		}
-	}
-	return target;
-};
+var assign = require('./helpers/assign');
 
 var ES5 = require('./es5');
 var ES6 = require('./es6');
