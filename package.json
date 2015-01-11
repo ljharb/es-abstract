@@ -1,6 +1,6 @@
 {
 	"name": "es-abstract",
-	"version": "0.0.0",
+	"version": "1.0.0",
 	"author": "Jordan Harband",
 	"description": "ECMAScript spec abstract operations.",
 	"license": "MIT",
