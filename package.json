@@ -40,7 +40,8 @@
 		"nsp": "~0.5.2",
 		"eslint": "~0.11.0",
 		"object-is": "~1.0.1",
-		"foreach": "~2.0.5"
+		"foreach": "~2.0.5",
+		"semver": "~4.2.0"
 	},
 	"testling": {
 		"files": "test/index.js",
