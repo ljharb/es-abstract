@@ -34,6 +34,8 @@ var OrdinaryToPrimitive = function OrdinaryToPrimitive(O, hint) {
 	throw new TypeError('No default value');
 };
 
+var safeApply = Function.call.bind(Function.apply);
+
 // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-abstract-operations
 var ES6 = assign(assign({}, ES5), {
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-call-f-v-args
@@ -42,7 +44,7 @@ var ES6 = assign(assign({}, ES5), {
 		if (!this.IsCallable(F)) {
 			throw new TypeError(F + ' is not a function');
 		}
-		return F.apply(V, args);
+		return safeApply(F, V, args);
 	},
 
 
