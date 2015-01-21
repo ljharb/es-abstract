@@ -377,7 +377,7 @@ test('IsConstructor', function (t) {
 test('Call', function (t) {
 	var receiver = {};
 	var notFuncs = objects.concat(primitives).concat([/a/g, new RegExp('a', 'g')]);
-	t.plan(notFuncs.length + 4);
+	t.plan(notFuncs.length + 5);
 	forEach(notFuncs, function (notFunc) {
 		t.throws(function () { return ES.Call(notFunc, receiver); }, TypeError, notFunc + ' (' + typeof notFunc + ') is not callable');
 	});
@@ -387,5 +387,14 @@ test('Call', function (t) {
 		t.equal(arguments.length, 3, 'extra argument was passed');
 		t.equal(arguments[2], 3, 'extra argument was correct');
 	}, receiver, [1, 2, 3]);
+
+  function withoutApply() {
+    t.equal(this, receiver, 'context matches expected');
+  }
+
+  withoutApply.apply = null;
+
+  ES.Call(withoutApply, receiver);
+
 	t.end();
 });
