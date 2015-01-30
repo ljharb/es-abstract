@@ -30,7 +30,9 @@
 		"ES6",
 		"ES7"
 	],
-	"dependencies": {},
+	"dependencies": {
+		"is-callable": "~1.0.4"
+	},
 	"devDependencies": {
 		"tape": "~3.4.0",
 		"covert": "1.0.0",

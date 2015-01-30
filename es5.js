@@ -9,10 +9,7 @@ var sign = require('./helpers/sign');
 var mod = require('./helpers/mod');
 var isPrimitive = require('./helpers/isPrimitive');
 
-var IsCallable = function IsCallable(fn) {
-	// some older engines say that typeof /abc/ === 'function'
-	return typeof fn === 'function' && toStr.call(fn) === '[object Function]';
-};
+var IsCallable = require('is-callable');
 
 // https://es5.github.io/#x8.12
 var ES5internalSlots = {
