@@ -31,18 +31,18 @@
 		"ES7"
 	],
 	"dependencies": {
-		"is-callable": "~1.0.4"
+		"is-callable": "^1.0.4"
 	},
 	"devDependencies": {
-		"tape": "~3.5.0",
-		"covert": "1.0.0",
-		"jscs": "~1.11.0",
-		"editorconfig-tools": "~0.0.1",
-		"nsp": "~1.0.0",
-		"eslint": "~0.13.0",
-		"object-is": "~1.0.1",
-		"foreach": "~2.0.5",
-		"semver": "~4.2.0"
+		"tape": "^3.5.0",
+		"covert": "^1.0.1",
+		"jscs": "^1.11.3",
+		"editorconfig-tools": "^0.0.1",
+		"nsp": "^1.0.0",
+		"eslint": "^0.14.1",
+		"object-is": "^1.0.1",
+		"foreach": "^2.0.5",
+		"semver": "^4.3.0"
 	},
 	"testling": {
 		"files": "test/index.js",
