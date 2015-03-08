@@ -45,7 +45,6 @@ var ES6 = assign(assign({}, ES5), {
 		return F.apply(V, args);
 	},
 
-
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-toprimitive
 	ToPrimitive: function ToPrimitive(input, PreferredType) {
 		if (isPrimitive(input)) {
