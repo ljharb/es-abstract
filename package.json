@@ -38,8 +38,8 @@
 		"covert": "^1.0.1",
 		"jscs": "^1.11.3",
 		"editorconfig-tools": "^0.1.1",
-		"nsp": "^1.0.0",
-		"eslint": "^0.16.0",
+		"nsp": "^1.0.1",
+		"eslint": "^0.17.0",
 		"object-is": "^1.0.1",
 		"foreach": "^2.0.5",
 		"semver": "^4.3.1"
