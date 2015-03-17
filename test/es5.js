@@ -5,9 +5,11 @@ var forEach = require('foreach');
 var is = require('object-is');
 
 var coercibleObject = { valueOf: function () { return 3; }, toString: function () { return 42; } };
+var coercibleFnObject = { valueOf: function () { return function valueOfFn() {}; }, toString: function () { return 42; } };
 var valueOfOnlyObject = { valueOf: function () { return 4; }, toString: function () { return {}; } };
 var toStringOnlyObject = { valueOf: function () { return {}; }, toString: function () { return 7; } };
 var uncoercibleObject = { valueOf: function () { return {}; }, toString: function () { return {}; } };
+var uncoercibleFnObject = { valueOf: function () { return function valueOfFn() {}; }, toString: function () { return function toStrFn() {}; } };
 var objects = [{}, coercibleObject, toStringOnlyObject, valueOfOnlyObject];
 var numbers = [0, -0, Infinity, -Infinity, 42];
 var nonNullPrimitives = [true, false, 'foo', ''].concat(numbers);
@@ -25,12 +27,14 @@ test('ToPrimitive', function (t) {
 		st.equal(ES.ToPrimitive(coercibleObject), 3, 'coercibleObject coerces to valueOf');
 		st.equal(ES.ToPrimitive(coercibleObject, Number), 3, 'coercibleObject with hint Number coerces to valueOf');
 		st.equal(ES.ToPrimitive(coercibleObject, String), '42', 'coercibleObject with hint String coerces to stringified toString');
+		st.equal(ES.ToPrimitive(coercibleFnObject), 42, 'coercibleFnObject coerces to toString');
 		st.equal(ES.ToPrimitive(toStringOnlyObject), 7, 'toStringOnlyObject returns non-stringified toString');
 		st.equal(ES.ToPrimitive(valueOfOnlyObject), 4, 'valueOfOnlyObject returns valueOf');
 		st.ok(is(ES.ToPrimitive({}), NaN), '{} with no hint coerces to Object#valueOf');
 		st.equal(ES.ToPrimitive({}, String), '[object Object]', '{} with hint String coerces to Object#toString');
 		st.ok(is(ES.ToPrimitive({}, Number), NaN), '{} with hint Number coerces to NaN');
 		st.throws(function () { return ES.ToPrimitive(uncoercibleObject); }, TypeError, 'uncoercibleObject throws a TypeError');
+		st.throws(function () { return ES.ToPrimitive(uncoercibleFnObject); }, TypeError, 'uncoercibleFnObject throws a TypeError');
 		st.end();
 	});
 
