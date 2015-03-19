@@ -12,27 +12,9 @@ var assign = require('./helpers/assign');
 var sign = require('./helpers/sign');
 var mod = require('./helpers/mod');
 var isPrimitive = require('./helpers/isPrimitive');
+var toPrimitive = require('es-to-primitive/es6');
 
 var ES5 = require('./es5');
-
-var OrdinaryToPrimitive = function OrdinaryToPrimitive(O, hint) {
-	this.RequireObjectCoercible(O);
-	if (typeof hint !== 'string' || (hint !== 'number' && hint !== 'string')) {
-		throw new TypeError('hint must be "string" or "number"');
-	}
-	var methodNames = hint === 'string' ? ['toString', 'valueOf'] : ['valueOf', 'toString'];
-	var method, result, i;
-	for (i = 0; i < methodNames.length; ++i) {
-		method = O[methodNames[i]];
-		if (this.IsCallable(method)) {
-			result = this.Call(method, O);
-			if (isPrimitive(result)) {
-				return result;
-			}
-		}
-	}
-	throw new TypeError('No default value');
-};
 
 // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-abstract-operations
 var ES6 = assign(assign({}, ES5), {
@@ -46,40 +28,7 @@ var ES6 = assign(assign({}, ES5), {
 	},
 
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-toprimitive
-	ToPrimitive: function ToPrimitive(input, PreferredType) {
-		if (isPrimitive(input)) {
-			return input;
-		}
-		var hint = 'default';
-		if (arguments.length > 1) {
-			if (PreferredType === String) {
-				hint = 'string';
-			} else if (PreferredType === Number) {
-				hint = 'number';
-			}
-		}
-
-		var exoticToPrim;
-		if (hasSymbols) {
-			if (Symbol.toPrimitive) {
-				exoticToPrim = this.GetMethod(input, Symbol.toPrimitive);
-			} else if (toStr.call(input) === '[object Symbol]') {
-				exoticToPrim = Symbol.prototype.valueOf;
-			}
-		}
-		if (typeof exoticToPrim !== 'undefined') {
-			var result = this.Call(exoticToPrim, input, hint);
-			if (isPrimitive(result)) {
-				return result;
-			}
-			throw new TypeError('unable to convert exotic object to primitive');
-		}
-		var inputType = toStr.call(input);
-		if (hint === 'default' && (inputType === '[object Date]' || inputType === '[object Symbol]')) {
-			hint = 'string';
-		}
-		return OrdinaryToPrimitive.call(this, input, hint === 'default' ? 'number' : hint);
-	},
+	ToPrimitive: toPrimitive,
 
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-toboolean
 	// ToBoolean: ES5.ToBoolean,

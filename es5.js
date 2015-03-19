@@ -1,58 +1,18 @@
 'use strict';
 
-var toStr = Object.prototype.toString;
-
 var $isNaN = Number.isNaN || function (a) { return a !== a; };
 var $isFinite = require('./helpers/isFinite');
 
 var sign = require('./helpers/sign');
 var mod = require('./helpers/mod');
-var isPrimitive = require('./helpers/isPrimitive');
 
 var IsCallable = require('is-callable');
-
-// https://es5.github.io/#x8.12
-var ES5internalSlots = {
-	'[[DefaultValue]]': function (O, hint) {
-		if (!hint) {
-			hint = toStr.call(O) === '[object Date]' ? String : Number;
-		}
-
-		if (hint === String || hint === Number) {
-			var methods = hint === String ? ['toString', 'valueOf'] : ['valueOf', 'toString'];
-			var value, i;
-			for (i = 0; i < methods.length; ++i) {
-				if (IsCallable(O[methods[i]])) {
-					value = O[methods[i]]();
-					if (isPrimitive(value)) {
-						return value;
-					}
-				}
-			}
-			throw new TypeError('No default value');
-		}
-		throw new TypeError('invalid [[DefaultValue]] hint supplied');
-	}
-};
+var toPrimitive = require('es-to-primitive/es5');
 
 // https://es5.github.io/#x9
 var ES5 = {
-	ToPrimitive: function ToPrimitive(input, PreferredType) {
-		if (isPrimitive(input)) {
-			return input;
-		}
-		if (arguments.length < 2) {
-			PreferredType = toStr.call(input) === '[object Date]' ? String : Number;
-		}
-		if (PreferredType === String) {
-			return String(input);
-		} else if (PreferredType === Number) {
-			return Number(input);
-		} else {
-			throw new TypeError('invalid PreferredType supplied');
-		}
-		return ES5internalSlots['[[DefaultValue]]'](input, PreferredType);
-	},
+	ToPrimitive: toPrimitive,
+
 	ToBoolean: function ToBoolean(value) {
 		return Boolean(value);
 	},
