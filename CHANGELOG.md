@@ -1,3 +1,8 @@
+1.1.1 / 2015-03-19
+=================
+  * Fix isPrimitive check for functions
+  * Update `eslint`, `editorconfig-tools`, `semver`, `nsp`
+
 1.1.0 / 2015-02-17
 =================
   * Add ES7 export (non-default).
