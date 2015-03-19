@@ -1,3 +1,8 @@
+1.2.0 / 2015-03-19
+=================
+  * Use `es-to-primitive` for ToPrimitive methods.
+  * Test on latest `io.js` versions; allow failures on all but 2 latest `node`/`io.js` versions.
+
 1.1.1 / 2015-03-19
 =================
   * Fix isPrimitive check for functions
