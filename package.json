@@ -42,7 +42,8 @@
 		"eslint": "^0.17.1",
 		"object-is": "^1.0.1",
 		"foreach": "^2.0.5",
-		"semver": "^4.3.1"
+		"semver": "^4.3.1",
+		"replace": "^0.3.0"
 	},
 	"testling": {
 		"files": "test/index.js",
