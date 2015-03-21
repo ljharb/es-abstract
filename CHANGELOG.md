@@ -1,3 +1,7 @@
+1.1.2 / 2015-03-20
+=================
+  * Fix isFinite helper.
+
 1.1.1 / 2015-03-19
 =================
   * Fix isPrimitive check for functions
