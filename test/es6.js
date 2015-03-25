@@ -3,6 +3,7 @@ var test = require('tape');
 
 var forEach = require('foreach');
 var is = require('object-is');
+var debug = require('util').format;
 
 var hasSymbols = typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol';
 
@@ -218,7 +219,13 @@ test('ToUint8Clamp', function (t) {
 });
 
 test('ToString', function (t) {
+    forEach(objects.concat(primitives), function (item) {
+		t.equal(ES.ToString(item), String(item), 'ES.ToString(' + debug(item) + ') ToStrings to String(' + debug(item) + ')');
+	});
 	t.throws(function () { return ES.ToString(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
+	if (hasSymbols) {
+		t.throws(function () { return ES.ToString(Symbol.iterator); }, TypeError, debug(Symbol.iterator) + ' throws');
+	}
 	t.end();
 });
 
