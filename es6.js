@@ -18,6 +18,7 @@ var ES5 = require('./es5');
 
 // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-abstract-operations
 var ES6 = assign(assign({}, ES5), {
+
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-call-f-v-args
 	Call: function Call(F, V) {
 		var args = arguments.length > 2 ? arguments[2] : [];
@@ -136,8 +137,7 @@ var ES6 = assign(assign({}, ES5), {
 
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-isconstructor
 	IsConstructor: function IsConstructor(argument) {
-		// unfortunately there's no way to truly check this without try/catch `new argument`
-		return this.IsCallable(argument);
+		return this.IsCallable(argument); // unfortunately there's no way to truly check this without try/catch `new argument`
 	},
 
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-isextensible-o
@@ -178,4 +178,5 @@ var ES6 = assign(assign({}, ES5), {
 });
 
 delete ES6.CheckObjectCoercible; // renamed in ES6 to RequireObjectCoercible
+
 module.exports = ES6;
