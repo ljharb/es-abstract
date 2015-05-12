@@ -36,14 +36,14 @@
 	},
 	"devDependencies": {
 		"tape": "^4.0.0",
-		"covert": "^1.0.1",
-		"jscs": "^1.13.0",
+		"covert": "^1.1.0",
+		"jscs": "^1.13.1",
 		"editorconfig-tools": "^0.1.1",
 		"nsp": "^1.0.1",
-		"eslint": "^0.20.0",
+		"eslint": "^0.21.0",
 		"object-is": "^1.0.1",
 		"foreach": "^2.0.5",
-		"semver": "^4.3.3",
+		"semver": "^4.3.4",
 		"replace": "^0.3.0"
 	},
 	"testling": {
