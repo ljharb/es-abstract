@@ -40,7 +40,7 @@
 		"jscs": "^1.13.1",
 		"editorconfig-tools": "^0.1.1",
 		"nsp": "^1.0.1",
-		"eslint": "^0.21.0",
+		"eslint": "^0.21.2",
 		"object-is": "^1.0.1",
 		"foreach": "^2.0.5",
 		"semver": "^4.3.4",
