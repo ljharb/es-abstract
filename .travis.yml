@@ -1,5 +1,7 @@
 language: node_js
 node_js:
+  - "iojs-v2.3"
+  - "iojs-v2.2"
   - "iojs-v2.1"
   - "iojs-v2.0"
   - "iojs-v1.8"
@@ -17,11 +19,15 @@ node_js:
   - "0.9"
   - "0.8"
   - "0.6"
+  - "0.4"
 before_install:
-  - '[ "${TRAVIS_NODE_VERSION}" == "0.6" ] && npm install -g npm@~1.3.0 || npm install -g npm'
+  - '[ "${TRAVIS_NODE_VERSION}" = "0.6" ] || npm install -g npm@1.4.28 && npm install -g npm'
+sudo: false
 matrix:
   fast_finish: true
   allow_failures:
+    - node_js: "iojs-v2.2"
+    - node_js: "iojs-v2.1"
     - node_js: "iojs-v2.0"
     - node_js: "iojs-v1.7"
     - node_js: "iojs-v1.6"
@@ -35,4 +41,4 @@ matrix:
     - node_js: "0.9"
     - node_js: "0.8"
     - node_js: "0.6"
-sudo: false
+    - node_js: "0.4"
