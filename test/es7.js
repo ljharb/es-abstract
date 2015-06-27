@@ -19,9 +19,10 @@ var primitives = [undefined, null].concat(nonNullPrimitives);
 
 test('ToPrimitive', function (t) {
     t.test('primitives', function (st) {
-		forEach(primitives, function (primitive) {
+		var testPrimitive = function (primitive) {
 			st.ok(is(ES.ToPrimitive(primitive), primitive), primitive + ' is returned correctly');
-		});
+		};
+		forEach(primitives, testPrimitive);
 		st.end();
 	});
 
@@ -238,9 +239,10 @@ test('RequireObjectCoercible', function (t) {
 	t.equal(false, 'CheckObjectCoercible' in ES, 'CheckObjectCoercible -> RequireObjectCoercible in ES6');
 	t.throws(function () { return ES.RequireObjectCoercible(undefined); }, TypeError, 'undefined throws');
 	t.throws(function () { return ES.RequireObjectCoercible(null); }, TypeError, 'null throws');
-	forEach(objects.concat(nonNullPrimitives), function (value) {
+	var isCoercible = function (value) {
 		t.doesNotThrow(function () { return ES.RequireObjectCoercible(value); }, '"' + value + '" does not throw');
-	});
+	};
+	forEach(objects.concat(nonNullPrimitives), isCoercible);
 	t.end();
 });
 
@@ -354,9 +356,10 @@ test('IsExtensible', function (t) {
 });
 
 test('CanonicalNumericIndexString', function (t) {
-	forEach(objects.concat(numbers), function (notString) {
+	var throwsOnNonString = function (notString) {
 		t.throws(function () { return ES.CanonicalNumericIndexString(notString); }, TypeError, notString + ' is not a string');
-	});
+	};
+	forEach(objects.concat(numbers), throwsOnNonString);
 	t.ok(is(-0, ES.CanonicalNumericIndexString('-0')), '"-0" returns -0');
 	for (var i = -50; i < 50; i += 10) {
 		t.equal(i, ES.CanonicalNumericIndexString(String(i)), '"' + i + '" returns ' + i);
@@ -378,9 +381,10 @@ test('Call', function (t) {
 	var receiver = {};
 	var notFuncs = objects.concat(primitives).concat([/a/g, new RegExp('a', 'g')]);
 	t.plan(notFuncs.length + 4);
-	forEach(notFuncs, function (notFunc) {
+	var throwsIfNotCallable = function (notFunc) {
 		t.throws(function () { return ES.Call(notFunc, receiver); }, TypeError, notFunc + ' (' + typeof notFunc + ') is not callable');
-	});
+	};
+	forEach(notFuncs, throwsIfNotCallable);
 	ES.Call(function (a, b) {
 		t.equal(this, receiver, 'context matches expected');
 		t.deepEqual([a, b], [1, 2], 'named args are correct');

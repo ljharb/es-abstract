@@ -17,9 +17,10 @@ var primitives = [undefined, null].concat(nonNullPrimitives);
 
 test('ToPrimitive', function (t) {
     t.test('primitives', function (st) {
-		forEach(primitives, function (primitive) {
+		var testPrimitive = function (primitive) {
 			st.ok(is(ES.ToPrimitive(primitive), primitive), primitive + ' is returned correctly');
-		});
+		};
+		forEach(primitives, testPrimitive);
 		st.end();
 	});
 
@@ -163,9 +164,10 @@ test('ToObject', function (t) {
 test('CheckObjectCoercible', function (t) {
 	t.throws(function () { return ES.CheckObjectCoercible(undefined); }, TypeError, 'undefined throws');
 	t.throws(function () { return ES.CheckObjectCoercible(null); }, TypeError, 'null throws');
-	forEach(objects.concat(nonNullPrimitives), function (value) {
+	var checkCoercible = function (value) {
 		t.doesNotThrow(function () { return ES.CheckObjectCoercible(value); }, '"' + value + '" does not throw');
-	});
+	};
+	forEach(objects.concat(nonNullPrimitives), checkCoercible);
 	t.end();
 });
 
