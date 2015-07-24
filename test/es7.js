@@ -1,3 +1,5 @@
+'use strict';
+
 var ES = require('../').ES7;
 var test = require('tape');
 
@@ -72,7 +74,7 @@ test('ToNumber', function (t) {
 		t.equal(num, ES.ToNumber(num), num + ' returns itself');
 	});
 	forEach(['foo', '0', '4a', '2.0', 'Infinity', '-Infinity'], function (numString) {
-		t.ok(is(+numString, ES.ToNumber(numString)), '"' + numString + '" coerces to ' + (+numString));
+		t.ok(is(+numString, ES.ToNumber(numString)), '"' + numString + '" coerces to ' + Number(numString));
 	});
 	forEach(objects, function (object) {
 		t.ok(is(ES.ToNumber(object), ES.ToNumber(ES.ToPrimitive(object))), 'object ' + object + ' coerces to same as ToPrimitive of object does');

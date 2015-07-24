@@ -1,3 +1,5 @@
+'use strict';
+
 var ES6 = require('./es6');
 var assign = require('./helpers/assign');
 
