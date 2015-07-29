@@ -1,3 +1,9 @@
+1.2.2 / 2015-07-28
+=================
+  * [Fix] Both `ES5.CheckObjectCoercible` and `ES6.RequireObjectCoercible` return the value if they don't throw.
+  * [Tests] Test on latest `io.js` versions.
+  * [Dev Deps] Update `eslint`, `jscs`, `tape`, `semver`, `covert`, `nsp`
+
 1.2.1 / 2015-03-20
 =================
   * Fix `isFinite` helper.
