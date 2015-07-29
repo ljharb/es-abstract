@@ -49,6 +49,7 @@ var ES5 = {
 		if (value == null) {
 			throw new TypeError(optMessage || 'Cannot call method on ' + value);
 		}
+		return value;
 	},
 	IsCallable: IsCallable,
 	SameValue: function SameValue(x, y) {
