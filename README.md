@@ -28,7 +28,7 @@ assert(!ES.isCallable(/a/g));
 Simply clone the repo, `npm install`, and run `npm test`
 
 [package-url]: https://npmjs.org/package/es-abstract
-[npm-version-svg]: http://vb.teelaun.ch/ljharb/es-abstract.svg
+[npm-version-svg]: http://versionbadg.es/ljharb/es-abstract.svg
 [travis-svg]: https://travis-ci.org/ljharb/es-abstract.svg
 [travis-url]: https://travis-ci.org/ljharb/es-abstract
 [deps-svg]: https://david-dm.org/ljharb/es-abstract.svg
