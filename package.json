@@ -37,7 +37,7 @@
 	"devDependencies": {
 		"tape": "^4.0.3",
 		"covert": "^1.1.0",
-		"jscs": "^2.0.0",
+		"jscs": "^2.1.0",
 		"editorconfig-tools": "^0.1.1",
 		"nsp": "^1.0.3",
 		"eslint": "^1.1.0",
