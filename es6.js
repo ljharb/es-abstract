@@ -18,7 +18,6 @@ var bind = require('function-bind');
 var strSlice = bind.call(Function.call, String.prototype.slice);
 var isBinary = bind.call(Function.call, RegExp.prototype.test, /^0b/i);
 var isOctal = bind.call(Function.call, RegExp.prototype.test, /^0o/i);
-var isString = require('is-string');
 
 var ES5 = require('./es5');
 
@@ -40,19 +39,20 @@ var ES6 = assign(assign({}, ES5), {
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-toboolean
 	// ToBoolean: ES5.ToBoolean,
 
-	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-tonumber
+	// http://www.ecma-international.org/ecma-262/6.0/#sec-tonumber
 	ToNumber: function ToNumber(argument) {
-		if (typeof argument === 'symbol') {
+		var value = isPrimitive(argument) ? argument : toPrimitive(argument, 'number');
+		if (typeof value === 'symbol') {
 			throw new TypeError('Cannot convert a Symbol value to a number');
 		}
-		if (isString(argument)) {
-			if (isBinary(argument)) {
-				return Number(parseInteger(strSlice(argument, 2), 2));
-			} else if (isOctal(argument)) {
-				return Number(parseInteger(strSlice(argument, 2), 8));
+		if (typeof value === 'string') {
+			if (isBinary(value)) {
+				return Number(parseInteger(strSlice(value, 2), 2));
+			} else if (isOctal(value)) {
+				return Number(parseInteger(strSlice(value, 2), 8));
 			}
 		}
-		return Number(argument);
+		return Number(value);
 	},
 
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-tointeger

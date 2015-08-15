@@ -81,8 +81,12 @@ test('ToNumber', function (t) {
 		t.ok(is(ES.ToNumber(object), ES.ToNumber(ES.ToPrimitive(object))), 'object ' + object + ' coerces to same as ToPrimitive of object does');
 	});
 	t.throws(function () { return ES.ToNumber(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
+
 	t.equal(ES.ToNumber('0b10'), 2, '0b10 is 2');
+	t.equal(ES.ToNumber({ toString: function () { return '0b11'; } }), 3, 'Object that toStrings to 0b11 is 3');
+
 	t.equal(ES.ToNumber('0o10'), 8, '0o10 is 8');
+	t.equal(ES.ToNumber({ toString: function () { return '0o11'; } }), 9, 'Object that toStrings to 0o11 is 9');
 	t.end();
 });
 

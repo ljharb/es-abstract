@@ -33,7 +33,6 @@
 	"dependencies": {
 		"function-bind": "^1.0.2",
 		"is-callable": "^1.0.4",
-		"is-string": "^1.0.4",
 		"es-to-primitive": "^1.0.0"
 	},
 	"devDependencies": {
