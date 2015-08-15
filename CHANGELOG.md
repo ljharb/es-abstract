@@ -1,3 +1,7 @@
+1.3.1 / 2015-08-15
+=================
+  * [Fix] Ensure that objects that `toString` to a binary or octal literal also convert properly
+
 1.3.0 / 2015-08-15
 =================
   * [New] ES6’s ToNumber now supports binary and octal literals.
