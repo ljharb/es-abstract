@@ -1,3 +1,10 @@
+1.3.0 / 2015-08-15
+=================
+  * [New] ES6’s ToNumber now supports binary and octal literals.
+  * [Dev Deps] update `jscs`, `eslint`, `@ljharb/eslint-config`, `tape`
+  * [Docs] Switch from vb.teelaun.ch to versionbadg.es for the npm version badge SVG
+  * [Tests] up to `io.js` `v3.0`
+
 1.2.2 / 2015-07-28
 =================
   * [Fix] Both `ES5.CheckObjectCoercible` and `ES6.RequireObjectCoercible` return the value if they don't throw.
