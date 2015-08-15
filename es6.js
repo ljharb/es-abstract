@@ -13,6 +13,12 @@ var sign = require('./helpers/sign');
 var mod = require('./helpers/mod');
 var isPrimitive = require('./helpers/isPrimitive');
 var toPrimitive = require('es-to-primitive/es6');
+var parseInteger = parseInt;
+var bind = require('function-bind');
+var strSlice = bind.call(Function.call, String.prototype.slice);
+var isBinary = bind.call(Function.call, RegExp.prototype.test, /^0b/i);
+var isOctal = bind.call(Function.call, RegExp.prototype.test, /^0o/i);
+var isString = require('is-string');
 
 var ES5 = require('./es5');
 
@@ -38,6 +44,13 @@ var ES6 = assign(assign({}, ES5), {
 	ToNumber: function ToNumber(argument) {
 		if (typeof argument === 'symbol') {
 			throw new TypeError('Cannot convert a Symbol value to a number');
+		}
+		if (isString(argument)) {
+			if (isBinary(argument)) {
+				return Number(parseInteger(strSlice(argument, 2), 2));
+			} else if (isOctal(argument)) {
+				return Number(parseInteger(strSlice(argument, 2), 8));
+			}
 		}
 		return Number(argument);
 	},
