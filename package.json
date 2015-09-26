@@ -33,7 +33,8 @@
 	"dependencies": {
 		"function-bind": "^1.0.2",
 		"is-callable": "^1.0.4",
-		"es-to-primitive": "^1.0.0"
+		"es-to-primitive": "^1.0.0",
+		"is-regex": "^1.0.3"
 	},
 	"devDependencies": {
 		"tape": "^4.2.0",

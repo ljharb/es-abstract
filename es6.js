@@ -21,6 +21,8 @@ var isOctal = bind.call(Function.call, RegExp.prototype.test, /^0o/i);
 
 var ES5 = require('./es5');
 
+var hasRegExpMatcher = require('is-regex');
+
 // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-abstract-operations
 var ES6 = assign(assign({}, ES5), {
 
@@ -176,9 +178,18 @@ var ES6 = assign(assign({}, ES5), {
 		return typeof argument === 'string' || typeof argument === 'symbol';
 	},
 
-	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-isregexp
+	// http://www.ecma-international.org/ecma-262/6.0/#sec-isregexp
 	IsRegExp: function IsRegExp(argument) {
-		return toStr.call(argument) === '[object RegExp]';
+		if (!argument || typeof argument !== 'object') {
+			return false;
+		}
+		if (hasSymbols) {
+			var isRegExp = RegExp[Symbol.match];
+			if (typeof isRegExp !== 'undefined') {
+				return ES5.ToBoolean(isRegExp);
+			}
+		}
+		return hasRegExpMatcher(argument);
 	},
 
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevalue
