@@ -1,3 +1,9 @@
+1.3.2 / 2015-09-26
+=================
+  * [Fix] Fix `ES6.IsRegExp` to properly handle `Symbol.match`, per spec.
+  * [Tests] up to `io.js` `v3.3`, `node` `v4.1`
+  * [Dev Deps] update `tape`, `jscs`, `nsp`, `eslint`, `@ljharb/eslint-config`, `semver`
+
 1.3.1 / 2015-08-15
 =================
   * [Fix] Ensure that objects that `toString` to a binary or octal literal also convert properly
