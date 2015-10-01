@@ -16,8 +16,11 @@ var toStringOnlyObject = { valueOf: function () { return {}; }, toString: functi
 var uncoercibleObject = { valueOf: function () { return {}; }, toString: function () { return {}; } };
 var objects = [{}, coercibleObject, toStringOnlyObject, valueOfOnlyObject];
 var numbers = [0, -0, Infinity, -Infinity, 42];
-var nonNullPrimitives = [true, false, 'foo', ''].concat(numbers);
-var primitives = [undefined, null].concat(nonNullPrimitives);
+var nullPrimitives = [undefined, null];
+var nonNullNonNumberPrimitives = [true, false, 'foo', ''];
+var nonNullPrimitives = nonNullNonNumberPrimitives.concat(numbers);
+var nonNumberPrimitives = nullPrimitives.concat(nonNullNonNumberPrimitives);
+var primitives = nullPrimitives.concat(nonNullPrimitives);
 
 test('ToPrimitive', function (t) {
     t.test('primitives', function (st) {
@@ -393,5 +396,24 @@ test('Call', function (t) {
 		t.equal(arguments.length, 3, 'extra argument was passed');
 		t.equal(arguments[2], 3, 'extra argument was correct');
 	}, receiver, [1, 2, 3]);
+	t.end();
+});
+
+test('SameValueNonNumber', function (t) {
+	var willThrow = [
+		[3, 4],
+		[NaN, 4],
+		[4, ''],
+		['abc', true],
+		[{}, false]
+	];
+	forEach(willThrow, function (nums) {
+		t.throws(function () { return ES.SameValueNonNumber.apply(ES, nums); }, TypeError, 'value must be same type and non-number');
+	});
+
+	forEach(objects.concat(nonNumberPrimitives), function (val) {
+		t.equal(val === val, ES.SameValueNonNumber(val, val), '"' + val + '" is SameValueNonNumber to itself');
+	});
+
 	t.end();
 });

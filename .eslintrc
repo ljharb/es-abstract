@@ -10,6 +10,7 @@
 		"no-invalid-this": [1],
 		"new-cap": [0],
 		"no-extra-parens": [1],
+		"max-nested-callbacks": [2, 3],
 		"max-statements": [2, 14]
 	}
 }
