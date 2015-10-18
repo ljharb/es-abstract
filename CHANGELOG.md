@@ -1,3 +1,10 @@
+1.4.0 / 2015-09-26
+=================
+  * [Deps] update `is-callable`
+  * [Dev Deps] update `tape`, `jscs`, `eslint`, `@ljharb/eslint-config`
+  * [Tests] on `node` `v4.2`
+  * [New] Add `SameValueNonNumber` to ES7
+
 1.3.2 / 2015-09-26
 =================
   * [Fix] Fix `ES6.IsRegExp` to properly handle `Symbol.match`, per spec.
