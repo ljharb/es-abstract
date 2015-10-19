@@ -1,7 +1,18 @@
 {
 	"name": "es-abstract",
 	"version": "1.4.0",
-	"author": "Jordan Harband",
+	"author": {
+		"name": "Jordan Harband",
+		"email": "ljharb@gmail.com",
+		"url": "http://ljharb.codes"
+	},
+	"contributors": [
+		{
+			"name": "Jordan Harband",
+			"email": "ljharb@gmail.com",
+			"url": "http://ljharb.codes"
+		}
+	],
 	"description": "ECMAScript spec abstract operations.",
 	"license": "MIT",
 	"main": "index.js",
