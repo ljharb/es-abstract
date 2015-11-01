@@ -1,3 +1,11 @@
+1.4.1 / 2015-10-31
+=================
+  * [Fix] ensure only 0-1 are valid binary and 0-7 are valid octal digits (#2)
+  * [Dev Deps] update `tape`, `jscs`, `nsp`, `eslint`, `@ljharb/eslint-config`
+  * [Tests] on `node` `v5.0`
+  * [Tests] fix npm upgrades for older node versions
+  * package.json: use object form of "authors", add "contributors"
+
 1.4.0 / 2015-09-26
 =================
   * [Deps] update `is-callable`
