@@ -85,8 +85,15 @@ test('ToNumber', function (t) {
 	t.equal(ES.ToNumber('0b10'), 2, '0b10 is 2');
 	t.equal(ES.ToNumber({ toString: function () { return '0b11'; } }), 3, 'Object that toStrings to 0b11 is 3');
 
+	t.equal(true, is(ES.ToNumber('0b12'), NaN), '0b12 is NaN');
+	t.equal(true, is(ES.ToNumber({ toString: function () { return '0b112'; } }), NaN), 'Object that toStrings to 0b112 is NaN');
+
 	t.equal(ES.ToNumber('0o10'), 8, '0o10 is 8');
 	t.equal(ES.ToNumber({ toString: function () { return '0o11'; } }), 9, 'Object that toStrings to 0o11 is 9');
+
+	t.equal(true, is(ES.ToNumber('0o18'), NaN), '0o18 is NaN');
+	t.equal(true, is(ES.ToNumber({ toString: function () { return '0o118'; } }), NaN), 'Object that toStrings to 0o118 is NaN');
+
 	t.end();
 });
 

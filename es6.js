@@ -16,8 +16,8 @@ var toPrimitive = require('es-to-primitive/es6');
 var parseInteger = parseInt;
 var bind = require('function-bind');
 var strSlice = bind.call(Function.call, String.prototype.slice);
-var isBinary = bind.call(Function.call, RegExp.prototype.test, /^0b/i);
-var isOctal = bind.call(Function.call, RegExp.prototype.test, /^0o/i);
+var isBinary = bind.call(Function.call, RegExp.prototype.test, /^0b[01]+$/i);
+var isOctal = bind.call(Function.call, RegExp.prototype.test, /^0o[0-7]+$/i);
 
 var ES5 = require('./es5');
 
