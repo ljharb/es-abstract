@@ -94,6 +94,24 @@ test('ToNumber', function (t) {
 	t.equal(true, is(ES.ToNumber('0o18'), NaN), '0o18 is NaN');
 	t.equal(true, is(ES.ToNumber({ toString: function () { return '0o118'; } }), NaN), 'Object that toStrings to 0o118 is NaN');
 
+	t.test('trimming of whitespace and non-whitespace characters', function (st) {
+		var whitespace = ' \t\x0b\f\xa0\ufeff\n\r\u2028\u2029\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000';
+		st.equal(0, ES.ToNumber(whitespace + 0 + whitespace), 'whitespace is trimmed');
+
+		// Zero-width space (zws), next line character (nel), and non-character (bom) are not whitespace.
+		var nonWhitespaces = {
+			'\\u0085': '\u0085',
+			'\\u200b': '\u200b',
+			'\\ufffe': '\ufffe'
+		};
+
+		forEach(nonWhitespaces, function (desc, nonWS) {
+			st.equal(true, is(ES.ToNumber(nonWS + 0 + nonWS), NaN), 'non-whitespace ' + desc + ' not trimmed');
+		});
+
+		st.end();
+	});
+
 	t.end();
 });
 

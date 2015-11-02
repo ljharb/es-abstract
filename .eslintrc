@@ -12,6 +12,6 @@
 		"new-cap": [0],
 		"no-extra-parens": [1],
 		"max-nested-callbacks": [2, 3],
-		"max-statements": [2, 18]
+		"max-statements": [2, 19]
 	}
 }
