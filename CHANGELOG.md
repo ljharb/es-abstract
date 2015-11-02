@@ -1,3 +1,7 @@
+1.4.2 / 2015-11-02
+=================
+  * [Fix] ensure `ES.ToNumber` trims whitespace, and does not trim non-whitespace (#3)
+
 1.4.1 / 2015-10-31
 =================
   * [Fix] ensure only 0-1 are valid binary and 0-7 are valid octal digits (#2)
