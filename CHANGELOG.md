@@ -1,3 +1,10 @@
+1.4.3 / 2015-11-04
+=================
+  * [Fix] `ES6.ToNumber`: should give `NaN` for explicitly signed hex strings (#4)
+  * [Refactor] `ES6.ToNumber`: No need to double-trim
+  * [Refactor] group tests better
+  * [Tests] should still pass on `node` `v0.8`
+
 1.4.2 / 2015-11-02
 =================
   * [Fix] ensure `ES.ToNumber` trims whitespace, and does not trim non-whitespace (#3)
