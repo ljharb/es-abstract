@@ -21,6 +21,8 @@ var isOctal = bind.call(Function.call, RegExp.prototype.test, /^0o[0-7]+$/i);
 var nonWS = ['\u0085', '\u200b', '\ufffe'].join('');
 var nonWSregex = new RegExp('[' + nonWS + ']', 'g');
 var hasNonWS = bind.call(Function.call, RegExp.prototype.test, nonWSregex);
+var invalidHexLiteral = /^[\-\+]0x[0-9a-f]+$/i;
+var isInvalidHexLiteral = bind.call(Function.call, RegExp.prototype.test, invalidHexLiteral);
 
 // whitespace from: http://es5.github.io/#x15.5.4.20
 // implementation from https://github.com/es-shims/es5-shim/blob/v3.4.0/es5-shim.js#L1304-L1324
@@ -68,7 +70,7 @@ var ES6 = assign(assign({}, ES5), {
 				return this.ToNumber(parseInteger(strSlice(value, 2), 2));
 			} else if (isOctal(value)) {
 				return this.ToNumber(parseInteger(strSlice(value, 2), 8));
-			} else if (hasNonWS(value)) {
+			} else if (hasNonWS(value) || isInvalidHexLiteral(value)) {
 				return NaN;
 			} else {
 				var trimmed = trim(value);
