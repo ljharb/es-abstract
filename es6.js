@@ -75,7 +75,7 @@ var ES6 = assign(assign({}, ES5), {
 			} else {
 				var trimmed = trim(value);
 				if (trimmed !== value) {
-					return this.ToNumber(trim(value));
+					return this.ToNumber(trimmed);
 				}
 			}
 		}
