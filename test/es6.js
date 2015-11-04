@@ -50,18 +50,30 @@ test('ToBoolean', function (t) {
 	t.equal(false, ES.ToBoolean(null), 'null coerces to false');
 	t.equal(false, ES.ToBoolean(false), 'false returns false');
 	t.equal(true, ES.ToBoolean(true), 'true returns true');
-	forEach([0, -0, NaN], function (falsyNumber) {
-		t.equal(false, ES.ToBoolean(falsyNumber), 'falsy number ' + falsyNumber + ' coerces to false');
+
+	t.test('numbers', function (st) {
+		forEach([0, -0, NaN], function (falsyNumber) {
+			st.equal(false, ES.ToBoolean(falsyNumber), 'falsy number ' + falsyNumber + ' coerces to false');
+		});
+		forEach([Infinity, 42, 1, -Infinity], function (truthyNumber) {
+			st.equal(true, ES.ToBoolean(truthyNumber), 'truthy number ' + truthyNumber + ' coerces to true');
+		});
+
+		st.end();
 	});
-	forEach([Infinity, 42, 1, -Infinity], function (truthyNumber) {
-		t.equal(true, ES.ToBoolean(truthyNumber), 'truthy number ' + truthyNumber + ' coerces to true');
-	});
+
 	t.equal(false, ES.ToBoolean(''), 'empty string coerces to false');
 	t.equal(true, ES.ToBoolean('foo'), 'nonempty string coerces to true');
-	forEach(objects, function (obj) {
-		t.equal(true, ES.ToBoolean(obj), 'object coerces to true');
+
+	t.test('objects', function (st) {
+		forEach(objects, function (obj) {
+			st.equal(true, ES.ToBoolean(obj), 'object coerces to true');
+		});
+		st.equal(true, ES.ToBoolean(uncoercibleObject), 'uncoercibleObject coerces to true');
+
+		st.end();
 	});
-	t.equal(true, ES.ToBoolean(uncoercibleObject), 'uncoercibleObject coerces to true');
+
 	t.end();
 });
 
@@ -70,35 +82,50 @@ test('ToNumber', function (t) {
 	t.ok(is(ES.ToNumber(null), 0), 'null coerces to +0');
 	t.ok(is(ES.ToNumber(false), 0), 'false coerces to +0');
 	t.equal(1, ES.ToNumber(true), 'true coerces to 1');
-	t.ok(is(NaN, ES.ToNumber(NaN)), 'NaN returns itself');
-	forEach([0, -0, 42, Infinity, -Infinity], function (num) {
-		t.equal(num, ES.ToNumber(num), num + ' returns itself');
+
+	t.test('numbers', function (st) {
+		st.ok(is(NaN, ES.ToNumber(NaN)), 'NaN returns itself');
+		forEach([0, -0, 42, Infinity, -Infinity], function (num) {
+			st.equal(num, ES.ToNumber(num), num + ' returns itself');
+		});
+		forEach(['foo', '0', '4a', '2.0', 'Infinity', '-Infinity'], function (numString) {
+			st.ok(is(+numString, ES.ToNumber(numString)), '"' + numString + '" coerces to ' + Number(numString));
+		});
+		st.end();
 	});
-	forEach(['foo', '0', '4a', '2.0', 'Infinity', '-Infinity'], function (numString) {
-		t.ok(is(+numString, ES.ToNumber(numString)), '"' + numString + '" coerces to ' + Number(numString));
+
+	t.test('objects', function (st) {
+		forEach(objects, function (object) {
+			st.ok(is(ES.ToNumber(object), ES.ToNumber(ES.ToPrimitive(object))), 'object ' + object + ' coerces to same as ToPrimitive of object does');
+		});
+		st.throws(function () { return ES.ToNumber(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
+		st.end();
 	});
-	forEach(objects, function (object) {
-		t.ok(is(ES.ToNumber(object), ES.ToNumber(ES.ToPrimitive(object))), 'object ' + object + ' coerces to same as ToPrimitive of object does');
+
+	t.test('binary literals', function (st) {
+		st.equal(ES.ToNumber('0b10'), 2, '0b10 is 2');
+		st.equal(ES.ToNumber({ toString: function () { return '0b11'; } }), 3, 'Object that toStrings to 0b11 is 3');
+
+		st.equal(true, is(ES.ToNumber('0b12'), NaN), '0b12 is NaN');
+		st.equal(true, is(ES.ToNumber({ toString: function () { return '0b112'; } }), NaN), 'Object that toStrings to 0b112 is NaN');
+		st.end();
 	});
-	t.throws(function () { return ES.ToNumber(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 
-	t.equal(ES.ToNumber('0b10'), 2, '0b10 is 2');
-	t.equal(ES.ToNumber({ toString: function () { return '0b11'; } }), 3, 'Object that toStrings to 0b11 is 3');
+	t.test('octal literals', function (st) {
+		st.equal(ES.ToNumber('0o10'), 8, '0o10 is 8');
+		st.equal(ES.ToNumber({ toString: function () { return '0o11'; } }), 9, 'Object that toStrings to 0o11 is 9');
 
-	t.equal(true, is(ES.ToNumber('0b12'), NaN), '0b12 is NaN');
-	t.equal(true, is(ES.ToNumber({ toString: function () { return '0b112'; } }), NaN), 'Object that toStrings to 0b112 is NaN');
-
-	t.equal(ES.ToNumber('0o10'), 8, '0o10 is 8');
-	t.equal(ES.ToNumber({ toString: function () { return '0o11'; } }), 9, 'Object that toStrings to 0o11 is 9');
-
-	t.equal(true, is(ES.ToNumber('0o18'), NaN), '0o18 is NaN');
-	t.equal(true, is(ES.ToNumber({ toString: function () { return '0o118'; } }), NaN), 'Object that toStrings to 0o118 is NaN');
+		st.equal(true, is(ES.ToNumber('0o18'), NaN), '0o18 is NaN');
+		st.equal(true, is(ES.ToNumber({ toString: function () { return '0o118'; } }), NaN), 'Object that toStrings to 0o118 is NaN');
+		st.end();
+	});
 
 	t.test('signed hex numbers', function (st) {
 		st.equal(true, is(ES.ToNumber('-0xF'), NaN), '-0xF is NaN');
 		st.equal(true, is(ES.ToNumber(' -0xF '), NaN), 'space-padded -0xF is NaN');
 		st.equal(true, is(ES.ToNumber('+0xF'), NaN), '+0xF is NaN');
 		st.equal(true, is(ES.ToNumber(' +0xF '), NaN), 'space-padded +0xF is NaN');
+
 		st.end();
 	});
 
