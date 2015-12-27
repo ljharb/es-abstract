@@ -1,3 +1,10 @@
+1.5.0 / 2015-12-27
+=================
+  * [New] adds `Symbol.toPrimitive` support via `es-to-primitive`
+  * [Deps] update `is-callable`, `es-to-primitive`
+  * [Dev Deps] update `jscs`, `nsp`, `eslint`, `@ljharb/eslint-config`, `semver`, `tape`
+  * [Tests] up to `node` `v5.3`
+
 1.4.3 / 2015-11-04
 =================
   * [Fix] `ES6.ToNumber`: should give `NaN` for explicitly signed hex strings (#4)
