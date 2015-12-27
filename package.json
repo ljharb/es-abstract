@@ -49,11 +49,11 @@
 		"is-regex": "^1.0.3"
 	},
 	"devDependencies": {
-		"tape": "^4.2.2",
+		"tape": "^4.4.0",
 		"covert": "^1.1.0",
 		"jscs": "^2.7.0",
 		"editorconfig-tools": "^0.1.1",
-		"nsp": "^2.1.0",
+		"nsp": "^2.2.0",
 		"eslint": "^1.10.3",
 		"@ljharb/eslint-config": "^1.6.0",
 		"object-is": "^1.0.1",
