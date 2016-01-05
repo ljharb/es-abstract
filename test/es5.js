@@ -6,7 +6,7 @@ var test = require('tape');
 var forEach = require('foreach');
 var is = require('object-is');
 
-var coercibleObject = { valueOf: function () { return 3; }, toString: function () { return 42; } };
+var coercibleObject = { valueOf: function () { return '3'; }, toString: function () { return 42; } };
 var coercibleFnObject = { valueOf: function () { return function valueOfFn() {}; }, toString: function () { return 42; } };
 var valueOfOnlyObject = { valueOf: function () { return 4; }, toString: function () { return {}; } };
 var toStringOnlyObject = { valueOf: function () { return {}; }, toString: function () { return 7; } };
@@ -27,15 +27,15 @@ test('ToPrimitive', function (t) {
 	});
 
 	t.test('objects', function (st) {
-		st.equal(ES.ToPrimitive(coercibleObject), 3, 'coercibleObject coerces to valueOf');
-		st.equal(ES.ToPrimitive(coercibleObject, Number), 3, 'coercibleObject with hint Number coerces to valueOf');
-		st.equal(ES.ToPrimitive(coercibleObject, String), '42', 'coercibleObject with hint String coerces to stringified toString');
-		st.equal(ES.ToPrimitive(coercibleFnObject), 42, 'coercibleFnObject coerces to toString');
-		st.equal(ES.ToPrimitive(toStringOnlyObject), 7, 'toStringOnlyObject returns non-stringified toString');
-		st.equal(ES.ToPrimitive(valueOfOnlyObject), 4, 'valueOfOnlyObject returns valueOf');
-		st.ok(is(ES.ToPrimitive({}), NaN), '{} with no hint coerces to Object#valueOf');
+		st.equal(ES.ToPrimitive(coercibleObject), coercibleObject.valueOf(), 'coercibleObject coerces to valueOf');
+		st.equal(ES.ToPrimitive(coercibleObject, Number), coercibleObject.valueOf(), 'coercibleObject with hint Number coerces to valueOf');
+		st.equal(ES.ToPrimitive(coercibleObject, String), coercibleObject.toString(), 'coercibleObject with hint String coerces to toString');
+		st.equal(ES.ToPrimitive(coercibleFnObject), coercibleFnObject.toString(), 'coercibleFnObject coerces to toString');
+		st.equal(ES.ToPrimitive(toStringOnlyObject), toStringOnlyObject.toString(), 'toStringOnlyObject returns toString');
+		st.equal(ES.ToPrimitive(valueOfOnlyObject), valueOfOnlyObject.valueOf(), 'valueOfOnlyObject returns valueOf');
+		st.equal(ES.ToPrimitive({}), '[object Object]', '{} with no hint coerces to Object#toString');
 		st.equal(ES.ToPrimitive({}, String), '[object Object]', '{} with hint String coerces to Object#toString');
-		st.ok(is(ES.ToPrimitive({}, Number), NaN), '{} with hint Number coerces to NaN');
+		st.equal(ES.ToPrimitive({}, Number), '[object Object]', '{} with hint Number coerces to Object#toString');
 		st.throws(function () { return ES.ToPrimitive(uncoercibleObject); }, TypeError, 'uncoercibleObject throws a TypeError');
 		st.throws(function () { return ES.ToPrimitive(uncoercibleFnObject); }, TypeError, 'uncoercibleFnObject throws a TypeError');
 		st.end();
