@@ -51,11 +51,11 @@
 	"devDependencies": {
 		"tape": "^4.4.0",
 		"covert": "^1.1.0",
-		"jscs": "^2.7.0",
+		"jscs": "^2.8.0",
 		"editorconfig-tools": "^0.1.1",
 		"nsp": "^2.2.0",
 		"eslint": "^1.10.3",
-		"@ljharb/eslint-config": "^1.6.0",
+		"@ljharb/eslint-config": "^1.6.1",
 		"object-is": "^1.0.1",
 		"foreach": "^2.0.5",
 		"semver": "^5.1.0",
