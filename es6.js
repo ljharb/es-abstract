@@ -154,7 +154,7 @@ var ES6 = assign(assign({}, ES5), {
 		return len;
 	},
 
-	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-canonicalnumericindexstring
+	// http://www.ecma-international.org/ecma-262/6.0/#sec-canonicalnumericindexstring
 	CanonicalNumericIndexString: function CanonicalNumericIndexString(argument) {
 		if (toStr.call(argument) !== '[object String]') {
 			throw new TypeError('must be a string');
@@ -162,6 +162,7 @@ var ES6 = assign(assign({}, ES5), {
 		if (argument === '-0') { return -0; }
 		var n = this.ToNumber(argument);
 		if (this.SameValue(this.ToString(n), argument)) { return n; }
+		return void 0;
 	},
 
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-requireobjectcoercible
