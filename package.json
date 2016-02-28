@@ -44,7 +44,7 @@
 	],
 	"dependencies": {
 		"function-bind": "^1.1.0",
-		"is-callable": "^1.1.2",
+		"is-callable": "^1.1.3",
 		"es-to-primitive": "^1.1.1",
 		"is-regex": "^1.0.3"
 	},
