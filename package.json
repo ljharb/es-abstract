@@ -53,7 +53,7 @@
 		"covert": "^1.1.0",
 		"jscs": "^2.10.1",
 		"editorconfig-tools": "^0.1.1",
-		"nsp": "^2.2.0",
+		"nsp": "^2.2.2",
 		"eslint": "^2.2.0",
 		"@ljharb/eslint-config": "^2.1.1",
 		"object-is": "^1.0.1",
