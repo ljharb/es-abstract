@@ -57,7 +57,7 @@ var ES5 = {
 			if (x === 0) { return 1 / x === 1 / y; }
 			return true;
 		}
-        return $isNaN(x) && $isNaN(y);
+		return $isNaN(x) && $isNaN(y);
 	}
 };
 

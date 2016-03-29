@@ -23,7 +23,7 @@ var nonNumberPrimitives = nullPrimitives.concat(nonNullNonNumberPrimitives);
 var primitives = nullPrimitives.concat(nonNullPrimitives);
 
 test('ToPrimitive', function (t) {
-    t.test('primitives', function (st) {
+	t.test('primitives', function (st) {
 		var testPrimitive = function (primitive) {
 			st.ok(is(ES.ToPrimitive(primitive), primitive), primitive + ' is returned correctly');
 		};

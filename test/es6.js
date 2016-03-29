@@ -21,7 +21,7 @@ var nonNullPrimitives = [true, false, 'foo', ''].concat(numbers);
 var primitives = [undefined, null].concat(nonNullPrimitives);
 
 test('ToPrimitive', function (t) {
-    t.test('primitives', function (st) {
+	t.test('primitives', function (st) {
 		var testPrimitive = function (primitive) {
 			st.ok(is(ES.ToPrimitive(primitive), primitive), primitive + ' is returned correctly');
 		};
@@ -288,7 +288,7 @@ test('ToUint8Clamp', function (t) {
 });
 
 test('ToString', function (t) {
-    forEach(objects.concat(primitives), function (item) {
+	forEach(objects.concat(primitives), function (item) {
 		t.equal(ES.ToString(item), String(item), 'ES.ToString(' + debug(item) + ') ToStrings to String(' + debug(item) + ')');
 	});
 	t.throws(function () { return ES.ToString(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
