@@ -1,3 +1,13 @@
+1.5.1 / 2016-05-30
+=================
+  * [Fix] `ES.IsRegExp`: actually look up `Symbol.match` on the argument
+  * [Refactor] create `isNaN` helper
+  * [Deps] update `is-callable`, `function-bind`
+  * [Deps] update `es-to-primitive`, fix ES5 tests
+  * [Dev Deps] update `jscs`, `eslint`, `@ljharb/eslint-config`, `tape`, `nsp`
+  * [Tests] up to `node` `v6.2`, `v5.11`, `v4.4`
+  * [Tests] use pretest/posttest for linting/security
+
 1.5.0 / 2015-12-27
 =================
   * [New] adds `Symbol.toPrimitive` support via `es-to-primitive`
