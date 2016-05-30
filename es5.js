@@ -1,6 +1,6 @@
 'use strict';
 
-var $isNaN = Number.isNaN || function (a) { return a !== a; };
+var $isNaN = require('./helpers/isNaN');
 var $isFinite = require('./helpers/isFinite');
 
 var sign = require('./helpers/sign');
