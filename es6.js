@@ -210,7 +210,7 @@ var ES6 = assign(assign({}, ES5), {
 			return false;
 		}
 		if (hasSymbols) {
-			var isRegExp = RegExp[Symbol.match];
+			var isRegExp = argument[Symbol.match];
 			if (typeof isRegExp !== 'undefined') {
 				return ES5.ToBoolean(isRegExp);
 			}
