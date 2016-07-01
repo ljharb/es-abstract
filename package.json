@@ -56,7 +56,7 @@
 		"jscs": "^3.0.3",
 		"editorconfig-tools": "^0.1.1",
 		"nsp": "^2.4.0",
-		"eslint": "^2.11.1",
+		"eslint": "^3.0.0",
 		"@ljharb/eslint-config": "^5.0.0",
 		"object-is": "^1.0.1",
 		"foreach": "^2.0.5",
