@@ -487,6 +487,22 @@ test('Call', function (t) {
 	t.end();
 });
 
+test('Get', function (t) {
+	t.throws(function () { return ES.Get('a', 'a'); }, TypeError, 'Throws a TypeError if `O` is not an Object');
+	t.throws(function () { return ES.Get({ 7: 7 }, 7); }, TypeError, 'Throws a TypeError if `P` is not a property key');
+
+	var value = {};
+	t.test('Symbols', { skip: !hasSymbols }, function (st) {
+		var sym = Symbol('sym');
+		var obj = {};
+		obj[sym] = value;
+		st.equal(ES.Get(obj, sym), value, 'returns property `P` if it exists on object `O`');
+		st.end();
+	});
+	t.equal(ES.Get({ a: value }, 'a'), value, 'returns property `P` if it exists on object `O`');
+	t.end();
+});
+
 test('Type', { skip: !hasSymbols }, function (t) {
 	t.equal(ES.Type(Symbol.iterator), 'Symbol', 'Type(Symbol.iterator) is Symbol');
 	t.end();
@@ -539,6 +555,5 @@ test('SpeciesConstructor', function (t) {
 
 		st.end();
 	});
-
 	t.end();
 });

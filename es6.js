@@ -226,6 +226,25 @@ var ES6 = assign(assign({}, ES5), {
 		return (x === y) || ($isNaN(x) && $isNaN(y));
 	},
 
+	/**
+	 * 7.3.1 Get (O, P) - http://www.ecma-international.org/ecma-262/6.0/#sec-get-o-p
+	 * 1. Assert: Type(O) is Object.
+	 * 2. Assert: IsPropertyKey(P) is true.
+	 * 3. Return O.[[Get]](P, O).
+	 */
+	Get: function Get(O, P) {
+		// 7.3.1.1
+		if (this.Type(O) !== 'Object') {
+			throw new TypeError('Assertion failed: Type(O) is not Object');
+		}
+		// 7.3.1.2
+		if (!this.IsPropertyKey(P)) {
+			throw new TypeError('Assertion failed: IsPropertyKey(P) is not true');
+		}
+		// 7.3.1.3
+		return O[P];
+	},
+
 	Type: function Type(x) {
 		if (typeof x === 'symbol') {
 			return 'Symbol';
