@@ -495,6 +495,17 @@ test('GetV', function (t) {
 	t.end();
 });
 
+test('GetMethod', function (t) {
+	t.throws(function () { return ES.GetMethod({ 7: 7 }, 7); }, TypeError, 'Throws a TypeError if `P` is not a property key');
+	t.equal(ES.GetMethod({}, 'a'), undefined, 'returns undefined in property is undefined');
+	t.equal(ES.GetMethod({ a: null }, 'a'), undefined, 'returns undefined if property is null');
+	t.equal(ES.GetMethod({ a: undefined }, 'a'), undefined, 'returns undefined if property is undefined');
+	var obj = { a: function () {} };
+	t.throws(function () { ES.GetMethod({ a: 'b' }, 'a'); }, TypeError, 'throws TypeError if property exists and is not callable');
+	t.equal(ES.GetMethod(obj, 'a'), obj.a, 'returns property if it is callable');
+	t.end();
+});
+
 test('Get', function (t) {
 	t.throws(function () { return ES.Get('a', 'a'); }, TypeError, 'Throws a TypeError if `O` is not an Object');
 	t.throws(function () { return ES.Get({ 7: 7 }, 7); }, TypeError, 'Throws a TypeError if `P` is not a property key');
