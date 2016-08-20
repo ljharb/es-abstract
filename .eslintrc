@@ -10,6 +10,7 @@
 		"max-statements-per-line": [2, { "max": 2 }],
 		"no-magic-numbers": [0],
 		"new-cap": [0],
-		"no-extra-parens": [1]
+		"no-extra-parens": [1],
+		"sort-keys": [0]
 	}
 }
