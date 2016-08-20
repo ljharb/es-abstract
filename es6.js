@@ -231,6 +231,28 @@ var ES6 = assign(assign({}, ES5), {
 			return 'Symbol';
 		}
 		return ES5.Type(x);
+	},
+
+	// http://www.ecma-international.org/ecma-262/6.0/#sec-speciesconstructor
+	SpeciesConstructor: function SpeciesConstructor(O, defaultConstructor) {
+		if (this.Type(O) !== 'Object') {
+			throw new TypeError('Assertion failed: Type(O) is not Object');
+		}
+		var C = O.constructor;
+		if (typeof C === 'undefined') {
+			return defaultConstructor;
+		}
+		if (this.Type(C) !== 'Object') {
+			throw new TypeError('O.constructor is not an Object');
+		}
+		var S = hasSymbols && Symbol.species ? C[Symbol.species] : undefined;
+		if (S == null) {
+			return defaultConstructor;
+		}
+		if (this.IsConstructor(S)) {
+			return S;
+		}
+		throw new TypeError('no constructor found');
 	}
 });
 

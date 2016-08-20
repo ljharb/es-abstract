@@ -484,3 +484,54 @@ test('Type', { skip: !hasSymbols }, function (t) {
 	t.equal(ES.Type(Symbol.iterator), 'Symbol', 'Type(Symbol.iterator) is Symbol');
 	t.end();
 });
+
+test('SpeciesConstructor', function (t) {
+	t.throws(function () { ES.SpeciesConstructor(null); }, TypeError);
+	t.throws(function () { ES.SpeciesConstructor(undefined); }, TypeError);
+
+	var defaultConstructor = function Foo() {};
+
+	t.equal(
+		ES.SpeciesConstructor({ constructor: undefined }, defaultConstructor),
+		defaultConstructor,
+		'undefined constructor returns defaultConstructor'
+	);
+
+	t.throws(
+		function () { return ES.SpeciesConstructor({ constructor: null }, defaultConstructor); },
+		TypeError,
+		'non-undefined non-object constructor throws'
+	);
+
+	var Bar = function Bar() {};
+	var hasSpecies = hasSymbols && Symbol.species;
+	if (hasSpecies) {
+		Bar[Symbol.species] = null;
+	}
+	t.equal(
+		ES.SpeciesConstructor(new Bar(), defaultConstructor),
+		defaultConstructor,
+		'undefined/null Symbol.species returns default constructor'
+	);
+
+	t.test('with Symbol.species', { skip: !hasSpecies }, function (st) {
+		var Baz = function Baz() {};
+		Baz[Symbol.species] = Bar;
+		st.equal(
+			ES.SpeciesConstructor(new Baz(), defaultConstructor),
+			Bar,
+			'returns Symbol.species constructor value'
+		);
+
+		Baz[Symbol.species] = {};
+		st.throws(
+			function () { ES.SpeciesConstructor(new Baz(), defaultConstructor); },
+			TypeError,
+			'throws when non-constructor non-null non-undefined species value found'
+		);
+
+		st.end();
+	});
+
+	t.end();
+});
