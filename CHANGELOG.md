@@ -1,3 +1,10 @@
+1.6.0 / 2016-08-20
+=================
+  * [New] ES5 / ES6: add `Type`
+  * [New] ES6: `SpeciesConstructor`
+  * [Dev Deps] update `jscs`, `nsp`, `eslint`, `@ljharb/eslint-config`, `semver`; add `safe-publish-latest`
+  * [Tests] up to `node` `v6.4`, `v5.12`, `v4.5`
+
 1.5.1 / 2016-05-30
 =================
   * [Fix] `ES.IsRegExp`: actually look up `Symbol.match` on the argument
