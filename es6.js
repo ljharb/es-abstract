@@ -224,6 +224,13 @@ var ES6 = assign(assign({}, ES5), {
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevaluezero
 	SameValueZero: function SameValueZero(x, y) {
 		return (x === y) || ($isNaN(x) && $isNaN(y));
+	},
+
+	Type: function Type(x) {
+		if (typeof x === 'symbol') {
+			return 'Symbol';
+		}
+		return ES5.Type(x);
 	}
 });
 

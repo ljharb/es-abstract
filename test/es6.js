@@ -479,3 +479,8 @@ test('Call', function (t) {
 	}, receiver, [1, 2, 3]);
 	t.end();
 });
+
+test('Type', { skip: !hasSymbols }, function (t) {
+	t.equal(ES.Type(Symbol.iterator), 'Symbol', 'Type(Symbol.iterator) is Symbol');
+	t.end();
+});

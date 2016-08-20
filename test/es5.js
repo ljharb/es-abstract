@@ -190,3 +190,17 @@ test('SameValue', function (t) {
 	});
 	t.end();
 });
+
+test('Type', function (t) {
+	t.equal(ES.Type(), 'Undefined', 'Type() is Undefined');
+	t.equal(ES.Type(undefined), 'Undefined', 'Type(undefined) is Undefined');
+	t.equal(ES.Type(null), 'Null', 'Type(null) is Null');
+	t.equal(ES.Type(true), 'Boolean', 'Type(true) is Boolean');
+	t.equal(ES.Type(false), 'Boolean', 'Type(false) is Boolean');
+	t.equal(ES.Type(0), 'Number', 'Type(0) is Number');
+	t.equal(ES.Type(NaN), 'Number', 'Type(NaN) is Number');
+	t.equal(ES.Type('abc'), 'String', 'Type("abc") is String');
+	t.equal(ES.Type(function () {}), 'Object', 'Type(function () {}) is Object');
+	t.equal(ES.Type({}), 'Object', 'Type({}) is Object');
+	t.end();
+});
