@@ -17,6 +17,7 @@
 	"license": "MIT",
 	"main": "index.js",
 	"scripts": {
+		"prepublish": "safe-publish-latest",
 		"pretest": "npm run --silent lint",
 		"test": "npm run tests-only",
 		"posttest": "npm run --silent security",
@@ -61,7 +62,8 @@
 		"object-is": "^1.0.1",
 		"foreach": "^2.0.5",
 		"semver": "^5.3.0",
-		"replace": "^0.3.0"
+		"replace": "^0.3.0",
+		"safe-publish-latest": "^1.0.1"
 	},
 	"testling": {
 		"files": "test/index.js",
