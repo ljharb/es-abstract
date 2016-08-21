@@ -460,6 +460,13 @@ test('IsConstructor', function (t) {
 	forEach(objects, function (object) {
 		t.equal(false, ES.IsConstructor(object), object + ' object is not constructor');
 	});
+
+	try {
+		var foo = Function('return class Foo {}')(); // eslint-disable-line no-new-func
+		t.equal(ES.IsConstructor(foo), true, 'class is constructor');
+	} catch (e) {
+		t.comment('SKIP: class syntax not supported.');
+	}
 	t.end();
 });
 

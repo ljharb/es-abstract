@@ -178,7 +178,7 @@ var ES6 = assign(assign({}, ES5), {
 
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-isconstructor
 	IsConstructor: function IsConstructor(argument) {
-		return this.IsCallable(argument); // unfortunately there's no way to truly check this without try/catch `new argument`
+		return typeof argument === 'function' && !!argument.prototype; // unfortunately there's no way to truly check this without try/catch `new argument`
 	},
 
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-isextensible-o
