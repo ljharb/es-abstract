@@ -1,3 +1,7 @@
+1.6.1 / 2016-08-21
+=================
+  * [Fix] ES6: IsConstructor should return true for `class` constructors.
+
 1.6.0 / 2016-08-20
 =================
   * [New] ES5 / ES6: add `Type`
