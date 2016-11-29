@@ -7,11 +7,17 @@ var forEach = require('foreach');
 var is = require('object-is');
 
 var coercibleObject = { valueOf: function () { return '3'; }, toString: function () { return 42; } };
-var coercibleFnObject = { valueOf: function () { return function valueOfFn() {}; }, toString: function () { return 42; } };
+var coercibleFnObject = {
+	valueOf: function () { return function valueOfFn() {}; },
+	toString: function () { return 42; }
+};
 var valueOfOnlyObject = { valueOf: function () { return 4; }, toString: function () { return {}; } };
 var toStringOnlyObject = { valueOf: function () { return {}; }, toString: function () { return 7; } };
 var uncoercibleObject = { valueOf: function () { return {}; }, toString: function () { return {}; } };
-var uncoercibleFnObject = { valueOf: function () { return function valueOfFn() {}; }, toString: function () { return function toStrFn() {}; } };
+var uncoercibleFnObject = {
+	valueOf: function () { return function valueOfFn() {}; },
+	toString: function () { return function toStrFn() {}; }
+};
 var objects = [{}, coercibleObject, toStringOnlyObject, valueOfOnlyObject];
 var numbers = [0, -0, Infinity, -Infinity, 42];
 var nonNullPrimitives = [true, false, 'foo', ''].concat(numbers);

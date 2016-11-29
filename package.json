@@ -52,13 +52,13 @@
 		"is-regex": "^1.0.3"
 	},
 	"devDependencies": {
-		"tape": "^4.6.2",
+		"tape": "^4.6.3",
 		"covert": "^1.1.0",
 		"jscs": "^3.0.7",
 		"editorconfig-tools": "^0.1.1",
 		"nsp": "^2.6.2",
-		"eslint": "^3.9.1",
-		"@ljharb/eslint-config": "^8.0.0",
+		"eslint": "^3.11.1",
+		"@ljharb/eslint-config": "^9.0.1",
 		"object-is": "^1.0.1",
 		"foreach": "^2.0.5",
 		"semver": "^5.3.0",
