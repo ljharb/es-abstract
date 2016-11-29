@@ -1,5 +1,7 @@
 language: node_js
 node_js:
+  - "7.2"
+  - "7.1"
   - "7.0"
   - "6.9"
   - "6.8"
@@ -76,6 +78,8 @@ matrix:
     - node_js: "node"
       env: POSTTEST=true
   allow_failures:
+    - node_js: "7.1"
+    - node_js: "7.0"
     - node_js: "6.8"
     - node_js: "6.7"
     - node_js: "6.6"
