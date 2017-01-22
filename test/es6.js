@@ -487,6 +487,14 @@ test('Call', function (t) {
 	t.end();
 });
 
+test('GetV', function (t) {
+	t.throws(function () { return ES.GetV({ 7: 7 }, 7); }, TypeError, 'Throws a TypeError if `P` is not a property key');
+	var obj = { a: function () {} };
+	t.equal(ES.GetV(obj, 'a'), obj.a, 'returns property if it exists');
+	t.equal(ES.GetV(obj, 'b'), undefined, 'returns undefiend if property does not exist');
+	t.end();
+});
+
 test('Get', function (t) {
 	t.throws(function () { return ES.Get('a', 'a'); }, TypeError, 'Throws a TypeError if `O` is not an Object');
 	t.throws(function () { return ES.Get({ 7: 7 }, 7); }, TypeError, 'Throws a TypeError if `P` is not a property key');
