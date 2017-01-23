@@ -1,3 +1,11 @@
+1.7.0 / 2017-01-22
+=================
+  * [New] ES6: Add `GetMethod` (#16)
+  * [New] ES6: Add `GetV` (#16)
+  * [New] ES6: Add `Get` (#17)
+  * [Tests] up to `node` `v7.4`, `v6.9`, `v4.6`; improve test matrix
+  * [Dev Deps] update `tape`, `nsp`, `eslint`, `@ljharb/eslint-config`, `safe-publish-latest`
+
 1.6.1 / 2016-08-21
 =================
   * [Fix] ES6: IsConstructor should return true for `class` constructors.
