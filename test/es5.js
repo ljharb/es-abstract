@@ -42,8 +42,8 @@ test('ToPrimitive', function (t) {
 		st.equal(ES.ToPrimitive({}), '[object Object]', '{} with no hint coerces to Object#toString');
 		st.equal(ES.ToPrimitive({}, String), '[object Object]', '{} with hint String coerces to Object#toString');
 		st.equal(ES.ToPrimitive({}, Number), '[object Object]', '{} with hint Number coerces to Object#toString');
-		st.throws(function () { return ES.ToPrimitive(uncoercibleObject); }, TypeError, 'uncoercibleObject throws a TypeError');
-		st.throws(function () { return ES.ToPrimitive(uncoercibleFnObject); }, TypeError, 'uncoercibleFnObject throws a TypeError');
+		st['throws'](function () { return ES.ToPrimitive(uncoercibleObject); }, TypeError, 'uncoercibleObject throws a TypeError');
+		st['throws'](function () { return ES.ToPrimitive(uncoercibleFnObject); }, TypeError, 'uncoercibleFnObject throws a TypeError');
 		st.end();
 	});
 
@@ -85,7 +85,7 @@ test('ToNumber', function (t) {
 	forEach(objects, function (object) {
 		t.ok(is(ES.ToNumber(object), ES.ToNumber(ES.ToPrimitive(object))), 'object ' + object + ' coerces to same as ToPrimitive of object does');
 	});
-	t.throws(function () { return ES.ToNumber(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
+	t['throws'](function () { return ES.ToNumber(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 	t.end();
 });
 
@@ -96,7 +96,7 @@ test('ToInteger', function (t) {
 		t.ok(is(-num, ES.ToInteger(-num)), '-' + num + ' returns itself');
 	});
 	t.equal(3, ES.ToInteger(Math.PI), 'pi returns 3');
-	t.throws(function () { return ES.ToInteger(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
+	t['throws'](function () { return ES.ToInteger(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 	t.end();
 });
 
@@ -106,7 +106,7 @@ test('ToInt32', function (t) {
 		t.ok(is(0, ES.ToInt32(num)), num + ' returns +0');
 		t.ok(is(0, ES.ToInt32(-num)), '-' + num + ' returns +0');
 	});
-	t.throws(function () { return ES.ToInt32(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
+	t['throws'](function () { return ES.ToInt32(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 	t.ok(is(ES.ToInt32(0x100000000), 0), '2^32 returns +0');
 	t.ok(is(ES.ToInt32(0x100000000 - 1), -1), '2^32 - 1 returns -1');
 	t.ok(is(ES.ToInt32(0x80000000), -0x80000000), '2^31 returns -2^31');
@@ -124,7 +124,7 @@ test('ToUint32', function (t) {
 		t.ok(is(0, ES.ToUint32(num)), num + ' returns +0');
 		t.ok(is(0, ES.ToUint32(-num)), '-' + num + ' returns +0');
 	});
-	t.throws(function () { return ES.ToUint32(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
+	t['throws'](function () { return ES.ToUint32(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 	t.ok(is(ES.ToUint32(0x100000000), 0), '2^32 returns +0');
 	t.ok(is(ES.ToUint32(0x100000000 - 1), 0x100000000 - 1), '2^32 - 1 returns 2^32 - 1');
 	t.ok(is(ES.ToUint32(0x80000000), 0x80000000), '2^31 returns 2^31');
@@ -142,7 +142,7 @@ test('ToUint16', function (t) {
 		t.ok(is(0, ES.ToUint16(num)), num + ' returns +0');
 		t.ok(is(0, ES.ToUint16(-num)), '-' + num + ' returns +0');
 	});
-	t.throws(function () { return ES.ToUint16(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
+	t['throws'](function () { return ES.ToUint16(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 	t.ok(is(ES.ToUint16(0x100000000), 0), '2^32 returns +0');
 	t.ok(is(ES.ToUint16(0x100000000 - 1), 0x10000 - 1), '2^32 - 1 returns 2^16 - 1');
 	t.ok(is(ES.ToUint16(0x80000000), 0), '2^31 returns +0');
@@ -153,13 +153,13 @@ test('ToUint16', function (t) {
 });
 
 test('ToString', function (t) {
-	t.throws(function () { return ES.ToString(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
+	t['throws'](function () { return ES.ToString(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 	t.end();
 });
 
 test('ToObject', function (t) {
-	t.throws(function () { return ES.ToObject(undefined); }, TypeError, 'undefined throws');
-	t.throws(function () { return ES.ToObject(null); }, TypeError, 'null throws');
+	t['throws'](function () { return ES.ToObject(undefined); }, TypeError, 'undefined throws');
+	t['throws'](function () { return ES.ToObject(null); }, TypeError, 'null throws');
 	forEach(numbers, function (number) {
 		var obj = ES.ToObject(number);
 		t.equal(typeof obj, 'object', 'number ' + number + ' coerces to object');
@@ -170,8 +170,8 @@ test('ToObject', function (t) {
 });
 
 test('CheckObjectCoercible', function (t) {
-	t.throws(function () { return ES.CheckObjectCoercible(undefined); }, TypeError, 'undefined throws');
-	t.throws(function () { return ES.CheckObjectCoercible(null); }, TypeError, 'null throws');
+	t['throws'](function () { return ES.CheckObjectCoercible(undefined); }, TypeError, 'undefined throws');
+	t['throws'](function () { return ES.CheckObjectCoercible(null); }, TypeError, 'null throws');
 	var checkCoercible = function (value) {
 		t.doesNotThrow(function () { return ES.CheckObjectCoercible(value); }, '"' + value + '" does not throw');
 	};
