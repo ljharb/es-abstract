@@ -7,38 +7,29 @@ var forEach = require('foreach');
 var is = require('object-is');
 var debug = require('util').format;
 
-var hasSymbols = typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol';
+var v = require('./helpers/values');
 
 var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1;
-
-var coercibleObject = { valueOf: function () { return 3; }, toString: function () { return 42; } };
-var valueOfOnlyObject = { valueOf: function () { return 4; }, toString: function () { return {}; } };
-var toStringOnlyObject = { valueOf: function () { return {}; }, toString: function () { return 7; } };
-var uncoercibleObject = { valueOf: function () { return {}; }, toString: function () { return {}; } };
-var objects = [{}, coercibleObject, toStringOnlyObject, valueOfOnlyObject];
-var numbers = [0, -0, Infinity, -Infinity, 42];
-var nonNullPrimitives = [true, false, 'foo', ''].concat(numbers);
-var primitives = [undefined, null].concat(nonNullPrimitives);
 
 test('ToPrimitive', function (t) {
 	t.test('primitives', function (st) {
 		var testPrimitive = function (primitive) {
-			st.ok(is(ES.ToPrimitive(primitive), primitive), primitive + ' is returned correctly');
+			st.ok(is(ES.ToPrimitive(primitive), primitive), debug(primitive) + ' is returned correctly');
 		};
-		forEach(primitives, testPrimitive);
+		forEach(v.primitives, testPrimitive);
 		st.end();
 	});
 
 	t.test('objects', function (st) {
-		st.equal(ES.ToPrimitive(coercibleObject), 3, 'coercibleObject with no hint coerces to valueOf');
+		st.equal(ES.ToPrimitive(v.coercibleObject), 3, 'coercibleObject with no hint coerces to valueOf');
 		st.ok(is(ES.ToPrimitive({}), '[object Object]'), '{} with no hint coerces to Object#toString');
-		st.equal(ES.ToPrimitive(coercibleObject, Number), 3, 'coercibleObject with hint Number coerces to valueOf');
+		st.equal(ES.ToPrimitive(v.coercibleObject, Number), 3, 'coercibleObject with hint Number coerces to valueOf');
 		st.ok(is(ES.ToPrimitive({}, Number), '[object Object]'), '{} with hint Number coerces to NaN');
-		st.equal(ES.ToPrimitive(coercibleObject, String), 42, 'coercibleObject with hint String coerces to nonstringified toString');
+		st.equal(ES.ToPrimitive(v.coercibleObject, String), 42, 'coercibleObject with hint String coerces to nonstringified toString');
 		st.equal(ES.ToPrimitive({}, String), '[object Object]', '{} with hint String coerces to Object#toString');
-		st.equal(ES.ToPrimitive(toStringOnlyObject), 7, 'toStringOnlyObject returns non-stringified toString');
-		st.equal(ES.ToPrimitive(valueOfOnlyObject), 4, 'valueOfOnlyObject returns valueOf');
-		st['throws'](function () { return ES.ToPrimitive(uncoercibleObject); }, TypeError, 'uncoercibleObject throws a TypeError');
+		st.equal(ES.ToPrimitive(v.toStringOnlyObject), 7, 'toStringOnlyObject returns non-stringified toString');
+		st.equal(ES.ToPrimitive(v.valueOfOnlyObject), 4, 'valueOfOnlyObject returns valueOf');
+		st['throws'](function () { return ES.ToPrimitive(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws a TypeError');
 		st.end();
 	});
 
@@ -66,10 +57,10 @@ test('ToBoolean', function (t) {
 	t.equal(true, ES.ToBoolean('foo'), 'nonempty string coerces to true');
 
 	t.test('objects', function (st) {
-		forEach(objects, function (obj) {
+		forEach(v.objects, function (obj) {
 			st.equal(true, ES.ToBoolean(obj), 'object coerces to true');
 		});
-		st.equal(true, ES.ToBoolean(uncoercibleObject), 'uncoercibleObject coerces to true');
+		st.equal(true, ES.ToBoolean(v.uncoercibleObject), 'uncoercibleObject coerces to true');
 
 		st.end();
 	});
@@ -95,10 +86,10 @@ test('ToNumber', function (t) {
 	});
 
 	t.test('objects', function (st) {
-		forEach(objects, function (object) {
+		forEach(v.objects, function (object) {
 			st.ok(is(ES.ToNumber(object), ES.ToNumber(ES.ToPrimitive(object))), 'object ' + object + ' coerces to same as ToPrimitive of object does');
 		});
-		st['throws'](function () { return ES.ToNumber(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
+		st['throws'](function () { return ES.ToNumber(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 		st.end();
 	});
 
@@ -157,7 +148,7 @@ test('ToInteger', function (t) {
 		t.ok(is(-num, ES.ToInteger(-num)), '-' + num + ' returns itself');
 	});
 	t.equal(3, ES.ToInteger(Math.PI), 'pi returns 3');
-	t['throws'](function () { return ES.ToInteger(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
+	t['throws'](function () { return ES.ToInteger(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 	t.end();
 });
 
@@ -167,7 +158,7 @@ test('ToInt32', function (t) {
 		t.ok(is(0, ES.ToInt32(num)), num + ' returns +0');
 		t.ok(is(0, ES.ToInt32(-num)), '-' + num + ' returns +0');
 	});
-	t['throws'](function () { return ES.ToInt32(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
+	t['throws'](function () { return ES.ToInt32(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 	t.ok(is(ES.ToInt32(0x100000000), 0), '2^32 returns +0');
 	t.ok(is(ES.ToInt32(0x100000000 - 1), -1), '2^32 - 1 returns -1');
 	t.ok(is(ES.ToInt32(0x80000000), -0x80000000), '2^31 returns -2^31');
@@ -185,7 +176,7 @@ test('ToUint32', function (t) {
 		t.ok(is(0, ES.ToUint32(num)), num + ' returns +0');
 		t.ok(is(0, ES.ToUint32(-num)), '-' + num + ' returns +0');
 	});
-	t['throws'](function () { return ES.ToUint32(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
+	t['throws'](function () { return ES.ToUint32(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 	t.ok(is(ES.ToUint32(0x100000000), 0), '2^32 returns +0');
 	t.ok(is(ES.ToUint32(0x100000000 - 1), 0x100000000 - 1), '2^32 - 1 returns 2^32 - 1');
 	t.ok(is(ES.ToUint32(0x80000000), 0x80000000), '2^31 returns 2^31');
@@ -203,7 +194,7 @@ test('ToInt16', function (t) {
 		t.ok(is(0, ES.ToInt16(num)), num + ' returns +0');
 		t.ok(is(0, ES.ToInt16(-num)), '-' + num + ' returns +0');
 	});
-	t['throws'](function () { return ES.ToInt16(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
+	t['throws'](function () { return ES.ToInt16(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 	t.ok(is(ES.ToInt16(0x100000000), 0), '2^32 returns +0');
 	t.ok(is(ES.ToInt16(0x100000000 - 1), -1), '2^32 - 1 returns -1');
 	t.ok(is(ES.ToInt16(0x80000000), 0), '2^31 returns +0');
@@ -219,7 +210,7 @@ test('ToUint16', function (t) {
 		t.ok(is(0, ES.ToUint16(num)), num + ' returns +0');
 		t.ok(is(0, ES.ToUint16(-num)), '-' + num + ' returns +0');
 	});
-	t['throws'](function () { return ES.ToUint16(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
+	t['throws'](function () { return ES.ToUint16(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 	t.ok(is(ES.ToUint16(0x100000000), 0), '2^32 returns +0');
 	t.ok(is(ES.ToUint16(0x100000000 - 1), 0x10000 - 1), '2^32 - 1 returns 2^16 - 1');
 	t.ok(is(ES.ToUint16(0x80000000), 0), '2^31 returns +0');
@@ -235,7 +226,7 @@ test('ToInt8', function (t) {
 		t.ok(is(0, ES.ToInt8(num)), num + ' returns +0');
 		t.ok(is(0, ES.ToInt8(-num)), '-' + num + ' returns +0');
 	});
-	t['throws'](function () { return ES.ToInt8(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
+	t['throws'](function () { return ES.ToInt8(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 	t.ok(is(ES.ToInt8(0x100000000), 0), '2^32 returns +0');
 	t.ok(is(ES.ToInt8(0x100000000 - 1), -1), '2^32 - 1 returns -1');
 	t.ok(is(ES.ToInt8(0x80000000), 0), '2^31 returns +0');
@@ -254,7 +245,7 @@ test('ToUint8', function (t) {
 		t.ok(is(0, ES.ToUint8(num)), num + ' returns +0');
 		t.ok(is(0, ES.ToUint8(-num)), '-' + num + ' returns +0');
 	});
-	t['throws'](function () { return ES.ToUint8(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
+	t['throws'](function () { return ES.ToUint8(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 	t.ok(is(ES.ToUint8(0x100000000), 0), '2^32 returns +0');
 	t.ok(is(ES.ToUint8(0x100000000 - 1), 0x100 - 1), '2^32 - 1 returns 2^8 - 1');
 	t.ok(is(ES.ToUint8(0x80000000), 0), '2^31 returns +0');
@@ -273,7 +264,7 @@ test('ToUint8Clamp', function (t) {
 	t.ok(is(0, ES.ToUint8Clamp(0)), '+0 returns +0');
 	t.ok(is(0, ES.ToUint8Clamp(-0)), '-0 returns +0');
 	t.ok(is(0, ES.ToUint8Clamp(-Infinity)), '-Infinity returns +0');
-	t['throws'](function () { return ES.ToUint8Clamp(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
+	t['throws'](function () { return ES.ToUint8Clamp(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 	forEach([255, 256, 0x100000, Infinity], function (number) {
 		t.ok(is(255, ES.ToUint8Clamp(number)), number + ' coerces to 255');
 	});
@@ -288,20 +279,22 @@ test('ToUint8Clamp', function (t) {
 });
 
 test('ToString', function (t) {
-	forEach(objects.concat(primitives), function (item) {
+	forEach(v.objects.concat(v.nonSymbolPrimitives), function (item) {
 		t.equal(ES.ToString(item), String(item), 'ES.ToString(' + debug(item) + ') ToStrings to String(' + debug(item) + ')');
 	});
-	t['throws'](function () { return ES.ToString(uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
-	if (hasSymbols) {
-		t['throws'](function () { return ES.ToString(Symbol.iterator); }, TypeError, debug(Symbol.iterator) + ' throws');
-	}
+
+	t['throws'](function () { return ES.ToString(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
+
+	forEach(v.symbols, function (symbol) {
+		t['throws'](function () { return ES.ToString(symbol); }, TypeError, debug(symbol) + ' throws');
+	});
 	t.end();
 });
 
 test('ToObject', function (t) {
 	t['throws'](function () { return ES.ToObject(undefined); }, TypeError, 'undefined throws');
 	t['throws'](function () { return ES.ToObject(null); }, TypeError, 'null throws');
-	forEach(numbers, function (number) {
+	forEach(v.numbers, function (number) {
 		var obj = ES.ToObject(number);
 		t.equal(typeof obj, 'object', 'number ' + number + ' coerces to object');
 		t.equal(true, obj instanceof Number, 'object of ' + number + ' is Number object');
@@ -314,18 +307,18 @@ test('RequireObjectCoercible', function (t) {
 	t.equal(false, 'CheckObjectCoercible' in ES, 'CheckObjectCoercible -> RequireObjectCoercible in ES6');
 	t['throws'](function () { return ES.RequireObjectCoercible(undefined); }, TypeError, 'undefined throws');
 	t['throws'](function () { return ES.RequireObjectCoercible(null); }, TypeError, 'null throws');
-	var doesNotThrow = function (value) {
-		t.doesNotThrow(function () { return ES.RequireObjectCoercible(value); }, '"' + value + '" does not throw');
+	var isCoercible = function (value) {
+		t.doesNotThrow(function () { return ES.RequireObjectCoercible(value); }, debug(value) + ' does not throw');
 	};
-	forEach(objects.concat(nonNullPrimitives), doesNotThrow);
+	forEach(v.objects.concat(v.nonNullPrimitives), isCoercible);
 	t.end();
 });
 
 test('IsCallable', function (t) {
 	t.equal(true, ES.IsCallable(function () {}), 'function is callable');
-	var nonCallables = [/a/g, {}, Object.prototype, NaN].concat(primitives);
+	var nonCallables = [/a/g, {}, Object.prototype, NaN].concat(v.primitives);
 	forEach(nonCallables, function (nonCallable) {
-		t.equal(false, ES.IsCallable(nonCallable), nonCallable + ' is not callable');
+		t.equal(false, ES.IsCallable(nonCallable), debug(nonCallable) + ' is not callable');
 	});
 	t.end();
 });
@@ -333,8 +326,8 @@ test('IsCallable', function (t) {
 test('SameValue', function (t) {
 	t.equal(true, ES.SameValue(NaN, NaN), 'NaN is SameValue as NaN');
 	t.equal(false, ES.SameValue(0, -0), '+0 is not SameValue as -0');
-	forEach(objects.concat(primitives), function (val) {
-		t.equal(val === val, ES.SameValue(val, val), '"' + val + '" is SameValue to itself');
+	forEach(v.objects.concat(v.primitives), function (val) {
+		t.equal(val === val, ES.SameValue(val, val), debug(val) + ' is SameValue to itself');
 	});
 	t.end();
 });
@@ -342,25 +335,31 @@ test('SameValue', function (t) {
 test('SameValueZero', function (t) {
 	t.equal(true, ES.SameValueZero(NaN, NaN), 'NaN is SameValueZero as NaN');
 	t.equal(true, ES.SameValueZero(0, -0), '+0 is SameValueZero as -0');
-	forEach(objects.concat(primitives), function (val) {
-		t.equal(val === val, ES.SameValueZero(val, val), '"' + val + '" is SameValueZero to itself');
+	forEach(v.objects.concat(v.primitives), function (val) {
+		t.equal(val === val, ES.SameValueZero(val, val), debug(val) + ' is SameValueZero to itself');
 	});
 	t.end();
 });
 
 test('ToPropertyKey', function (t) {
-	forEach(objects.concat(primitives), function (value) {
+	forEach(v.objects.concat(v.nonSymbolPrimitives), function (value) {
 		t.equal(ES.ToPropertyKey(value), String(value), 'ToPropertyKey(value) === String(value) for non-Symbols');
 	});
-	if (hasSymbols) {
-		t.equal(ES.ToPropertyKey(Symbol.iterator), 'Symbol(Symbol.iterator)', 'ToPropertyKey(Symbol.iterator) === "Symbol(Symbol.iterator)"');
-	}
+
+	forEach(v.symbols, function (symbol) {
+		t.equal(
+			ES.ToPropertyKey(symbol),
+			Symbol.prototype.toString.call(symbol),
+			'ToPropertyKey(' + debug(symbol) + ') === ' + debug(Symbol.prototype.toString.call(symbol))
+		);
+	});
+
 	t.end();
 });
 
 test('ToLength', function (t) {
-	t['throws'](function () { return ES.ToLength(uncoercibleObject); }, TypeError, 'uncoercibleObject throws a TypeError');
-	t.equal(3, ES.ToLength(coercibleObject), 'coercibleObject coerces to 3');
+	t['throws'](function () { return ES.ToLength(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws a TypeError');
+	t.equal(3, ES.ToLength(v.coercibleObject), 'coercibleObject coerces to 3');
 	t.equal(42, ES.ToLength('42.5'), '"42.5" coerces to 42');
 	t.equal(7, ES.ToLength(7.3), '7.3 coerces to 7');
 	forEach([-0, -1, -42, -Infinity], function (negative) {
@@ -375,8 +374,8 @@ test('IsArray', function (t) {
 	t.equal(true, ES.IsArray([]), '[] is array');
 	t.equal(false, ES.IsArray({}), '{} is not array');
 	t.equal(false, ES.IsArray({ length: 1, 0: true }), 'arraylike object is not array');
-	forEach(objects.concat(primitives), function (value) {
-		t.equal(false, ES.IsArray(value), value + ' is not array');
+	forEach(v.objects.concat(v.primitives), function (value) {
+		t.equal(false, ES.IsArray(value), debug(value) + ' is not array');
 	});
 	t.end();
 });
@@ -385,10 +384,10 @@ test('IsRegExp', function (t) {
 	forEach([/a/g, new RegExp('a', 'g')], function (regex) {
 		t.equal(true, ES.IsRegExp(regex), regex + ' is regex');
 	});
-	forEach(objects.concat(primitives), function (nonRegex) {
-		t.equal(false, ES.IsRegExp(nonRegex), nonRegex + ' is not regex');
+	forEach(v.objects.concat(v.primitives), function (nonRegex) {
+		t.equal(false, ES.IsRegExp(nonRegex), debug(nonRegex) + ' is not regex');
 	});
-	t.test('Symbol.match', { skip: !hasSymbols || !Symbol.match }, function (st) {
+	t.test('Symbol.match', { skip: !v.hasSymbols || !Symbol.match }, function (st) {
 		var obj = {};
 		obj[Symbol.match] = true;
 		st.equal(true, ES.IsRegExp(obj), 'object with truthy Symbol.match is regex');
@@ -403,13 +402,15 @@ test('IsRegExp', function (t) {
 });
 
 test('IsPropertyKey', function (t) {
-	forEach(numbers.concat(objects), function (notKey) {
-		t.equal(false, ES.IsPropertyKey(notKey), notKey + ' is not property key');
+	forEach(v.numbers.concat(v.objects), function (notKey) {
+		t.equal(false, ES.IsPropertyKey(notKey), debug(notKey) + ' is not property key');
 	});
+
 	t.equal(true, ES.IsPropertyKey('foo'), 'string is property key');
-	if (hasSymbols) {
-		t.equal(true, ES.IsPropertyKey(Symbol.iterator), 'Symbol.iterator is property key');
-	}
+
+	forEach(v.symbols, function (symbol) {
+		t.equal(true, ES.IsPropertyKey(symbol), debug(symbol) + ' is property key');
+	});
 	t.end();
 });
 
@@ -419,21 +420,20 @@ test('IsInteger', function (t) {
 		t.equal(false, ES.IsInteger(i + 0.2), (i + 0.2) + ' is not integer');
 	}
 	t.equal(true, ES.IsInteger(-0), '-0 is integer');
-	var notInts = objects.concat([Infinity, -Infinity, NaN, true, false, null, undefined, [], new Date()]);
-	if (hasSymbols) { notInts.push(Symbol.iterator); }
+	var notInts = v.objects.concat([Infinity, -Infinity, NaN, true, false, null, undefined, [], new Date()], v.symbols);
 	forEach(notInts, function (notInt) {
 		t.equal(false, ES.IsInteger(notInt), ES.ToPropertyKey(notInt) + ' is not integer');
 	});
-	t.equal(false, ES.IsInteger(uncoercibleObject), 'uncoercibleObject is not integer');
+	t.equal(false, ES.IsInteger(v.uncoercibleObject), 'uncoercibleObject is not integer');
 	t.end();
 });
 
 test('IsExtensible', function (t) {
-	forEach(objects, function (object) {
-		t.equal(true, ES.IsExtensible(object), object + ' object is extensible');
+	forEach(v.objects, function (object) {
+		t.equal(true, ES.IsExtensible(object), debug(object) + ' object is extensible');
 	});
-	forEach(primitives, function (primitive) {
-		t.equal(false, ES.IsExtensible(primitive), primitive + ' is not extensible');
+	forEach(v.primitives, function (primitive) {
+		t.equal(false, ES.IsExtensible(primitive), debug(primitive) + ' is not extensible');
 	});
 	if (Object.preventExtensions) {
 		t.equal(false, ES.IsExtensible(Object.preventExtensions({})), 'object with extensions prevented is not extensible');
@@ -443,9 +443,13 @@ test('IsExtensible', function (t) {
 
 test('CanonicalNumericIndexString', function (t) {
 	var throwsOnNonString = function (notString) {
-		t['throws'](function () { return ES.CanonicalNumericIndexString(notString); }, TypeError, notString + ' is not a string');
+		t['throws'](
+			function () { return ES.CanonicalNumericIndexString(notString); },
+			TypeError,
+			debug(notString) + ' is not a string'
+		);
 	};
-	forEach(objects.concat(numbers), throwsOnNonString);
+	forEach(v.objects.concat(v.numbers), throwsOnNonString);
 	t.ok(is(-0, ES.CanonicalNumericIndexString('-0')), '"-0" returns -0');
 	for (var i = -50; i < 50; i += 10) {
 		t.equal(i, ES.CanonicalNumericIndexString(String(i)), '"' + i + '" returns ' + i);
@@ -457,7 +461,7 @@ test('CanonicalNumericIndexString', function (t) {
 test('IsConstructor', function (t) {
 	t.equal(true, ES.IsConstructor(function () {}), 'function is constructor');
 	t.equal(false, ES.IsConstructor(/a/g), 'regex is not constructor');
-	forEach(objects, function (object) {
+	forEach(v.objects, function (object) {
 		t.equal(false, ES.IsConstructor(object), object + ' object is not constructor');
 	});
 
@@ -472,12 +476,16 @@ test('IsConstructor', function (t) {
 
 test('Call', function (t) {
 	var receiver = {};
-	var notFuncs = objects.concat(primitives).concat([/a/g, new RegExp('a', 'g')]);
+	var notFuncs = v.objects.concat(v.primitives).concat([/a/g, new RegExp('a', 'g')]);
 	t.plan(notFuncs.length + 4);
-	var throwsOnCall = function (notFunc) {
-		t['throws'](function () { return ES.Call(notFunc, receiver); }, TypeError, notFunc + ' (' + typeof notFunc + ') is not callable');
+	var throwsIfNotCallable = function (notFunc) {
+		t['throws'](
+			function () { return ES.Call(notFunc, receiver); },
+			TypeError,
+			debug(notFunc) + ' (' + typeof notFunc + ') is not callable'
+		);
 	};
-	forEach(notFuncs, throwsOnCall);
+	forEach(notFuncs, throwsIfNotCallable);
 	ES.Call(function (a, b) {
 		t.equal(this, receiver, 'context matches expected');
 		t.deepEqual([a, b], [1, 2], 'named args are correct');
@@ -511,7 +519,7 @@ test('Get', function (t) {
 	t['throws'](function () { return ES.Get({ 7: 7 }, 7); }, TypeError, 'Throws a TypeError if `P` is not a property key');
 
 	var value = {};
-	t.test('Symbols', { skip: !hasSymbols }, function (st) {
+	t.test('Symbols', { skip: !v.hasSymbols }, function (st) {
 		var sym = Symbol('sym');
 		var obj = {};
 		obj[sym] = value;
@@ -522,7 +530,7 @@ test('Get', function (t) {
 	t.end();
 });
 
-test('Type', { skip: !hasSymbols }, function (t) {
+test('Type', { skip: !v.hasSymbols }, function (t) {
 	t.equal(ES.Type(Symbol.iterator), 'Symbol', 'Type(Symbol.iterator) is Symbol');
 	t.end();
 });
@@ -546,7 +554,7 @@ test('SpeciesConstructor', function (t) {
 	);
 
 	var Bar = function Bar() {};
-	var hasSpecies = hasSymbols && Symbol.species;
+	var hasSpecies = v.hasSymbols && Symbol.species;
 	if (hasSpecies) {
 		Bar[Symbol.species] = null;
 	}
