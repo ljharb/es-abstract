@@ -10,6 +10,22 @@ var assign = require('object.assign');
 
 var v = require('./helpers/values');
 
+var ops = require('../operations/2017');
+var diffOps = require('./diffOps');
+
+test('has expected operations', function (t) {
+	var diff = diffOps(ES, ops);
+
+	t.deepEqual(diff.extra, [], 'no extra ops');
+
+	// jscs:disable
+	var expectedMissing = ['CreateDataProperty', 'CreateMethodProperty', 'CreateDataPropertyOrThrow', 'DefinePropertyOrThrow', 'DeletePropertyOrThrow', 'Construct', 'SetIntegrityLevel', 'TestIntegrityLevel', 'CreateArrayFromList', 'CreateListFromArrayLike', 'OrdinaryHasInstance', 'EnumerableOwnProperties', 'GetIterator', 'IteratorNext', 'IteratorComplete', 'IteratorValue', 'IteratorStep', 'IteratorClose', 'CreateListIterator', 'thisNumberValue', 'thisTimeValue', 'thisStringValue', 'RegExpBuiltinExec', 'IsPromise'];
+	// jscs:enable
+	t.deepEqual(diff.missing, expectedMissing, 'no unexpected missing ops');
+
+	t.end();
+});
+
 var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1;
 
 test('ToPrimitive', function (t) {
