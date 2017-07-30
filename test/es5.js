@@ -210,3 +210,194 @@ test('Type', function (t) {
 	t.equal(ES.Type({}), 'Object', 'Type({}) is Object');
 	t.end();
 });
+
+var bothDescriptor = function () {
+	return { '[[Get]]': function () {}, '[[Value]]': true };
+};
+var accessorDescriptor = function () {
+	return {
+		'[[Get]]': function () {},
+		'[[Enumerable]]': true,
+		'[[Configurable]]': true
+	};
+};
+var mutatorDescriptor = function () {
+	return {
+		'[[Set]]': function () {},
+		'[[Enumerable]]': true,
+		'[[Configurable]]': true
+	};
+};
+var dataDescriptor = function () {
+	return {
+		'[[Value]]': 42,
+		'[[Writable]]': false,
+		'[[Configurable]]': false
+	};
+};
+var genericDescriptor = function () {
+	return {
+		'[[Configurable]]': true,
+		'[[Enumerable]]': false
+	};
+};
+
+test('IsPropertyDescriptor', function (t) {
+	forEach(primitives, function (primitive) {
+		t.equal(ES.IsPropertyDescriptor(primitive), false, primitive + ' is not a Property Descriptor');
+	});
+
+	t.equal(ES.IsPropertyDescriptor({ invalid: true }), false, 'invalid keys not allowed on a Property Descriptor');
+
+	t.equal(ES.IsPropertyDescriptor({}), true, 'empty object is an incomplete Property Descriptor');
+
+	t.equal(ES.IsPropertyDescriptor(accessorDescriptor()), true, 'accessor descriptor is a Property Descriptor');
+	t.equal(ES.IsPropertyDescriptor(mutatorDescriptor()), true, 'mutator descriptor is a Property Descriptor');
+	t.equal(ES.IsPropertyDescriptor(dataDescriptor()), true, 'data descriptor is a Property Descriptor');
+	t.equal(ES.IsPropertyDescriptor(genericDescriptor()), true, 'generic descriptor is a Property Descriptor');
+
+	t['throws'](function () {
+		ES.IsPropertyDescriptor(bothDescriptor());
+	}, TypeError, 'a Property Descriptor can not be both a Data and an Accessor Descriptor');
+
+	t.end();
+});
+
+test('IsAccessorDescriptor', function (t) {
+	forEach(nonNullPrimitives.concat(null), function (primitive) {
+		t['throws'](function () { ES.IsAccessorDescriptor(primitive); }, TypeError, primitive + ' is not a Property Descriptor');
+	});
+
+	t.equal(ES.IsAccessorDescriptor(), false, 'no value is not an Accessor Descriptor');
+	t.equal(ES.IsAccessorDescriptor(undefined), false, 'undefined value is not an Accessor Descriptor');
+
+	t.equal(ES.IsAccessorDescriptor(accessorDescriptor()), true, 'accessor descriptor is an Accessor Descriptor');
+	t.equal(ES.IsAccessorDescriptor(mutatorDescriptor()), true, 'mutator descriptor is an Accessor Descriptor');
+	t.equal(ES.IsAccessorDescriptor(dataDescriptor()), false, 'data descriptor is not an Accessor Descriptor');
+	t.equal(ES.IsAccessorDescriptor(genericDescriptor()), false, 'generic descriptor is not an Accessor Descriptor');
+
+	t.end();
+});
+
+test('IsDataDescriptor', function (t) {
+	forEach(nonNullPrimitives.concat(null), function (primitive) {
+		t['throws'](function () { ES.IsDataDescriptor(primitive); }, TypeError, primitive + ' is not a Property Descriptor');
+	});
+
+	t.equal(ES.IsDataDescriptor(), false, 'no value is not a Data Descriptor');
+	t.equal(ES.IsDataDescriptor(undefined), false, 'undefined value is not a Data Descriptor');
+
+	t.equal(ES.IsDataDescriptor(accessorDescriptor()), false, 'accessor descriptor is not a Data Descriptor');
+	t.equal(ES.IsDataDescriptor(mutatorDescriptor()), false, 'mutator descriptor is not a Data Descriptor');
+	t.equal(ES.IsDataDescriptor(dataDescriptor()), true, 'data descriptor is a Data Descriptor');
+	t.equal(ES.IsDataDescriptor(genericDescriptor()), false, 'generic descriptor is not a Data Descriptor');
+
+	t.end();
+});
+
+test('IsGenericDescriptor', function (t) {
+	forEach(nonNullPrimitives.concat(null), function (primitive) {
+		t['throws'](
+			function () { ES.IsGenericDescriptor(primitive); },
+			TypeError,
+			primitive + ' is not a Property Descriptor'
+		);
+	});
+
+	t.equal(ES.IsGenericDescriptor(), false, 'no value is not a Data Descriptor');
+	t.equal(ES.IsGenericDescriptor(undefined), false, 'undefined value is not a Data Descriptor');
+
+	t.equal(ES.IsGenericDescriptor(accessorDescriptor()), false, 'accessor descriptor is not a generic Descriptor');
+	t.equal(ES.IsGenericDescriptor(mutatorDescriptor()), false, 'mutator descriptor is not a generic Descriptor');
+	t.equal(ES.IsGenericDescriptor(dataDescriptor()), false, 'data descriptor is not a generic Descriptor');
+
+	t.equal(ES.IsGenericDescriptor(genericDescriptor()), true, 'generic descriptor is a generic Descriptor');
+
+	t.end();
+});
+
+test('FromPropertyDescriptor', function (t) {
+	t.equal(ES.FromPropertyDescriptor(), undefined, 'no value begets undefined');
+	t.equal(ES.FromPropertyDescriptor(undefined), undefined, 'undefined value begets undefined');
+
+	forEach(nonNullPrimitives.concat(null), function (primitive) {
+		t['throws'](
+			function () { ES.FromPropertyDescriptor(primitive); },
+			TypeError,
+			primitive + ' is not a Property Descriptor'
+		);
+	});
+
+	var accessor = accessorDescriptor();
+	t.deepEqual(ES.FromPropertyDescriptor(accessor), {
+		get: accessor['[[Get]]'],
+		set: accessor['[[Set]]'],
+		enumerable: !!accessor['[[Enumerable]]'],
+		configurable: !!accessor['[[Configurable]]']
+	});
+
+	var mutator = mutatorDescriptor();
+	t.deepEqual(ES.FromPropertyDescriptor(mutator), {
+		get: mutator['[[Get]]'],
+		set: mutator['[[Set]]'],
+		enumerable: !!mutator['[[Enumerable]]'],
+		configurable: !!mutator['[[Configurable]]']
+	});
+	var data = dataDescriptor();
+	t.deepEqual(ES.FromPropertyDescriptor(data), {
+		value: data['[[Value]]'],
+		writable: data['[[Writable]]'],
+		enumerable: !!data['[[Enumerable]]'],
+		configurable: !!data['[[Configurable]]']
+	});
+
+	t['throws'](
+		function () { ES.FromPropertyDescriptor(genericDescriptor()); },
+		TypeError,
+		'a complete Property Descriptor is required'
+	);
+
+	t.end();
+});
+
+test('ToPropertyDescriptor', function (t) {
+	forEach(nonNullPrimitives.concat(null), function (primitive) {
+		t['throws'](
+			function () { ES.ToPropertyDescriptor(primitive); },
+			TypeError,
+			primitive + ' is not an Object'
+		);
+	});
+
+	var accessor = accessorDescriptor();
+	t.deepEqual(ES.ToPropertyDescriptor({
+		get: accessor['[[Get]]'],
+		enumerable: !!accessor['[[Enumerable]]'],
+		configurable: !!accessor['[[Configurable]]']
+	}), accessor);
+
+	var mutator = mutatorDescriptor();
+	t.deepEqual(ES.ToPropertyDescriptor({
+		set: mutator['[[Set]]'],
+		enumerable: !!mutator['[[Enumerable]]'],
+		configurable: !!mutator['[[Configurable]]']
+	}), mutator);
+
+	var data = dataDescriptor();
+	t.deepEqual(ES.ToPropertyDescriptor({
+		value: data['[[Value]]'],
+		writable: data['[[Writable]]'],
+		configurable: !!data['[[Configurable]]']
+	}), data);
+
+	var both = bothDescriptor();
+	t['throws'](
+		function () {
+			ES.FromPropertyDescriptor({ get: both['[[Get]]'], value: both['[[Value]]'] });
+		},
+		TypeError,
+		'data and accessor descriptors are mutually exclusive'
+	);
+
+	t.end();
+});
