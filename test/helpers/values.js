@@ -16,10 +16,13 @@ var nonSymbolPrimitives = [].concat(nullPrimitives, booleans, strings, numbers);
 var nonNumberPrimitives = [].concat(nullPrimitives, booleans, strings, symbols);
 var nonNullPrimitives = [].concat(booleans, strings, numbers, symbols);
 var nonUndefinedPrimitives = [].concat(null, nonNullPrimitives);
+var nonStrings = [].concat(nullPrimitives, booleans, numbers, symbols, objects);
 var primitives = [].concat(nullPrimitives, nonNullPrimitives);
 var nonPropertyKeys = [].concat(nullPrimitives, booleans, numbers, objects);
 var propertyKeys = [].concat(strings, symbols);
 var nonBooleans = [].concat(nullPrimitives, strings, symbols, numbers, objects);
+var falsies = [].concat(nullPrimitives, false, '', 0, -0, NaN);
+var truthies = [].concat(true, 'foo', 42, symbols, objects);
 
 module.exports = {
 	coercibleObject: coercibleObject,
@@ -36,9 +39,12 @@ module.exports = {
 	nonSymbolPrimitives: nonSymbolPrimitives,
 	nonNumberPrimitives: nonNumberPrimitives,
 	nonNullPrimitives: nonNullPrimitives,
-  nonUndefinedPrimitives: nonUndefinedPrimitives,
+	nonUndefinedPrimitives: nonUndefinedPrimitives,
+	nonStrings: nonStrings,
 	primitives: primitives,
 	nonPropertyKeys: nonPropertyKeys,
 	propertyKeys: propertyKeys,
-	nonBooleans: nonBooleans
+	nonBooleans: nonBooleans,
+	falsies: falsies,
+	truthies: truthies
 };

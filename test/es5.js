@@ -393,10 +393,22 @@ test('ToPropertyDescriptor', function (t) {
 	var both = bothDescriptor();
 	t['throws'](
 		function () {
-			ES.FromPropertyDescriptor({ get: both['[[Get]]'], value: both['[[Value]]'] });
+			ES.ToPropertyDescriptor({ get: both['[[Get]]'], value: both['[[Value]]'] });
 		},
 		TypeError,
 		'data and accessor descriptors are mutually exclusive'
+	);
+
+	t['throws'](
+		function () { ES.ToPropertyDescriptor({ get: 'not callable' }); },
+		TypeError,
+		'"get" must be undefined or callable'
+	);
+
+	t['throws'](
+		function () { ES.ToPropertyDescriptor({ set: 'not callable' }); },
+		TypeError,
+		'"set" must be undefined or callable'
 	);
 
 	t.end();

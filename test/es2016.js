@@ -6,6 +6,7 @@ var test = require('tape');
 var forEach = require('foreach');
 var is = require('object-is');
 var debug = require('util').format;
+var assign = require('object.assign');
 
 var v = require('./helpers/values');
 
@@ -588,25 +589,6 @@ test('SpeciesConstructor', function (t) {
 	t.end();
 });
 
-test('SameValueNonNumber', function (t) {
-	var willThrow = [
-		[3, 4],
-		[NaN, 4],
-		[4, ''],
-		['abc', true],
-		[{}, false]
-	];
-	forEach(willThrow, function (nums) {
-		t['throws'](function () { return ES.SameValueNonNumber.apply(ES, nums); }, TypeError, 'value must be same type and non-number');
-	});
-
-	forEach(v.objects.concat(v.nonNumberPrimitives), function (val) {
-		t.equal(val === val, ES.SameValueNonNumber(val, val), debug(val) + ' is SameValueNonNumber to itself');
-	});
-
-	t.end();
-});
-
 var bothDescriptor = function () {
 	return { '[[Get]]': function () {}, '[[Value]]': true };
 };
@@ -627,8 +609,7 @@ var mutatorDescriptor = function () {
 var dataDescriptor = function () {
 	return {
 		'[[Value]]': 42,
-		'[[Writable]]': false,
-		'[[Configurable]]': false
+		'[[Writable]]': false
 	};
 };
 var genericDescriptor = function () {
@@ -796,7 +777,7 @@ test('ToPropertyDescriptor', function (t) {
 		value: data['[[Value]]'],
 		writable: data['[[Writable]]'],
 		configurable: !!data['[[Configurable]]']
-	}), data);
+	}), assign(data, { '[[Configurable]]': false }));
 
 	var both = bothDescriptor();
 	t['throws'](
@@ -806,6 +787,348 @@ test('ToPropertyDescriptor', function (t) {
 		TypeError,
 		'data and accessor descriptors are mutually exclusive'
 	);
+
+	t.end();
+});
+
+test('CompletePropertyDescriptor', function (t) {
+	forEach(v.nonUndefinedPrimitives, function (primitive) {
+		t['throws'](
+			function () { ES.CompletePropertyDescriptor(primitive); },
+			TypeError,
+			debug(primitive) + ' is not a Property Descriptor'
+		);
+	});
+
+	var generic = genericDescriptor();
+	t.deepEqual(ES.CompletePropertyDescriptor(generic), {
+		'[[Configurable]]': !!generic['[[Configurable]]'],
+		'[[Enumerable]]': !!generic['[[Enumerable]]'],
+		'[[Value]]': undefined,
+		'[[Writable]]': false
+	}, 'completes a Generic Descriptor');
+
+	var data = dataDescriptor();
+	t.deepEqual(ES.CompletePropertyDescriptor(data), {
+		'[[Configurable]]': !!data['[[Configurable]]'],
+		'[[Enumerable]]': false,
+		'[[Value]]': data['[[Value]]'],
+		'[[Writable]]': !!data['[[Writable]]']
+	}, 'completes a Data Descriptor');
+
+	var accessor = accessorDescriptor();
+	t.deepEqual(ES.CompletePropertyDescriptor(accessor), {
+		'[[Get]]': accessor['[[Get]]'],
+		'[[Enumerable]]': !!accessor['[[Enumerable]]'],
+		'[[Configurable]]': !!accessor['[[Configurable]]'],
+		'[[Set]]': undefined
+	}, 'completes an Accessor Descriptor');
+
+	var mutator = mutatorDescriptor();
+	t.deepEqual(ES.CompletePropertyDescriptor(mutator), {
+		'[[Set]]': mutator['[[Set]]'],
+		'[[Enumerable]]': !!mutator['[[Enumerable]]'],
+		'[[Configurable]]': !!mutator['[[Configurable]]'],
+		'[[Get]]': undefined
+	}, 'completes a mutator Descriptor');
+
+	t['throws'](
+		function () { ES.CompletePropertyDescriptor(bothDescriptor()); },
+		TypeError,
+		'data and accessor descriptors are mutually exclusive'
+	);
+
+	t.end();
+});
+
+test('Set', function (t) {
+	forEach(v.primitives, function (primitive) {
+		t['throws'](
+			function () { ES.Set(primitive, '', null, false); },
+			TypeError,
+			debug(primitive) + ' is not an Object'
+		);
+	});
+
+	forEach(v.nonPropertyKeys, function (nonKey) {
+		t['throws'](
+			function () { ES.Set({}, nonKey, null, false); },
+			TypeError,
+			debug(nonKey) + ' is not a Property Key'
+		);
+	});
+
+	forEach(v.nonBooleans, function (nonBoolean) {
+		t['throws'](
+			function () { ES.Set({}, '', null, nonBoolean); },
+			TypeError,
+			debug(nonBoolean) + ' is not a Boolean'
+		);
+	});
+
+	var o = {};
+	var value = {};
+	ES.Set(o, 'key', value, true);
+	t.deepEqual(o, { key: value }, 'key is set');
+
+	t.test('nonwritable', { skip: !Object.defineProperty }, function (st) {
+		var obj = { a: value };
+		Object.defineProperty(obj, 'a', { writable: false });
+
+		st['throws'](
+			function () { ES.Set(obj, 'a', value, true); },
+			TypeError,
+			'can not Set nonwritable property'
+		);
+
+		st.doesNotThrow(
+			function () { ES.Set(obj, 'a', value, false); },
+			'setting Throw to false prevents an exception'
+		);
+
+		st.end();
+	});
+
+	t.end();
+});
+
+test('HasOwnProperty', function (t) {
+	forEach(v.primitives, function (primitive) {
+		t['throws'](
+			function () { ES.HasOwnProperty(primitive, 'key'); },
+			TypeError,
+			debug(primitive) + ' is not an Object'
+		);
+	});
+
+	forEach(v.nonPropertyKeys, function (nonKey) {
+		t['throws'](
+			function () { ES.HasOwnProperty({}, nonKey); },
+			TypeError,
+			debug(nonKey) + ' is not a Property Key'
+		);
+	});
+
+	t.equal(ES.HasOwnProperty({}, 'toString'), false, 'inherited properties are not own');
+	t.equal(
+		ES.HasOwnProperty({ toString: 1 }, 'toString'),
+		true,
+		'shadowed inherited own properties are own'
+	);
+	t.equal(ES.HasOwnProperty({ a: 1 }, 'a'), true, 'own properties are own');
+
+	t.end();
+});
+
+test('HasProperty', function (t) {
+	forEach(v.primitives, function (primitive) {
+		t['throws'](
+			function () { ES.HasProperty(primitive, 'key'); },
+			TypeError,
+			debug(primitive) + ' is not an Object'
+		);
+	});
+
+	forEach(v.nonPropertyKeys, function (nonKey) {
+		t['throws'](
+			function () { ES.HasProperty({}, nonKey); },
+			TypeError,
+			debug(nonKey) + ' is not a Property Key'
+		);
+	});
+
+	t.equal(ES.HasProperty({}, 'nope'), false, 'object does not have nonexistent properties');
+	t.equal(ES.HasProperty({}, 'toString'), true, 'object has inherited properties');
+	t.equal(
+		ES.HasProperty({ toString: 1 }, 'toString'),
+		true,
+		'object has shadowed inherited own properties'
+	);
+	t.equal(ES.HasProperty({ a: 1 }, 'a'), true, 'object has own properties');
+
+	t.end();
+});
+
+test('IsConcatSpreadable', function (t) {
+	forEach(v.primitives, function (primitive) {
+		t.equal(ES.IsConcatSpreadable(primitive), false, debug(primitive) + ' is not an Object');
+	});
+
+	var hasSymbolConcatSpreadable = v.hasSymbols && Symbol.isConcatSpreadable;
+	t.test('Symbol.isConcatSpreadable', { skip: !hasSymbolConcatSpreadable }, function (st) {
+		forEach(v.falsies, function (falsy) {
+			var obj = {};
+			obj[Symbol.isConcatSpreadable] = falsy;
+			st.equal(
+				ES.IsConcatSpreadable(obj),
+				false,
+				'an object with ' + debug(falsy) + ' as Symbol.isConcatSpreadable is not concat spreadable'
+			);
+		});
+
+		forEach(v.truthies, function (truthy) {
+			var obj = {};
+			obj[Symbol.isConcatSpreadable] = truthy;
+			st.equal(
+				ES.IsConcatSpreadable(obj),
+				true,
+				'an object with ' + debug(truthy) + ' as Symbol.isConcatSpreadable is concat spreadable'
+			);
+		});
+
+		st.end();
+	});
+
+	forEach(v.objects, function (object) {
+		t.equal(
+			ES.IsConcatSpreadable(object),
+			false,
+			'non-array without Symbol.isConcatSpreadable is not concat spreadable'
+		);
+	});
+
+	t.equal(ES.IsConcatSpreadable([]), true, 'arrays are concat spreadable');
+
+	t.end();
+});
+
+test('Invoke', function (t) {
+	forEach(v.nonPropertyKeys, function (nonKey) {
+		t['throws'](
+			function () { ES.Invoke({}, nonKey); },
+			TypeError,
+			debug(nonKey) + ' is not a Property Key'
+		);
+	});
+
+	t['throws'](function () { ES.Invoke({ o: false }, 'o'); }, TypeError, 'fails on a non-function');
+
+	t.test('invoked callback', function (st) {
+		var aValue = {};
+		var bValue = {};
+		var obj = {
+			f: function (a) {
+				st.equal(arguments.length, 2, '2 args passed');
+				st.equal(a, aValue, 'first arg is correct');
+				st.equal(arguments[1], bValue, 'second arg is correct');
+			}
+		};
+		st.plan(3);
+		ES.Invoke(obj, 'f', aValue, bValue);
+	});
+
+	t.end();
+});
+
+test('CreateIterResultObject', function (t) {
+	forEach(v.nonBooleans, function (nonBoolean) {
+		t['throws'](
+			function () { ES.CreateIterResultObject({}, nonBoolean); },
+			TypeError,
+			'"done" argument must be a boolean; ' + debug(nonBoolean) + ' is not'
+		);
+	});
+
+	var value = {};
+	t.deepEqual(ES.CreateIterResultObject(value, true), {
+		value: value,
+		done: true
+	}, 'creates a "done" iteration result');
+	t.deepEqual(ES.CreateIterResultObject(value, false), {
+		value: value,
+		done: false
+	}, 'creates a "not done" iteration result');
+
+	t.end();
+});
+
+test('RegExpExec', function (t) {
+	forEach(v.primitives, function (primitive) {
+		t['throws'](
+			function () { ES.RegExpExec(primitive); },
+			TypeError,
+			'"R" argument must be an object; ' + debug(primitive) + ' is not'
+		);
+	});
+
+	forEach(v.nonStrings, function (nonString) {
+		t['throws'](
+			function () { ES.RegExpExec({}, nonString); },
+			TypeError,
+			'"S" argument must be a String; ' + debug(nonString) + ' is not'
+		);
+	});
+
+	t.test('gets and calls a callable "exec"', function (st) {
+		var str = '123';
+		var o = {
+			exec: function (S) {
+				st.equal(this, o, '"exec" receiver is R');
+				st.equal(S, str, '"exec" argument is S');
+
+				return null;
+			}
+		};
+		st.plan(2);
+		ES.RegExpExec(o, str);
+		st.end();
+	});
+
+	t.test('throws if a callable "exec" returns a non-null non-object', function (st) {
+		var str = '123';
+		st.plan(v.nonNullPrimitives.length);
+		forEach(v.nonNullPrimitives, function (nonNullPrimitive) {
+			st['throws'](
+				function () { ES.RegExpExec({ exec: function () { return nonNullPrimitive; } }, str); },
+				TypeError,
+				'"exec" method must return `null` or an Object; ' + debug(nonNullPrimitive) + ' is not'
+			);
+		});
+		st.end();
+	});
+
+	t.test('actual regex that should match against a string', function (st) {
+		var S = 'aabc';
+		var R = /a/g;
+		var match1 = ES.RegExpExec(R, S);
+		var match2 = ES.RegExpExec(R, S);
+		var match3 = ES.RegExpExec(R, S);
+		st.deepEqual(match1, assign(['a'], { index: 0, input: S }), 'match object 1 is as expected');
+		st.deepEqual(match2, assign(['a'], { index: 1, input: S }), 'match object 2 is as expected');
+		st.equal(match3, null, 'match 3 is null as expected');
+		st.end();
+	});
+
+	t.test('actual regex that should match against a string, with shadowed "exec"', function (st) {
+		var S = 'aabc';
+		var R = /a/g;
+		R.exec = undefined;
+		var match1 = ES.RegExpExec(R, S);
+		var match2 = ES.RegExpExec(R, S);
+		var match3 = ES.RegExpExec(R, S);
+		st.deepEqual(match1, assign(['a'], { index: 0, input: S }), 'match object 1 is as expected');
+		st.deepEqual(match2, assign(['a'], { index: 1, input: S }), 'match object 2 is as expected');
+		st.equal(match3, null, 'match 3 is null as expected');
+		st.end();
+	});
+	t.end();
+});
+
+test('SameValueNonNumber', function (t) {
+	var willThrow = [
+		[3, 4],
+		[NaN, 4],
+		[4, ''],
+		['abc', true],
+		[{}, false]
+	];
+	forEach(willThrow, function (nums) {
+		t['throws'](function () { return ES.SameValueNonNumber.apply(ES, nums); }, TypeError, 'value must be same type and non-number');
+	});
+
+	forEach(v.objects.concat(v.nonNumberPrimitives), function (val) {
+		t.equal(val === val, ES.SameValueNonNumber(val, val), debug(val) + ' is SameValueNonNumber to itself');
+	});
 
 	t.end();
 });

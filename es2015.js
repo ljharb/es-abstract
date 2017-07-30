@@ -1,5 +1,7 @@
 'use strict';
 
+var has = require('has');
+
 var toStr = Object.prototype.toString;
 var hasSymbols = typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol';
 var symbolToStr = hasSymbols ? Symbol.prototype.toString : toStr;
@@ -15,9 +17,11 @@ var isPrimitive = require('./helpers/isPrimitive');
 var toPrimitive = require('es-to-primitive/es6');
 var parseInteger = parseInt;
 var bind = require('function-bind');
+var arraySlice = bind.call(Function.call, Array.prototype.slice);
 var strSlice = bind.call(Function.call, String.prototype.slice);
 var isBinary = bind.call(Function.call, RegExp.prototype.test, /^0b[01]+$/i);
 var isOctal = bind.call(Function.call, RegExp.prototype.test, /^0o[0-7]+$/i);
+var regexExec = bind.call(Function.call, RegExp.prototype.exec);
 var nonWS = ['\u0085', '\u200b', '\ufffe'].join('');
 var nonWSregex = new RegExp('[' + nonWS + ']', 'g');
 var hasNonWS = bind.call(Function.call, RegExp.prototype.test, nonWSregex);
@@ -324,6 +328,135 @@ var ES6 = assign(assign({}, ES5), {
 			return S;
 		}
 		throw new TypeError('no constructor found');
+	},
+
+	// http://ecma-international.org/ecma-262/6.0/#sec-completepropertydescriptor
+	CompletePropertyDescriptor: function CompletePropertyDescriptor(Desc) {
+		if (!this.IsPropertyDescriptor(Desc)) {
+			throw new TypeError('Desc must be a Property Descriptor');
+		}
+
+		if (this.IsGenericDescriptor(Desc) || this.IsDataDescriptor(Desc)) {
+			if (!has(Desc, '[[Value]]')) {
+				Desc['[[Value]]'] = void 0;
+			}
+			if (!has(Desc, '[[Writable]]')) {
+				Desc['[[Writable]]'] = false;
+			}
+		} else {
+			if (!has(Desc, '[[Get]]')) {
+				Desc['[[Get]]'] = void 0;
+			}
+			if (!has(Desc, '[[Set]]')) {
+				Desc['[[Set]]'] = void 0;
+			}
+		}
+		if (!has(Desc, '[[Enumerable]]')) {
+			Desc['[[Enumerable]]'] = false;
+		}
+		if (!has(Desc, '[[Configurable]]')) {
+			Desc['[[Configurable]]'] = false;
+		}
+		return Desc;
+	},
+
+	// http://ecma-international.org/ecma-262/6.0/#sec-set-o-p-v-throw
+	Set: function Set(O, P, V, Throw) {
+		if (this.Type(O) !== 'Object') {
+			throw new TypeError('O must be an Object');
+		}
+		if (!this.IsPropertyKey(P)) {
+			throw new TypeError('P must be a Property Key');
+		}
+		if (this.Type(Throw) !== 'Boolean') {
+			throw new TypeError('Throw must be a Boolean');
+		}
+		if (Throw) {
+			O[P] = V;
+			return true;
+		} else {
+			try {
+				O[P] = V;
+			} catch (e) {
+				return false;
+			}
+		}
+	},
+
+	// http://ecma-international.org/ecma-262/6.0/#sec-hasownproperty
+	HasOwnProperty: function HasOwnProperty(O, P) {
+		if (this.Type(O) !== 'Object') {
+			throw new TypeError('O must be an Object');
+		}
+		if (!this.IsPropertyKey(P)) {
+			throw new TypeError('P must be a Property Key');
+		}
+		return has(O, P);
+	},
+
+	// http://ecma-international.org/ecma-262/6.0/#sec-hasproperty
+	HasProperty: function HasProperty(O, P) {
+		if (this.Type(O) !== 'Object') {
+			throw new TypeError('O must be an Object');
+		}
+		if (!this.IsPropertyKey(P)) {
+			throw new TypeError('P must be a Property Key');
+		}
+		return P in O;
+	},
+
+	// http://ecma-international.org/ecma-262/6.0/#sec-isconcatspreadable
+	IsConcatSpreadable: function IsConcatSpreadable(O) {
+		if (this.Type(O) !== 'Object') {
+			return false;
+		}
+		if (hasSymbols && typeof Symbol.isConcatSpreadable === 'symbol') {
+			var spreadable = this.Get(O, Symbol.isConcatSpreadable);
+			if (typeof spreadable !== 'undefined') {
+				return this.ToBoolean(spreadable);
+			}
+		}
+		return this.IsArray(O);
+	},
+
+	// http://ecma-international.org/ecma-262/6.0/#sec-invoke
+	Invoke: function Invoke(O, P) {
+		if (!this.IsPropertyKey(P)) {
+			throw new TypeError('P must be a Property Key');
+		}
+		var argumentsList = arraySlice(arguments, 2);
+		var func = this.GetV(O, P);
+		return this.Call(func, O, argumentsList);
+	},
+
+	// http://ecma-international.org/ecma-262/6.0/#sec-createiterresultobject
+	CreateIterResultObject: function CreateIterResultObject(value, done) {
+		if (this.Type(done) !== 'Boolean') {
+			throw new TypeError('Assertion failed: Type(done) is not Boolean');
+		}
+		return {
+			value: value,
+			done: done
+		};
+	},
+
+	// http://ecma-international.org/ecma-262/6.0/#sec-regexpexec
+	RegExpExec: function RegExpExec(R, S) {
+		if (this.Type(R) !== 'Object') {
+			throw new TypeError('R must be an Object');
+		}
+		if (this.Type(S) !== 'String') {
+			throw new TypeError('S must be a String');
+		}
+		var exec = this.Get(R, 'exec');
+		if (this.IsCallable(exec)) {
+			var result = this.Call(exec, R, [S]);
+			if (result === null || this.Type(result) === 'Object') {
+				return result;
+			}
+			throw new TypeError('"exec" method must return `null` or an Object');
+		}
+		return regexExec(R, S);
 	}
 });
 
