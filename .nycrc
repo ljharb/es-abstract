@@ -1,0 +1,14 @@
+{
+  "all": true,
+  "check-coverage": true,
+  "reporter": ["text-summary", "text", "html"],
+  "lines": 97,
+  "statements": 96,
+  "functions": 90,
+  "branches": 89,
+  "exclude": [
+	"coverage",
+	"operations",
+    "test"
+  ]
+}
