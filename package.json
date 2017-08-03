@@ -23,7 +23,7 @@
 		"posttest": "npm run --silent security",
 		"tests-only": "node test",
 		"coverage": "nyc npm run --silent tests-only >/dev/null 2>&1",
-		"postcoverage": "nyc report",
+		"postcoverage": "nyc report && nyc check-coverage",
 		"lint": "npm run --silent jscs && npm run --silent eslint",
 		"jscs": "jscs test/*.js *.js",
 		"eslint": "eslint test/*.js *.js",
