@@ -63,7 +63,7 @@
 		"replace": "^0.3.0",
 		"safe-publish-latest": "^1.1.1",
 		"semver": "^5.4.1",
-		"tape": "^4.7.0"
+		"tape": "^4.8.0"
 	},
 	"testling": {
 		"files": "test/index.js",
