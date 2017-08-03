@@ -392,9 +392,11 @@ test('IsRegExp', function (t) {
 	forEach([/a/g, new RegExp('a', 'g')], function (regex) {
 		t.equal(true, ES.IsRegExp(regex), regex + ' is regex');
 	});
+
 	forEach(v.objects.concat(v.primitives), function (nonRegex) {
 		t.equal(false, ES.IsRegExp(nonRegex), debug(nonRegex) + ' is not regex');
 	});
+
 	t.test('Symbol.match', { skip: !v.hasSymbols || !Symbol.match }, function (st) {
 		var obj = {};
 		obj[Symbol.match] = true;
@@ -406,6 +408,7 @@ test('IsRegExp', function (t) {
 
 		st.end();
 	});
+
 	t.end();
 });
 
