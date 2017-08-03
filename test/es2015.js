@@ -138,6 +138,14 @@ test('ToNumber', function (t) {
 		st.end();
 	});
 
+	forEach(v.symbols, function (symbol) {
+		t['throws'](
+			function () { ES.ToNumber(symbol); },
+			TypeError,
+			'Symbols can’t be converted to a Number: ' + debug(symbol)
+		);
+	});
+
 	t.end();
 });
 
