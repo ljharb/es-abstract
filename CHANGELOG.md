@@ -1,3 +1,22 @@
+1.8.0 / 2017-08-04
+=================
+  * [New] add ES2017
+  * [New] move es6+ to es2015+; leave es6/es7 as aliases
+  * [New] ES5+: add `IsPropertyDescriptor`, `IsAccessorDescriptor`, `IsDataDescriptor`, `IsGenericDescriptor`, `FromPropertyDescriptor`, `ToPropertyDescriptor`
+  * [New] ES2015+: add `CompletePropertyDescriptor`, `Set`, `HasOwnProperty`, `HasProperty`, `IsConcatSpreadable`, `Invoke`, `CreateIterResultObject`, `RegExpExec`
+  * [Fix] es7/es2016: do not mutate ES6
+  * [Fix] assign helper only supports one source
+  * [Deps] update `is-regex`
+  * [Dev Deps] update `nsp`, `eslint`, `@ljharb/eslint-config`
+  * [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `nsp`, `semver`, `tape`
+  * [Tests] add tests for missing and excess operations
+  * [Tests] add codecov for coverage
+  * [Tests] up to `node` `v8.2`, `v7.10`, `v6.11`, `v4.8`; newer npm breaks on older node
+  * [Tests] use same lists of value types across tests; ensure tests are the same when ops are the same
+  * [Tests] ES2015: add ToNumber symbol tests
+  * [Tests] switch to `nyc` for code coverage
+  * [Tests] make IsRegExp tests consistent across editions
+
 1.7.0 / 2017-01-22
 =================
   * [New] ES6: Add `GetMethod` (#16)
