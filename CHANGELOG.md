@@ -1,3 +1,10 @@
+1.8.1 / 2017-08-30
+=================
+  * [Fix] ES2015+: `ToPropertyKey`: should return a symbol for Symbols (#26)
+  * [Deps] update `function-bind`
+  * [Dev Deps] update `eslint`, `@ljharb/eslint-config`
+  * [Docs] github broke markdown parsing
+
 1.8.0 / 2017-08-04
 =================
   * [New] add ES2017
