@@ -53,9 +53,9 @@
 		"is-regex": "^1.0.4"
 	},
 	"devDependencies": {
-		"@ljharb/eslint-config": "^12.2.0",
+		"@ljharb/eslint-config": "^12.2.1",
 		"editorconfig-tools": "^0.1.1",
-		"eslint": "^4.3.0",
+		"eslint": "^4.5.0",
 		"foreach": "^2.0.5",
 		"jscs": "^3.0.7",
 		"nsp": "^2.7.0",
