@@ -4,7 +4,6 @@ var has = require('has');
 
 var toStr = Object.prototype.toString;
 var hasSymbols = typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol';
-var symbolToStr = hasSymbols ? Symbol.prototype.toString : toStr;
 
 var $isNaN = require('./helpers/isNaN');
 var $isFinite = require('./helpers/isFinite');
@@ -147,7 +146,7 @@ var ES6 = assign(assign({}, ES5), {
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-topropertykey
 	ToPropertyKey: function ToPropertyKey(argument) {
 		var key = this.ToPrimitive(argument, String);
-		return typeof key === 'symbol' ? symbolToStr.call(key) : this.ToString(key);
+		return typeof key === 'symbol' ? key : this.ToString(key);
 	},
 
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength

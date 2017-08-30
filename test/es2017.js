@@ -155,6 +155,14 @@ test('ToNumber', function (t) {
 		st.end();
 	});
 
+	forEach(v.symbols, function (symbol) {
+		t['throws'](
+			function () { ES.ToNumber(symbol); },
+			TypeError,
+			'Symbols can’t be converted to a Number: ' + debug(symbol)
+		);
+	});
+
 	t.end();
 });
 
@@ -366,8 +374,13 @@ test('ToPropertyKey', function (t) {
 	forEach(v.symbols, function (symbol) {
 		t.equal(
 			ES.ToPropertyKey(symbol),
-			Symbol.prototype.toString.call(symbol),
-			'ToPropertyKey(' + debug(symbol) + ') === ' + debug(Symbol.prototype.toString.call(symbol))
+			symbol,
+			'ToPropertyKey(' + debug(symbol) + ') === ' + debug(symbol)
+		);
+		t.equal(
+			ES.ToPropertyKey(Object(symbol)),
+			symbol,
+			'ToPropertyKey(' + debug(Object(symbol)) + ') === ' + debug(symbol)
 		);
 	});
 
@@ -442,7 +455,7 @@ test('IsInteger', function (t) {
 	t.equal(true, ES.IsInteger(-0), '-0 is integer');
 	var notInts = v.objects.concat([Infinity, -Infinity, NaN, true, false, null, undefined, [], new Date()], v.symbols);
 	forEach(notInts, function (notInt) {
-		t.equal(false, ES.IsInteger(notInt), ES.ToPropertyKey(notInt) + ' is not integer');
+		t.equal(false, ES.IsInteger(notInt), debug(notInt) + ' is not integer');
 	});
 	t.equal(false, ES.IsInteger(v.uncoercibleObject), 'uncoercibleObject is not integer');
 	t.end();
