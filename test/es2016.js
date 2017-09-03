@@ -50,6 +50,14 @@ test('ToPrimitive', function (t) {
 		st.end();
 	});
 
+	t.test('dates', function (st) {
+		var invalid = new Date(NaN);
+		st.equal(ES.ToPrimitive(invalid), Date.prototype.toString.call(invalid), 'invalid Date coerces to Date#toString');
+		var now = new Date();
+		st.equal(ES.ToPrimitive(now), Date.prototype.toString.call(now), 'Date coerces to Date#toString');
+		st.end();
+	});
+
 	t.end();
 });
 
@@ -161,6 +169,14 @@ test('ToNumber', function (t) {
 			TypeError,
 			'Symbols can’t be converted to a Number: ' + debug(symbol)
 		);
+	});
+
+	t.test('dates', function (st) {
+		var invalid = new Date(NaN);
+		st.ok(is(ES.ToNumber(invalid), NaN), 'invalid Date coerces to NaN');
+		var now = Date.now();
+		st.equal(ES.ToNumber(new Date(now)), now, 'Date coerces to timestamp');
+		st.end();
 	});
 
 	t.end();

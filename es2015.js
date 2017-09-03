@@ -64,7 +64,7 @@ var ES6 = assign(assign({}, ES5), {
 
 	// http://www.ecma-international.org/ecma-262/6.0/#sec-tonumber
 	ToNumber: function ToNumber(argument) {
-		var value = isPrimitive(argument) ? argument : toPrimitive(argument, 'number');
+		var value = isPrimitive(argument) ? argument : toPrimitive(argument, Number);
 		if (typeof value === 'symbol') {
 			throw new TypeError('Cannot convert a Symbol value to a number');
 		}
