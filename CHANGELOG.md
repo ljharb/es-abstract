@@ -1,3 +1,8 @@
+1.8.2 / 2017-09-03
+=================
+  * [Fix] `es2015`+: `ToNumber`: provide the proper hint for Date objects (#27)
+  * [Dev Deps] update `eslint`
+
 1.8.1 / 2017-08-30
 =================
   * [Fix] ES2015+: `ToPropertyKey`: should return a symbol for Symbols (#26)
