@@ -1158,3 +1158,80 @@ test('RegExpExec', function (t) {
 	});
 	t.end();
 });
+
+test('ArraySpeciesCreate', function (t) {
+	t.test('errors', function (st) {
+		var testNonNumber = function (nonNumber) {
+			st['throws'](
+				function () { ES.ArraySpeciesCreate([], nonNumber); },
+				TypeError,
+				debug(nonNumber) + ' is not a number'
+			);
+		};
+		forEach(v.nonNumbers, testNonNumber);
+
+		st['throws'](
+			function () { ES.ArraySpeciesCreate([], -1); },
+			TypeError,
+			'-1 is not >= 0'
+		);
+		st['throws'](
+			function () { ES.ArraySpeciesCreate([], -Infinity); },
+			TypeError,
+			'-Infinity is not >= 0'
+		);
+
+		var testNonIntegers = function (nonInteger) {
+			st['throws'](
+				function () { ES.ArraySpeciesCreate([], nonInteger); },
+				TypeError,
+				debug(nonInteger) + ' is not an integer'
+			);
+		};
+		forEach(v.nonIntegerNumbers, testNonIntegers);
+
+		st.end();
+	});
+
+	t.test('works with a normal array', function (st) {
+		var len = 2;
+		var orig = [1, 2, 3];
+		var arr = ES.ArraySpeciesCreate(orig, len);
+
+		st.equal(ES.IsArray(arr), true);
+		st.equal(arr.length, len);
+		st.equal(arr.constructor, orig.constructor);
+
+		st.end();
+	});
+
+	var hasSpecies = v.hasSymbols && Symbol.species;
+	t.test('works with species construtor', { only: true, skip: !hasSpecies }, function (st) {
+		var sentinel = {};
+		var Foo = function Foo(len) {
+			this.length = len;
+			this.sentinel = sentinel;
+		};
+		var Bar = function Bar() {
+			var inst = [];
+			Object.setPrototypeOf(inst, Bar.prototype);
+			Object.defineProperty(inst, 'constructor', { value: Bar });
+			return inst;
+		};
+		Bar.prototype = Object.create(Array.prototype);
+		Object.setPrototypeOf(Bar, Array);
+		Object.defineProperty(Bar, Symbol.species, { value: Foo });
+		var bar = new Bar();
+
+		t.equal(ES.IsArray(bar), true, 'Bar instance is an array');
+
+		var arr = ES.ArraySpeciesCreate(bar, 3);
+		st.equal(arr.constructor, Foo, 'result used species constructor');
+		st.equal(arr.length, 3, 'length property is correct');
+		st.equal(arr.sentinel, sentinel, 'Foo constructor was exercised');
+
+		st.end();
+	});
+
+	t.end();
+});

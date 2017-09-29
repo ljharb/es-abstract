@@ -269,7 +269,7 @@ var ES6 = assign(assign({}, ES5), {
 
 		// 7.3.9.4
 		if (func == null) {
-			return undefined;
+			return void 0;
 		}
 
 		// 7.3.9.5
@@ -319,7 +319,7 @@ var ES6 = assign(assign({}, ES5), {
 		if (this.Type(C) !== 'Object') {
 			throw new TypeError('O.constructor is not an Object');
 		}
-		var S = hasSymbols && Symbol.species ? C[Symbol.species] : undefined;
+		var S = hasSymbols && Symbol.species ? C[Symbol.species] : void 0;
 		if (S == null) {
 			return defaultConstructor;
 		}
@@ -456,6 +456,37 @@ var ES6 = assign(assign({}, ES5), {
 			throw new TypeError('"exec" method must return `null` or an Object');
 		}
 		return regexExec(R, S);
+	},
+
+	// http://ecma-international.org/ecma-262/6.0/#sec-arrayspeciescreate
+	ArraySpeciesCreate: function ArraySpeciesCreate(originalArray, length) {
+		if (!this.IsInteger(length) || length < 0) {
+			throw new TypeError('length must be an integer >= 0');
+		}
+		var len = length === 0 ? 0 : length;
+		var C;
+		var isArray = this.IsArray(originalArray);
+		if (isArray) {
+			C = this.Get(originalArray, 'constructor');
+			// TODO: figure out how to make a cross-realm normal Array, a same-realm Array
+			// if (this.IsConstructor(C)) {
+			//   if C is another realm's Array, C = undefined
+			//   Object.getPrototypeOf(Object.getPrototypeOf(Object.getPrototypeOf(Array))) === null ?
+			// }
+			if (this.Type(C) === 'Object' && hasSymbols && Symbol.species) {
+				C = this.Get(C, Symbol.species);
+				if (C === null) {
+					C = void 0;
+				}
+			}
+			if (typeof C === 'undefined') {
+				return Array(len);
+			}
+			if (!this.IsConstructor(C)) {
+				throw new TypeError('C must be a constructor');
+			}
+			return new C(len); // this.Construct(C, len);
+		}
 	}
 });
 

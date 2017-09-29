@@ -72,5 +72,6 @@ module.exports = {
 	RegExpExec: 'http://ecma-international.org/ecma-262/8.0/#sec-regexpexec',
 	RegExpBuiltinExec: 'http://ecma-international.org/ecma-262/8.0/#sec-regexpbuiltinexec',
 	IsConcatSpreadable: 'http://ecma-international.org/ecma-262/8.0/#sec-isconcatspreadable',
-	IsPromise: 'http://ecma-international.org/ecma-262/8.0/#sec-ispromise'
+	IsPromise: 'http://ecma-international.org/ecma-262/8.0/#sec-ispromise',
+	ArraySpeciesCreate: 'http://ecma-international.org/ecma-262/6.0/#sec-arrayspeciescreate'
 };

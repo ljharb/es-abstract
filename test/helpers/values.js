@@ -8,6 +8,7 @@ var toStringOnlyObject = { valueOf: function () { return {}; }, toString: functi
 var uncoercibleObject = { valueOf: function () { return {}; }, toString: function () { return {}; } };
 var objects = [{}, coercibleObject, toStringOnlyObject, valueOfOnlyObject];
 var nullPrimitives = [undefined, null];
+var nonIntegerNumbers = [-1.3, 0.2, 1.8, 1 / 3];
 var numbers = [0, -0, Infinity, -Infinity, 42];
 var strings = ['', 'foo'];
 var booleans = [true, false];
@@ -41,6 +42,8 @@ module.exports = {
 	nonNullPrimitives: nonNullPrimitives,
 	nonUndefinedPrimitives: nonUndefinedPrimitives,
 	nonStrings: nonStrings,
+	nonNumbers: nonNumberPrimitives.concat(objects),
+	nonIntegerNumbers: nonIntegerNumbers,
 	primitives: primitives,
 	nonPropertyKeys: nonPropertyKeys,
 	propertyKeys: propertyKeys,
