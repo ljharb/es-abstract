@@ -1,6 +1,7 @@
 'use strict';
 
 var has = require('has');
+var toPrimitive = require('es-to-primitive/es6');
 
 var toStr = Object.prototype.toString;
 var hasSymbols = typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol';
@@ -13,7 +14,6 @@ var assign = require('./helpers/assign');
 var sign = require('./helpers/sign');
 var mod = require('./helpers/mod');
 var isPrimitive = require('./helpers/isPrimitive');
-var toPrimitive = require('es-to-primitive/es6');
 var parseInteger = parseInt;
 var bind = require('function-bind');
 var arraySlice = bind.call(Function.call, Array.prototype.slice);
@@ -461,7 +461,7 @@ var ES6 = assign(assign({}, ES5), {
 	// http://ecma-international.org/ecma-262/6.0/#sec-arrayspeciescreate
 	ArraySpeciesCreate: function ArraySpeciesCreate(originalArray, length) {
 		if (!this.IsInteger(length) || length < 0) {
-			throw new TypeError('length must be an integer >= 0');
+			throw new TypeError('Assertion failed: length must be an integer >= 0');
 		}
 		var len = length === 0 ? 0 : length;
 		var C;
@@ -470,8 +470,8 @@ var ES6 = assign(assign({}, ES5), {
 			C = this.Get(originalArray, 'constructor');
 			// TODO: figure out how to make a cross-realm normal Array, a same-realm Array
 			// if (this.IsConstructor(C)) {
-			//   if C is another realm's Array, C = undefined
-			//   Object.getPrototypeOf(Object.getPrototypeOf(Object.getPrototypeOf(Array))) === null ?
+			// 	if C is another realm's Array, C = undefined
+			// 	Object.getPrototypeOf(Object.getPrototypeOf(Object.getPrototypeOf(Array))) === null ?
 			// }
 			if (this.Type(C) === 'Object' && hasSymbols && Symbol.species) {
 				C = this.Get(C, Symbol.species);
@@ -487,6 +487,44 @@ var ES6 = assign(assign({}, ES5), {
 			}
 			return new C(len); // this.Construct(C, len);
 		}
+	},
+
+	CreateDataProperty: function CreateDataProperty(O, P, V) {
+		if (this.Type(O) !== 'Object') {
+			throw new TypeError('Assertion failed: Type(O) is not Object');
+		}
+		if (!this.IsPropertyKey(P)) {
+			throw new TypeError('Assertion failed: IsPropertyKey(P) is not true');
+		}
+		var oldDesc = Object.getOwnPropertyDescriptor(O, P);
+		var extensible = oldDesc || (typeof Object.isExtensible !== 'function' || Object.isExtensible(O));
+		var immutable = oldDesc && (!oldDesc.writable || !oldDesc.configurable);
+		if (immutable || !extensible) {
+			return false;
+		}
+		var newDesc = {
+			configurable: true,
+			enumerable: true,
+			value: V,
+			writable: true
+		};
+		Object.defineProperty(O, P, newDesc);
+		return true;
+	},
+
+	// http://ecma-international.org/ecma-262/6.0/#sec-createdatapropertyorthrow
+	CreateDataPropertyOrThrow: function CreateDataPropertyOrThrow(O, P, V) {
+		if (this.Type(O) !== 'Object') {
+			throw new TypeError('Assertion failed: Type(O) is not Object');
+		}
+		if (!this.IsPropertyKey(P)) {
+			throw new TypeError('Assertion failed: IsPropertyKey(P) is not true');
+		}
+		var success = this.CreateDataProperty(O, P, V);
+		if (!success) {
+			throw new TypeError('unable to create data property');
+		}
+		return success;
 	}
 });
 

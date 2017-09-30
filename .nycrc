@@ -1,10 +1,11 @@
 {
 	"all": true,
+	"check": true,
 	"reporter": ["text-summary", "text", "html", "json"],
-	"lines": 96,
-	"statements": 95,
+	"lines": 92,
+	"statements": 92,
 	"functions": 93,
-	"branches": 91,
+	"branches": 87,
 	"exclude": [
 		"coverage",
 		"operations",
