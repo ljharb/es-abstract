@@ -1213,14 +1213,25 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 			st.end();
 		});
 
+		t.test('works with a non-array', function (st) {
+			forEach(v.objects.concat(v.primitives), function (nonArray) {
+				var arr = ES.ArraySpeciesCreate(nonArray, 0);
+				st.ok(ES.IsArray(arr), 'is an array');
+				st.equal(arr.length, 0, 'length is correct');
+				st.equal(arr.constructor, Array, 'constructor is correct');
+			});
+
+			st.end();
+		});
+
 		t.test('works with a normal array', function (st) {
 			var len = 2;
 			var orig = [1, 2, 3];
 			var arr = ES.ArraySpeciesCreate(orig, len);
 
-			st.equal(ES.IsArray(arr), true);
-			st.equal(arr.length, len);
-			st.equal(arr.constructor, orig.constructor);
+			st.ok(ES.IsArray(arr), 'is an array');
+			st.equal(arr.length, len, 'length is correct');
+			st.equal(arr.constructor, orig.constructor, 'constructor is correct');
 
 			st.end();
 		});

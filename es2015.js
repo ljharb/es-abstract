@@ -479,14 +479,14 @@ var ES6 = assign(assign({}, ES5), {
 					C = void 0;
 				}
 			}
-			if (typeof C === 'undefined') {
-				return Array(len);
-			}
-			if (!this.IsConstructor(C)) {
-				throw new TypeError('C must be a constructor');
-			}
-			return new C(len); // this.Construct(C, len);
 		}
+		if (typeof C === 'undefined') {
+			return Array(len);
+		}
+		if (!this.IsConstructor(C)) {
+			throw new TypeError('C must be a constructor');
+		}
+		return new C(len); // this.Construct(C, len);
 	},
 
 	CreateDataProperty: function CreateDataProperty(O, P, V) {
