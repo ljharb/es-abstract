@@ -12,6 +12,22 @@ var diffOps = require('./diffOps');
 
 var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1;
 
+var getArraySubclassWithSpeciesConstructor = function getArraySubclass(speciesConstructor) {
+	var Bar = function Bar() {
+		var inst = [];
+		Object.setPrototypeOf(inst, Bar.prototype);
+		Object.defineProperty(inst, 'constructor', { value: Bar });
+		return inst;
+	};
+	Bar.prototype = Object.create(Array.prototype);
+	Object.setPrototypeOf(Bar, Array);
+	Object.defineProperty(Bar, Symbol.species, { value: speciesConstructor });
+
+	return Bar;
+};
+
+var hasSpecies = v.hasSymbols && Symbol.species;
+
 var es2015 = function ES2015(ES, ops, expectedMissing) {
 	test('has expected operations', function (t) {
 		var diff = diffOps(ES, ops);
@@ -597,18 +613,16 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 			'non-undefined non-object constructor throws'
 		);
 
-		var Bar = function Bar() {};
-		var hasSpecies = v.hasSymbols && Symbol.species;
-		if (hasSpecies) {
-			Bar[Symbol.species] = null;
-		}
-		t.equal(
-			ES.SpeciesConstructor(new Bar(), defaultConstructor),
-			defaultConstructor,
-			'undefined/null Symbol.species returns default constructor'
-		);
-
 		t.test('with Symbol.species', { skip: !hasSpecies }, function (st) {
+			var Bar = function Bar() {};
+			Bar[Symbol.species] = null;
+
+			st.equal(
+				ES.SpeciesConstructor(new Bar(), defaultConstructor),
+				defaultConstructor,
+				'undefined/null Symbol.species returns default constructor'
+			);
+
 			var Baz = function Baz() {};
 			Baz[Symbol.species] = Bar;
 			st.equal(
@@ -626,6 +640,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 
 			st.end();
 		});
+
 		t.end();
 	});
 
@@ -929,6 +944,16 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 			st.end();
 		});
 
+		t.test('nonconfigurable', { skip: !Object.defineProperty }, function (st) {
+			var obj = { a: value };
+			Object.defineProperty(obj, 'a', { configurable: false });
+
+			ES.Set(obj, 'a', value, true);
+			st.deepEqual(obj, { a: value }, 'key is set');
+
+			st.end();
+		});
+
 		t.end();
 	});
 
@@ -1200,22 +1225,28 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 			st.end();
 		});
 
-		var hasSpecies = v.hasSymbols && Symbol.species;
-		t.test('works with species construtor', { only: true, skip: !hasSpecies }, function (st) {
+		t.test('-0 length produces +0 length', function (st) {
+			var len = -0;
+			st.ok(is(len, -0), '-0 is negative zero');
+			st.notOk(is(len, 0), '-0 is not positive zero');
+
+			var orig = [1, 2, 3];
+			var arr = ES.ArraySpeciesCreate(orig, len);
+
+			st.equal(ES.IsArray(arr), true);
+			st.ok(is(arr.length, 0));
+			st.equal(arr.constructor, orig.constructor);
+
+			st.end();
+		});
+
+		t.test('works with species construtor', { skip: !hasSpecies }, function (st) {
 			var sentinel = {};
 			var Foo = function Foo(len) {
 				this.length = len;
 				this.sentinel = sentinel;
 			};
-			var Bar = function Bar() {
-				var inst = [];
-				Object.setPrototypeOf(inst, Bar.prototype);
-				Object.defineProperty(inst, 'constructor', { value: Bar });
-				return inst;
-			};
-			Bar.prototype = Object.create(Array.prototype);
-			Object.setPrototypeOf(Bar, Array);
-			Object.defineProperty(Bar, Symbol.species, { value: Foo });
+			var Bar = getArraySubclassWithSpeciesConstructor(Foo);
 			var bar = new Bar();
 
 			t.equal(ES.IsArray(bar), true, 'Bar instance is an array');
@@ -1226,6 +1257,151 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 			st.equal(arr.sentinel, sentinel, 'Foo constructor was exercised');
 
 			st.end();
+		});
+
+		t.test('works with null species constructor', { skip: !hasSpecies }, function (st) {
+			var Bar = getArraySubclassWithSpeciesConstructor(null);
+			var bar = new Bar();
+
+			t.equal(ES.IsArray(bar), true, 'Bar instance is an array');
+
+			var arr = ES.ArraySpeciesCreate(bar, 3);
+			st.equal(arr.constructor, Array, 'result used default constructor');
+			st.equal(arr.length, 3, 'length property is correct');
+
+			st.end();
+		});
+
+		t.test('works with undefined species constructor', { skip: !hasSpecies }, function (st) {
+			var Bar = getArraySubclassWithSpeciesConstructor();
+			var bar = new Bar();
+
+			t.equal(ES.IsArray(bar), true, 'Bar instance is an array');
+
+			var arr = ES.ArraySpeciesCreate(bar, 3);
+			st.equal(arr.constructor, Array, 'result used default constructor');
+			st.equal(arr.length, 3, 'length property is correct');
+
+			st.end();
+		});
+
+		t.test('throws with object non-construtor species constructor', { skip: !hasSpecies }, function (st) {
+			forEach(v.objects, function (obj) {
+				var Bar = getArraySubclassWithSpeciesConstructor(obj);
+				var bar = new Bar();
+
+				st.equal(ES.IsArray(bar), true, 'Bar instance is an array');
+
+				st['throws'](
+					function () { ES.ArraySpeciesCreate(bar, 3); },
+					TypeError,
+					debug(obj) + ' is not a constructor'
+				);
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('CreateDataProperty', function (t) {
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.CreateDataProperty(primitive); },
+				TypeError,
+				debug(primitive) + ' is not an object'
+			);
+		});
+
+		forEach(v.nonPropertyKeys, function (nonPropertyKey) {
+			t['throws'](
+				function () { ES.CreateDataProperty({}, nonPropertyKey); },
+				TypeError,
+				debug(nonPropertyKey) + ' is not a property key'
+			);
+		});
+
+		var sentinel = {};
+		forEach(v.propertyKeys, function (propertyKey) {
+			var obj = {};
+			var status = ES.CreateDataProperty(obj, propertyKey, sentinel);
+			t.equal(status, true, 'status is true');
+			t.equal(
+				obj[propertyKey],
+				sentinel,
+				debug(sentinel) + ' is installed on "' + debug(propertyKey) + '" on the object'
+			);
+
+			if (typeof Object.defineProperty === 'function') {
+				var nonWritable = Object.defineProperty({}, propertyKey, { configurable: true, writable: false });
+
+				var nonWritableStatus = ES.CreateDataProperty(nonWritable, propertyKey, sentinel);
+				t.equal(nonWritableStatus, false, 'create data property failed');
+				t.notEqual(
+					nonWritable[propertyKey],
+					sentinel,
+					debug(sentinel) + ' is not installed on "' + debug(propertyKey) + '" on the object when key is nonwritable'
+				);
+
+				var nonConfigurable = Object.defineProperty({}, propertyKey, { configurable: false, writable: true });
+
+				var nonConfigurableStatus = ES.CreateDataProperty(nonConfigurable, propertyKey, sentinel);
+				t.equal(nonConfigurableStatus, false, 'create data property failed');
+				t.notEqual(
+					nonConfigurable[propertyKey],
+					sentinel,
+					debug(sentinel) + ' is not installed on "' + debug(propertyKey) + '" on the object when key is nonconfigurable'
+				);
+			}
+		});
+
+		t.end();
+	});
+
+	test('CreateDataPropertyOrThrow', function (t) {
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.CreateDataPropertyOrThrow(primitive); },
+				TypeError,
+				debug(primitive) + ' is not an object'
+			);
+		});
+
+		forEach(v.nonPropertyKeys, function (nonPropertyKey) {
+			t['throws'](
+				function () { ES.CreateDataPropertyOrThrow({}, nonPropertyKey); },
+				TypeError,
+				debug(nonPropertyKey) + ' is not a property key'
+			);
+		});
+
+		var sentinel = {};
+		forEach(v.propertyKeys, function (propertyKey) {
+			var obj = {};
+			var status = ES.CreateDataPropertyOrThrow(obj, propertyKey, sentinel);
+			t.equal(status, true, 'status is true');
+			t.equal(
+				obj[propertyKey],
+				sentinel,
+				debug(sentinel) + ' is installed on "' + debug(propertyKey) + '" on the object'
+			);
+
+			if (typeof Object.preventExtensions === 'function') {
+				var notExtensible = {};
+				Object.preventExtensions(notExtensible);
+
+				t['throws'](
+					function () { ES.CreateDataPropertyOrThrow(notExtensible, propertyKey, sentinel); },
+					TypeError,
+					'can not install ' + debug(propertyKey) + ' on non-extensible object'
+				);
+				t.notEqual(
+					notExtensible[propertyKey],
+					sentinel,
+					debug(sentinel) + ' is not installed on "' + debug(propertyKey) + '" on the object'
+				);
+			}
 		});
 
 		t.end();
