@@ -1,3 +1,11 @@
+1.9.0 / 2017-09-30
+=================
+  * [New] `es2015+`: add `ArraySpeciesCreate`
+  * [New] ES2015+: add `CreateDataProperty` and `CreateDataPropertyOrThrow`
+  * [Tests] consolidate duplicated tests
+  * [Tests] increase coverage
+  * [Dev Deps] update `nsp`, `eslint`
+
 1.8.2 / 2017-09-03
 =================
   * [Fix] `es2015`+: `ToNumber`: provide the proper hint for Date objects (#27)
