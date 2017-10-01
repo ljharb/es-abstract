@@ -55,10 +55,10 @@
 	"devDependencies": {
 		"@ljharb/eslint-config": "^12.2.1",
 		"editorconfig-tools": "^0.1.1",
-		"eslint": "^4.6.1",
+		"eslint": "^4.8.0",
 		"foreach": "^2.0.5",
 		"jscs": "^3.0.7",
-		"nsp": "^2.7.0",
+		"nsp": "^2.8.1",
 		"nyc": "^10.3.2",
 		"object-is": "^1.0.1",
 		"object.assign": "^4.0.4",
