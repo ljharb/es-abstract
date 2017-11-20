@@ -2,10 +2,10 @@ language: node_js
 os:
  - linux
 node_js:
-  - "9.0"
+  - "9.2"
   - "8.9"
   - "7.10"
-  - "6.11"
+  - "6.12"
   - "5.12"
   - "4.8"
   - "iojs-v3.3"
@@ -41,6 +41,10 @@ matrix:
       env: COVERAGE=true
     - node_js: "8"
       env: COVERAGE=true
+    - node_js: "9.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.0"
+      env: TEST=true ALLOW_FAILURE=true
     - node_js: "8.8"
       env: TEST=true ALLOW_FAILURE=true
     - node_js: "8.7"
@@ -78,6 +82,8 @@ matrix:
     - node_js: "7.1"
       env: TEST=true ALLOW_FAILURE=true
     - node_js: "7.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.11"
       env: TEST=true ALLOW_FAILURE=true
     - node_js: "6.10"
       env: TEST=true ALLOW_FAILURE=true
@@ -184,4 +190,4 @@ matrix:
   allow_failures:
     - os: osx
     - env: TEST=true ALLOW_FAILURE=true
-    - node_js: "9.0"
+    - node_js: "9.2"
