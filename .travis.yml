@@ -16,6 +16,13 @@ node_js:
   - "0.10"
   - "0.8"
   - "0.6"
+cache:
+  directories:
+    - "$HOME/.npm"
+    - "$(nvm cache dir)"
+    - "$(nvm_version_path $(nvm_version_remote 0.4))"
+    - "$(nvm_version_path $(nvm_version_remote 0.6))"
+    - "$(nvm_version_path $(nvm_version_remote 0.10))"
 before_install:
   - 'case "${TRAVIS_NODE_VERSION}" in 0.*) export NPM_CONFIG_STRICT_SSL=false ;; esac'
   - 'nvm install-latest-npm'
