@@ -55,17 +55,17 @@
 	"devDependencies": {
 		"@ljharb/eslint-config": "^12.2.1",
 		"editorconfig-tools": "^0.1.1",
-		"eslint": "^4.11.0",
+		"eslint": "^4.19.0",
 		"foreach": "^2.0.5",
 		"jscs": "^3.0.7",
-		"nsp": "^3.1.0",
+		"nsp": "^3.2.1",
 		"nyc": "^10.3.2",
 		"object-is": "^1.0.1",
-		"object.assign": "^4.0.4",
+		"object.assign": "^4.1.0",
 		"replace": "^0.3.0",
 		"safe-publish-latest": "^1.1.1",
-		"semver": "^5.4.1",
-		"tape": "^4.8.0"
+		"semver": "^5.5.0",
+		"tape": "^4.9.0"
 	},
 	"testling": {
 		"files": "test/index.js",
