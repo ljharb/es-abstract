@@ -2,10 +2,10 @@
 	"all": true,
 	"check-coverage": true,
 	"reporter": ["text-summary", "text", "html", "json"],
-	"lines": 98,
-	"statements": 97,
+	"lines": 94.43,
+	"statements": 93.93,
 	"functions": 93,
-	"branches": 94,
+	"branches": 88.73,
 	"exclude": [
 		"coverage",
 		"operations",
