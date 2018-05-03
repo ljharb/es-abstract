@@ -28,6 +28,11 @@ var getArraySubclassWithSpeciesConstructor = function getArraySubclass(speciesCo
 
 var hasSpecies = v.hasSymbols && Symbol.species;
 
+var hasGroups = 'groups' in (/a/).exec('a');
+var groups = function groups(matchObject) {
+	return hasGroups ? assign(matchObject, { groups: undefined }) : matchObject;
+};
+
 var es2015 = function ES2015(ES, ops, expectedMissing) {
 	test('has expected operations', function (t) {
 		var diff = diffOps(ES, ops);
@@ -1158,8 +1163,8 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 			var match1 = ES.RegExpExec(R, S);
 			var match2 = ES.RegExpExec(R, S);
 			var match3 = ES.RegExpExec(R, S);
-			st.deepEqual(match1, assign(['a'], { index: 0, input: S }), 'match object 1 is as expected');
-			st.deepEqual(match2, assign(['a'], { index: 1, input: S }), 'match object 2 is as expected');
+			st.deepEqual(match1, assign(['a'], groups({ index: 0, input: S })), 'match object 1 is as expected');
+			st.deepEqual(match2, assign(['a'], groups({ index: 1, input: S })), 'match object 2 is as expected');
 			st.equal(match3, null, 'match 3 is null as expected');
 			st.end();
 		});
@@ -1171,8 +1176,8 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 			var match1 = ES.RegExpExec(R, S);
 			var match2 = ES.RegExpExec(R, S);
 			var match3 = ES.RegExpExec(R, S);
-			st.deepEqual(match1, assign(['a'], { index: 0, input: S }), 'match object 1 is as expected');
-			st.deepEqual(match2, assign(['a'], { index: 1, input: S }), 'match object 2 is as expected');
+			st.deepEqual(match1, assign(['a'], groups({ index: 0, input: S })), 'match object 1 is as expected');
+			st.deepEqual(match2, assign(['a'], groups({ index: 1, input: S })), 'match object 2 is as expected');
 			st.equal(match3, null, 'match 3 is null as expected');
 			st.end();
 		});
