@@ -62,7 +62,7 @@
 		"nyc": "^10.3.2",
 		"object-is": "^1.0.1",
 		"object.assign": "^4.1.0",
-		"replace": "^0.3.0",
+		"replace": "^1.0.0",
 		"safe-publish-latest": "^1.1.1",
 		"semver": "^5.5.0",
 		"tape": "^4.9.0"
@@ -87,5 +87,11 @@
 	},
 	"engines": {
 		"node": ">= 0.4"
+	},
+	"greenkeeper": {
+		"//": "nyc is ignored because it requires node 4+, and we support older than that",
+		"ignore": [
+			"nyc"
+		]
 	}
 }
