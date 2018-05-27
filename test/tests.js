@@ -30,7 +30,7 @@ var hasSpecies = v.hasSymbols && Symbol.species;
 
 var hasGroups = 'groups' in (/a/).exec('a');
 var groups = function groups(matchObject) {
-	return hasGroups ? assign(matchObject, { groups: undefined }) : matchObject;
+	return hasGroups ? assign(matchObject, { groups: matchObject.groups }) : matchObject;
 };
 
 var es2015 = function ES2015(ES, ops, expectedMissing) {
