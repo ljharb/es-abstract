@@ -1473,6 +1473,69 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 
 		t.end();
 	});
+
+	test('AdvanceStringIndex', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.AdvanceStringIndex(nonString); },
+				TypeError,
+				'"S" argument must be a String; ' + debug(nonString) + ' is not'
+			);
+		});
+
+		var notInts = v.nonNumbers.concat(
+			v.nonIntegerNumbers,
+			[Infinity, -Infinity, NaN, [], new Date(), Math.pow(2, 53), -1]
+		);
+		forEach(notInts, function (nonInt) {
+			t['throws'](
+				function () { ES.AdvanceStringIndex('abc', nonInt); },
+				TypeError,
+				'"index" argument must be an integer, ' + debug(nonInt) + ' is not.'
+			);
+		});
+
+		forEach(v.nonBooleans, function (nonBoolean) {
+			t['throws'](
+				function () { ES.AdvanceStringIndex('abc', 0, nonBoolean); },
+				TypeError,
+				debug(nonBoolean) + ' is not a Boolean'
+			);
+		});
+
+		var str = 'a\uD83D\uDCA9c';
+
+		t.test('non-unicode mode', function (st) {
+			for (var i = 0; i < str.length + 2; i += 1) {
+				st.equal(ES.AdvanceStringIndex(str, i, false), i + 1, i + ' advances to ' + (i + 1));
+			}
+
+			st.end();
+		});
+
+		t.test('unicode mode', function (st) {
+			st.equal(ES.AdvanceStringIndex(str, 0, true), 1, '0 advances to 1');
+			st.equal(ES.AdvanceStringIndex(str, 1, true), 3, '1 advances to 3');
+			st.equal(ES.AdvanceStringIndex(str, 2, true), 3, '2 advances to 3');
+			st.equal(ES.AdvanceStringIndex(str, 3, true), 4, '3 advances to 4');
+			st.equal(ES.AdvanceStringIndex(str, 4, true), 5, '4 advances to 5');
+
+			st.end();
+		});
+
+		t.test('lone surrogates', function (st) {
+			var halfPoo = 'a\uD83Dc';
+
+			st.equal(ES.AdvanceStringIndex(halfPoo, 0, true), 1, '0 advances to 1');
+			st.equal(ES.AdvanceStringIndex(halfPoo, 1, true), 2, '1 advances to 2');
+			st.equal(ES.AdvanceStringIndex(halfPoo, 2, true), 3, '2 advances to 3');
+			st.equal(ES.AdvanceStringIndex(halfPoo, 3, true), 4, '3 advances to 4');
+
+			st.end();
+		});
+
+		t.end();
+	});
 };
 
 var es2016 = function ES2016(ES, ops, expectedMissing) {
