@@ -31,6 +31,8 @@ var toStr = bind.call(Function.call, Object.prototype.toString);
 var $floor = Math.floor;
 var $abs = Math.abs;
 
+var $ObjectCreate = Object.create;
+
 // whitespace from: http://es5.github.io/#x15.5.4.20
 // implementation from https://github.com/es-shims/es5-shim/blob/v3.4.0/es5-shim.js#L1304-L1324
 var ws = [
@@ -529,6 +531,23 @@ var ES6 = assign(assign({}, ES5), {
 			throw new TypeError('unable to create data property');
 		}
 		return success;
+	},
+
+	// http://www.ecma-international.org/ecma-262/6.0/#sec-objectcreate
+	ObjectCreate: function ObjectCreate(proto, internalSlotsList) {
+		if (proto !== null && this.Type(proto) !== 'Object') {
+			throw new TypeError('Assertion failed: proto must be null or an object');
+		}
+		var slots = arguments.length < 2 ? [] : internalSlotsList;
+		if (slots.length > 0) {
+			throw new SyntaxError('es-abstract does not yet support internal slots');
+		}
+
+		if (proto === null && !$ObjectCreate) {
+			throw new SyntaxError('native Object.create support is required to create null objects');
+		}
+
+		return $ObjectCreate(proto);
 	}
 });
 

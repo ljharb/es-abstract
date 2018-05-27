@@ -1422,6 +1422,57 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 
 		t.end();
 	});
+
+	test('ObjectCreate', function (t) {
+		forEach(v.nonNullPrimitives, function (value) {
+			t['throws'](
+				function () { ES.ObjectCreate(value); },
+				TypeError,
+				debug(value) + ' is not null, or an object'
+			);
+		});
+
+		t.test('proto arg', function (st) {
+			var Parent = function Parent() {};
+			Parent.prototype.foo = {};
+			var child = ES.ObjectCreate(Parent.prototype);
+			st.equal(child instanceof Parent, true, 'child is instanceof Parent');
+			st.equal(child.foo, Parent.prototype.foo, 'child inherits properties from Parent.prototype');
+
+			st.end();
+		});
+
+		t.test('internal slots arg', function (st) {
+			st.doesNotThrow(function () { ES.ObjectCreate(null, []); }, 'an empty slot list is valid');
+
+			st['throws'](
+				function () { ES.ObjectCreate(null, ['a']); },
+				SyntaxError,
+				'internal slots are not supported'
+			);
+
+			st.end();
+		});
+
+		t.test('null proto', { skip: !Object.create }, function (st) {
+			st.equal('toString' in ({}), true, 'normal objects have toString');
+			st.equal('toString' in ES.ObjectCreate(null), false, 'makes a null object');
+
+			st.end();
+		});
+
+		t.test('null proto when no native Object.create', { skip: Object.create }, function (st) {
+			st['throws'](
+				function () { ES.ObjectCreate(null); },
+				SyntaxError,
+				'without a native Object.create, can not create null objects'
+			);
+
+			st.end();
+		});
+
+		t.end();
+	});
 };
 
 var es2016 = function ES2016(ES, ops, expectedMissing) {
