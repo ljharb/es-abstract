@@ -3,7 +3,6 @@
 var has = require('has');
 var toPrimitive = require('es-to-primitive/es6');
 
-var toStr = Object.prototype.toString;
 var hasSymbols = typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol';
 
 var $isNaN = require('./helpers/isNaN');
@@ -26,6 +25,11 @@ var nonWSregex = new RegExp('[' + nonWS + ']', 'g');
 var hasNonWS = bind.call(Function.call, RegExp.prototype.test, nonWSregex);
 var invalidHexLiteral = /^[-+]0x[0-9a-f]+$/i;
 var isInvalidHexLiteral = bind.call(Function.call, RegExp.prototype.test, invalidHexLiteral);
+
+var toStr = bind.call(Function.call, Object.prototype.toString);
+
+var $floor = Math.floor;
+var $abs = Math.abs;
 
 // whitespace from: http://es5.github.io/#x15.5.4.20
 // implementation from https://github.com/es-shims/es5-shim/blob/v3.4.0/es5-shim.js#L1304-L1324
@@ -113,7 +117,7 @@ var ES6 = assign(assign({}, ES5), {
 	ToUint8: function ToUint8(argument) {
 		var number = this.ToNumber(argument);
 		if ($isNaN(number) || number === 0 || !$isFinite(number)) { return 0; }
-		var posInt = sign(number) * Math.floor(Math.abs(number));
+		var posInt = sign(number) * $floor($abs(number));
 		return mod(posInt, 0x100);
 	},
 
@@ -122,7 +126,7 @@ var ES6 = assign(assign({}, ES5), {
 		var number = this.ToNumber(argument);
 		if ($isNaN(number) || number <= 0) { return 0; }
 		if (number >= 0xFF) { return 0xFF; }
-		var f = Math.floor(argument);
+		var f = $floor(argument);
 		if (f + 0.5 < number) { return f + 1; }
 		if (number < f + 0.5) { return f; }
 		if (f % 2 !== 0) { return f + 1; }
@@ -159,7 +163,7 @@ var ES6 = assign(assign({}, ES5), {
 
 	// http://www.ecma-international.org/ecma-262/6.0/#sec-canonicalnumericindexstring
 	CanonicalNumericIndexString: function CanonicalNumericIndexString(argument) {
-		if (toStr.call(argument) !== '[object String]') {
+		if (toStr(argument) !== '[object String]') {
 			throw new TypeError('must be a string');
 		}
 		if (argument === '-0') { return -0; }
@@ -173,7 +177,7 @@ var ES6 = assign(assign({}, ES5), {
 
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-isarray
 	IsArray: Array.isArray || function IsArray(argument) {
-		return toStr.call(argument) === '[object Array]';
+		return toStr(argument) === '[object Array]';
 	},
 
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-iscallable
@@ -198,8 +202,8 @@ var ES6 = assign(assign({}, ES5), {
 		if (typeof argument !== 'number' || $isNaN(argument) || !$isFinite(argument)) {
 			return false;
 		}
-		var abs = Math.abs(argument);
-		return Math.floor(abs) === abs;
+		var abs = $abs(argument);
+		return $floor(abs) === abs;
 	},
 
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-ispropertykey
