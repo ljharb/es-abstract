@@ -6,6 +6,8 @@ var forEach = require('foreach');
 var is = require('object-is');
 var debug = require('object-inspect');
 var assign = require('object.assign');
+var keys = require('object-keys');
+var has = require('has');
 
 var v = require('./helpers/values');
 var diffOps = require('./diffOps');
@@ -1585,7 +1587,7 @@ var es2016 = function ES2016(ES, ops, expectedMissing) {
 	});
 };
 
-var es2017 = function E2017(ES, ops, expectedMissing) {
+var es2017 = function ES2017(ES, ops, expectedMissing) {
 	es2016(ES, ops, expectedMissing);
 
 	test('ToIndex', function (t) {
@@ -1603,8 +1605,203 @@ var es2017 = function E2017(ES, ops, expectedMissing) {
 	});
 };
 
+var es2018 = function ES2018(ES, ops, expectedMissing) {
+	es2017(ES, ops, expectedMissing);
+
+	test('thisSymbolValue', function (t) {
+		forEach(v.nonSymbolPrimitives.concat(v.objects), function (nonSymbol) {
+			t['throws'](
+				function () { ES.thisSymbolValue(nonSymbol); },
+				v.hasSymbols ? TypeError : SyntaxError,
+				debug(nonSymbol) + ' is not a Symbol'
+			);
+		});
+
+		t.test('no native Symbols', { skip: v.hasSymbols }, function (st) {
+			forEach(v.objects.concat(v.primitives), function (value) {
+				st['throws'](
+					function () { ES.thisSymbolValue(value); },
+					SyntaxError,
+					'Symbols are not supported'
+				);
+			});
+			st.end();
+		});
+
+		t.test('symbol values', { skip: !v.hasSymbols }, function (st) {
+			forEach(v.symbols, function (symbol) {
+				st.equal(ES.thisSymbolValue(symbol), symbol, 'Symbol value of ' + debug(symbol) + ' is same symbol');
+
+				st.equal(
+					ES.thisSymbolValue(Object(symbol)),
+					symbol,
+					'Symbol value of ' + debug(Object(symbol)) + ' is ' + debug(symbol)
+				);
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('IsStringPrefix', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.IsStringPrefix(nonString, 'a'); },
+				TypeError,
+				'first arg: ' + debug(nonString) + ' is not a string'
+			);
+			t['throws'](
+				function () { ES.IsStringPrefix('a', nonString); },
+				TypeError,
+				'second arg: ' + debug(nonString) + ' is not a string'
+			);
+		});
+
+		forEach(v.strings, function (string) {
+			t.equal(ES.IsStringPrefix(string, string), true, debug(string) + ' is a prefix of itself');
+
+			t.equal(ES.IsStringPrefix('', string), true, 'the empty string is a prefix of everything');
+		});
+
+		t.equal(ES.IsStringPrefix('abc', 'abcd'), true, '"abc" is a prefix of "abcd"');
+		t.equal(ES.IsStringPrefix('abcd', 'abc'), false, '"abcd" is not a prefix of "abc"');
+
+		t.equal(ES.IsStringPrefix('a', 'bc'), false, '"a" is not a prefix of "bc"');
+
+		t.end();
+	});
+
+	test('NumberToString', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.NumberToString(nonNumber); },
+				TypeError,
+				debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		forEach(v.numbers, function (number) {
+			t.equal(ES.NumberToString(number), String(number), debug(number) + ' stringifies to ' + number);
+		});
+
+		t.end();
+	});
+
+	test('CopyDataProperties', function (t) {
+		t.test('first argument: target', function (st) {
+			forEach(v.primitives, function (primitive) {
+				st['throws'](
+					function () { ES.CopyDataProperties(primitive, {}, []); },
+					TypeError,
+					debug(primitive) + ' is not an Object'
+				);
+			});
+			st.end();
+		});
+
+		t.test('second argument: source', function (st) {
+			var frozenTarget = Object.freeze ? Object.freeze({}) : {};
+			forEach(v.nullPrimitives, function (nullish) {
+				st.equal(
+					ES.CopyDataProperties(frozenTarget, nullish, []),
+					frozenTarget,
+					debug(nullish) + ' "source" yields identical, unmodified target'
+				);
+			});
+
+			forEach(v.nonNullPrimitives, function (objectCoercible) {
+				var target = {};
+				var result = ES.CopyDataProperties(target, objectCoercible, []);
+				st.equal(result, target, 'result === target');
+				st.deepEqual(keys(result), keys(Object(objectCoercible)), 'target ends up with keys of ' + debug(objectCoercible));
+			});
+
+			st.end();
+		});
+
+		t.test('third argument: excludedItems', function (st) {
+			forEach(v.objects.concat(v.primitives), function (nonArray) {
+				st['throws'](
+					function () { ES.CopyDataProperties({}, {}, nonArray); },
+					TypeError,
+					debug(nonArray) + ' is not an Array'
+				);
+			});
+
+			forEach(v.nonPropertyKeys, function (nonPropertyKey) {
+				st['throws'](
+					function () { ES.CopyDataProperties({}, {}, [nonPropertyKey]); },
+					TypeError,
+					debug(nonPropertyKey) + ' is not a Property Key'
+				);
+			});
+
+			var result = ES.CopyDataProperties({}, { a: 1, b: 2, c: 3 }, ['b']);
+			st.deepEqual(keys(result), ['a', 'c'], 'excluded string keys are excluded');
+
+			st.test('excluding symbols', { skip: !v.hasSymbols }, function (s2t) {
+				var source = {};
+				forEach(v.symbols, function (symbol) {
+					source[symbol] = true;
+				});
+
+				var includedSymbols = v.symbols.slice(1);
+				var excludedSymbols = v.symbols.slice(0, 1);
+				var target = ES.CopyDataProperties({}, source, excludedSymbols);
+
+				forEach(includedSymbols, function (symbol) {
+					s2t.equal(has(target, symbol), true, debug(symbol) + ' is included');
+				});
+
+				forEach(excludedSymbols, function (symbol) {
+					s2t.equal(has(target, symbol), false, debug(symbol) + ' is excluded');
+				});
+
+				s2t.end();
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('PromiseResolve', function (t) {
+		t.test('Promises unsupported', { skip: typeof Promise === 'function' }, function (st) {
+			st['throws'](
+				function () { ES.PromiseResolve(); },
+				SyntaxError,
+				'Promises are not supported'
+			);
+			st.end();
+		});
+
+		t.test('Promises supported', { skip: typeof Promise !== 'function' }, function (st) {
+			st.plan(2);
+
+			var a = {};
+			var b = {};
+			var fulfilled = Promise.resolve(a);
+			var rejected = Promise.reject(b);
+
+			ES.PromiseResolve(Promise, fulfilled).then(function (x) {
+				st.equal(x, a, 'fulfilled promise resolves to fulfilled');
+			});
+
+			ES.PromiseResolve(Promise, rejected)['catch'](function (e) {
+				st.equal(e, b, 'rejected promise resolves to rejected');
+			});
+		});
+
+		t.end();
+	});
+};
+
 module.exports = {
 	es2015: es2015,
 	es2016: es2016,
-	es2017: es2017
+	es2017: es2017,
+	es2018: es2018
 };
