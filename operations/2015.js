@@ -73,5 +73,6 @@ module.exports = {
 	IsPromise: 'http://ecma-international.org/ecma-262/6.0/#sec-ispromise',
 	ArraySpeciesCreate: 'http://ecma-international.org/ecma-262/6.0/#sec-arrayspeciescreate',
 	ObjectCreate: 'http://www.ecma-international.org/ecma-262/6.0/#sec-objectcreate',
-	AdvanceStringIndex: 'http://www.ecma-international.org/ecma-262/6.0/#sec-advancestringindex'
+	AdvanceStringIndex: 'http://www.ecma-international.org/ecma-262/6.0/#sec-advancestringindex',
+	NormalCompletion: 'http://www.ecma-international.org/ecma-262/6.0/#sec-normalcompletion'
 };
