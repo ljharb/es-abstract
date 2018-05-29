@@ -76,5 +76,6 @@ module.exports = {
 	ArraySpeciesCreate: 'http://ecma-international.org/ecma-262/8.0/#sec-arrayspeciescreate',
 	ObjectCreate: 'http://www.ecma-international.org/ecma-262/8.0/#sec-objectcreate',
 	AdvanceStringIndex: 'http://www.ecma-international.org/ecma-262/8.0/#sec-advancestringindex',
-	NormalCompletion: 'http://www.ecma-international.org/ecma-262/8.0/#sec-normalcompletion'
+	NormalCompletion: 'http://www.ecma-international.org/ecma-262/8.0/#sec-normalcompletion',
+	IsSharedArrayBuffer: 'http://www.ecma-international.org/ecma-262/8.0/#sec-issharedarraybuffer',
 };
