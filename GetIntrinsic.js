@@ -169,7 +169,7 @@ module.exports = function GetIntrinsic(name, allowMissing) {
 		throw new SyntaxError('intrinsic ' + name + ' does not exist!');
 	}
 
-	// istanbul ignore next // hopefully this is impossible to test :-)
+	// istanbul ignore if // hopefully this is impossible to test :-)
 	if (typeof INTRINSICS[key] === 'undefined' && !allowMissing) {
 		throw new TypeError('intrinsic ' + name + ' exists, but is not available. Please file an issue!');
 	}
