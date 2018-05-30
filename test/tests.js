@@ -35,11 +35,11 @@ var groups = function groups(matchObject) {
 
 var es2015 = function ES2015(ES, ops, expectedMissing) {
 	test('has expected operations', function (t) {
-		var diff = diffOps(ES, ops);
+		var diff = diffOps(ES, ops, expectedMissing);
 
 		t.deepEqual(diff.extra, [], 'no extra ops');
 
-		t.deepEqual(diff.missing, expectedMissing, 'no unexpected missing ops');
+		t.deepEqual(diff.missing, [], 'no unexpected missing ops');
 
 		t.end();
 	});
