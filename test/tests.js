@@ -4,7 +4,7 @@ var test = require('tape');
 
 var forEach = require('foreach');
 var is = require('object-is');
-var debug = require('util').format;
+var debug = require('object-inspect');
 var assign = require('object.assign');
 
 var v = require('./helpers/values');
