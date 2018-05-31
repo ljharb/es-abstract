@@ -83,7 +83,7 @@ var ES6 = assign(assign({}, ES5), {
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-toboolean
 	// ToBoolean: ES5.ToBoolean,
 
-	// http://www.ecma-international.org/ecma-262/6.0/#sec-tonumber
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-tonumber
 	ToNumber: function ToNumber(argument) {
 		var value = isPrimitive(argument) ? argument : toPrimitive(argument, $Number);
 		if (typeof value === 'symbol') {
@@ -178,7 +178,7 @@ var ES6 = assign(assign({}, ES5), {
 		return len;
 	},
 
-	// http://www.ecma-international.org/ecma-262/6.0/#sec-canonicalnumericindexstring
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-canonicalnumericindexstring
 	CanonicalNumericIndexString: function CanonicalNumericIndexString(argument) {
 		if (toStr(argument) !== '[object String]') {
 			throw new $TypeError('must be a string');
@@ -229,7 +229,7 @@ var ES6 = assign(assign({}, ES5), {
 		return typeof argument === 'string' || typeof argument === 'symbol';
 	},
 
-	// http://www.ecma-international.org/ecma-262/6.0/#sec-isregexp
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-isregexp
 	IsRegExp: function IsRegExp(argument) {
 		if (!argument || typeof argument !== 'object') {
 			return false;
@@ -272,7 +272,7 @@ var ES6 = assign(assign({}, ES5), {
 	},
 
 	/**
-	 * 7.3.9 - http://www.ecma-international.org/ecma-262/6.0/#sec-getmethod
+	 * 7.3.9 - https://www.ecma-international.org/ecma-262/6.0/#sec-getmethod
 	 * 1. Assert: IsPropertyKey(P) is true.
 	 * 2. Let func be GetV(O, P).
 	 * 3. ReturnIfAbrupt(func).
@@ -304,7 +304,7 @@ var ES6 = assign(assign({}, ES5), {
 	},
 
 	/**
-	 * 7.3.1 Get (O, P) - http://www.ecma-international.org/ecma-262/6.0/#sec-get-o-p
+	 * 7.3.1 Get (O, P) - https://www.ecma-international.org/ecma-262/6.0/#sec-get-o-p
 	 * 1. Assert: Type(O) is Object.
 	 * 2. Assert: IsPropertyKey(P) is true.
 	 * 3. Return O.[[Get]](P, O).
@@ -329,7 +329,7 @@ var ES6 = assign(assign({}, ES5), {
 		return ES5.Type(x);
 	},
 
-	// http://www.ecma-international.org/ecma-262/6.0/#sec-speciesconstructor
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-speciesconstructor
 	SpeciesConstructor: function SpeciesConstructor(O, defaultConstructor) {
 		if (this.Type(O) !== 'Object') {
 			throw new $TypeError('Assertion failed: Type(O) is not Object');
@@ -351,7 +351,7 @@ var ES6 = assign(assign({}, ES5), {
 		throw new $TypeError('no constructor found');
 	},
 
-	// http://ecma-international.org/ecma-262/6.0/#sec-completepropertydescriptor
+	// https://ecma-international.org/ecma-262/6.0/#sec-completepropertydescriptor
 	CompletePropertyDescriptor: function CompletePropertyDescriptor(Desc) {
 		if (!this.IsPropertyDescriptor(Desc)) {
 			throw new $TypeError('Desc must be a Property Descriptor');
@@ -381,7 +381,7 @@ var ES6 = assign(assign({}, ES5), {
 		return Desc;
 	},
 
-	// http://ecma-international.org/ecma-262/6.0/#sec-set-o-p-v-throw
+	// https://ecma-international.org/ecma-262/6.0/#sec-set-o-p-v-throw
 	Set: function Set(O, P, V, Throw) {
 		if (this.Type(O) !== 'Object') {
 			throw new $TypeError('O must be an Object');
@@ -404,7 +404,7 @@ var ES6 = assign(assign({}, ES5), {
 		}
 	},
 
-	// http://ecma-international.org/ecma-262/6.0/#sec-hasownproperty
+	// https://ecma-international.org/ecma-262/6.0/#sec-hasownproperty
 	HasOwnProperty: function HasOwnProperty(O, P) {
 		if (this.Type(O) !== 'Object') {
 			throw new $TypeError('O must be an Object');
@@ -415,7 +415,7 @@ var ES6 = assign(assign({}, ES5), {
 		return has(O, P);
 	},
 
-	// http://ecma-international.org/ecma-262/6.0/#sec-hasproperty
+	// https://ecma-international.org/ecma-262/6.0/#sec-hasproperty
 	HasProperty: function HasProperty(O, P) {
 		if (this.Type(O) !== 'Object') {
 			throw new $TypeError('O must be an Object');
@@ -426,7 +426,7 @@ var ES6 = assign(assign({}, ES5), {
 		return P in O;
 	},
 
-	// http://ecma-international.org/ecma-262/6.0/#sec-isconcatspreadable
+	// https://ecma-international.org/ecma-262/6.0/#sec-isconcatspreadable
 	IsConcatSpreadable: function IsConcatSpreadable(O) {
 		if (this.Type(O) !== 'Object') {
 			return false;
@@ -440,7 +440,7 @@ var ES6 = assign(assign({}, ES5), {
 		return this.IsArray(O);
 	},
 
-	// http://ecma-international.org/ecma-262/6.0/#sec-invoke
+	// https://ecma-international.org/ecma-262/6.0/#sec-invoke
 	Invoke: function Invoke(O, P) {
 		if (!this.IsPropertyKey(P)) {
 			throw new $TypeError('P must be a Property Key');
@@ -450,7 +450,7 @@ var ES6 = assign(assign({}, ES5), {
 		return this.Call(func, O, argumentsList);
 	},
 
-	// http://ecma-international.org/ecma-262/6.0/#sec-createiterresultobject
+	// https://ecma-international.org/ecma-262/6.0/#sec-createiterresultobject
 	CreateIterResultObject: function CreateIterResultObject(value, done) {
 		if (this.Type(done) !== 'Boolean') {
 			throw new $TypeError('Assertion failed: Type(done) is not Boolean');
@@ -461,7 +461,7 @@ var ES6 = assign(assign({}, ES5), {
 		};
 	},
 
-	// http://ecma-international.org/ecma-262/6.0/#sec-regexpexec
+	// https://ecma-international.org/ecma-262/6.0/#sec-regexpexec
 	RegExpExec: function RegExpExec(R, S) {
 		if (this.Type(R) !== 'Object') {
 			throw new $TypeError('R must be an Object');
@@ -480,7 +480,7 @@ var ES6 = assign(assign({}, ES5), {
 		return regexExec(R, S);
 	},
 
-	// http://ecma-international.org/ecma-262/6.0/#sec-arrayspeciescreate
+	// https://ecma-international.org/ecma-262/6.0/#sec-arrayspeciescreate
 	ArraySpeciesCreate: function ArraySpeciesCreate(originalArray, length) {
 		if (!this.IsInteger(length) || length < 0) {
 			throw new $TypeError('Assertion failed: length must be an integer >= 0');
@@ -534,7 +534,7 @@ var ES6 = assign(assign({}, ES5), {
 		return true;
 	},
 
-	// http://ecma-international.org/ecma-262/6.0/#sec-createdatapropertyorthrow
+	// https://ecma-international.org/ecma-262/6.0/#sec-createdatapropertyorthrow
 	CreateDataPropertyOrThrow: function CreateDataPropertyOrThrow(O, P, V) {
 		if (this.Type(O) !== 'Object') {
 			throw new $TypeError('Assertion failed: Type(O) is not Object');
@@ -549,7 +549,7 @@ var ES6 = assign(assign({}, ES5), {
 		return success;
 	},
 
-	// http://www.ecma-international.org/ecma-262/6.0/#sec-objectcreate
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-objectcreate
 	ObjectCreate: function ObjectCreate(proto, internalSlotsList) {
 		if (proto !== null && this.Type(proto) !== 'Object') {
 			throw new $TypeError('Assertion failed: proto must be null or an object');
@@ -566,7 +566,7 @@ var ES6 = assign(assign({}, ES5), {
 		return $ObjectCreate(proto);
 	},
 
-	// http://www.ecma-international.org/ecma-262/6.0/#sec-advancestringindex
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-advancestringindex
 	AdvanceStringIndex: function AdvanceStringIndex(S, index, unicode) {
 		if (this.Type(S) !== 'String') {
 			throw new $TypeError('S must be a String');

@@ -68,7 +68,7 @@ var ES5 = {
 		return $isNaN(x) && $isNaN(y);
 	},
 
-	// http://www.ecma-international.org/ecma-262/5.1/#sec-8
+	// https://www.ecma-international.org/ecma-262/5.1/#sec-8
 	Type: function Type(x) {
 		if (x === null) {
 			return 'Null';
@@ -90,7 +90,7 @@ var ES5 = {
 		}
 	},
 
-	// http://ecma-international.org/ecma-262/6.0/#sec-property-descriptor-specification-type
+	// https://ecma-international.org/ecma-262/6.0/#sec-property-descriptor-specification-type
 	IsPropertyDescriptor: function IsPropertyDescriptor(Desc) {
 		if (this.Type(Desc) !== 'Object') {
 			return false;
@@ -118,7 +118,7 @@ var ES5 = {
 		return true;
 	},
 
-	// http://ecma-international.org/ecma-262/5.1/#sec-8.10.1
+	// https://ecma-international.org/ecma-262/5.1/#sec-8.10.1
 	IsAccessorDescriptor: function IsAccessorDescriptor(Desc) {
 		if (typeof Desc === 'undefined') {
 			return false;
@@ -135,7 +135,7 @@ var ES5 = {
 		return true;
 	},
 
-	// http://ecma-international.org/ecma-262/5.1/#sec-8.10.2
+	// https://ecma-international.org/ecma-262/5.1/#sec-8.10.2
 	IsDataDescriptor: function IsDataDescriptor(Desc) {
 		if (typeof Desc === 'undefined') {
 			return false;
@@ -152,7 +152,7 @@ var ES5 = {
 		return true;
 	},
 
-	// http://ecma-international.org/ecma-262/5.1/#sec-8.10.3
+	// https://ecma-international.org/ecma-262/5.1/#sec-8.10.3
 	IsGenericDescriptor: function IsGenericDescriptor(Desc) {
 		if (typeof Desc === 'undefined') {
 			return false;
@@ -169,7 +169,7 @@ var ES5 = {
 		return false;
 	},
 
-	// http://ecma-international.org/ecma-262/5.1/#sec-8.10.4
+	// https://ecma-international.org/ecma-262/5.1/#sec-8.10.4
 	FromPropertyDescriptor: function FromPropertyDescriptor(Desc) {
 		if (typeof Desc === 'undefined') {
 			return Desc;
@@ -198,7 +198,7 @@ var ES5 = {
 		}
 	},
 
-	// http://ecma-international.org/ecma-262/5.1/#sec-8.10.5
+	// https://ecma-international.org/ecma-262/5.1/#sec-8.10.5
 	ToPropertyDescriptor: function ToPropertyDescriptor(Obj) {
 		if (this.Type(Obj) !== 'Object') {
 			throw new $TypeError('ToPropertyDescriptor requires an object');
