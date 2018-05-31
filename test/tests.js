@@ -36,7 +36,44 @@ var groups = function groups(matchObject) {
 	return hasGroups ? assign(matchObject, { groups: matchObject.groups }) : matchObject;
 };
 
-var es2015 = function ES2015(ES, ops, expectedMissing) {
+var testEnumerableOwnNames = function (t, enumerableOwnNames) {
+	forEach(v.primitives, function (nonObject) {
+		t['throws'](
+			function () { enumerableOwnNames(nonObject); },
+			debug(nonObject) + ' is not an Object'
+		);
+	});
+
+	var Child = function Child() {
+		this.own = {};
+	};
+	Child.prototype = {
+		inherited: {}
+	};
+
+	var obj = new Child();
+
+	t.equal('own' in obj, true, 'has "own"');
+	t.equal(has(obj, 'own'), true, 'has own "own"');
+	t.equal(Object.prototype.propertyIsEnumerable.call(obj, 'own'), true, 'has enumerable "own"');
+
+	t.equal('inherited' in obj, true, 'has "inherited"');
+	t.equal(has(obj, 'inherited'), false, 'has non-own "inherited"');
+	t.equal(has(Child.prototype, 'inherited'), true, 'Child.prototype has own "inherited"');
+	t.equal(Child.prototype.inherited, obj.inherited, 'Child.prototype.inherited === obj.inherited');
+	t.equal(Object.prototype.propertyIsEnumerable.call(Child.prototype, 'inherited'), true, 'has enumerable "inherited"');
+
+	t.equal('toString' in obj, true, 'has "toString"');
+	t.equal(has(obj, 'toString'), false, 'has non-own "toString"');
+	t.equal(has(Object.prototype, 'toString'), true, 'Object.prototype has own "toString"');
+	t.equal(Object.prototype.toString, obj.toString, 'Object.prototype.toString === obj.toString');
+	// eslint-disable-next-line no-useless-call
+	t.equal(Object.prototype.propertyIsEnumerable.call(Object.prototype, 'toString'), false, 'has non-enumerable "toString"');
+
+	return obj;
+};
+
+var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	test('has expected operations', function (t) {
 		var diff = diffOps(ES, ops, expectedMissing);
 
@@ -1725,10 +1762,22 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 
 		t.end();
 	});
+
+	test('EnumerableOwnNames', { skip: skips && skips.EnumerableOwnNames }, function (t) {
+		var obj = testEnumerableOwnNames(t, function (O) { return ES.EnumerableOwnNames(O); });
+
+		t.deepEqual(
+			ES.EnumerableOwnNames(obj),
+			['own'],
+			'returns enumerable own names'
+		);
+
+		t.end();
+	});
 };
 
-var es2016 = function ES2016(ES, ops, expectedMissing) {
-	es2015(ES, ops, expectedMissing);
+var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
+	es2015(ES, ops, expectedMissing, skips);
 
 	test('SameValueNonNumber', function (t) {
 		var willThrow = [
@@ -1750,8 +1799,10 @@ var es2016 = function ES2016(ES, ops, expectedMissing) {
 	});
 };
 
-var es2017 = function ES2017(ES, ops, expectedMissing) {
-	es2016(ES, ops, expectedMissing);
+var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
+	es2016(ES, ops, expectedMissing, assign({}, skips, {
+		EnumerableOwnNames: true
+	}));
 
 	test('ToIndex', function (t) {
 		t.ok(is(ES.ToIndex(), 0), 'no value gives 0');
@@ -1766,10 +1817,32 @@ var es2017 = function ES2017(ES, ops, expectedMissing) {
 
 		t.end();
 	});
+
+	test('EnumerableOwnProperties', { skip: skips && skips.EnumerableOwnProperties }, function (t) {
+		var obj = testEnumerableOwnNames(t, function (O) {
+			return ES.EnumerableOwnProperties(O, 'key');
+		});
+
+		t.deepEqual(
+			ES.EnumerableOwnProperties(obj, 'value'),
+			[obj.own],
+			'returns enumerable own values'
+		);
+
+		t.deepEqual(
+			ES.EnumerableOwnProperties(obj, 'key+value'),
+			[['own', obj.own]],
+			'returns enumerable own entries'
+		);
+
+		t.end();
+	});
 };
 
-var es2018 = function ES2018(ES, ops, expectedMissing) {
-	es2017(ES, ops, expectedMissing);
+var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
+	es2017(ES, ops, expectedMissing, assign({}, skips, {
+		EnumerableOwnProperties: true
+	}));
 
 	test('thisSymbolValue', function (t) {
 		forEach(v.nonSymbolPrimitives.concat(v.objects), function (nonSymbol) {
@@ -1957,6 +2030,26 @@ var es2018 = function ES2018(ES, ops, expectedMissing) {
 				st.equal(e, b, 'rejected promise resolves to rejected');
 			});
 		});
+
+		t.end();
+	});
+
+	test('EnumerableOwnPropertyNames', { skip: skips && skips.EnumerableOwnPropertyNames }, function (t) {
+		var obj = testEnumerableOwnNames(t, function (O) {
+			return ES.EnumerableOwnPropertyNames(O, 'key');
+		});
+
+		t.deepEqual(
+			ES.EnumerableOwnPropertyNames(obj, 'value'),
+			[obj.own],
+			'returns enumerable own values'
+		);
+
+		t.deepEqual(
+			ES.EnumerableOwnPropertyNames(obj, 'key+value'),
+			[['own', obj.own]],
+			'returns enumerable own entries'
+		);
 
 		t.end();
 	});

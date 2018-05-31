@@ -2,6 +2,7 @@
 
 var has = require('has');
 var toPrimitive = require('es-to-primitive/es6');
+var keys = require('object-keys');
 
 var GetIntrinsic = require('./GetIntrinsic');
 
@@ -735,6 +736,15 @@ var ES6 = assign(assign({}, ES5), {
 			throw new TypeError('Attempt to delete property failed.');
 		}
 		return success;
+	},
+
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-enumerableownnames
+	EnumerableOwnNames: function EnumerableOwnNames(O) {
+		if (this.Type(O) !== 'Object') {
+			throw new $TypeError('Assertion failed: Type(O) is not Object');
+		}
+
+		return keys(O);
 	}
 });
 

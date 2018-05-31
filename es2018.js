@@ -33,7 +33,7 @@ var OwnPropertyKeys = function OwnPropertyKeys(ES, source) {
 };
 
 var ES2018 = assign(assign({}, ES2017), {
-	EnumerableOwnPropertyNames: ES2017.EnumerableOwnNames,
+	EnumerableOwnPropertyNames: ES2017.EnumerableOwnProperties,
 
 	// https://ecma-international.org/ecma-262/9.0/#sec-thissymbolvalue
 	thisSymbolValue: function thisSymbolValue(value) {
@@ -143,8 +143,5 @@ var ES2018 = assign(assign({}, ES2017), {
 });
 
 delete ES2018.EnumerableOwnProperties; // replaced with EnumerableOwnPropertyNames
-if (!ES2018.EnumerableOwnPropertyNames) {
-	delete ES2018.EnumerableOwnPropertyNames; // until it exists
-}
 
 module.exports = ES2018;
