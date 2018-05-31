@@ -48,6 +48,8 @@ var $gOPD = $Object.getOwnPropertyDescriptor;
 
 var $isExtensible = $Object.isExtensible;
 
+var $defineProperty = $Object.defineProperty;
+
 // whitespace from: http://es5.github.io/#x15.5.4.20
 // implementation from https://github.com/es-shims/es5-shim/blob/v3.4.0/es5-shim.js#L1304-L1324
 var ws = [
@@ -619,7 +621,7 @@ var ES6 = assign(assign({}, ES5), {
 			value: V,
 			writable: true
 		};
-		Object.defineProperty(O, P, newDesc);
+		$defineProperty(O, P, newDesc);
 		return true;
 	},
 
@@ -685,6 +687,25 @@ var ES6 = assign(assign({}, ES5), {
 		}
 
 		return index + 2;
+	},
+
+	// http://www.ecma-international.org/ecma-262/6.0/#sec-createmethodproperty
+	CreateMethodProperty: function CreateMethodProperty(O, P, V) {
+		if (this.Type(O) !== 'Object') {
+			throw new $TypeError('Assertion failed: Type(O) is not Object');
+		}
+
+		if (!this.IsPropertyKey(P)) {
+			throw new $TypeError('Assertion failed: IsPropertyKey(P) is not true');
+		}
+
+		var newDesc = {
+			configurable: true,
+			enumerable: false,
+			value: V,
+			writable: true
+		};
+		return $defineProperty(O, P, newDesc);
 	}
 });
 
