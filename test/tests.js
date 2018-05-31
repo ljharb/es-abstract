@@ -1562,6 +1562,77 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 
 		t.end();
 	});
+
+	test('DefinePropertyOrThrow', function (t) {
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.DefinePropertyOrThrow(primitive, 'key', {}); },
+				TypeError,
+				'O must be an Object'
+			);
+		});
+
+		forEach(v.nonPropertyKeys, function (nonPropertyKey) {
+			t['throws'](
+				function () { ES.DefinePropertyOrThrow({}, nonPropertyKey, {}); },
+				TypeError,
+				debug(nonPropertyKey) + ' is not a Property Key'
+			);
+		});
+
+		t.test('defines correctly', function (st) {
+			var obj = {};
+			var key = 'the key';
+			var descriptor = {
+				configurable: true,
+				enumerable: false,
+				value: { foo: 'bar' },
+				writable: true
+			};
+
+			st.equal(ES.DefinePropertyOrThrow(obj, key, descriptor), true, 'defines property successfully');
+			st.test('property descriptor', { skip: !Object.getOwnPropertyDescriptor }, function (s2t) {
+				s2t.deepEqual(
+					Object.getOwnPropertyDescriptor(obj, key),
+					descriptor,
+					'sets the correct property descriptor'
+				);
+
+				s2t.end();
+			});
+			st.deepEqual(obj[key], descriptor.value, 'sets the correct value');
+
+			st.end();
+		});
+
+		t.test('fails as expected on a frozen object', { skip: !Object.freeze }, function (st) {
+			var obj = Object.freeze({ foo: 'bar' });
+			st['throws'](
+				function () {
+					ES.DefinePropertyOrThrow(obj, 'foo', { configurable: true, value: 'baz' });
+				},
+				TypeError,
+				'nonconfigurable key can not be defined'
+			);
+
+			st.end();
+		});
+
+		var hasNonConfigurableFunctionName = !Object.getOwnPropertyDescriptor
+			|| !Object.getOwnPropertyDescriptor(function () {}, 'name').configurable;
+		t.test('fails as expected on a function with a nonconfigurable name', { skip: !hasNonConfigurableFunctionName }, function (st) {
+			st['throws'](
+				function () {
+					ES.DefinePropertyOrThrow(function () {}, 'name', { configurable: true, value: 'baz' });
+				},
+				TypeError,
+				'nonconfigurable function name can not be defined'
+			);
+			st.end();
+		});
+
+		t.end();
+	});
 };
 
 var es2016 = function ES2016(ES, ops, expectedMissing) {

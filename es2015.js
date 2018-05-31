@@ -706,6 +706,19 @@ var ES6 = assign(assign({}, ES5), {
 			writable: true
 		};
 		return $defineProperty(O, P, newDesc);
+	},
+
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-definepropertyorthrow
+	DefinePropertyOrThrow: function DefinePropertyOrThrow(O, P, desc) {
+		if (this.Type(O) !== 'Object') {
+			throw new $TypeError('Assertion failed: Type(O) is not Object');
+		}
+
+		if (!this.IsPropertyKey(P)) {
+			throw new $TypeError('Assertion failed: IsPropertyKey(P) is not true');
+		}
+
+		return !!$defineProperty(O, P, desc);
 	}
 });
 
