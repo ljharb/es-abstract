@@ -1700,6 +1700,58 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 
 		t.end();
 	});
+
+	test('DeletePropertyOrThrow', function (t) {
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.DeletePropertyOrThrow(primitive, 'key', {}); },
+				TypeError,
+				'O must be an Object'
+			);
+		});
+
+		forEach(v.nonPropertyKeys, function (nonPropertyKey) {
+			t['throws'](
+				function () { ES.DeletePropertyOrThrow({}, nonPropertyKey, {}); },
+				TypeError,
+				debug(nonPropertyKey) + ' is not a Property Key'
+			);
+		});
+
+		t.test('defines correctly', function (st) {
+			var obj = { 'the key': 42 };
+			var key = 'the key';
+
+			st.equal(ES.DeletePropertyOrThrow(obj, key), true, 'deletes property successfully');
+			st.equal(key in obj, false, 'key is no longer in the object');
+
+			st.end();
+		});
+
+		t.test('fails as expected on a frozen object', { skip: !Object.freeze }, function (st) {
+			var obj = Object.freeze({ foo: 'bar' });
+			st['throws'](
+				function () { ES.DeletePropertyOrThrow(obj, 'foo'); },
+				TypeError,
+				'nonconfigurable key can not be deleted'
+			);
+
+			st.end();
+		});
+
+		var hasNonConfigurableFunctionName = !Object.getOwnPropertyDescriptor
+			|| !Object.getOwnPropertyDescriptor(function () {}, 'name').configurable;
+		t.test('fails as expected on a function with a nonconfigurable name', { skip: !hasNonConfigurableFunctionName }, function (st) {
+			st['throws'](
+				function () { ES.DeletePropertyOrThrow(function () {}, 'name'); },
+				TypeError,
+				'nonconfigurable function name can not be deleted'
+			);
+			st.end();
+		});
+
+		t.end();
+	});
 };
 
 var es2016 = function ES2016(ES, ops, expectedMissing) {

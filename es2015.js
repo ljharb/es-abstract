@@ -719,6 +719,23 @@ var ES6 = assign(assign({}, ES5), {
 		}
 
 		return !!$defineProperty(O, P, desc);
+	},
+
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-deletepropertyorthrow
+	DeletePropertyOrThrow: function DeletePropertyOrThrow(O, P) {
+		if (this.Type(O) !== 'Object') {
+			throw new $TypeError('Assertion failed: Type(O) is not Object');
+		}
+
+		if (!this.IsPropertyKey(P)) {
+			throw new $TypeError('Assertion failed: IsPropertyKey(P) is not true');
+		}
+
+		var success = delete O[P];
+		if (!success) {
+			throw new TypeError('Attempt to delete property failed.');
+		}
+		return success;
 	}
 });
 
