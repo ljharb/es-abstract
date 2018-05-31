@@ -1090,6 +1090,18 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 		t.end();
 	});
 
+	test('GetIterator', { skip: true });
+
+	test('IteratorNext', { skip: true });
+
+	test('IteratorComplete', { skip: true });
+
+	test('IteratorValue', { skip: true });
+
+	test('IteratorStep', { skip: true });
+
+	test('IteratorClose', { skip: true });
+
 	test('CreateIterResultObject', function (t) {
 		forEach(v.nonBooleans, function (nonBoolean) {
 			t['throws'](
@@ -1530,6 +1542,18 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 			st.equal(ES.AdvanceStringIndex(halfPoo, 1, true), 2, '1 advances to 2');
 			st.equal(ES.AdvanceStringIndex(halfPoo, 2, true), 3, '2 advances to 3');
 			st.equal(ES.AdvanceStringIndex(halfPoo, 3, true), 4, '3 advances to 4');
+
+			st.end();
+		});
+
+		t.test('surrogate pairs', function (st) {
+			var lowestPair = String.fromCharCode('0xD800') + String.fromCharCode('0xDC00');
+			var highestPair = String.fromCharCode('0xDBFF') + String.fromCharCode('0xDFFF');
+			var poop = String.fromCharCode('0xD83D') + String.fromCharCode('0xDCA9');
+
+			st.equal(ES.AdvanceStringIndex(lowestPair, 0, true), 2, 'lowest surrogate pair, 0 -> 2');
+			st.equal(ES.AdvanceStringIndex(highestPair, 0, true), 2, 'highest surrogate pair, 0 -> 2');
+			st.equal(ES.AdvanceStringIndex(poop, 0, true), 2, 'poop, 0 -> 2');
 
 			st.end();
 		});

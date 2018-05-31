@@ -83,7 +83,7 @@ var ES6 = assign(assign({}, ES5), {
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-toboolean
 	// ToBoolean: ES5.ToBoolean,
 
-	// https://www.ecma-international.org/ecma-262/6.0/#sec-tonumber
+	// https://ecma-international.org/ecma-262/6.0/#sec-tonumber
 	ToNumber: function ToNumber(argument) {
 		var value = isPrimitive(argument) ? argument : toPrimitive(argument, $Number);
 		if (typeof value === 'symbol') {
@@ -178,7 +178,7 @@ var ES6 = assign(assign({}, ES5), {
 		return len;
 	},
 
-	// https://www.ecma-international.org/ecma-262/6.0/#sec-canonicalnumericindexstring
+	// https://ecma-international.org/ecma-262/6.0/#sec-canonicalnumericindexstring
 	CanonicalNumericIndexString: function CanonicalNumericIndexString(argument) {
 		if (toStr(argument) !== '[object String]') {
 			throw new $TypeError('must be a string');
@@ -229,7 +229,7 @@ var ES6 = assign(assign({}, ES5), {
 		return typeof argument === 'string' || typeof argument === 'symbol';
 	},
 
-	// https://www.ecma-international.org/ecma-262/6.0/#sec-isregexp
+	// https://ecma-international.org/ecma-262/6.0/#sec-isregexp
 	IsRegExp: function IsRegExp(argument) {
 		if (!argument || typeof argument !== 'object') {
 			return false;
@@ -272,7 +272,7 @@ var ES6 = assign(assign({}, ES5), {
 	},
 
 	/**
-	 * 7.3.9 - https://www.ecma-international.org/ecma-262/6.0/#sec-getmethod
+	 * 7.3.9 - https://ecma-international.org/ecma-262/6.0/#sec-getmethod
 	 * 1. Assert: IsPropertyKey(P) is true.
 	 * 2. Let func be GetV(O, P).
 	 * 3. ReturnIfAbrupt(func).
@@ -304,7 +304,7 @@ var ES6 = assign(assign({}, ES5), {
 	},
 
 	/**
-	 * 7.3.1 Get (O, P) - https://www.ecma-international.org/ecma-262/6.0/#sec-get-o-p
+	 * 7.3.1 Get (O, P) - https://ecma-international.org/ecma-262/6.0/#sec-get-o-p
 	 * 1. Assert: Type(O) is Object.
 	 * 2. Assert: IsPropertyKey(P) is true.
 	 * 3. Return O.[[Get]](P, O).
@@ -329,7 +329,7 @@ var ES6 = assign(assign({}, ES5), {
 		return ES5.Type(x);
 	},
 
-	// https://www.ecma-international.org/ecma-262/6.0/#sec-speciesconstructor
+	// https://ecma-international.org/ecma-262/6.0/#sec-speciesconstructor
 	SpeciesConstructor: function SpeciesConstructor(O, defaultConstructor) {
 		if (this.Type(O) !== 'Object') {
 			throw new $TypeError('Assertion failed: Type(O) is not Object');
@@ -450,6 +450,95 @@ var ES6 = assign(assign({}, ES5), {
 		return this.Call(func, O, argumentsList);
 	},
 
+	// https://ecma-international.org/ecma-262/6.0/#sec-getiterator
+	GetIterator: function GetIterator(obj, method) {
+		if (!hasSymbols) {
+			throw new SyntaxError('ES.GetIterator depends on native iterator support.');
+		}
+
+		var actualMethod = method;
+		if (arguments.length < 2) {
+			actualMethod = this.GetMethod(obj, $Symbol.iterator);
+		}
+		var iterator = this.Call(actualMethod, obj);
+		if (this.Type(iterator) !== 'Object') {
+			throw new $TypeError('iterator must return an object');
+		}
+
+		return iterator;
+	},
+
+	// https://ecma-international.org/ecma-262/6.0/#sec-iteratornext
+	IteratorNext: function IteratorNext(iterator, value) {
+		var result = this.Invoke(iterator, 'next', arguments.length < 2 ? [] : [value]);
+		if (this.Type(result) !== 'Object') {
+			throw new $TypeError('iterator next must return an object');
+		}
+		return result;
+	},
+
+	// https://ecma-international.org/ecma-262/6.0/#sec-iteratorcomplete
+	IteratorComplete: function IteratorComplete(iterResult) {
+		if (this.Type(iterResult) !== 'Object') {
+			throw new $TypeError('Assertion failed: Type(iterResult) is not Object');
+		}
+		return this.ToBoolean(this.Get(iterResult, 'done'));
+	},
+
+	// https://ecma-international.org/ecma-262/6.0/#sec-iteratorvalue
+	IteratorValue: function IteratorValue(iterResult) {
+		if (this.Type(iterResult) !== 'Object') {
+			throw new $TypeError('Assertion failed: Type(iterResult) is not Object');
+		}
+		return this.Get(iterResult, 'value');
+	},
+
+	// https://ecma-international.org/ecma-262/6.0/#sec-iteratorstep
+	IteratorStep: function IteratorStep(iterator) {
+		var result = this.IteratorNext(iterator);
+		var done = this.IteratorComplete(result);
+		return done === true ? false : result;
+	},
+
+	// https://ecma-international.org/ecma-262/6.0/#sec-iteratorclose
+	IteratorClose: function IteratorClose(iterator, completion) {
+		if (this.Type(iterator) !== 'Object') {
+			throw new $TypeError('Assertion failed: Type(iterator) is not Object');
+		}
+		if (!this.IsCallable(completion)) {
+			throw new $TypeError('Assertion failed: completion is not a thunk for a Completion Record');
+		}
+		var completionThunk = completion;
+
+		var iteratorReturn = this.GetMethod(iterator, 'return');
+
+		if (typeof iteratorReturn === 'undefined') {
+			return completionThunk();
+		}
+
+		var completionRecord;
+		try {
+			var innerResult = this.Call(iteratorReturn, iterator, []);
+		} catch (e) {
+			// if we hit here, then "e" is the innerResult completion that needs re-throwing
+
+			// if the completion is of type "throw", this will throw.
+			completionRecord = completionThunk();
+			completionThunk = null; // ensure it's not called twice.
+
+			// if not, then return the innerResult completion
+			throw e;
+		}
+		completionRecord = completionThunk(); // if innerResult worked, then throw if the completion does
+		completionThunk = null; // ensure it's not called twice.
+
+		if (this.Type(innerResult) !== 'Object') {
+			throw new $TypeError('iterator .return must return an object');
+		}
+
+		return completionRecord;
+	},
+
 	// https://ecma-international.org/ecma-262/6.0/#sec-createiterresultobject
 	CreateIterResultObject: function CreateIterResultObject(value, done) {
 		if (this.Type(done) !== 'Boolean') {
@@ -566,7 +655,7 @@ var ES6 = assign(assign({}, ES5), {
 		return $ObjectCreate(proto);
 	},
 
-	// https://www.ecma-international.org/ecma-262/6.0/#sec-advancestringindex
+	// https://ecma-international.org/ecma-262/6.0/#sec-advancestringindex
 	AdvanceStringIndex: function AdvanceStringIndex(S, index, unicode) {
 		if (this.Type(S) !== 'String') {
 			throw new $TypeError('S must be a String');

@@ -72,7 +72,7 @@ module.exports = {
 	IsConcatSpreadable: 'https://ecma-international.org/ecma-262/6.0/#sec-isconcatspreadable',
 	IsPromise: 'https://ecma-international.org/ecma-262/6.0/#sec-ispromise',
 	ArraySpeciesCreate: 'https://ecma-international.org/ecma-262/6.0/#sec-arrayspeciescreate',
-	ObjectCreate: 'https://www.ecma-international.org/ecma-262/6.0/#sec-objectcreate',
-	AdvanceStringIndex: 'https://www.ecma-international.org/ecma-262/6.0/#sec-advancestringindex',
-	NormalCompletion: 'https://www.ecma-international.org/ecma-262/6.0/#sec-normalcompletion'
+	ObjectCreate: 'https://ecma-international.org/ecma-262/6.0/#sec-objectcreate',
+	AdvanceStringIndex: 'https://ecma-international.org/ecma-262/6.0/#sec-advancestringindex',
+	NormalCompletion: 'https://ecma-international.org/ecma-262/6.0/#sec-normalcompletion'
 };
