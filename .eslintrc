@@ -14,10 +14,11 @@
 		"max-params": [2, 4],
 		"max-statements": [2, 24],
 		"max-statements-per-line": [2, { "max": 2 }],
+		"multiline-comment-style": 1,
 		"no-magic-numbers": 0,
 		"new-cap": 0,
 		"no-extra-parens": 1,
 		"operator-linebreak": [2, "before"],
-		"sort-keys": 0
+		"sort-keys": 0,
 	}
 }
