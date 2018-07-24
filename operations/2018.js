@@ -447,7 +447,6 @@ module.exports = {
 	AsyncGeneratorFunctionCreate: 'https://ecma-international.org/ecma-262/9.0/#sec-asyncgeneratorfunctioncreate',
 	AsyncFunctionCreate: 'https://ecma-international.org/ecma-262/9.0/#sec-asyncfunctioncreate',
 	SetFunctionLength: 'https://ecma-international.org/ecma-262/9.0/#sec-setfunctionlength',
-	thisSymbolValue: 'https://ecma-international.org/ecma-262/9.0/#sec-thissymbolvalue',
 	LocalTZA: 'https://ecma-international.org/ecma-262/9.0/#sec-local-time-zone-adjustment',
 	ToDateString: 'https://ecma-international.org/ecma-262/9.0/#sec-todatestring',
 	TimeString: 'https://ecma-international.org/ecma-262/9.0/#sec-timestring',
