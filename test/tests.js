@@ -1563,6 +1563,73 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 		t.end();
 	});
 
+	test('CreateMethodProperty', function (t) {
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.CreateMethodProperty(primitive, 'key'); },
+				TypeError,
+				'O must be an Object'
+			);
+		});
+
+		forEach(v.nonPropertyKeys, function (nonPropertyKey) {
+			t['throws'](
+				function () { ES.CreateMethodProperty({}, nonPropertyKey); },
+				TypeError,
+				debug(nonPropertyKey) + ' is not a Property Key'
+			);
+		});
+
+		t.test('defines correctly', function (st) {
+			var obj = {};
+			var key = 'the key';
+			var value = { foo: 'bar' };
+
+			st.equal(ES.CreateMethodProperty(obj, key, value), true, 'defines property successfully');
+			st.test('property descriptor', { skip: !Object.getOwnPropertyDescriptor }, function (s2t) {
+				s2t.deepEqual(
+					Object.getOwnPropertyDescriptor(obj, key),
+					{
+						configurable: true,
+						enumerable: false,
+						value: value,
+						writable: true
+					},
+					'sets the correct property descriptor'
+				);
+
+				s2t.end();
+			});
+			st.equal(obj[key], value, 'sets the correct value');
+
+			st.end();
+		});
+
+		t.test('fails as expected on a frozen object', { skip: !Object.freeze }, function (st) {
+			var obj = Object.freeze({ foo: 'bar' });
+			st['throws'](
+				function () { ES.CreateMethodProperty(obj, 'foo', { value: 'baz' }); },
+				TypeError,
+				'nonconfigurable key can not be defined'
+			);
+
+			st.end();
+		});
+
+		var hasNonConfigurableFunctionName = !Object.getOwnPropertyDescriptor
+			|| !Object.getOwnPropertyDescriptor(function () {}, 'name').configurable;
+		t.test('fails as expected on a function with a nonconfigurable name', { skip: !hasNonConfigurableFunctionName }, function (st) {
+			st['throws'](
+				function () { ES.CreateMethodProperty(function () {}, 'name', { value: 'baz' }); },
+				TypeError,
+				'nonconfigurable function name can not be defined'
+			);
+			st.end();
+		});
+
+		t.end();
+	});
+
 	test('DefinePropertyOrThrow', function (t) {
 		forEach(v.primitives, function (primitive) {
 			t['throws'](

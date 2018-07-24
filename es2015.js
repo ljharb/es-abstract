@@ -689,7 +689,7 @@ var ES6 = assign(assign({}, ES5), {
 		return index + 2;
 	},
 
-	// http://www.ecma-international.org/ecma-262/6.0/#sec-createmethodproperty
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-createmethodproperty
 	CreateMethodProperty: function CreateMethodProperty(O, P, V) {
 		if (this.Type(O) !== 'Object') {
 			throw new $TypeError('Assertion failed: Type(O) is not Object');
@@ -705,7 +705,7 @@ var ES6 = assign(assign({}, ES5), {
 			value: V,
 			writable: true
 		};
-		return $defineProperty(O, P, newDesc);
+		return !!$defineProperty(O, P, newDesc);
 	},
 
 	// https://www.ecma-international.org/ecma-262/6.0/#sec-definepropertyorthrow
