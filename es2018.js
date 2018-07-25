@@ -143,5 +143,8 @@ var ES2018 = assign(assign({}, ES2017), {
 });
 
 delete ES2018.EnumerableOwnProperties; // replaced with EnumerableOwnPropertyNames
+if (!ES2018.EnumerableOwnPropertyNames) {
+	delete ES2018.EnumerableOwnPropertyNames; // until it exists
+}
 
 module.exports = ES2018;
