@@ -24,9 +24,7 @@
 		"tests-only": "node test",
 		"coverage": "nyc npm run --silent tests-only >/dev/null",
 		"postcoverage": "nyc report",
-		"lint": "npm run --silent jscs && npm run --silent eslint",
-		"jscs": "jscs test/*.js *.js",
-		"eslint": "eslint test/*.js *.js",
+		"lint": "eslint test/*.js *.js",
 		"eccheck": "editorconfig-tools check *.js **/*.js > /dev/null",
 		"security": "nsp check"
 	},
@@ -58,7 +56,6 @@
 		"editorconfig-tools": "^0.1.1",
 		"eslint": "^5.7.0",
 		"foreach": "^2.0.5",
-		"jscs": "^3.0.7",
 		"nsp": "^3.2.1",
 		"nyc": "^10.3.2",
 		"object-inspect": "^1.6.0",
