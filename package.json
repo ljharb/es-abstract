@@ -20,13 +20,15 @@
 		"prepublish": "safe-publish-latest",
 		"pretest": "npm run --silent lint",
 		"test": "npm run tests-only",
-		"posttest": "npm run --silent security",
+		"posttest": "npm run audit",
 		"tests-only": "node test",
 		"coverage": "nyc npm run --silent tests-only >/dev/null",
 		"postcoverage": "nyc report",
 		"lint": "eslint test/*.js *.js",
 		"eccheck": "editorconfig-tools check *.js **/*.js > /dev/null",
-		"security": "nsp check"
+		"preaudit": "npm install --package-lock --package-lock-only",
+		"audit": "npm audit",
+		"postaudit": "rm package-lock.json"
 	},
 	"repository": {
 		"type": "git",
@@ -56,7 +58,6 @@
 		"editorconfig-tools": "^0.1.1",
 		"eslint": "^5.7.0",
 		"foreach": "^2.0.5",
-		"nsp": "^3.2.1",
 		"nyc": "^10.3.2",
 		"object-inspect": "^1.6.0",
 		"object-is": "^1.0.1",
