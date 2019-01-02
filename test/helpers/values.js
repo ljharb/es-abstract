@@ -49,5 +49,34 @@ module.exports = {
 	propertyKeys: propertyKeys,
 	nonBooleans: nonBooleans,
 	falsies: falsies,
-	truthies: truthies
+	truthies: truthies,
+	bothDescriptor: function () {
+		return { '[[Get]]': function () {}, '[[Value]]': true };
+	},
+	accessorDescriptor: function () {
+		return {
+			'[[Get]]': function () {},
+			'[[Enumerable]]': true,
+			'[[Configurable]]': true
+		};
+	},
+	mutatorDescriptor: function () {
+		return {
+			'[[Set]]': function () {},
+			'[[Enumerable]]': true,
+			'[[Configurable]]': true
+		};
+	},
+	dataDescriptor: function () {
+		return {
+			'[[Value]]': 42,
+			'[[Writable]]': false
+		};
+	},
+	genericDescriptor: function () {
+		return {
+			'[[Configurable]]': true,
+			'[[Enumerable]]': false
+		};
+	}
 };

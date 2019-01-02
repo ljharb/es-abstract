@@ -651,36 +651,6 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 		t.end();
 	});
 
-	var bothDescriptor = function () {
-		return { '[[Get]]': function () {}, '[[Value]]': true };
-	};
-	var accessorDescriptor = function () {
-		return {
-			'[[Get]]': function () {},
-			'[[Enumerable]]': true,
-			'[[Configurable]]': true
-		};
-	};
-	var mutatorDescriptor = function () {
-		return {
-			'[[Set]]': function () {},
-			'[[Enumerable]]': true,
-			'[[Configurable]]': true
-		};
-	};
-	var dataDescriptor = function () {
-		return {
-			'[[Value]]': 42,
-			'[[Writable]]': false
-		};
-	};
-	var genericDescriptor = function () {
-		return {
-			'[[Configurable]]': true,
-			'[[Enumerable]]': false
-		};
-	};
-
 	test('IsPropertyDescriptor', function (t) {
 		forEach(v.nonUndefinedPrimitives, function (primitive) {
 			t.equal(
@@ -694,13 +664,13 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 
 		t.equal(ES.IsPropertyDescriptor({}), true, 'empty object is an incomplete Property Descriptor');
 
-		t.equal(ES.IsPropertyDescriptor(accessorDescriptor()), true, 'accessor descriptor is a Property Descriptor');
-		t.equal(ES.IsPropertyDescriptor(mutatorDescriptor()), true, 'mutator descriptor is a Property Descriptor');
-		t.equal(ES.IsPropertyDescriptor(dataDescriptor()), true, 'data descriptor is a Property Descriptor');
-		t.equal(ES.IsPropertyDescriptor(genericDescriptor()), true, 'generic descriptor is a Property Descriptor');
+		t.equal(ES.IsPropertyDescriptor(v.accessorDescriptor()), true, 'accessor descriptor is a Property Descriptor');
+		t.equal(ES.IsPropertyDescriptor(v.mutatorDescriptor()), true, 'mutator descriptor is a Property Descriptor');
+		t.equal(ES.IsPropertyDescriptor(v.dataDescriptor()), true, 'data descriptor is a Property Descriptor');
+		t.equal(ES.IsPropertyDescriptor(v.genericDescriptor()), true, 'generic descriptor is a Property Descriptor');
 
 		t['throws'](function () {
-			ES.IsPropertyDescriptor(bothDescriptor());
+			ES.IsPropertyDescriptor(v.bothDescriptor());
 		}, TypeError, 'a Property Descriptor can not be both a Data and an Accessor Descriptor');
 
 		t.end();
@@ -718,10 +688,10 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 		t.equal(ES.IsAccessorDescriptor(), false, 'no value is not an Accessor Descriptor');
 		t.equal(ES.IsAccessorDescriptor(undefined), false, 'undefined value is not an Accessor Descriptor');
 
-		t.equal(ES.IsAccessorDescriptor(accessorDescriptor()), true, 'accessor descriptor is an Accessor Descriptor');
-		t.equal(ES.IsAccessorDescriptor(mutatorDescriptor()), true, 'mutator descriptor is an Accessor Descriptor');
-		t.equal(ES.IsAccessorDescriptor(dataDescriptor()), false, 'data descriptor is not an Accessor Descriptor');
-		t.equal(ES.IsAccessorDescriptor(genericDescriptor()), false, 'generic descriptor is not an Accessor Descriptor');
+		t.equal(ES.IsAccessorDescriptor(v.accessorDescriptor()), true, 'accessor descriptor is an Accessor Descriptor');
+		t.equal(ES.IsAccessorDescriptor(v.mutatorDescriptor()), true, 'mutator descriptor is an Accessor Descriptor');
+		t.equal(ES.IsAccessorDescriptor(v.dataDescriptor()), false, 'data descriptor is not an Accessor Descriptor');
+		t.equal(ES.IsAccessorDescriptor(v.genericDescriptor()), false, 'generic descriptor is not an Accessor Descriptor');
 
 		t.end();
 	});
@@ -738,10 +708,10 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 		t.equal(ES.IsDataDescriptor(), false, 'no value is not a Data Descriptor');
 		t.equal(ES.IsDataDescriptor(undefined), false, 'undefined value is not a Data Descriptor');
 
-		t.equal(ES.IsDataDescriptor(accessorDescriptor()), false, 'accessor descriptor is not a Data Descriptor');
-		t.equal(ES.IsDataDescriptor(mutatorDescriptor()), false, 'mutator descriptor is not a Data Descriptor');
-		t.equal(ES.IsDataDescriptor(dataDescriptor()), true, 'data descriptor is a Data Descriptor');
-		t.equal(ES.IsDataDescriptor(genericDescriptor()), false, 'generic descriptor is not a Data Descriptor');
+		t.equal(ES.IsDataDescriptor(v.accessorDescriptor()), false, 'accessor descriptor is not a Data Descriptor');
+		t.equal(ES.IsDataDescriptor(v.mutatorDescriptor()), false, 'mutator descriptor is not a Data Descriptor');
+		t.equal(ES.IsDataDescriptor(v.dataDescriptor()), true, 'data descriptor is a Data Descriptor');
+		t.equal(ES.IsDataDescriptor(v.genericDescriptor()), false, 'generic descriptor is not a Data Descriptor');
 
 		t.end();
 	});
@@ -758,11 +728,11 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 		t.equal(ES.IsGenericDescriptor(), false, 'no value is not a Data Descriptor');
 		t.equal(ES.IsGenericDescriptor(undefined), false, 'undefined value is not a Data Descriptor');
 
-		t.equal(ES.IsGenericDescriptor(accessorDescriptor()), false, 'accessor descriptor is not a generic Descriptor');
-		t.equal(ES.IsGenericDescriptor(mutatorDescriptor()), false, 'mutator descriptor is not a generic Descriptor');
-		t.equal(ES.IsGenericDescriptor(dataDescriptor()), false, 'data descriptor is not a generic Descriptor');
+		t.equal(ES.IsGenericDescriptor(v.accessorDescriptor()), false, 'accessor descriptor is not a generic Descriptor');
+		t.equal(ES.IsGenericDescriptor(v.mutatorDescriptor()), false, 'mutator descriptor is not a generic Descriptor');
+		t.equal(ES.IsGenericDescriptor(v.dataDescriptor()), false, 'data descriptor is not a generic Descriptor');
 
-		t.equal(ES.IsGenericDescriptor(genericDescriptor()), true, 'generic descriptor is a generic Descriptor');
+		t.equal(ES.IsGenericDescriptor(v.genericDescriptor()), true, 'generic descriptor is a generic Descriptor');
 
 		t.end();
 	});
@@ -779,7 +749,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 			);
 		});
 
-		var accessor = accessorDescriptor();
+		var accessor = v.accessorDescriptor();
 		t.deepEqual(ES.FromPropertyDescriptor(accessor), {
 			get: accessor['[[Get]]'],
 			set: accessor['[[Set]]'],
@@ -787,14 +757,14 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 			configurable: !!accessor['[[Configurable]]']
 		});
 
-		var mutator = mutatorDescriptor();
+		var mutator = v.mutatorDescriptor();
 		t.deepEqual(ES.FromPropertyDescriptor(mutator), {
 			get: mutator['[[Get]]'],
 			set: mutator['[[Set]]'],
 			enumerable: !!mutator['[[Enumerable]]'],
 			configurable: !!mutator['[[Configurable]]']
 		});
-		var data = dataDescriptor();
+		var data = v.dataDescriptor();
 		t.deepEqual(ES.FromPropertyDescriptor(data), {
 			value: data['[[Value]]'],
 			writable: data['[[Writable]]'],
@@ -803,7 +773,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 		});
 
 		t['throws'](
-			function () { ES.FromPropertyDescriptor(genericDescriptor()); },
+			function () { ES.FromPropertyDescriptor(v.genericDescriptor()); },
 			TypeError,
 			'a complete Property Descriptor is required'
 		);
@@ -820,28 +790,28 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 			);
 		});
 
-		var accessor = accessorDescriptor();
+		var accessor = v.accessorDescriptor();
 		t.deepEqual(ES.ToPropertyDescriptor({
 			get: accessor['[[Get]]'],
 			enumerable: !!accessor['[[Enumerable]]'],
 			configurable: !!accessor['[[Configurable]]']
 		}), accessor);
 
-		var mutator = mutatorDescriptor();
+		var mutator = v.mutatorDescriptor();
 		t.deepEqual(ES.ToPropertyDescriptor({
 			set: mutator['[[Set]]'],
 			enumerable: !!mutator['[[Enumerable]]'],
 			configurable: !!mutator['[[Configurable]]']
 		}), mutator);
 
-		var data = dataDescriptor();
+		var data = v.dataDescriptor();
 		t.deepEqual(ES.ToPropertyDescriptor({
 			value: data['[[Value]]'],
 			writable: data['[[Writable]]'],
 			configurable: !!data['[[Configurable]]']
 		}), assign(data, { '[[Configurable]]': false }));
 
-		var both = bothDescriptor();
+		var both = v.bothDescriptor();
 		t['throws'](
 			function () {
 				ES.FromPropertyDescriptor({ get: both['[[Get]]'], value: both['[[Value]]'] });
@@ -862,7 +832,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 			);
 		});
 
-		var generic = genericDescriptor();
+		var generic = v.genericDescriptor();
 		t.deepEqual(ES.CompletePropertyDescriptor(generic), {
 			'[[Configurable]]': !!generic['[[Configurable]]'],
 			'[[Enumerable]]': !!generic['[[Enumerable]]'],
@@ -870,7 +840,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 			'[[Writable]]': false
 		}, 'completes a Generic Descriptor');
 
-		var data = dataDescriptor();
+		var data = v.dataDescriptor();
 		t.deepEqual(ES.CompletePropertyDescriptor(data), {
 			'[[Configurable]]': !!data['[[Configurable]]'],
 			'[[Enumerable]]': false,
@@ -878,7 +848,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 			'[[Writable]]': !!data['[[Writable]]']
 		}, 'completes a Data Descriptor');
 
-		var accessor = accessorDescriptor();
+		var accessor = v.accessorDescriptor();
 		t.deepEqual(ES.CompletePropertyDescriptor(accessor), {
 			'[[Get]]': accessor['[[Get]]'],
 			'[[Enumerable]]': !!accessor['[[Enumerable]]'],
@@ -886,7 +856,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 			'[[Set]]': undefined
 		}, 'completes an Accessor Descriptor');
 
-		var mutator = mutatorDescriptor();
+		var mutator = v.mutatorDescriptor();
 		t.deepEqual(ES.CompletePropertyDescriptor(mutator), {
 			'[[Set]]': mutator['[[Set]]'],
 			'[[Enumerable]]': !!mutator['[[Enumerable]]'],
@@ -895,7 +865,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 		}, 'completes a mutator Descriptor');
 
 		t['throws'](
-			function () { ES.CompletePropertyDescriptor(bothDescriptor()); },
+			function () { ES.CompletePropertyDescriptor(v.bothDescriptor()); },
 			TypeError,
 			'data and accessor descriptors are mutually exclusive'
 		);
