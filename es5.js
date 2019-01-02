@@ -23,7 +23,6 @@ module.exports = {
 	IsCallable: require('./5/IsCallable'),
 	IsDataDescriptor: require('./5/IsDataDescriptor'),
 	IsGenericDescriptor: require('./5/IsGenericDescriptor'),
-	IsPropertyDescriptor: require('./5/IsPropertyDescriptor'),
 	MakeDate: require('./5/MakeDate'),
 	MakeDay: require('./5/MakeDay'),
 	MakeTime: require('./5/MakeTime'),

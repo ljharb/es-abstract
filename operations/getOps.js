@@ -185,10 +185,7 @@ async function getOps(year) {
 	const obj = fromEntries(entries.map(([ao, url]) => [ao, typeof url === 'string' ? { url } : url]));
 
 	const outputPath = path.join('operations', `${year}.js`);
-	let output = `'use strict';\n\nmodule.exports = ${JSON.stringify(obj, null, '\t')};\n`;
-	if ((year === 5 || year >= 2015) && year < 2018) {
-		output = output.replace(/[=] \{\n/m, "= {\n\tIsPropertyDescriptor: 'https://262.ecma-international.org/6.0/#sec-property-descriptor-specification-type', // not actually an abstract op\n\n");
-	}
+	const output = `'use strict';\n\nmodule.exports = ${JSON.stringify(obj, null, '\t')};\n`;
 	await fs.writeFile(outputPath, output);
 
 	console.log(`npx eslint --quiet --fix ${outputPath}`);

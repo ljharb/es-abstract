@@ -1,8 +1,6 @@
 'use strict';
 
 module.exports = {
-	IsPropertyDescriptor: 'https://262.ecma-international.org/6.0/#sec-property-descriptor-specification-type', // not actually an abstract op
-
 	abs: {
 		url: 'https://262.ecma-international.org/6.0/#sec-algorithm-conventions'
 	},

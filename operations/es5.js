@@ -20,7 +20,6 @@ module.exports = {
 	IsCallable: 'https://262.ecma-international.org/5.1/#sec-9.11',
 	IsDataDescriptor: 'https://262.ecma-international.org/5.1/#sec-8.10.2',
 	IsGenericDescriptor: 'https://262.ecma-international.org/5.1/#sec-8.10.3',
-	IsPropertyDescriptor: 'https://262.ecma-international.org/5.1/#sec-8.10',
 	MakeDate: 'https://262.ecma-international.org/5.1/#sec-15.9.1.13',
 	MakeDay: 'https://262.ecma-international.org/5.1/#sec-15.9.1.12',
 	MakeTime: 'https://262.ecma-international.org/5.1/#sec-15.9.1.11',

@@ -60,7 +60,6 @@ var ES2016 = {
 	IsGenericDescriptor: require('./2016/IsGenericDescriptor'),
 	IsInteger: require('./2016/IsInteger'),
 	IsPromise: require('./2016/IsPromise'),
-	IsPropertyDescriptor: require('./2016/IsPropertyDescriptor'),
 	IsPropertyKey: require('./2016/IsPropertyKey'),
 	IsRegExp: require('./2016/IsRegExp'),
 	IsWordChar: require('./2016/IsWordChar'),

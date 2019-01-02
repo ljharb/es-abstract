@@ -60,7 +60,6 @@ var ES2017 = {
 	IsGenericDescriptor: require('./2017/IsGenericDescriptor'),
 	IsInteger: require('./2017/IsInteger'),
 	IsPromise: require('./2017/IsPromise'),
-	IsPropertyDescriptor: require('./2017/IsPropertyDescriptor'),
 	IsPropertyKey: require('./2017/IsPropertyKey'),
 	IsRegExp: require('./2017/IsRegExp'),
 	IsSharedArrayBuffer: require('./2017/IsSharedArrayBuffer'),

@@ -17,7 +17,6 @@
 /2015/HourFromTime.js	spackled linguist-generated=true
 /2015/InLeapYear.js	spackled linguist-generated=true
 /2015/IsCallable.js	spackled linguist-generated=true
-/2015/IsPropertyDescriptor.js	spackled linguist-generated=true
 /2015/MakeDate.js	spackled linguist-generated=true
 /2015/MakeDay.js	spackled linguist-generated=true
 /2015/MakeTime.js	spackled linguist-generated=true
@@ -93,7 +92,6 @@
 /2016/IsGenericDescriptor.js	spackled linguist-generated=true
 /2016/IsInteger.js	spackled linguist-generated=true
 /2016/IsPromise.js	spackled linguist-generated=true
-/2016/IsPropertyDescriptor.js	spackled linguist-generated=true
 /2016/IsPropertyKey.js	spackled linguist-generated=true
 /2016/IsRegExp.js	spackled linguist-generated=true
 /2016/IsWordChar.js	spackled linguist-generated=true
@@ -218,7 +216,6 @@
 /2017/IsGenericDescriptor.js	spackled linguist-generated=true
 /2017/IsInteger.js	spackled linguist-generated=true
 /2017/IsPromise.js	spackled linguist-generated=true
-/2017/IsPropertyDescriptor.js	spackled linguist-generated=true
 /2017/IsPropertyKey.js	spackled linguist-generated=true
 /2017/IsRegExp.js	spackled linguist-generated=true
 /2017/IteratorClose.js	spackled linguist-generated=true
