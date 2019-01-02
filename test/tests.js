@@ -9,6 +9,7 @@ var assign = require('object.assign');
 var keys = require('object-keys');
 var has = require('has');
 
+var assertRecordTests = require('./helpers/assertRecord');
 var v = require('./helpers/values');
 var diffOps = require('./diffOps');
 
@@ -675,6 +676,8 @@ var es2015 = function ES2015(ES, ops, expectedMissing) {
 
 		t.end();
 	});
+
+	assertRecordTests(ES, test);
 
 	test('IsAccessorDescriptor', function (t) {
 		forEach(v.nonUndefinedPrimitives, function (primitive) {
