@@ -1,8 +1,6 @@
 'use strict';
 
 module.exports = {
-	IsPropertyDescriptor: 'https://ecma-international.org/ecma-262/6.0/#sec-property-descriptor-specification-type', // not actually an abstract op
-
 	abs: 'https://ecma-international.org/ecma-262/9.0/#eqn-abs',
 	'Abstract Equality Comparison': 'https://ecma-international.org/ecma-262/9.0/#sec-abstract-equality-comparison',
 	'Abstract Relational Comparison': 'https://ecma-international.org/ecma-262/9.0/#sec-abstract-relational-comparison',

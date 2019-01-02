@@ -689,7 +689,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('IsPropertyDescriptor', function (t) {
+	test('IsPropertyDescriptor', { skip: skips && skips.IsPropertyDescriptor }, function (t) {
 		forEach(v.nonUndefinedPrimitives, function (primitive) {
 			t.equal(
 				ES.IsPropertyDescriptor(primitive),
@@ -1913,7 +1913,8 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 
 var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 	es2017(ES, ops, expectedMissing, assign({}, skips, {
-		EnumerableOwnProperties: true
+		EnumerableOwnProperties: true,
+		IsPropertyDescriptor: true
 	}));
 
 	test('thisSymbolValue', function (t) {

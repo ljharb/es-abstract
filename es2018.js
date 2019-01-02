@@ -144,4 +144,6 @@ var ES2018 = assign(assign({}, ES2017), {
 
 delete ES2018.EnumerableOwnProperties; // replaced with EnumerableOwnPropertyNames
 
+delete ES2018.IsPropertyDescriptor; // not an actual abstract operation
+
 module.exports = ES2018;
