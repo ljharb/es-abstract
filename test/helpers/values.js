@@ -24,6 +24,7 @@ var propertyKeys = [].concat(strings, symbols);
 var nonBooleans = [].concat(nullPrimitives, strings, symbols, numbers, objects);
 var falsies = [].concat(nullPrimitives, false, '', 0, -0, NaN);
 var truthies = [].concat(true, 'foo', 42, symbols, objects);
+var timestamps = [].concat(0, 946713600000, 1546329600000);
 
 module.exports = {
 	coercibleObject: coercibleObject,
@@ -50,6 +51,7 @@ module.exports = {
 	nonBooleans: nonBooleans,
 	falsies: falsies,
 	truthies: truthies,
+	timestamps: timestamps,
 	bothDescriptor: function () {
 		return { '[[Get]]': function () {}, '[[Value]]': true };
 	},

@@ -1774,6 +1774,78 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('thisNumberValue', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.thisNumberValue(nonNumber); },
+				TypeError,
+				debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		forEach(v.numbers, function (number) {
+			t.equal(ES.thisNumberValue(number), number, debug(number) + ' is its own thisNumberValue');
+			var obj = Object(number);
+			t.equal(ES.thisNumberValue(obj), number, debug(obj) + ' is the boxed thisNumberValue');
+		});
+
+		t.end();
+	});
+
+	test('thisBooleanValue', function (t) {
+		forEach(v.nonBooleans, function (nonBoolean) {
+			t['throws'](
+				function () { ES.thisBooleanValue(nonBoolean); },
+				TypeError,
+				debug(nonBoolean) + ' is not a Boolean'
+			);
+		});
+
+		forEach(v.booleans, function (boolean) {
+			t.equal(ES.thisBooleanValue(boolean), boolean, debug(boolean) + ' is its own thisBooleanValue');
+			var obj = Object(boolean);
+			t.equal(ES.thisBooleanValue(obj), boolean, debug(obj) + ' is the boxed thisBooleanValue');
+		});
+
+		t.end();
+	});
+
+	test('thisStringValue', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.thisStringValue(nonString); },
+				TypeError,
+				debug(nonString) + ' is not a String'
+			);
+		});
+
+		forEach(v.strings, function (string) {
+			t.equal(ES.thisStringValue(string), string, debug(string) + ' is its own thisStringValue');
+			var obj = Object(string);
+			t.equal(ES.thisStringValue(obj), string, debug(obj) + ' is the boxed thisStringValue');
+		});
+
+		t.end();
+	});
+
+	test('thisTimeValue', function (t) {
+		forEach(v.primitives.concat(v.objects), function (nonDate) {
+			t['throws'](
+				function () { ES.thisTimeValue(nonDate); },
+				TypeError,
+				debug(nonDate) + ' is not a Date'
+			);
+		});
+
+		forEach(v.timestamps, function (timestamp) {
+			var date = new Date(timestamp);
+
+			t.equal(ES.thisTimeValue(date), timestamp, debug(date) + ' is its own thisTimeValue');
+		});
+
+		t.end();
+	});
 };
 
 var es2016 = function ES2016(ES, ops, expectedMissing, skips) {

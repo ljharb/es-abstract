@@ -42,6 +42,11 @@ var $charCodeAt = bind.call(Function.call, $String.prototype.charCodeAt);
 
 var toStr = bind.call(Function.call, Object.prototype.toString);
 
+var $NumberValueOf = bind.call(Function.call, GetIntrinsic('%NumberPrototype%').valueOf);
+var $BooleanValueOf = bind.call(Function.call, GetIntrinsic('%BooleanPrototype%').valueOf);
+var $StringValueOf = bind.call(Function.call, GetIntrinsic('%StringPrototype%').valueOf);
+var $DateValueOf = bind.call(Function.call, GetIntrinsic('%DatePrototype%').valueOf);
+
 var $floor = Math.floor;
 var $abs = Math.abs;
 
@@ -745,6 +750,38 @@ var ES6 = assign(assign({}, ES5), {
 		}
 
 		return keys(O);
+	},
+
+	// https://ecma-international.org/ecma-262/6.0/#sec-properties-of-the-number-prototype-object
+	thisNumberValue: function thisNumberValue(value) {
+		if (this.Type(value) === 'Number') {
+			return value;
+		}
+
+		return $NumberValueOf(value);
+	},
+
+	// https://ecma-international.org/ecma-262/6.0/#sec-properties-of-the-boolean-prototype-object
+	thisBooleanValue: function thisBooleanValue(value) {
+		if (this.Type(value) === 'Boolean') {
+			return value;
+		}
+
+		return $BooleanValueOf(value);
+	},
+
+	// https://ecma-international.org/ecma-262/6.0/#sec-properties-of-the-string-prototype-object
+	thisStringValue: function thisStringValue(value) {
+		if (this.Type(value) === 'String') {
+			return value;
+		}
+
+		return $StringValueOf(value);
+	},
+
+	// https://ecma-international.org/ecma-262/6.0/#sec-properties-of-the-date-prototype-object
+	thisTimeValue: function thisTimeValue(value) {
+		return $DateValueOf(value);
 	}
 });
 
