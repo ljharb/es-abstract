@@ -20,15 +20,12 @@
 		"prepublish": "safe-publish-latest",
 		"pretest": "npm run --silent lint",
 		"test": "npm run tests-only",
-		"posttest": "npm run audit",
+		"posttest": "npx aud",
 		"tests-only": "node test",
 		"coverage": "nyc npm run --silent tests-only >/dev/null",
 		"postcoverage": "nyc report",
 		"lint": "eslint test/*.js *.js",
-		"eccheck": "editorconfig-tools check *.js **/*.js > /dev/null",
-		"preaudit": "npm install --package-lock --package-lock-only",
-		"audit": "npm audit",
-		"postaudit": "rm package-lock.json"
+		"eccheck": "editorconfig-tools check *.js **/*.js > /dev/null"
 	},
 	"repository": {
 		"type": "git",
