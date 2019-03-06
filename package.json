@@ -54,17 +54,17 @@
 		"@ljharb/eslint-config": "^13.1.1",
 		"cheerio": "^1.0.0-rc.2",
 		"editorconfig-tools": "^0.1.1",
-		"eslint": "^5.11.1",
+		"eslint": "^5.15.1",
 		"foreach": "^2.0.5",
 		"nyc": "^10.3.2",
 		"object-inspect": "^1.6.0",
 		"object-is": "^1.0.1",
 		"object.assign": "^4.1.0",
 		"object.fromentries": "^2.0.0",
-		"replace": "^1.0.1",
+		"replace": "^1.1.0",
 		"safe-publish-latest": "^1.1.2",
 		"semver": "^5.6.0",
-		"tape": "^4.9.2"
+		"tape": "^4.10.1"
 	},
 	"testling": {
 		"files": "test/index.js",
