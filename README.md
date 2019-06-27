@@ -27,6 +27,10 @@ assert(!ES.isCallable(/a/g));
 ## Tests
 Simply clone the repo, `npm install`, and run `npm test`
 
+## Security
+
+Please email [@ljharb](https://github.com/ljharb) or see https://tidelift.com/security if you have a potential security vulnerability to report.
+
 [package-url]: https://npmjs.org/package/es-abstract
 [npm-version-svg]: http://versionbadg.es/ljharb/es-abstract.svg
 [travis-svg]: https://travis-ci.org/ljharb/es-abstract.svg

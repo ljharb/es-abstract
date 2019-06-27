@@ -54,7 +54,7 @@
 		"@ljharb/eslint-config": "^13.1.1",
 		"cheerio": "^1.0.0-rc.2",
 		"editorconfig-tools": "^0.1.1",
-		"eslint": "^5.15.1",
+		"eslint": "^5.15.3",
 		"foreach": "^2.0.5",
 		"nyc": "^10.3.2",
 		"object-inspect": "^1.6.0",
