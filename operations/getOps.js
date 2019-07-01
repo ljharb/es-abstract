@@ -18,7 +18,7 @@ var edition = year - 2009;
 
 var specHTMLurl = new URL('https://raw.githubusercontent.com/tc39/ecma262/es' + year + '/spec.html');
 
-var specHTML = String(execSync('curl --silent ' + specHTMLurl));
+var specHTML = String(execSync('curl --silent ' + specHTMLurl, { stdio: 'inherit' }));
 
 var root = $(specHTML);
 
