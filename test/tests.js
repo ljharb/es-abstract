@@ -413,7 +413,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 	test('IsCallable', function (t) {
 		t.equal(true, ES.IsCallable(function () {}), 'function is callable');
-		var nonCallables = [/a/g, {}, Object.prototype, NaN].concat(v.primitives);
+		var nonCallables = [/a/g, {}, Object.prototype, NaN].concat(v.nonFunctions);
 		forEach(nonCallables, function (nonCallable) {
 			t.equal(false, ES.IsCallable(nonCallable), debug(nonCallable) + ' is not callable');
 		});
@@ -581,7 +581,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 	test('Call', function (t) {
 		var receiver = {};
-		var notFuncs = v.objects.concat(v.primitives).concat([/a/g, new RegExp('a', 'g')]);
+		var notFuncs = v.nonFunctions.concat([/a/g, new RegExp('a', 'g')]);
 		t.plan(notFuncs.length + 4);
 		var throwsIfNotCallable = function (notFunc) {
 			t['throws'](
@@ -1934,7 +1934,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('OrdinaryHasInstance', function (t) {
-		forEach(v.objects.concat(v.primitives), function (nonFunction) {
+		forEach(v.nonFunctions, function (nonFunction) {
 			t.equal(ES.OrdinaryHasInstance(nonFunction, {}), false, debug(nonFunction) + ' is not callable');
 		});
 
@@ -1985,7 +1985,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(v.objects.concat(v.primitives), function (nonFunction) {
+		forEach(v.nonFunctions, function (nonFunction) {
 			t['throws'](
 				function () { ES.InstanceofOperator({}, nonFunction); },
 				TypeError,
@@ -3173,9 +3173,117 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 	});
 };
 
+var es2019 = function ES2018(ES, ops, expectedMissing, skips) {
+	es2018(ES, ops, expectedMissing, assign({}, skips, {
+	}));
+
+	test('AddEntriesFromIterable', function (t) {
+		t['throws'](
+			function () { ES.AddEntriesFromIterable({}, undefined, function () {}); },
+			TypeError,
+			'iterable must not be undefined'
+		);
+		t['throws'](
+			function () { ES.AddEntriesFromIterable({}, null, function () {}); },
+			TypeError,
+			'iterable must not be null'
+		);
+		forEach(v.nonFunctions, function (nonFunction) {
+			t['throws'](
+				function () { ES.AddEntriesFromIterable({}, {}, nonFunction); },
+				TypeError,
+				debug(nonFunction) + ' is not a function'
+			);
+		});
+
+		t.test('Symbol support', { skip: !v.hasSymbols }, function (st) {
+			st.plan(4);
+
+			var O = {};
+			st.equal(ES.AddEntriesFromIterable(O, [], function () {}), O, 'returns the target');
+
+			var adder = function (key, value) {
+				st.equal(this, O, 'adder gets proper receiver');
+				st.equal(key, 0, 'k is key');
+				st.equal(value, 'a', 'v is value');
+			};
+			ES.AddEntriesFromIterable(O, ['a'].entries(), adder);
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('FlattenIntoArray', function (t) {
+		t.test('no mapper function', function (st) {
+			var testDepth = function testDepth(tt, depth, expected) {
+				var a = [];
+				var o = [[1], 2, , [[3]], [], 4, [[[[5]]]]]; // eslint-disable-line no-sparse-arrays
+				ES.FlattenIntoArray(a, o, o.length, 0, depth);
+				tt.deepEqual(a, expected, 'depth: ' + depth);
+			};
+
+			testDepth(st, 1, [1, 2, [3], 4, [[[5]]]]);
+			testDepth(st, 2, [1, 2, 3, 4, [[5]]]);
+			testDepth(st, 3, [1, 2, 3, 4, [5]]);
+			testDepth(st, 4, [1, 2, 3, 4, 5]);
+			testDepth(st, Infinity, [1, 2, 3, 4, 5]);
+			st.end();
+		});
+
+		t.test('mapper function', function (st) {
+			var testMapper = function testMapper(tt, mapper, expected, thisArg) {
+				var a = [];
+				var o = [[1], 2, , [[3]], [], 4, [[[[5]]]]]; // eslint-disable-line no-sparse-arrays
+				ES.FlattenIntoArray(a, o, o.length, 0, 1, mapper, thisArg);
+				tt.deepEqual(a, expected);
+			};
+
+			var double = function double(x) {
+				return typeof x === 'number' ? 2 * x : x;
+			};
+			testMapper(
+				st,
+				double,
+				[1, 4, [3], 8, [[[5]]]]
+			);
+			testMapper(
+				st,
+				function (x) { return [this, double(x)]; },
+				[42, [1], 42, 4, 42, [[3]], 42, [], 42, 8, 42, [[[[5]]]]],
+				42
+			);
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('TrimString', function (t) {
+		t.test('non-object string', function (st) {
+			forEach(v.nullPrimitives, function (nullish) {
+				st['throws'](
+					function () { ES.TrimString(nullish); },
+					debug(nullish) + ' is not an Object'
+				);
+			});
+			st.end();
+		});
+
+		var string = ' \n abc  \n ';
+		t.equal(ES.TrimString(string, 'start'), string.slice(string.indexOf('a')));
+		t.equal(ES.TrimString(string, 'end'), string.slice(0, string.lastIndexOf('c') + 1));
+		t.equal(ES.TrimString(string, 'start+end'), string.slice(string.indexOf('a'), string.lastIndexOf('c') + 1));
+
+		t.end();
+	});
+};
+
 module.exports = {
 	es2015: es2015,
 	es2016: es2016,
 	es2017: es2017,
-	es2018: es2018
+	es2018: es2018,
+	es2019: es2019
 };

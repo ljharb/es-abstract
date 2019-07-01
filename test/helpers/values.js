@@ -35,6 +35,7 @@ var nonBooleans = [].concat(nullPrimitives, strings, symbols, numbers, objects);
 var falsies = [].concat(nullPrimitives, false, '', 0, -0, NaN);
 var truthies = [].concat(true, 'foo', 42, symbols, objects);
 var timestamps = [].concat(0, 946713600000, 1546329600000);
+var nonFunctions = [].concat(primitives, objects, [42]);
 
 var descriptors = {
 	configurable: function (descriptor) {
@@ -65,6 +66,7 @@ module.exports = {
 	uncoercibleObject: uncoercibleObject,
 	uncoercibleFnObject: uncoercibleFnObject,
 	objects: objects,
+	nonFunctions: nonFunctions,
 	nullPrimitives: nullPrimitives,
 	numbers: numbers,
 	strings: strings,
