@@ -25,7 +25,7 @@
 		"coverage": "nyc npm run --silent tests-only >/dev/null",
 		"postcoverage": "nyc report",
 		"lint": "eslint test/*.js *.js",
-		"eccheck": "editorconfig-tools check *.js **/*.js > /dev/null"
+		"eccheck": "eclint check *.js **/*.js > /dev/null"
 	},
 	"repository": {
 		"type": "git",
@@ -53,7 +53,7 @@
 	"devDependencies": {
 		"@ljharb/eslint-config": "^13.1.1",
 		"cheerio": "^1.0.0-rc.3",
-		"editorconfig-tools": "^0.1.1",
+		"eclint": "^2.8.1",
 		"eslint": "^5.16.0",
 		"foreach": "^2.0.5",
 		"nyc": "^10.3.2",
