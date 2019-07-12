@@ -63,7 +63,7 @@
 		"object.fromentries": "^2.0.0",
 		"replace": "^1.1.0",
 		"safe-publish-latest": "^1.1.2",
-		"semver": "^5.7.0",
+		"semver": "^6.2.0",
 		"tape": "^4.11.0"
 	},
 	"testling": {
