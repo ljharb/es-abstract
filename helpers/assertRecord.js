@@ -45,5 +45,4 @@ module.exports = function assertRecord(ES, recordType, argumentName, value) {
   if (!predicate(ES, value)) {
     throw new $TypeError(argumentName + ' must be a ' + recordType);
   }
-  console.log(predicate(ES, value), value);
 };
