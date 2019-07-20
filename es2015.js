@@ -14,6 +14,7 @@ var $Object = GetIntrinsic('%Object%');
 var $Number = GetIntrinsic('%Number%');
 var $Symbol = GetIntrinsic('%Symbol%', true);
 var $RegExp = GetIntrinsic('%RegExp%');
+var $preventExtensions = $Object.preventExtensions;
 
 var hasSymbols = !!$Symbol;
 
@@ -26,6 +27,7 @@ var assign = require('./helpers/assign');
 var sign = require('./helpers/sign');
 var mod = require('./helpers/mod');
 var isPrimitive = require('./helpers/isPrimitive');
+var forEach = require('./helpers/forEach');
 var parseInteger = parseInt;
 var bind = require('function-bind');
 var arraySlice = bind.call(Function.call, $Array.prototype.slice);
@@ -52,6 +54,7 @@ var $abs = Math.abs;
 
 var $ObjectCreate = Object.create;
 var $gOPD = $Object.getOwnPropertyDescriptor;
+var $gOPN = $Object.getOwnPropertyNames;
 
 var $isExtensible = $Object.isExtensible;
 
@@ -215,7 +218,7 @@ var ES6 = assign(assign({}, ES5), {
 	},
 
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-isextensible-o
-	IsExtensible: Object.preventExtensions
+	IsExtensible: $preventExtensions
 		? function IsExtensible(obj) {
 			if (isPrimitive(obj)) {
 				return false;
@@ -782,6 +785,47 @@ var ES6 = assign(assign({}, ES5), {
 	// https://ecma-international.org/ecma-262/6.0/#sec-properties-of-the-date-prototype-object
 	thisTimeValue: function thisTimeValue(value) {
 		return $DateValueOf(value);
+	},
+
+	// http://www.ecma-international.org/ecma-262/6.0/#sec-setintegritylevel
+	SetIntegrityLevel: function SetIntegrityLevel(O, level) {
+		if (this.Type(O) !== 'Object') {
+			throw new $TypeError('Assertion failed: Type(O) is not Object');
+		}
+		if (level !== 'sealed' && level !== 'frozen') {
+			throw new $TypeError('Assertion failed: `level` must be `"sealed"` or `"frozen"`');
+		}
+		if (!$preventExtensions) {
+			throw new $SyntaxError('SetIntegrityLevel requires native `Object.preventExtensions` support');
+		}
+		var status = $preventExtensions(O);
+		if (!status) {
+			return false;
+		}
+		if (!$gOPN) {
+			throw new $SyntaxError('SetIntegrityLevel requires native `Object.getOwnPropertyNames` support');
+		}
+		var theKeys = $gOPN(O);
+		var ES = this;
+		if (level === 'sealed') {
+			forEach(theKeys, function (k) {
+				ES.DefinePropertyOrThrow(O, k, { configurable: false });
+			});
+		} else if (level === 'frozen') {
+			forEach(theKeys, function (k) {
+				var currentDesc = $gOPD(O, k);
+				if (typeof currentDesc !== 'undefined') {
+					var desc;
+					if (ES.IsAccessorDescriptor(ES.ToPropertyDescriptor(currentDesc))) {
+						desc = { configurable: false };
+					} else {
+						desc = { configurable: false, writable: false };
+					}
+					ES.DefinePropertyOrThrow(O, k, desc);
+				}
+			});
+		}
+		return true;
 	}
 });
 

@@ -1846,6 +1846,41 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('SetIntegrityLevel', function (t) {
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.SetIntegrityLevel(primitive); },
+				TypeError,
+				debug(primitive) + ' is not an Object'
+			);
+		});
+
+		t['throws'](
+			function () { ES.SetIntegrityLevel({}); },
+			/^TypeError: Assertion failed: `level` must be `"sealed"` or `"frozen"`$/,
+			'`level` must be `"sealed"` or `"frozen"`'
+		);
+
+		var O = { a: 1 };
+		t.equal(ES.SetIntegrityLevel(O, 'sealed'), true);
+		t['throws'](
+			function () { O.b = 2; },
+			/^TypeError: (Cannot|Can't) add property b, object is not extensible$/,
+			'sealing prevent new properties from being added'
+		);
+		O.a = 2;
+		t.equal(O.a, 2, 'pre-frozen, existing properties are mutable');
+
+		t.equal(ES.SetIntegrityLevel(O, 'frozen'), true);
+		t['throws'](
+			function () { O.a = 3; },
+			/^TypeError: Cannot assign to read only property 'a' of /,
+			'freezing prevents existing properties from being mutated'
+		);
+
+		t.end();
+	});
 };
 
 var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
