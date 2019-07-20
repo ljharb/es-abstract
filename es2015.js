@@ -28,6 +28,7 @@ var sign = require('./helpers/sign');
 var mod = require('./helpers/mod');
 var isPrimitive = require('./helpers/isPrimitive');
 var forEach = require('./helpers/forEach');
+var every = require('./helpers/every');
 var parseInteger = parseInt;
 var bind = require('function-bind');
 var arraySlice = bind.call(Function.call, $Array.prototype.slice);
@@ -826,6 +827,34 @@ var ES6 = assign(assign({}, ES5), {
 			});
 		}
 		return true;
+	},
+
+	// http://www.ecma-international.org/ecma-262/6.0/#sec-testintegritylevel
+	TestIntegrityLevel: function TestIntegrityLevel(O, level) {
+		if (this.Type(O) !== 'Object') {
+			throw new $TypeError('Assertion failed: Type(O) is not Object');
+		}
+		if (level !== 'sealed' && level !== 'frozen') {
+			throw new $TypeError('Assertion failed: `level` must be `"sealed"` or `"frozen"`');
+		}
+		var status = this.IsExtensible(O);
+		if (status) {
+			return false;
+		}
+		var theKeys = $gOPN(O);
+		var ES = this;
+		return theKeys.length === 0 || every(theKeys, function (k) {
+			var currentDesc = $gOPD(O, k);
+			if (typeof currentDesc !== 'undefined') {
+				if (currentDesc.configurable) {
+					return false;
+				}
+				if (level === 'frozen' && ES.IsDataDescriptor(ES.ToPropertyDescriptor(currentDesc)) && currentDesc.writable) {
+					return false;
+				}
+			}
+			return true;
+		});
 	}
 });
 
