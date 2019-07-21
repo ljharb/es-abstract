@@ -1937,6 +1937,26 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('OrdinaryHasInstance', function (t) {
+		forEach(v.objects.concat(v.primitives), function (nonFunction) {
+			t.equal(ES.OrdinaryHasInstance(nonFunction, {}), false, debug(nonFunction) + ' is not callable');
+		});
+
+		forEach(v.primitives, function (primitive) {
+			t.equal(ES.OrdinaryHasInstance(function () {}, primitive), false, debug(primitive) + ' is not an object');
+		});
+
+		var C = function C() {};
+		var D = function D() {};
+		t.equal(ES.OrdinaryHasInstance(C, new C()), true, 'constructor function has an instance of itself');
+		t.equal(ES.OrdinaryHasInstance(C, new D()), false, 'constructor/instance mismatch is false');
+		t.equal(ES.OrdinaryHasInstance(D, new C()), false, 'instance/constructor mismatch is false');
+		t.equal(ES.OrdinaryHasInstance(C, {}), false, 'plain object is not an instance of a constructor');
+		t.equal(ES.OrdinaryHasInstance(Object, {}), true, 'plain object is an instance of Object');
+
+		t.end();
+	});
 };
 
 var es2016 = function ES2016(ES, ops, expectedMissing, skips) {

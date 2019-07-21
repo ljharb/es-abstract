@@ -855,6 +855,21 @@ var ES6 = assign(assign({}, ES5), {
 			}
 			return true;
 		});
+	},
+
+	// http://www.ecma-international.org/ecma-262/6.0/#sec-ordinaryhasinstance
+	OrdinaryHasInstance: function OrdinaryHasInstance(C, O) {
+		if (this.IsCallable(C) === false) {
+			return false;
+		}
+		if (this.Type(O) !== 'Object') {
+			return false;
+		}
+		var P = this.Get(C, 'prototype');
+		if (this.Type(P) !== 'Object') {
+			throw new $TypeError('OrdinaryHasInstance called on an object with an invalid prototype property.');
+		}
+		return O instanceof C;
 	}
 });
 
