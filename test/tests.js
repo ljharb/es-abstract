@@ -2237,6 +2237,19 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('IsPromise', { skip: typeof Promise !== 'function' }, function (t) {
+		forEach(v.objects.concat(v.primitives), function (nonPromise) {
+			t.equal(ES.IsPromise(nonPromise), false, debug(nonPromise) + ' is not a Promise');
+		});
+
+		var thenable = { then: Promise.prototype.then };
+		t.equal(ES.IsPromise(thenable), false, 'generic thenable is not a Promise');
+
+		t.equal(ES.IsPromise(Promise.resolve()), true, 'Promise is a Promise');
+
+		t.end();
+	});
 };
 
 module.exports = {

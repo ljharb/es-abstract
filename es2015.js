@@ -14,6 +14,7 @@ var $Object = GetIntrinsic('%Object%');
 var $Number = GetIntrinsic('%Number%');
 var $Symbol = GetIntrinsic('%Symbol%', true);
 var $RegExp = GetIntrinsic('%RegExp%');
+var $Promise = GetIntrinsic('%Promise%', true);
 var $preventExtensions = $Object.preventExtensions;
 
 var hasSymbols = !!$Symbol;
@@ -31,6 +32,7 @@ var forEach = require('./helpers/forEach');
 var every = require('./helpers/every');
 var parseInteger = parseInt;
 var bind = require('function-bind');
+var $PromiseThen = $Promise ? bind.call(Function.call, GetIntrinsic('%PromiseProto_then%')) : null;
 var arraySlice = bind.call(Function.call, $Array.prototype.slice);
 var strSlice = bind.call(Function.call, $String.prototype.slice);
 var isBinary = bind.call(Function.call, $RegExp.prototype.test, /^0b[01]+$/i);
@@ -870,6 +872,22 @@ var ES6 = assign(assign({}, ES5), {
 			throw new $TypeError('OrdinaryHasInstance called on an object with an invalid prototype property.');
 		}
 		return O instanceof C;
+	},
+
+	// http://www.ecma-international.org/ecma-262/6.0/#sec-ispromise
+	IsPromise: function IsPromise(x) {
+		if (this.Type(x) !== 'Object') {
+			return false;
+		}
+		if (!$Promise) { // Promises are not supported
+			return false;
+		}
+		try {
+			$PromiseThen(x); // throws if not a promise
+		} catch (e) {
+			return false;
+		}
+		return true;
 	}
 });
 
