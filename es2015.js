@@ -6,6 +6,7 @@ var keys = require('object-keys');
 
 var GetIntrinsic = require('./GetIntrinsic');
 
+var $Function = GetIntrinsic('%Function%');
 var $TypeError = GetIntrinsic('%TypeError%');
 var $SyntaxError = GetIntrinsic('%SyntaxError%');
 var $Array = GetIntrinsic('%Array%');
@@ -32,30 +33,30 @@ var forEach = require('./helpers/forEach');
 var every = require('./helpers/every');
 var parseInteger = parseInt;
 var bind = require('function-bind');
-var $PromiseThen = $Promise ? bind.call(Function.call, GetIntrinsic('%PromiseProto_then%')) : null;
-var arraySlice = bind.call(Function.call, $Array.prototype.slice);
-var strSlice = bind.call(Function.call, $String.prototype.slice);
-var isBinary = bind.call(Function.call, $RegExp.prototype.test, /^0b[01]+$/i);
-var isOctal = bind.call(Function.call, $RegExp.prototype.test, /^0o[0-7]+$/i);
-var regexExec = bind.call(Function.call, $RegExp.prototype.exec);
+var $PromiseThen = $Promise ? bind.call($Function.call, GetIntrinsic('%PromiseProto_then%')) : null;
+var arraySlice = bind.call($Function.call, $Array.prototype.slice);
+var strSlice = bind.call($Function.call, $String.prototype.slice);
+var isBinary = bind.call($Function.call, $RegExp.prototype.test, /^0b[01]+$/i);
+var isOctal = bind.call($Function.call, $RegExp.prototype.test, /^0o[0-7]+$/i);
+var regexExec = bind.call($Function.call, $RegExp.prototype.exec);
 var nonWS = ['\u0085', '\u200b', '\ufffe'].join('');
 var nonWSregex = new $RegExp('[' + nonWS + ']', 'g');
-var hasNonWS = bind.call(Function.call, $RegExp.prototype.test, nonWSregex);
+var hasNonWS = bind.call($Function.call, $RegExp.prototype.test, nonWSregex);
 var invalidHexLiteral = /^[-+]0x[0-9a-f]+$/i;
-var isInvalidHexLiteral = bind.call(Function.call, $RegExp.prototype.test, invalidHexLiteral);
-var $charCodeAt = bind.call(Function.call, $String.prototype.charCodeAt);
+var isInvalidHexLiteral = bind.call($Function.call, $RegExp.prototype.test, invalidHexLiteral);
+var $charCodeAt = bind.call($Function.call, $String.prototype.charCodeAt);
 
-var toStr = bind.call(Function.call, Object.prototype.toString);
+var toStr = bind.call($Function.call, $Object.prototype.toString);
 
-var $NumberValueOf = bind.call(Function.call, GetIntrinsic('%NumberPrototype%').valueOf);
-var $BooleanValueOf = bind.call(Function.call, GetIntrinsic('%BooleanPrototype%').valueOf);
-var $StringValueOf = bind.call(Function.call, GetIntrinsic('%StringPrototype%').valueOf);
-var $DateValueOf = bind.call(Function.call, GetIntrinsic('%DatePrototype%').valueOf);
+var $NumberValueOf = bind.call($Function.call, GetIntrinsic('%NumberPrototype%').valueOf);
+var $BooleanValueOf = bind.call($Function.call, GetIntrinsic('%BooleanPrototype%').valueOf);
+var $StringValueOf = bind.call($Function.call, GetIntrinsic('%StringPrototype%').valueOf);
+var $DateValueOf = bind.call($Function.call, GetIntrinsic('%DatePrototype%').valueOf);
 
 var $floor = Math.floor;
 var $abs = Math.abs;
 
-var $ObjectCreate = Object.create;
+var $ObjectCreate = $Object.create;
 var $gOPD = $Object.getOwnPropertyDescriptor;
 var $gOPN = $Object.getOwnPropertyNames;
 
