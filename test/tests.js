@@ -1957,6 +1957,82 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('Abstract Equality Comparison', function (t) {
+		t.test('same types use ===', function (st) {
+			forEach(v.primitives.concat(v.objects), function (value) {
+				st.equal(ES['Abstract Equality Comparison'](value, value), value === value, debug(value) + ' is abstractly equal to itself');
+			});
+			st.end();
+		});
+
+		t.test('different types coerce', function (st) {
+			var pairs = [
+				[null, undefined],
+				[3, '3'],
+				[true, '3'],
+				[true, 3],
+				[false, 0],
+				[false, '0'],
+				[3, [3]],
+				['3', [3]],
+				[true, [1]],
+				[false, [0]],
+				[String(v.coercibleObject), v.coercibleObject],
+				[Number(String(v.coercibleObject)), v.coercibleObject],
+				[Number(v.coercibleObject), v.coercibleObject],
+				[String(Number(v.coercibleObject)), v.coercibleObject]
+			];
+			forEach(pairs, function (pair) {
+				var a = pair[0];
+				var b = pair[1];
+				// eslint-disable-next-line eqeqeq
+				st.equal(ES['Abstract Equality Comparison'](a, b), a == b, debug(a) + ' == ' + debug(b));
+				// eslint-disable-next-line eqeqeq
+				st.equal(ES['Abstract Equality Comparison'](b, a), b == a, debug(b) + ' == ' + debug(a));
+			});
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('Strict Equality Comparison', function (t) {
+		t.test('same types use ===', function (st) {
+			forEach(v.primitives.concat(v.objects), function (value) {
+				st.equal(ES['Strict Equality Comparison'](value, value), value === value, debug(value) + ' is strictly equal to itself');
+			});
+			st.end();
+		});
+
+		t.test('different types are not ===', function (st) {
+			var pairs = [
+				[null, undefined],
+				[3, '3'],
+				[true, '3'],
+				[true, 3],
+				[false, 0],
+				[false, '0'],
+				[3, [3]],
+				['3', [3]],
+				[true, [1]],
+				[false, [0]],
+				[String(v.coercibleObject), v.coercibleObject],
+				[Number(String(v.coercibleObject)), v.coercibleObject],
+				[Number(v.coercibleObject), v.coercibleObject],
+				[String(Number(v.coercibleObject)), v.coercibleObject]
+			];
+			forEach(pairs, function (pair) {
+				var a = pair[0];
+				var b = pair[1];
+				st.equal(ES['Strict Equality Comparison'](a, b), a === b, debug(a) + ' === ' + debug(b));
+				st.equal(ES['Strict Equality Comparison'](b, a), b === a, debug(b) + ' === ' + debug(a));
+			});
+			st.end();
+		});
+
+		t.end();
+	});
 };
 
 var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
