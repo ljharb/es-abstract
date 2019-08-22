@@ -4,7 +4,9 @@ var GetIntrinsic = require('./GetIntrinsic');
 
 var $Object = GetIntrinsic('%Object%');
 var $TypeError = GetIntrinsic('%TypeError%');
+var $Function = GetIntrinsic('%Function%');
 var $String = GetIntrinsic('%String%');
+var $Number = GetIntrinsic('%Number%');
 
 var assertRecord = require('./helpers/assertRecord');
 var $isNaN = require('./helpers/isNaN');
@@ -17,6 +19,19 @@ var IsCallable = require('is-callable');
 var toPrimitive = require('es-to-primitive/es5');
 
 var has = require('has');
+
+var bind = require('function-bind');
+var strSlice = bind.call($Function.call, $String.prototype.slice);
+
+var isPrefixOf = function isPrefixOf(prefix, string) {
+	if (prefix === string) {
+		return true;
+	}
+	if (prefix.length > string.length) {
+		return false;
+	}
+	return strSlice(string, 0, prefix.length) === prefix;
+};
 
 // https://es5.github.io/#x9
 var ES5 = {
@@ -273,6 +288,57 @@ var ES5 = {
 			return true;
 		}
 		return x === y; // shortcut for steps 4-7
+	},
+
+	// http://www.ecma-international.org/ecma-262/5.1/#sec-11.8.5
+	// eslint-disable-next-line max-statements
+	'Abstract Relational Comparison': function AbstractRelationalComparison(x, y, LeftFirst) {
+		if (this.Type(LeftFirst) !== 'Boolean') {
+			throw new $TypeError('Assertion failed: LeftFirst argument must be a Boolean');
+		}
+		var px;
+		var py;
+		if (LeftFirst) {
+			px = this.ToPrimitive(x, $Number);
+			py = this.ToPrimitive(y, $Number);
+		} else {
+			py = this.ToPrimitive(y, $Number);
+			px = this.ToPrimitive(x, $Number);
+		}
+		var bothStrings = this.Type(px) === 'String' && this.Type(py) === 'String';
+		if (!bothStrings) {
+			var nx = this.ToNumber(px);
+			var ny = this.ToNumber(py);
+			if ($isNaN(nx) || $isNaN(ny)) {
+				return undefined;
+			}
+			if ($isFinite(nx) && $isFinite(ny) && nx === ny) {
+				return false;
+			}
+			if (nx === 0 && ny === 0) {
+				return false;
+			}
+			if (nx === Infinity) {
+				return false;
+			}
+			if (ny === Infinity) {
+				return true;
+			}
+			if (ny === -Infinity) {
+				return false;
+			}
+			if (nx === -Infinity) {
+				return true;
+			}
+			return nx < ny; // by now, these are both nonzero, finite, and not equal
+		}
+		if (isPrefixOf(py, px)) {
+			return false;
+		}
+		if (isPrefixOf(px, py)) {
+			return true;
+		}
+		return px < py; // both strings, neither a prefix of the other. shortcut for steps c-f
 	}
 };
 
