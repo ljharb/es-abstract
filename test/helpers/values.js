@@ -3,10 +3,18 @@
 var hasSymbols = typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol';
 
 var coercibleObject = { valueOf: function () { return 3; }, toString: function () { return 42; } };
+var coercibleFnObject = {
+	valueOf: function () { return function valueOfFn() {}; },
+	toString: function () { return 42; }
+};
 var valueOfOnlyObject = { valueOf: function () { return 4; }, toString: function () { return {}; } };
 var toStringOnlyObject = { valueOf: function () { return {}; }, toString: function () { return 7; } };
 var uncoercibleObject = { valueOf: function () { return {}; }, toString: function () { return {}; } };
-var objects = [{}, coercibleObject, toStringOnlyObject, valueOfOnlyObject];
+var uncoercibleFnObject = {
+	valueOf: function () { return function valueOfFn() {}; },
+	toString: function () { return function toStrFn() {}; }
+};
+var objects = [{}, coercibleObject, coercibleFnObject, toStringOnlyObject, valueOfOnlyObject];
 var nullPrimitives = [undefined, null];
 var nonIntegerNumbers = [-1.3, 0.2, 1.8, 1 / 3];
 var numbers = [0, -0, Infinity, -Infinity, 42].concat(nonIntegerNumbers);
@@ -28,9 +36,11 @@ var timestamps = [].concat(0, 946713600000, 1546329600000);
 
 module.exports = {
 	coercibleObject: coercibleObject,
+	coercibleFnObject: coercibleFnObject,
 	valueOfOnlyObject: valueOfOnlyObject,
 	toStringOnlyObject: toStringOnlyObject,
 	uncoercibleObject: uncoercibleObject,
+	uncoercibleFnObject: uncoercibleFnObject,
 	objects: objects,
 	nullPrimitives: nullPrimitives,
 	numbers: numbers,
