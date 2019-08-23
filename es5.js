@@ -9,6 +9,7 @@ var $String = GetIntrinsic('%String%');
 var $Number = GetIntrinsic('%Number%');
 
 var assertRecord = require('./helpers/assertRecord');
+var isPropertyDescriptor = require('./helpers/isPropertyDescriptor');
 var $isNaN = require('./helpers/isNaN');
 var $isFinite = require('./helpers/isFinite');
 
@@ -108,28 +109,7 @@ var ES5 = {
 
 	// https://ecma-international.org/ecma-262/6.0/#sec-property-descriptor-specification-type
 	IsPropertyDescriptor: function IsPropertyDescriptor(Desc) {
-		if (this.Type(Desc) !== 'Object') {
-			return false;
-		}
-		var allowed = {
-			'[[Configurable]]': true,
-			'[[Enumerable]]': true,
-			'[[Get]]': true,
-			'[[Set]]': true,
-			'[[Value]]': true,
-			'[[Writable]]': true
-		};
-
-		for (var key in Desc) { // eslint-disable-line
-			if (has(Desc, key) && !allowed[key]) {
-				return false;
-			}
-		}
-
-		if (this.IsDataDescriptor(Desc) && this.IsAccessorDescriptor(Desc)) {
-			throw new $TypeError('Property Descriptors may not be both accessor and data descriptors');
-		}
-		return true;
+		return isPropertyDescriptor(this, Desc);
 	},
 
 	// https://ecma-international.org/ecma-262/5.1/#sec-8.10.1
