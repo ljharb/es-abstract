@@ -31,6 +31,8 @@ var mod = require('./helpers/mod');
 var isPrimitive = require('./helpers/isPrimitive');
 var forEach = require('./helpers/forEach');
 var every = require('./helpers/every');
+var isSamePropertyDescriptor = require('./helpers/isSamePropertyDescriptor');
+var isPropertyDescriptor = require('./helpers/isPropertyDescriptor');
 var parseInteger = parseInt;
 var bind = require('function-bind');
 var $PromiseThen = $Promise ? bind.call($Function.call, GetIntrinsic('%PromiseProto_then%')) : null;
@@ -920,6 +922,111 @@ var ES6 = assign(assign({}, ES5), {
 			return this['Abstract Equality Comparison'](this.ToPrimitive(x), y);
 		}
 		return false;
+	},
+
+	// eslint-disable-next-line max-lines-per-function, max-statements, id-length, max-params
+	ValidateAndApplyPropertyDescriptor: function ValidateAndApplyPropertyDescriptor(O, P, extensible, Desc, current) {
+		var oType = this.Type(O);
+		if (oType !== 'Undefined' && oType !== 'Object') {
+			throw new $TypeError('Assertion failed: O must be undefined or an Object');
+		}
+		if (this.Type(extensible) !== 'Boolean') {
+			throw new $TypeError('Assertion failed: extensible must be a Boolean');
+		}
+		if (!isPropertyDescriptor(this, Desc)) {
+			throw new $TypeError('Assertion failed: Desc must be a Property Descriptor');
+		}
+		if (this.Type(current) !== 'Undefined' && !isPropertyDescriptor(this, current)) {
+			throw new $TypeError('Assertion failed: current must be a Property Descriptor, or undefined');
+		}
+		if (oType !== 'Undefined' && !this.IsPropertyKey(P)) {
+			throw new $TypeError('Assertion failed: if O is not undefined, P must be a Property Key');
+		}
+		if (this.Type(current) === 'Undefined') {
+			if (!extensible) {
+				return false;
+			}
+			if (this.IsGenericDescriptor(Desc) || this.IsDataDescriptor(Desc)) {
+				if (oType !== 'Undefined') {
+					$defineProperty(O, P, this.FromPropertyDescriptor({
+						'[[Configurable]]': Desc['[[Configurable]]'],
+						'[[Enumerable]]': Desc['[[Enumerable]]'],
+						'[[Value]]': Desc['[[Value]]'],
+						'[[Writable]]': Desc['[[Writable]]']
+					}));
+				}
+			} else {
+				if (!this.IsAccessorDescriptor(Desc)) {
+					throw new $TypeError('Assertion failed: Desc is not an accessor descriptor');
+				}
+				if (oType !== 'Undefined') {
+					$defineProperty(O, P, this.FromPropertyDescriptor(Desc));
+				}
+			}
+			return true;
+		}
+		if (this.IsGenericDescriptor(Desc) && !('[[Configurable]]' in Desc) && !('[[Enumerable]]' in Desc)) {
+			return true;
+		}
+		if (isSamePropertyDescriptor(this, Desc, current)) {
+			return true;
+		}
+		if (!current['[[Configurable]]']) {
+			if (Desc['[[Configurable]]']) {
+				return false;
+			}
+			if ('[[Enumerable]]' in Desc) {
+				if (!Desc['[[Configurable]]'] === !!current['[[Configurable]]']) {
+					return false;
+				}
+			}
+		}
+		if (this.IsGenericDescriptor(Desc)) {
+			// no further validation is required.
+		} else if (this.IsDataDescriptor(current) !== this.IsDataDescriptor(Desc)) {
+			if (!current['[[Configurable]]']) {
+				return false;
+			}
+			if (this.IsDataDescriptor(current)) {
+				if (oType !== 'Undefined') {
+					$defineProperty(O, P, this.FromPropertyDescriptor({
+						'[[Configurable]]': current['[[Configurable]]'],
+						'[[Enumerable]]': current['[[Enumerable]]'],
+						'[[Get]]': undefined
+					}));
+				}
+			} else if (oType !== 'Undefined') {
+				$defineProperty(O, P, this.FromPropertyDescriptor({
+					'[[Configurable]]': current['[[Configurable]]'],
+					'[[Enumerable]]': current['[[Enumerable]]'],
+					'[[Value]]': undefined
+				}));
+			}
+		} else if (this.IsDataDescriptor(current) && this.IsDataDescriptor(Desc)) {
+			if (!current['[[Configurable]]']) {
+				if (!current['[[Writable]]'] && Desc['[[Writable]]']) {
+					return false;
+				}
+				if (!current['[[Writable]]'] && '[[Value]]' in Desc && this.SameValue(Desc['[[Value]]'], current['[[Value]]'])) {
+					return false;
+				} else if (!current['[[Configurable]]']) {
+					throw new $TypeError('Assertion failed: at this point, `current` should be Configurable');
+				}
+			}
+		} else if (this.IsAccessorDescriptor(current) && this.IsAccessorDescriptor(Desc)) {
+			if (!current['[[Configurable]]']) {
+				if ('[[Set]]' in Desc && !this.SameValue(Desc['[[Set]]'], current['[[Set]]'])) {
+					return false;
+				}
+				if ('[[Get]]' in Desc && !this.SameValue(Desc['[[Get]]'], current['[[Get]]'])) {
+					return false;
+				}
+			}
+		}
+		if (oType !== 'Undefined') {
+			$defineProperty(O, P, this.FromPropertyDescriptor(Desc));
+		}
+		return true;
 	}
 });
 

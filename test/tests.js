@@ -2065,6 +2065,356 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('ValidateAndApplyPropertyDescriptor', function (t) {
+		forEach(v.nonUndefinedPrimitives, function (nonUndefinedPrimitive) {
+			t['throws'](
+				function () { ES.ValidateAndApplyPropertyDescriptor(nonUndefinedPrimitive, '', false, v.genericDescriptor(), v.genericDescriptor()); },
+				TypeError,
+				'O: ' + debug(nonUndefinedPrimitive) + ' is not undefined or an Object'
+			);
+		});
+
+		forEach(v.nonBooleans, function (nonBoolean) {
+			t['throws'](
+				function () {
+					return ES.ValidateAndApplyPropertyDescriptor(
+						undefined,
+						null,
+						nonBoolean,
+						v.genericDescriptor(),
+						v.genericDescriptor()
+					);
+				},
+				TypeError,
+				'extensible: ' + debug(nonBoolean) + ' is not a Boolean'
+			);
+		});
+
+		forEach(v.primitives, function (primitive) {
+			// Desc must be a Property Descriptor
+			t['throws'](
+				function () {
+					return ES.ValidateAndApplyPropertyDescriptor(
+						undefined,
+						null,
+						false,
+						primitive,
+						v.genericDescriptor()
+					);
+				},
+				TypeError,
+				'Desc: ' + debug(primitive) + ' is not a Property Descriptor'
+			);
+		});
+
+		forEach(v.nonUndefinedPrimitives, function (primitive) {
+			// current must be undefined or a Property Descriptor
+			t['throws'](
+				function () {
+					return ES.ValidateAndApplyPropertyDescriptor(
+						undefined,
+						null,
+						false,
+						v.genericDescriptor(),
+						primitive
+					);
+				},
+				TypeError,
+				'current: ' + debug(primitive) + ' is not a Property Descriptor or undefined'
+			);
+		});
+
+		forEach(v.nonPropertyKeys, function (nonPropertyKey) {
+			// if O is an object, P must be a property key
+			t['throws'](
+				function () {
+					return ES.ValidateAndApplyPropertyDescriptor(
+						{},
+						nonPropertyKey,
+						false,
+						v.genericDescriptor(),
+						v.genericDescriptor()
+					);
+				},
+				TypeError,
+				'P: ' + debug(nonPropertyKey) + ' is not a Property Key'
+			);
+		});
+
+		t.test('current is undefined', function (st) {
+			var propertyKey = 'howdy';
+
+			st.test('generic descriptor', function (s2t) {
+				var generic = v.genericDescriptor();
+				generic['[[Enumerable]]'] = true;
+				var O = {};
+				ES.ValidateAndApplyPropertyDescriptor(undefined, propertyKey, true, generic);
+				s2t.equal(
+					ES.ValidateAndApplyPropertyDescriptor(O, propertyKey, false, generic),
+					false,
+					'when extensible is false, nothing happens'
+				);
+				s2t.deepEqual(O, {}, 'no changes applied when O is undefined or extensible is false');
+				s2t.equal(
+					ES.ValidateAndApplyPropertyDescriptor(O, propertyKey, true, generic),
+					true,
+					'operation is successful'
+				);
+				var expected = {};
+				expected[propertyKey] = undefined;
+				s2t.deepEqual(O, expected, 'generic descriptor has been defined as an own data property');
+				s2t.end();
+			});
+
+			st.test('data descriptor', function (s2t) {
+				var data = v.dataDescriptor();
+				data['[[Enumerable]]'] = true;
+
+				var O = {};
+				ES.ValidateAndApplyPropertyDescriptor(undefined, propertyKey, true, data);
+				s2t.equal(
+					ES.ValidateAndApplyPropertyDescriptor(O, propertyKey, false, data),
+					false,
+					'when extensible is false, nothing happens'
+				);
+				s2t.deepEqual(O, {}, 'no changes applied when O is undefined or extensible is false');
+				s2t.equal(
+					ES.ValidateAndApplyPropertyDescriptor(O, propertyKey, true, data),
+					true,
+					'operation is successful'
+				);
+				var expected = {};
+				expected[propertyKey] = data['[[Value]]'];
+				s2t.deepEqual(O, expected, 'data descriptor has been defined as an own data property');
+				s2t.end();
+			});
+
+			st.test('accessor descriptor', function (s2t) {
+				var count = 0;
+				var accessor = v.accessorDescriptor();
+				accessor['[[Enumerable]]'] = true;
+				accessor['[[Get]]'] = function () {
+					count += 1;
+					return count;
+				};
+
+				var O = {};
+				ES.ValidateAndApplyPropertyDescriptor(undefined, propertyKey, true, accessor);
+				s2t.equal(
+					ES.ValidateAndApplyPropertyDescriptor(O, propertyKey, false, accessor),
+					false,
+					'when extensible is false, nothing happens'
+				);
+				s2t.deepEqual(O, {}, 'no changes applied when O is undefined or extensible is false');
+				s2t.equal(
+					ES.ValidateAndApplyPropertyDescriptor(O, propertyKey, true, accessor),
+					true,
+					'operation is successful'
+				);
+				var expected = {};
+				expected[propertyKey] = accessor['[[Get]]']() + 1;
+				s2t.deepEqual(O, expected, 'accessor descriptor has been defined as an own accessor property');
+				s2t.end();
+			});
+
+			st.end();
+		});
+
+		t.test('every field in Desc is absent', { skip: 'it is unclear if having no fields qualifies Desc to be a Property Descriptor' });
+
+		forEach([v.dataDescriptor, v.accessorDescriptor, v.mutatorDescriptor], function (getDescriptor) {
+			t.equal(
+				ES.ValidateAndApplyPropertyDescriptor(undefined, 'property key', true, getDescriptor(), getDescriptor()),
+				true,
+				'when Desc and current are the same, early return true'
+			);
+		});
+
+		t.test('current is nonconfigurable', function (st) {
+			// note: these must not be generic descriptors, or else the algorithm returns an early true
+			st.equal(
+				ES.ValidateAndApplyPropertyDescriptor(
+					undefined,
+					'property key',
+					true,
+					v.descriptors.configurable(v.dataDescriptor()),
+					v.descriptors.nonConfigurable(v.dataDescriptor())
+				),
+				false,
+				'false if Desc is configurable'
+			);
+
+			st.equal(
+				ES.ValidateAndApplyPropertyDescriptor(
+					undefined,
+					'property key',
+					true,
+					v.descriptors.enumerable(v.dataDescriptor()),
+					v.descriptors.nonEnumerable(v.dataDescriptor())
+				),
+				false,
+				'false if Desc is Enumerable and current is not'
+			);
+
+			st.equal(
+				ES.ValidateAndApplyPropertyDescriptor(
+					undefined,
+					'property key',
+					true,
+					v.descriptors.nonEnumerable(v.dataDescriptor()),
+					v.descriptors.enumerable(v.dataDescriptor())
+				),
+				false,
+				'false if Desc is not Enumerable and current is'
+			);
+
+			var descLackingEnumerable = v.accessorDescriptor();
+			delete descLackingEnumerable['[[Enumerable]]'];
+			st.equal(
+				ES.ValidateAndApplyPropertyDescriptor(
+					undefined,
+					'property key',
+					true,
+					descLackingEnumerable,
+					v.descriptors.enumerable(v.accessorDescriptor())
+				),
+				true,
+				'not false if Desc lacks Enumerable'
+			);
+
+			st.end();
+		});
+
+		t.test('Desc and current: one is a data descriptor, one is not', { skip: !Object.defineProperty }, function (st) {
+			// note: Desc must be configurable if current is nonconfigurable, to hit this branch
+			st.equal(
+				ES.ValidateAndApplyPropertyDescriptor(
+					undefined,
+					'property key',
+					true,
+					v.descriptors.configurable(v.accessorDescriptor()),
+					v.descriptors.nonConfigurable(v.dataDescriptor())
+				),
+				false,
+				'false if current (data) is nonconfigurable'
+			);
+
+			st.equal(
+				ES.ValidateAndApplyPropertyDescriptor(
+					undefined,
+					'property key',
+					true,
+					v.descriptors.configurable(v.dataDescriptor()),
+					v.descriptors.nonConfigurable(v.accessorDescriptor())
+				),
+				false,
+				'false if current (not data) is nonconfigurable'
+			);
+
+			// one is data and one is not,
+			//	// if current is data, convert to accessor
+			//	// else convert to data
+
+			var startsWithData = {
+				'property key': 42
+			};
+			st.equal(
+				ES.ValidateAndApplyPropertyDescriptor(
+					startsWithData,
+					'property key',
+					true,
+					v.descriptors.enumerable(v.descriptors.configurable(v.accessorDescriptor())),
+					v.descriptors.enumerable(v.descriptors.configurable(v.dataDescriptor()))
+				),
+				true,
+				'operation is successful: current is data, Desc is accessor'
+			);
+			var shouldBeAccessor = Object.getOwnPropertyDescriptor(startsWithData, 'property key');
+			st.equal(typeof shouldBeAccessor.get, 'function', 'has a getter');
+
+			var key = 'property key';
+			var startsWithAccessor = {};
+			Object.defineProperty(startsWithAccessor, key, {
+				configurable: true,
+				enumerable: true,
+				get: function get() { return 42; }
+			});
+			st.equal(
+				ES.ValidateAndApplyPropertyDescriptor(
+					startsWithAccessor,
+					key,
+					true,
+					v.descriptors.enumerable(v.descriptors.configurable(v.dataDescriptor())),
+					v.descriptors.enumerable(v.descriptors.configurable(v.accessorDescriptor(42)))
+				),
+				true,
+				'operation is successful: current is accessor, Desc is data'
+			);
+			var shouldBeData = Object.getOwnPropertyDescriptor(startsWithAccessor, 'property key');
+			st.deepEqual(shouldBeData, { configurable: true, enumerable: true, value: 42, writable: false }, 'is a data property');
+
+			st.end();
+		});
+
+		t.test('Desc and current are both data descriptors', function (st) {
+			st.equal(
+				ES.ValidateAndApplyPropertyDescriptor(
+					undefined,
+					'property key',
+					true,
+					v.descriptors.writable(v.dataDescriptor()),
+					v.descriptors.nonWritable(v.descriptors.nonConfigurable(v.dataDescriptor()))
+				),
+				false,
+				'false if frozen current and writable Desc'
+			);
+
+			st.equal(
+				ES.ValidateAndApplyPropertyDescriptor(
+					undefined,
+					'property key',
+					true,
+					v.descriptors.configurable({ '[[Value]]': 42 }),
+					v.descriptors.nonWritable({ '[[Value]]': 7 })
+				),
+				false,
+				'false if nonwritable current has a different value than Desc'
+			);
+
+			st.end();
+		});
+
+		t.test('current is nonconfigurable; Desc and current are both accessor descriptors', function (st) {
+			st.equal(
+				ES.ValidateAndApplyPropertyDescriptor(
+					undefined,
+					'property key',
+					true,
+					v.mutatorDescriptor(),
+					v.descriptors.nonConfigurable(v.mutatorDescriptor())
+				),
+				false,
+				'false if both Sets are not equal'
+			);
+
+			st.equal(
+				ES.ValidateAndApplyPropertyDescriptor(
+					undefined,
+					'property key',
+					true,
+					v.accessorDescriptor(),
+					v.descriptors.nonConfigurable(v.accessorDescriptor())
+				),
+				false,
+				'false if both Gets are not equal'
+			);
+
+			st.end();
+		});
+
+		t.end();
+	});
 };
 
 var es2016 = function ES2016(ES, ops, expectedMissing, skips) {

@@ -78,5 +78,6 @@ module.exports = {
 	ToUint32: 'https://ecma-international.org/ecma-262/6.0/#sec-touint32',
 	ToUint8: 'https://ecma-international.org/ecma-262/6.0/#sec-touint8',
 	ToUint8Clamp: 'https://ecma-international.org/ecma-262/6.0/#sec-touint8clamp',
-	Type: 'https://ecma-international.org/ecma-262/6.0/#sec-ecmascript-language-types'
+	Type: 'https://ecma-international.org/ecma-262/6.0/#sec-ecmascript-language-types',
+	ValidateAndApplyPropertyDescriptor: 'http://www.ecma-international.org/ecma-262/6.0/#sec-validateandapplypropertydescriptor'
 };

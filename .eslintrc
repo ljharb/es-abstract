@@ -14,7 +14,6 @@
 		"eqeqeq": [2, "allow-null"],
 		"func-name-matching": 0,
 		"id-length": [2, { "min": 1, "max": 30 }],
-		"max-lines": [2, 1000],
 		"max-params": [2, 4],
 		"max-statements": [2, 24],
 		"max-statements-per-line": [2, { "max": 2 }],
@@ -24,5 +23,14 @@
 		"no-extra-parens": 1,
 		"operator-linebreak": [2, "before"],
 		"sort-keys": 0,
-	}
+	},
+
+	"overrides": [
+		{
+			"files": "./es2015.js",
+			"rules": {
+				"max-lines": [2, 1200],
+			},
+		},
+	],
 }
