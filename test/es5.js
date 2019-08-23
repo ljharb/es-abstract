@@ -209,6 +209,9 @@ test('Type', function (t) {
 var bothDescriptor = function () {
 	return { '[[Get]]': function () {}, '[[Value]]': true };
 };
+var bothDescriptorWritable = function () {
+	return { '[[Get]]': function () {}, '[[Writable]]': true };
+};
 var accessorDescriptor = function () {
 	return {
 		'[[Get]]': function () {},
@@ -253,6 +256,10 @@ test('IsPropertyDescriptor', function (t) {
 
 	t['throws'](function () {
 		ES.IsPropertyDescriptor(bothDescriptor());
+	}, TypeError, 'a Property Descriptor can not be both a Data and an Accessor Descriptor');
+
+	t['throws'](function () {
+		ES.IsPropertyDescriptor(bothDescriptorWritable());
 	}, TypeError, 'a Property Descriptor can not be both a Data and an Accessor Descriptor');
 
 	t.end();

@@ -126,9 +126,7 @@ var ES5 = {
 			}
 		}
 
-		var isData = has(Desc, '[[Value]]');
-		var IsAccessor = has(Desc, '[[Get]]') || has(Desc, '[[Set]]');
-		if (isData && IsAccessor) {
+		if (this.IsDataDescriptor(Desc) && this.IsAccessorDescriptor(Desc)) {
 			throw new $TypeError('Property Descriptors may not be both accessor and data descriptors');
 		}
 		return true;
