@@ -1,5 +1,7 @@
 'use strict';
 
+var assign = require('../../helpers/assign');
+
 var hasSymbols = typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol';
 
 var coercibleObject = { valueOf: function () { return 3; }, toString: function () { return 42; } };
@@ -34,6 +36,27 @@ var falsies = [].concat(nullPrimitives, false, '', 0, -0, NaN);
 var truthies = [].concat(true, 'foo', 42, symbols, objects);
 var timestamps = [].concat(0, 946713600000, 1546329600000);
 
+var descriptors = {
+	configurable: function (descriptor) {
+		return assign(assign({}, descriptor), { '[[Configurable]]': true });
+	},
+	nonConfigurable: function (descriptor) {
+		return assign(assign({}, descriptor), { '[[Configurable]]': false });
+	},
+	enumerable: function (descriptor) {
+		return assign(assign({}, descriptor), { '[[Enumerable]]': true });
+	},
+	nonEnumerable: function (descriptor) {
+		return assign(assign({}, descriptor), { '[[Enumerable]]': false });
+	},
+	writable: function (descriptor) {
+		return assign(assign({}, descriptor), { '[[Writable]]': true });
+	},
+	nonWritable: function (descriptor) {
+		return assign(assign({}, descriptor), { '[[Writable]]': false });
+	}
+};
+
 module.exports = {
 	coercibleObject: coercibleObject,
 	coercibleFnObject: coercibleFnObject,
@@ -65,30 +88,23 @@ module.exports = {
 	bothDescriptor: function () {
 		return { '[[Get]]': function () {}, '[[Value]]': true };
 	},
-	accessorDescriptor: function () {
-		return {
-			'[[Get]]': function () {},
-			'[[Enumerable]]': true,
-			'[[Configurable]]': true
-		};
+	accessorDescriptor: function (value) {
+		return descriptors.enumerable(descriptors.configurable({
+			'[[Get]]': function get() { return value; }
+		}));
 	},
 	mutatorDescriptor: function () {
-		return {
-			'[[Set]]': function () {},
-			'[[Enumerable]]': true,
-			'[[Configurable]]': true
-		};
+		return descriptors.enumerable(descriptors.configurable({
+			'[[Set]]': function () {}
+		}));
 	},
-	dataDescriptor: function () {
-		return {
-			'[[Value]]': 42,
-			'[[Writable]]': false
-		};
+	dataDescriptor: function (value) {
+		return descriptors.nonWritable({
+			'[[Value]]': arguments.length > 0 ? value : 42
+		});
 	},
 	genericDescriptor: function () {
-		return {
-			'[[Configurable]]': true,
-			'[[Enumerable]]': false
-		};
-	}
+		return descriptors.configurable(descriptors.nonEnumerable());
+	},
+	descriptors: descriptors
 };
