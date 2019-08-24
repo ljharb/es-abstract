@@ -1,3 +1,5 @@
+'use strict';
+
 var bind = require('function-bind');
 var has = bind.call(Function.call, Object.prototype.hasOwnProperty);
 
@@ -8,6 +10,7 @@ module.exports = function assign(target, source) {
 		return $assign(target, source);
 	}
 
+	// eslint-disable-next-line no-restricted-syntax
 	for (var key in source) {
 		if (has(source, key)) {
 			target[key] = source[key];

@@ -32,5 +32,18 @@
 				"max-lines": [2, 1200],
 			},
 		},
+		{
+			"files": "operations/*",
+			"rules": {
+				"max-lines": 0,
+			},
+		},
+		{
+			"files": "operations/getOps.js",
+			"rules": {
+				"no-console": 0,
+				"no-process-exit": 0,
+			},
+		},
 	],
 }

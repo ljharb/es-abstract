@@ -24,7 +24,7 @@
 		"tests-only": "node test",
 		"coverage": "nyc npm run --silent tests-only >/dev/null",
 		"postcoverage": "nyc report",
-		"lint": "eslint test/*.js *.js",
+		"lint": "eslint .",
 		"eccheck": "eclint check *.js **/*.js > /dev/null"
 	},
 	"repository": {
