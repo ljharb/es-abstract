@@ -22,7 +22,7 @@ var predicates = {
 			'[[Writable]]': true
 		};
 
-    for (var key in Desc) { // eslint-disable-line
+		for (var key in Desc) { // eslint-disable-line
 			if (has(Desc, key) && !allowed[key]) {
 				return false;
 			}
