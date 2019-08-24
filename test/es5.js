@@ -480,3 +480,47 @@ test('Abstract Relational Comparison', function (t) {
 
 	t.end();
 });
+
+test('FromPropertyDescriptor', function (t) {
+	t.equal(ES.FromPropertyDescriptor(), undefined, 'no value begets undefined');
+	t.equal(ES.FromPropertyDescriptor(undefined), undefined, 'undefined value begets undefined');
+
+	forEach(v.nonUndefinedPrimitives, function (primitive) {
+		t['throws'](
+			function () { ES.FromPropertyDescriptor(primitive); },
+			TypeError,
+			debug(primitive) + ' is not a Property Descriptor'
+		);
+	});
+
+	var accessor = v.accessorDescriptor();
+	t.deepEqual(ES.FromPropertyDescriptor(accessor), {
+		get: accessor['[[Get]]'],
+		set: accessor['[[Set]]'],
+		enumerable: !!accessor['[[Enumerable]]'],
+		configurable: !!accessor['[[Configurable]]']
+	});
+
+	var mutator = v.mutatorDescriptor();
+	t.deepEqual(ES.FromPropertyDescriptor(mutator), {
+		get: mutator['[[Get]]'],
+		set: mutator['[[Set]]'],
+		enumerable: !!mutator['[[Enumerable]]'],
+		configurable: !!mutator['[[Configurable]]']
+	});
+	var data = v.dataDescriptor();
+	t.deepEqual(ES.FromPropertyDescriptor(data), {
+		value: data['[[Value]]'],
+		writable: data['[[Writable]]'],
+		enumerable: !!data['[[Enumerable]]'],
+		configurable: !!data['[[Configurable]]']
+	});
+
+	t['throws'](
+		function () { ES.FromPropertyDescriptor(v.genericDescriptor()); },
+		TypeError,
+		'a complete Property Descriptor is required'
+	);
+
+	t.end();
+});

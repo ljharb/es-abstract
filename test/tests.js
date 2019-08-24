@@ -792,14 +792,12 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		var accessor = v.accessorDescriptor();
 		t.deepEqual(ES.FromPropertyDescriptor(accessor), {
 			get: accessor['[[Get]]'],
-			set: accessor['[[Set]]'],
 			enumerable: !!accessor['[[Enumerable]]'],
 			configurable: !!accessor['[[Configurable]]']
 		});
 
 		var mutator = v.mutatorDescriptor();
 		t.deepEqual(ES.FromPropertyDescriptor(mutator), {
-			get: mutator['[[Get]]'],
 			set: mutator['[[Set]]'],
 			enumerable: !!mutator['[[Enumerable]]'],
 			configurable: !!mutator['[[Configurable]]']
@@ -807,16 +805,13 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		var data = v.dataDescriptor();
 		t.deepEqual(ES.FromPropertyDescriptor(data), {
 			value: data['[[Value]]'],
-			writable: data['[[Writable]]'],
-			enumerable: !!data['[[Enumerable]]'],
-			configurable: !!data['[[Configurable]]']
+			writable: data['[[Writable]]']
 		});
 
-		t['throws'](
-			function () { ES.FromPropertyDescriptor(v.genericDescriptor()); },
-			TypeError,
-			'a complete Property Descriptor is required'
-		);
+		t.deepEqual(ES.FromPropertyDescriptor(v.genericDescriptor()), {
+			enumerable: false,
+			configurable: true
+		});
 
 		t.end();
 	});
