@@ -47,6 +47,7 @@ var hasNonWS = bind.call($Function.call, $RegExp.prototype.test, nonWSregex);
 var invalidHexLiteral = /^[-+]0x[0-9a-f]+$/i;
 var isInvalidHexLiteral = bind.call($Function.call, $RegExp.prototype.test, invalidHexLiteral);
 var $charCodeAt = bind.call($Function.call, $String.prototype.charCodeAt);
+var $isEnumerable = bind.call($Function.call, $Object.prototype.propertyIsEnumerable);
 
 var toStr = bind.call($Function.call, $Object.prototype.toString);
 
@@ -65,6 +66,31 @@ var $gOPN = $Object.getOwnPropertyNames;
 var $isExtensible = $Object.isExtensible;
 
 var $defineProperty = $Object.defineProperty;
+
+var DefineOwnProperty = function DefineOwnProperty(ES, O, P, desc) {
+	if (!$defineProperty) {
+		if (!ES.IsDataDescriptor(desc)) {
+			// ES3 does not support getters/setters
+			return false;
+		}
+		if (!desc['[[Configurable]]'] || !desc['[[Writable]]']) {
+			return false;
+		}
+
+		// fallback for ES3
+		if (P in O && $isEnumerable(O, P) !== !!desc['[[Enumerable]]']) {
+			// a non-enumerable existing property
+			return false;
+		}
+
+		// property does not exist at all, or exists but is enumerable
+		var V = desc['[[Value]]'];
+		O[P] = V; // will use [[Define]]
+		return ES.SameValue(O[P], V);
+	}
+	$defineProperty(O, P, ES.FromPropertyDescriptor(desc));
+	return true;
+};
 
 // whitespace from: http://es5.github.io/#x15.5.4.20
 // implementation from https://github.com/es-shims/es5-shim/blob/v3.4.0/es5-shim.js#L1304-L1324
@@ -654,19 +680,17 @@ var ES6 = assign(assign({}, ES5), {
 			throw new $TypeError('Assertion failed: IsPropertyKey(P) is not true');
 		}
 		var oldDesc = $gOPD(O, P);
-		var extensible = oldDesc || (typeof $isExtensible !== 'function' || $isExtensible(O));
+		var extensible = oldDesc || this.IsExtensible(O);
 		var immutable = oldDesc && (!oldDesc.writable || !oldDesc.configurable);
 		if (immutable || !extensible) {
 			return false;
 		}
-		var newDesc = {
-			configurable: true,
-			enumerable: true,
-			value: V,
-			writable: true
-		};
-		$defineProperty(O, P, newDesc);
-		return true;
+		return DefineOwnProperty(this, O, P, {
+			'[[Configurable]]': true,
+			'[[Enumerable]]': true,
+			'[[Value]]': V,
+			'[[Writable]]': true
+		});
 	},
 
 	// https://ecma-international.org/ecma-262/6.0/#sec-createdatapropertyorthrow
@@ -744,12 +768,12 @@ var ES6 = assign(assign({}, ES5), {
 		}
 
 		var newDesc = {
-			configurable: true,
-			enumerable: false,
-			value: V,
-			writable: true
+			'[[Configurable]]': true,
+			'[[Enumerable]]': false,
+			'[[Value]]': V,
+			'[[Writable]]': true
 		};
-		return !!$defineProperty(O, P, newDesc);
+		return DefineOwnProperty(this, O, P, newDesc);
 	},
 
 	// https://www.ecma-international.org/ecma-262/6.0/#sec-definepropertyorthrow
@@ -762,7 +786,12 @@ var ES6 = assign(assign({}, ES5), {
 			throw new $TypeError('Assertion failed: IsPropertyKey(P) is not true');
 		}
 
-		return !!$defineProperty(O, P, desc);
+		var Desc = isPropertyDescriptor(this, desc) ? desc : this.ToPropertyDescriptor(desc);
+		if (!isPropertyDescriptor(this, Desc)) {
+			throw new $TypeError('Assertion failed: Desc is not a valid Property Descriptor');
+		}
+
+		return DefineOwnProperty(this, O, P, Desc);
 	},
 
 	// https://www.ecma-international.org/ecma-262/6.0/#sec-deletepropertyorthrow
@@ -978,19 +1007,19 @@ var ES6 = assign(assign({}, ES5), {
 			}
 			if (this.IsGenericDescriptor(Desc) || this.IsDataDescriptor(Desc)) {
 				if (oType !== 'Undefined') {
-					$defineProperty(O, P, this.FromPropertyDescriptor({
+					DefineOwnProperty(this, O, P, {
 						'[[Configurable]]': Desc['[[Configurable]]'],
 						'[[Enumerable]]': Desc['[[Enumerable]]'],
 						'[[Value]]': Desc['[[Value]]'],
 						'[[Writable]]': Desc['[[Writable]]']
-					}));
+					});
 				}
 			} else {
 				if (!this.IsAccessorDescriptor(Desc)) {
 					throw new $TypeError('Assertion failed: Desc is not an accessor descriptor');
 				}
 				if (oType !== 'Undefined') {
-					$defineProperty(O, P, this.FromPropertyDescriptor(Desc));
+					return DefineOwnProperty(this, O, P, Desc);
 				}
 			}
 			return true;
@@ -1019,18 +1048,18 @@ var ES6 = assign(assign({}, ES5), {
 			}
 			if (this.IsDataDescriptor(current)) {
 				if (oType !== 'Undefined') {
-					$defineProperty(O, P, this.FromPropertyDescriptor({
+					DefineOwnProperty(this, O, P, {
 						'[[Configurable]]': current['[[Configurable]]'],
 						'[[Enumerable]]': current['[[Enumerable]]'],
 						'[[Get]]': undefined
-					}));
+					});
 				}
 			} else if (oType !== 'Undefined') {
-				$defineProperty(O, P, this.FromPropertyDescriptor({
+				DefineOwnProperty(this, O, P, {
 					'[[Configurable]]': current['[[Configurable]]'],
 					'[[Enumerable]]': current['[[Enumerable]]'],
 					'[[Value]]': undefined
-				}));
+				});
 			}
 		} else if (this.IsDataDescriptor(current) && this.IsDataDescriptor(Desc)) {
 			if (!current['[[Configurable]]']) {
@@ -1054,7 +1083,7 @@ var ES6 = assign(assign({}, ES5), {
 			}
 		}
 		if (oType !== 'Undefined') {
-			$defineProperty(O, P, this.FromPropertyDescriptor(Desc));
+			return DefineOwnProperty(this, O, P, Desc);
 		}
 		return true;
 	}
