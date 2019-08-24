@@ -20,7 +20,7 @@
 		"prepublish": "safe-publish-latest",
 		"pretest": "npm run --silent lint",
 		"test": "npm run tests-only",
-		"posttest": "npx aud",
+		"posttest": "npx aud --production",
 		"tests-only": "node test",
 		"coverage": "nyc npm run --silent tests-only >/dev/null",
 		"postcoverage": "nyc report",
