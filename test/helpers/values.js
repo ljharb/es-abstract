@@ -88,6 +88,9 @@ module.exports = {
 	bothDescriptor: function () {
 		return { '[[Get]]': function () {}, '[[Value]]': true };
 	},
+	bothDescriptorWritable: function () {
+		return descriptors.writable({ '[[Get]]': function () {} });
+	},
 	accessorDescriptor: function (value) {
 		return descriptors.enumerable(descriptors.configurable({
 			'[[Get]]': function get() { return value; }

@@ -9,15 +9,6 @@ var debug = require('object-inspect');
 
 var v = require('./helpers/values');
 
-var coercibleFnObject = {
-	valueOf: function () { return function valueOfFn() {}; },
-	toString: function () { return 42; }
-};
-var uncoercibleFnObject = {
-	valueOf: function () { return function valueOfFn() {}; },
-	toString: function () { return function toStrFn() {}; }
-};
-
 test('ToPrimitive', function (t) {
 	t.test('primitives', function (st) {
 		var testPrimitive = function (primitive) {
@@ -31,14 +22,14 @@ test('ToPrimitive', function (t) {
 		st.equal(ES.ToPrimitive(v.coercibleObject), v.coercibleObject.valueOf(), 'coercibleObject coerces to valueOf');
 		st.equal(ES.ToPrimitive(v.coercibleObject, Number), v.coercibleObject.valueOf(), 'coercibleObject with hint Number coerces to valueOf');
 		st.equal(ES.ToPrimitive(v.coercibleObject, String), v.coercibleObject.toString(), 'coercibleObject with hint String coerces to toString');
-		st.equal(ES.ToPrimitive(coercibleFnObject), coercibleFnObject.toString(), 'coercibleFnObject coerces to toString');
+		st.equal(ES.ToPrimitive(v.coercibleFnObject), v.coercibleFnObject.toString(), 'coercibleFnObject coerces to toString');
 		st.equal(ES.ToPrimitive(v.toStringOnlyObject), v.toStringOnlyObject.toString(), 'toStringOnlyObject returns toString');
 		st.equal(ES.ToPrimitive(v.valueOfOnlyObject), v.valueOfOnlyObject.valueOf(), 'valueOfOnlyObject returns valueOf');
 		st.equal(ES.ToPrimitive({}), '[object Object]', '{} with no hint coerces to Object#toString');
 		st.equal(ES.ToPrimitive({}, String), '[object Object]', '{} with hint String coerces to Object#toString');
 		st.equal(ES.ToPrimitive({}, Number), '[object Object]', '{} with hint Number coerces to Object#toString');
 		st['throws'](function () { return ES.ToPrimitive(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws a TypeError');
-		st['throws'](function () { return ES.ToPrimitive(uncoercibleFnObject); }, TypeError, 'uncoercibleFnObject throws a TypeError');
+		st['throws'](function () { return ES.ToPrimitive(v.uncoercibleFnObject); }, TypeError, 'uncoercibleFnObject throws a TypeError');
 		st.end();
 	});
 
@@ -206,40 +197,6 @@ test('Type', function (t) {
 	t.end();
 });
 
-var bothDescriptor = function () {
-	return { '[[Get]]': function () {}, '[[Value]]': true };
-};
-var bothDescriptorWritable = function () {
-	return { '[[Get]]': function () {}, '[[Writable]]': true };
-};
-var accessorDescriptor = function () {
-	return {
-		'[[Get]]': function () {},
-		'[[Enumerable]]': true,
-		'[[Configurable]]': true
-	};
-};
-var mutatorDescriptor = function () {
-	return {
-		'[[Set]]': function () {},
-		'[[Enumerable]]': true,
-		'[[Configurable]]': true
-	};
-};
-var dataDescriptor = function () {
-	return {
-		'[[Value]]': 42,
-		'[[Writable]]': false,
-		'[[Configurable]]': false
-	};
-};
-var genericDescriptor = function () {
-	return {
-		'[[Configurable]]': true,
-		'[[Enumerable]]': false
-	};
-};
-
 test('IsPropertyDescriptor', function (t) {
 	forEach(v.primitives, function (primitive) {
 		t.equal(ES.IsPropertyDescriptor(primitive), false, debug(primitive) + ' is not a Property Descriptor');
@@ -249,17 +206,17 @@ test('IsPropertyDescriptor', function (t) {
 
 	t.equal(ES.IsPropertyDescriptor({}), true, 'empty object is an incomplete Property Descriptor');
 
-	t.equal(ES.IsPropertyDescriptor(accessorDescriptor()), true, 'accessor descriptor is a Property Descriptor');
-	t.equal(ES.IsPropertyDescriptor(mutatorDescriptor()), true, 'mutator descriptor is a Property Descriptor');
-	t.equal(ES.IsPropertyDescriptor(dataDescriptor()), true, 'data descriptor is a Property Descriptor');
-	t.equal(ES.IsPropertyDescriptor(genericDescriptor()), true, 'generic descriptor is a Property Descriptor');
+	t.equal(ES.IsPropertyDescriptor(v.accessorDescriptor()), true, 'accessor descriptor is a Property Descriptor');
+	t.equal(ES.IsPropertyDescriptor(v.mutatorDescriptor()), true, 'mutator descriptor is a Property Descriptor');
+	t.equal(ES.IsPropertyDescriptor(v.dataDescriptor()), true, 'data descriptor is a Property Descriptor');
+	t.equal(ES.IsPropertyDescriptor(v.genericDescriptor()), true, 'generic descriptor is a Property Descriptor');
 
 	t['throws'](function () {
-		ES.IsPropertyDescriptor(bothDescriptor());
+		ES.IsPropertyDescriptor(v.bothDescriptor());
 	}, TypeError, 'a Property Descriptor can not be both a Data and an Accessor Descriptor');
 
 	t['throws'](function () {
-		ES.IsPropertyDescriptor(bothDescriptorWritable());
+		ES.IsPropertyDescriptor(v.bothDescriptorWritable());
 	}, TypeError, 'a Property Descriptor can not be both a Data and an Accessor Descriptor');
 
 	t.end();
@@ -273,10 +230,10 @@ test('IsAccessorDescriptor', function (t) {
 	t.equal(ES.IsAccessorDescriptor(), false, 'no value is not an Accessor Descriptor');
 	t.equal(ES.IsAccessorDescriptor(undefined), false, 'undefined value is not an Accessor Descriptor');
 
-	t.equal(ES.IsAccessorDescriptor(accessorDescriptor()), true, 'accessor descriptor is an Accessor Descriptor');
-	t.equal(ES.IsAccessorDescriptor(mutatorDescriptor()), true, 'mutator descriptor is an Accessor Descriptor');
-	t.equal(ES.IsAccessorDescriptor(dataDescriptor()), false, 'data descriptor is not an Accessor Descriptor');
-	t.equal(ES.IsAccessorDescriptor(genericDescriptor()), false, 'generic descriptor is not an Accessor Descriptor');
+	t.equal(ES.IsAccessorDescriptor(v.accessorDescriptor()), true, 'accessor descriptor is an Accessor Descriptor');
+	t.equal(ES.IsAccessorDescriptor(v.mutatorDescriptor()), true, 'mutator descriptor is an Accessor Descriptor');
+	t.equal(ES.IsAccessorDescriptor(v.dataDescriptor()), false, 'data descriptor is not an Accessor Descriptor');
+	t.equal(ES.IsAccessorDescriptor(v.genericDescriptor()), false, 'generic descriptor is not an Accessor Descriptor');
 
 	t.end();
 });
@@ -289,10 +246,10 @@ test('IsDataDescriptor', function (t) {
 	t.equal(ES.IsDataDescriptor(), false, 'no value is not a Data Descriptor');
 	t.equal(ES.IsDataDescriptor(undefined), false, 'undefined value is not a Data Descriptor');
 
-	t.equal(ES.IsDataDescriptor(accessorDescriptor()), false, 'accessor descriptor is not a Data Descriptor');
-	t.equal(ES.IsDataDescriptor(mutatorDescriptor()), false, 'mutator descriptor is not a Data Descriptor');
-	t.equal(ES.IsDataDescriptor(dataDescriptor()), true, 'data descriptor is a Data Descriptor');
-	t.equal(ES.IsDataDescriptor(genericDescriptor()), false, 'generic descriptor is not a Data Descriptor');
+	t.equal(ES.IsDataDescriptor(v.accessorDescriptor()), false, 'accessor descriptor is not a Data Descriptor');
+	t.equal(ES.IsDataDescriptor(v.mutatorDescriptor()), false, 'mutator descriptor is not a Data Descriptor');
+	t.equal(ES.IsDataDescriptor(v.dataDescriptor()), true, 'data descriptor is a Data Descriptor');
+	t.equal(ES.IsDataDescriptor(v.genericDescriptor()), false, 'generic descriptor is not a Data Descriptor');
 
 	t.end();
 });
@@ -309,11 +266,11 @@ test('IsGenericDescriptor', function (t) {
 	t.equal(ES.IsGenericDescriptor(), false, 'no value is not a Data Descriptor');
 	t.equal(ES.IsGenericDescriptor(undefined), false, 'undefined value is not a Data Descriptor');
 
-	t.equal(ES.IsGenericDescriptor(accessorDescriptor()), false, 'accessor descriptor is not a generic Descriptor');
-	t.equal(ES.IsGenericDescriptor(mutatorDescriptor()), false, 'mutator descriptor is not a generic Descriptor');
-	t.equal(ES.IsGenericDescriptor(dataDescriptor()), false, 'data descriptor is not a generic Descriptor');
+	t.equal(ES.IsGenericDescriptor(v.accessorDescriptor()), false, 'accessor descriptor is not a generic Descriptor');
+	t.equal(ES.IsGenericDescriptor(v.mutatorDescriptor()), false, 'mutator descriptor is not a generic Descriptor');
+	t.equal(ES.IsGenericDescriptor(v.dataDescriptor()), false, 'data descriptor is not a generic Descriptor');
 
-	t.equal(ES.IsGenericDescriptor(genericDescriptor()), true, 'generic descriptor is a generic Descriptor');
+	t.equal(ES.IsGenericDescriptor(v.genericDescriptor()), true, 'generic descriptor is a generic Descriptor');
 
 	t.end();
 });
@@ -330,7 +287,7 @@ test('FromPropertyDescriptor', function (t) {
 		);
 	});
 
-	var accessor = accessorDescriptor();
+	var accessor = v.accessorDescriptor();
 	t.deepEqual(ES.FromPropertyDescriptor(accessor), {
 		get: accessor['[[Get]]'],
 		set: accessor['[[Set]]'],
@@ -338,14 +295,14 @@ test('FromPropertyDescriptor', function (t) {
 		configurable: !!accessor['[[Configurable]]']
 	});
 
-	var mutator = mutatorDescriptor();
+	var mutator = v.mutatorDescriptor();
 	t.deepEqual(ES.FromPropertyDescriptor(mutator), {
 		get: mutator['[[Get]]'],
 		set: mutator['[[Set]]'],
 		enumerable: !!mutator['[[Enumerable]]'],
 		configurable: !!mutator['[[Configurable]]']
 	});
-	var data = dataDescriptor();
+	var data = v.dataDescriptor();
 	t.deepEqual(ES.FromPropertyDescriptor(data), {
 		value: data['[[Value]]'],
 		writable: data['[[Writable]]'],
@@ -354,7 +311,7 @@ test('FromPropertyDescriptor', function (t) {
 	});
 
 	t['throws'](
-		function () { ES.FromPropertyDescriptor(genericDescriptor()); },
+		function () { ES.FromPropertyDescriptor(v.genericDescriptor()); },
 		TypeError,
 		'a complete Property Descriptor is required'
 	);
@@ -371,28 +328,28 @@ test('ToPropertyDescriptor', function (t) {
 		);
 	});
 
-	var accessor = accessorDescriptor();
+	var accessor = v.accessorDescriptor();
 	t.deepEqual(ES.ToPropertyDescriptor({
 		get: accessor['[[Get]]'],
 		enumerable: !!accessor['[[Enumerable]]'],
 		configurable: !!accessor['[[Configurable]]']
 	}), accessor);
 
-	var mutator = mutatorDescriptor();
+	var mutator = v.mutatorDescriptor();
 	t.deepEqual(ES.ToPropertyDescriptor({
 		set: mutator['[[Set]]'],
 		enumerable: !!mutator['[[Enumerable]]'],
 		configurable: !!mutator['[[Configurable]]']
 	}), mutator);
 
-	var data = dataDescriptor();
+	var data = v.descriptors.nonConfigurable(v.dataDescriptor());
 	t.deepEqual(ES.ToPropertyDescriptor({
 		value: data['[[Value]]'],
 		writable: data['[[Writable]]'],
 		configurable: !!data['[[Configurable]]']
 	}), data);
 
-	var both = bothDescriptor();
+	var both = v.bothDescriptor();
 	t['throws'](
 		function () {
 			ES.ToPropertyDescriptor({ get: both['[[Get]]'], value: both['[[Value]]'] });
