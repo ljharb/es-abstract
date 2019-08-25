@@ -8,8 +8,10 @@ var GetIntrinsic = require('./GetIntrinsic');
 
 var $Function = GetIntrinsic('%Function%');
 var $TypeError = GetIntrinsic('%TypeError%');
+var $RangeError = GetIntrinsic('%RangeError%');
 var $SyntaxError = GetIntrinsic('%SyntaxError%');
 var $Array = GetIntrinsic('%Array%');
+var $ArrayPrototype = $Array.prototype;
 var $String = GetIntrinsic('%String%');
 var $Object = GetIntrinsic('%Object%');
 var $Number = GetIntrinsic('%Number%');
@@ -23,6 +25,7 @@ var hasSymbols = !!$Symbol;
 var assertRecord = require('./helpers/assertRecord');
 var $isNaN = require('./helpers/isNaN');
 var $isFinite = require('./helpers/isFinite');
+var MAX_ARRAY_LENGTH = Math.pow(2, 32) - 1;
 var MAX_SAFE_INTEGER = $Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1;
 
 var assign = require('./helpers/assign');
@@ -62,10 +65,17 @@ var $abs = Math.abs;
 var $ObjectCreate = $Object.create;
 var $gOPD = $Object.getOwnPropertyDescriptor;
 var $gOPN = $Object.getOwnPropertyNames;
-
 var $isExtensible = $Object.isExtensible;
-
 var $defineProperty = $Object.defineProperty;
+var $setProto = Object.setPrototypeOf || (
+	// eslint-disable-next-line no-proto, no-negated-condition
+	[].__proto__ !== Array.prototype
+		? null
+		: function (O, proto) {
+			O.__proto__ = proto; // eslint-disable-line no-proto
+			return O;
+		}
+);
 
 var DefineOwnProperty = function DefineOwnProperty(ES, O, P, desc) {
 	if (!$defineProperty) {
@@ -1105,6 +1115,36 @@ var ES6 = assign(assign({}, ES5), {
 		var current = desc && this.ToPropertyDescriptor(desc);
 		var extensible = this.IsExtensible(O);
 		return this.ValidateAndApplyPropertyDescriptor(O, P, extensible, Desc, current);
+	},
+
+	// http://www.ecma-international.org/ecma-262/6.0/#sec-arraycreate
+	ArrayCreate: function ArrayCreate(length) {
+		if (!this.IsInteger(length) || length < 0) {
+			throw new $TypeError('Assertion failed: `length` must be an integer Number >= 0');
+		}
+		if (length > MAX_ARRAY_LENGTH) {
+			throw new $RangeError('length is greater than (2**32 - 1)');
+		}
+		var proto = arguments.length > 1 ? arguments[1] : $ArrayPrototype;
+		var A = []; // steps 5 - 7, and 9
+		if (proto !== $ArrayPrototype) { // step 8
+			if (!$setProto) {
+				throw new $SyntaxError('ArrayCreate: a `proto` argument that is not `Array.prototype` is not supported in an environment that does not support setting the [[Prototype]]');
+			}
+			$setProto(A, proto);
+		}
+		if (length !== 0) { // bypasses the need for step 2
+			A.length = length;
+		}
+		/* step 10, the above as a shortcut for the below
+		this.OrdinaryDefineOwnProperty(A, 'length', {
+			'[[Configurable]]': false,
+			'[[Enumerable]]': false,
+			'[[Value]]': length,
+			'[[Writable]]': true
+		});
+		*/
+		return A;
 	}
 });
 

@@ -2450,6 +2450,40 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('ArrayCreate', function (t) {
+		forEach(v.nonIntegerNumbers.concat([-1]), function (nonIntegerNumber) {
+			t['throws'](
+				function () { ES.ArrayCreate(nonIntegerNumber); },
+				TypeError,
+				'length must be an integer number >= 0'
+			);
+		});
+
+		t['throws'](
+			function () { ES.ArrayCreate(Math.pow(2, 32)); },
+			RangeError,
+			'length must be < 2**32'
+		);
+
+		t.deepEqual(ES.ArrayCreate(-0), [], 'length of -0 creates an empty array');
+		t.deepEqual(ES.ArrayCreate(0), [], 'length of +0 creates an empty array');
+		// eslint-disable-next-line no-sparse-arrays, comma-spacing
+		t.deepEqual(ES.ArrayCreate(1), [,], 'length of 1 creates a sparse array of length 1');
+		// eslint-disable-next-line no-sparse-arrays, comma-spacing
+		t.deepEqual(ES.ArrayCreate(2), [,,], 'length of 2 creates a sparse array of length 2');
+
+		// eslint-disable-next-line no-proto
+		t.test('proto argument', { skip: [].__proto__ !== Array.prototype }, function (st) {
+			var fakeProto = {
+				push: { toString: function () { return 'not array push'; } }
+			};
+			st.equal(ES.ArrayCreate(0, fakeProto).push, fakeProto.push, 'passing the proto argument works');
+			st.end();
+		});
+
+		t.end();
+	});
 };
 
 var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
