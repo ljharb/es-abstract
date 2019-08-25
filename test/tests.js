@@ -2410,6 +2410,46 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('OrdinaryDefineOwnProperty', { skip: !Object.defineProperty }, function (t) {
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.CopyDataProperties(primitive, {}, []); },
+				TypeError,
+				'O: ' + debug(primitive) + ' is not an Object'
+			);
+		});
+		forEach(v.nonPropertyKeys, function (nonPropertyKey) {
+			t['throws'](
+				function () { ES.OrdinaryDefineOwnProperty({}, nonPropertyKey, v.genericDescriptor()); },
+				TypeError,
+				'P: ' + debug(nonPropertyKey) + ' is not a Property Key'
+			);
+		});
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.OrdinaryDefineOwnProperty(primitive, '', v.genericDescriptor()); },
+				TypeError,
+				'Desc: ' + debug(primitive) + ' is not a Property Descriptor'
+			);
+		});
+
+		var O = {};
+		var P = 'property key';
+		var Desc = v.accessorDescriptor();
+		t.equal(
+			ES.OrdinaryDefineOwnProperty(O, P, Desc),
+			true,
+			'operation is successful'
+		);
+		t.deepEqual(
+			Object.getOwnPropertyDescriptor(O, P),
+			ES.FromPropertyDescriptor(ES.CompletePropertyDescriptor(Desc)),
+			'expected property descriptor is defined'
+		);
+
+		t.end();
+	});
 };
 
 var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
