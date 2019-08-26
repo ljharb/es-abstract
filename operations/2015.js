@@ -50,6 +50,7 @@ module.exports = {
 	NormalCompletion: 'https://ecma-international.org/ecma-262/6.0/#sec-normalcompletion',
 	ObjectCreate: 'https://ecma-international.org/ecma-262/6.0/#sec-objectcreate',
 	OrdinaryDefineOwnProperty: 'http://www.ecma-international.org/ecma-262/6.0/#sec-ordinarydefineownproperty',
+	OrdinaryGetOwnProperty: 'http://www.ecma-international.org/ecma-262/6.0/#sec-ordinarygetownproperty',
 	OrdinaryHasInstance: 'https://ecma-international.org/ecma-262/6.0/#sec-ordinaryhasinstance',
 	RegExpBuiltinExec: 'https://ecma-international.org/ecma-262/6.0/#sec-regexpbuiltinexec',
 	RegExpExec: 'https://ecma-international.org/ecma-262/6.0/#sec-regexpexec',

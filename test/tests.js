@@ -2411,6 +2411,95 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('OrdinaryGetOwnProperty', function (t) {
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.OrdinaryGetOwnProperty(primitive, ''); },
+				TypeError,
+				'O: ' + debug(primitive) + ' is not an Object'
+			);
+		});
+		forEach(v.nonPropertyKeys, function (nonPropertyKey) {
+			t['throws'](
+				function () { ES.OrdinaryGetOwnProperty({}, nonPropertyKey); },
+				TypeError,
+				'P: ' + debug(nonPropertyKey) + ' is not a Property Key'
+			);
+		});
+
+		t.equal(ES.OrdinaryGetOwnProperty({}, 'not in the object'), undefined, 'missing property yields undefined');
+		t.equal(ES.OrdinaryGetOwnProperty({}, 'toString'), undefined, 'inherited non-own property yields undefined');
+
+		t.deepEqual(
+			ES.OrdinaryGetOwnProperty({ a: 1 }, 'a'),
+			ES.ToPropertyDescriptor({
+				configurable: true,
+				enumerable: true,
+				value: 1,
+				writable: true
+			}),
+			'own assigned data property yields expected descriptor'
+		);
+
+		t.deepEqual(
+			ES.OrdinaryGetOwnProperty(/a/, 'lastIndex'),
+			ES.ToPropertyDescriptor({
+				configurable: false,
+				enumerable: false,
+				value: 0,
+				writable: true
+			}),
+			'regex lastIndex yields expected descriptor'
+		);
+
+		t.deepEqual(
+			ES.OrdinaryGetOwnProperty([], 'length'),
+			ES.ToPropertyDescriptor({
+				configurable: false,
+				enumerable: false,
+				value: 0,
+				writable: true
+			}),
+			'array length yields expected descriptor'
+		);
+
+		t.deepEqual(
+			ES.OrdinaryGetOwnProperty(Object.prototype, 'toString'),
+			ES.ToPropertyDescriptor({
+				configurable: true,
+				enumerable: false,
+				value: Object.prototype.toString,
+				writable: true
+			}),
+			'own non-enumerable data property yields expected descriptor'
+		);
+
+		t.test('ES5+', { skip: !Object.defineProperty }, function (st) {
+			var O = {};
+			Object.defineProperty(O, 'foo', {
+				configurable: false,
+				enumerable: false,
+				value: O,
+				writable: true
+			});
+
+			t.deepEqual(
+				ES.OrdinaryGetOwnProperty(O, 'foo'),
+				ES.ToPropertyDescriptor({
+					configurable: false,
+					enumerable: false,
+					value: O,
+					writable: true
+				}),
+				'defined own property yields expected descriptor'
+			);
+
+			st.end();
+		});
+
+		t.end();
+	});
+
 	test('OrdinaryDefineOwnProperty', { skip: !Object.defineProperty }, function (t) {
 		forEach(v.primitives, function (primitive) {
 			t['throws'](
