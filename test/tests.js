@@ -2573,6 +2573,46 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('ArraySetLength', function (t) {
+		forEach(v.primitives.concat(v.objects), function (nonArray) {
+			t['throws'](
+				function () { ES.ArraySetLength(nonArray, 0); },
+				TypeError,
+				'A: ' + debug(nonArray) + ' is not an Array'
+			);
+		});
+
+		forEach(v.nonUndefinedPrimitives, function (primitive) {
+			t['throws'](
+				function () { ES.ArraySetLength([], primitive); },
+				TypeError,
+				'Desc: ' + debug(primitive) + ' is not a Property Descriptor'
+			);
+		});
+
+		t.test('making length nonwritable', { skip: !Object.defineProperty }, function (st) {
+			var a = [];
+			ES.ArraySetLength(a, { '[[Writable]]': false });
+			st.deepEqual(
+				Object.getOwnPropertyDescriptor(a, 'length'),
+				{
+					configurable: false,
+					enumerable: false,
+					value: 0,
+					writable: false
+				},
+				'without a value, length becomes nonwritable'
+			);
+			st.end();
+		});
+
+		var arr = [];
+		ES.ArraySetLength(arr, { '[[Value]]': 7 });
+		t.equal(arr.length, 7, 'array now has a length of 7');
+
+		t.end();
+	});
 };
 
 var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
