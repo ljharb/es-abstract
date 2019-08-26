@@ -985,6 +985,7 @@ var ES6 = assign(assign({}, ES5), {
 
 	// eslint-disable-next-line max-lines-per-function, max-statements, id-length, max-params
 	ValidateAndApplyPropertyDescriptor: function ValidateAndApplyPropertyDescriptor(O, P, extensible, Desc, current) {
+		// this uses the ES2017+ logic, since it fixes a number of bugs in the ES2015 logic.
 		var oType = this.Type(O);
 		if (oType !== 'Undefined' && oType !== 'Object') {
 			throw new $TypeError('Assertion failed: O must be undefined or an Object');
@@ -1028,16 +1029,15 @@ var ES6 = assign(assign({}, ES5), {
 			return true;
 		}
 		if (isSamePropertyDescriptor(this, Desc, current)) {
-			return true;
+			return true; // removed by ES2017, but should still be correct
 		}
+		// "if every field in Desc is absent, return true" can't really match the assertion that it's a Property Descriptor
 		if (!current['[[Configurable]]']) {
 			if (Desc['[[Configurable]]']) {
 				return false;
 			}
-			if ('[[Enumerable]]' in Desc) {
-				if (!Desc['[[Configurable]]'] === !!current['[[Configurable]]']) {
-					return false;
-				}
+			if ('[[Enumerable]]' in Desc && !Desc['[[Enumerable]]'] === !!current['[[Enumerable]]']) {
+				return false;
 			}
 		}
 		if (this.IsGenericDescriptor(Desc)) {
@@ -1062,15 +1062,14 @@ var ES6 = assign(assign({}, ES5), {
 				});
 			}
 		} else if (this.IsDataDescriptor(current) && this.IsDataDescriptor(Desc)) {
-			if (!current['[[Configurable]]']) {
-				if (!current['[[Writable]]'] && Desc['[[Writable]]']) {
+			if (!current['[[Configurable]]'] && !current['[[Writable]]']) {
+				if ('[[Writable]]' in Desc && Desc['[[Writable]]']) {
 					return false;
 				}
-				if (!current['[[Writable]]'] && '[[Value]]' in Desc && this.SameValue(Desc['[[Value]]'], current['[[Value]]'])) {
+				if ('[[Value]]' in Desc && !this.SameValue(Desc['[[Value]]'], current['[[Value]]'])) {
 					return false;
-				} else if (!current['[[Configurable]]']) {
-					throw new $TypeError('Assertion failed: at this point, `current` should be Configurable');
 				}
+				return true;
 			}
 		} else if (this.IsAccessorDescriptor(current) && this.IsAccessorDescriptor(Desc)) {
 			if (!current['[[Configurable]]']) {
@@ -1080,7 +1079,10 @@ var ES6 = assign(assign({}, ES5), {
 				if ('[[Get]]' in Desc && !this.SameValue(Desc['[[Get]]'], current['[[Get]]'])) {
 					return false;
 				}
+				return true;
 			}
+		} else {
+			throw new $TypeError('Assertion failed: current and Desc are not both data, both accessors, or one accessor and one data.');
 		}
 		if (oType !== 'Undefined') {
 			return DefineOwnProperty(this, O, P, Desc);
