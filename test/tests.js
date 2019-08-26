@@ -2613,6 +2613,44 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('CreateHTML', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.CreateHTML('', nonString, '', ''); },
+				TypeError,
+				'tag: ' + debug(nonString) + ' is not a String',
+			);
+			t['throws'](
+				function () { ES.CreateHTML('', '', nonString, ''); },
+				TypeError,
+				'attribute: ' + debug(nonString) + ' is not a String',
+			);
+		});
+
+		t.equal(
+			ES.CreateHTML(
+				{ toString: function () { return 'the string'; } },
+				'some HTML tag!',
+				''
+			),
+			'<some HTML tag!>the string</some HTML tag!>',
+			'works with an empty string attribute value'
+		);
+
+		t.equal(
+			ES.CreateHTML(
+				{ toString: function () { return 'the string'; } },
+				'some HTML tag!',
+				'attr',
+				'value "with quotes"'
+			),
+			'<some HTML tag! attr="value &quot;with quotes&quot;">the string</some HTML tag!>',
+			'works with an attribute, and a value with quotes'
+		);
+
+		t.end();
+	});
 };
 
 var es2016 = function ES2016(ES, ops, expectedMissing, skips) {

@@ -15,6 +15,7 @@ module.exports = {
 	CreateArrayFromList: 'https://ecma-international.org/ecma-262/6.0/#sec-createarrayfromlist',
 	CreateDataProperty: 'https://ecma-international.org/ecma-262/6.0/#sec-createdataproperty',
 	CreateDataPropertyOrThrow: 'https://ecma-international.org/ecma-262/6.0/#sec-createdatapropertyorthrow',
+	CreateHTML: 'http://www.ecma-international.org/ecma-262/6.0/#sec-createhtml',
 	CreateIterResultObject: 'https://ecma-international.org/ecma-262/6.0/#sec-createiterresultobject',
 	CreateListFromArrayLike: 'https://ecma-international.org/ecma-262/6.0/#sec-createlistfromarraylike',
 	CreateListIterator: 'https://ecma-international.org/ecma-262/6.0/#sec-createlistiterator',

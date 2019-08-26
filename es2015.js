@@ -1228,6 +1228,22 @@ var ES6 = assign(assign({}, ES5), {
 			return this.OrdinaryDefineOwnProperty(A, 'length', { '[[Writable]]': false });
 		}
 		return true;
+	},
+
+	// http://www.ecma-international.org/ecma-262/6.0/#sec-createhtml
+	CreateHTML: function CreateHTML(string, tag, attribute, value) {
+		if (this.Type(tag) !== 'String' || this.Type(attribute) !== 'String') {
+			throw new $TypeError('Assertion failed: `tag` and `attribute` must be strings');
+		}
+		var str = this.RequireObjectCoercible(string);
+		var S = this.ToString(str);
+		var p1 = '<' + tag;
+		if (attribute !== '') {
+			var V = this.ToString(value);
+			var escapedV = replace(V, /\x22/g, '&quot;');
+			p1 += '\x20' + attribute + '\x3D\x22' + escapedV + '\x22';
+		}
+		return p1 + '>' + S + '</' + tag + '>';
 	}
 });
 
