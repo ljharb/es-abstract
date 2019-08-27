@@ -3,6 +3,7 @@
 var has = require('has');
 var toPrimitive = require('es-to-primitive/es6');
 var keys = require('object-keys');
+var inspect = require('object-inspect');
 
 var GetIntrinsic = require('./GetIntrinsic');
 
@@ -127,7 +128,7 @@ var ES6 = assign(assign({}, ES5), {
 	Call: function Call(F, V) {
 		var args = arguments.length > 2 ? arguments[2] : [];
 		if (!this.IsCallable(F)) {
-			throw new $TypeError(F + ' is not a function');
+			throw new $TypeError(inspect(F) + ' is not a function');
 		}
 		return F.apply(V, args);
 	},
