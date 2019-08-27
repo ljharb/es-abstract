@@ -1953,6 +1953,56 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('InstanceofOperator', function (t) {
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.InstanceofOperator(primitive, function () {}); },
+				TypeError,
+				debug(primitive) + ' is not an object'
+			);
+		});
+
+		forEach(v.objects.concat(v.primitives), function (nonFunction) {
+			t['throws'](
+				function () { ES.InstanceofOperator({}, nonFunction); },
+				TypeError,
+				debug(nonFunction) + ' is not callable'
+			);
+		});
+
+		var C = function C() {};
+		var D = function D() {};
+
+		t.equal(ES.InstanceofOperator(new C(), C), true, 'constructor function has an instance of itself');
+		t.equal(ES.InstanceofOperator(new D(), C), false, 'constructor/instance mismatch is false');
+		t.equal(ES.InstanceofOperator(new C(), D), false, 'instance/constructor mismatch is false');
+		t.equal(ES.InstanceofOperator({}, C), false, 'plain object is not an instance of a constructor');
+		t.equal(ES.InstanceofOperator({}, Object), true, 'plain object is an instance of Object');
+
+		t.test('Symbol.hasInstance', { skip: !v.hasSymbols || !Symbol.hasInstance }, function (st) {
+			st.plan(4);
+
+			var O = {};
+			var C2 = function () {};
+			st.equal(ES.InstanceofOperator(O, C2), false, 'O is not an instance of C2');
+
+			Object.defineProperty(C2, Symbol.hasInstance, {
+				value: function (obj) {
+					st.equal(this, C2, 'hasInstance receiver is C2');
+					st.equal(obj, O, 'hasInstance argument is O');
+
+					return {}; // testing coercion to boolean
+				}
+			});
+
+			st.equal(ES.InstanceofOperator(O, C2), true, 'O is now an instance of C2');
+
+			st.end();
+		});
+
+		t.end();
+	});
+
 	test('Abstract Equality Comparison', function (t) {
 		t.test('same types use ===', function (st) {
 			forEach(v.primitives.concat(v.objects), function (value) {

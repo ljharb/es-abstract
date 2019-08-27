@@ -31,6 +31,7 @@ module.exports = {
 	GetV: 'https://ecma-international.org/ecma-262/6.0/#sec-getv',
 	HasOwnProperty: 'https://ecma-international.org/ecma-262/6.0/#sec-hasownproperty',
 	HasProperty: 'https://ecma-international.org/ecma-262/6.0/#sec-hasproperty',
+	InstanceofOperator: 'http://www.ecma-international.org/ecma-262/6.0/#sec-instanceofoperator',
 	Invoke: 'https://ecma-international.org/ecma-262/6.0/#sec-invoke',
 	IsAccessorDescriptor: 'https://ecma-international.org/ecma-262/6.0/#sec-isaccessordescriptor',
 	IsArray: 'https://ecma-international.org/ecma-262/6.0/#sec-isarray',

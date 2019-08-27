@@ -947,6 +947,21 @@ var ES6 = assign(assign({}, ES5), {
 		return O instanceof C;
 	},
 
+	// http://www.ecma-international.org/ecma-262/6.0/#sec-instanceofoperator
+	InstanceofOperator: function InstanceofOperator(O, C) {
+		if (this.Type(O) !== 'Object') {
+			throw new $TypeError('Assertion failed: Type(O) is not Object');
+		}
+		var instOfHandler = hasSymbols && $Symbol.hasInstance ? this.GetMethod(C, $Symbol.hasInstance) : void 0;
+		if (typeof instOfHandler !== 'undefined') {
+			return this.ToBoolean(this.Call(instOfHandler, C, [O]));
+		}
+		if (!this.IsCallable(C)) {
+			throw new $TypeError('`C` is not Callable');
+		}
+		return this.OrdinaryHasInstance(C, O);
+	},
+
 	// http://www.ecma-international.org/ecma-262/6.0/#sec-ispromise
 	IsPromise: function IsPromise(x) {
 		if (this.Type(x) !== 'Object') {
