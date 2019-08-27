@@ -947,6 +947,17 @@ var ES6 = assign(assign({}, ES5), {
 		return O instanceof C;
 	},
 
+	// http://www.ecma-international.org/ecma-262/6.0/#sec-ordinaryhasproperty
+	OrdinaryHasProperty: function OrdinaryHasProperty(O, P) {
+		if (this.Type(O) !== 'Object') {
+			throw new $TypeError('Assertion failed: Type(O) is not Object');
+		}
+		if (!this.IsPropertyKey(P)) {
+			throw new $TypeError('Assertion failed: P must be a Property Key');
+		}
+		return P in O;
+	},
+
 	// http://www.ecma-international.org/ecma-262/6.0/#sec-instanceofoperator
 	InstanceofOperator: function InstanceofOperator(O, C) {
 		if (this.Type(O) !== 'Object') {

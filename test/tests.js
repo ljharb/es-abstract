@@ -1953,6 +1953,29 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('OrdinaryHasProperty', function (t) {
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.OrdinaryHasProperty(primitive, ''); },
+				TypeError,
+				debug(primitive) + ' is not an object'
+			);
+		});
+		forEach(v.nonPropertyKeys, function (nonPropertyKey) {
+			t['throws'](
+				function () { ES.OrdinaryHasProperty({}, nonPropertyKey); },
+				TypeError,
+				'P: ' + debug(nonPropertyKey) + ' is not a Property Key'
+			);
+		});
+
+		t.equal(ES.OrdinaryHasProperty({ a: 1 }, 'a'), true, 'own property is true');
+		t.equal(ES.OrdinaryHasProperty({}, 'toString'), true, 'inherited property is true');
+		t.equal(ES.OrdinaryHasProperty({}, 'nope'), false, 'absent property is false');
+
+		t.end();
+	});
+
 	test('InstanceofOperator', function (t) {
 		forEach(v.primitives, function (primitive) {
 			t['throws'](
