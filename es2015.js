@@ -65,6 +65,7 @@ var $abs = Math.abs;
 var $ObjectCreate = $Object.create;
 var $gOPD = $Object.getOwnPropertyDescriptor;
 var $gOPN = $Object.getOwnPropertyNames;
+var $gOPS = $Object.getOwnPropertySymbols;
 var $isExtensible = $Object.isExtensible;
 var $defineProperty = $Object.defineProperty;
 var $setProto = Object.setPrototypeOf || (
@@ -1244,6 +1245,23 @@ var ES6 = assign(assign({}, ES5), {
 			p1 += '\x20' + attribute + '\x3D\x22' + escapedV + '\x22';
 		}
 		return p1 + '>' + S + '</' + tag + '>';
+	},
+
+	// http://www.ecma-international.org/ecma-262/6.0/#sec-getownpropertykeys
+	GetOwnPropertyKeys: function GetOwnPropertyKeys(O, Type) {
+		if (this.Type(O) !== 'Object') {
+			throw new $TypeError('Assertion failed: Type(O) is not Object');
+		}
+		if (Type === 'Symbol') {
+			return hasSymbols && $gOPS ? $gOPS(O) : [];
+		}
+		if (Type === 'String') {
+			if (!$gOPN) {
+				return keys(O);
+			}
+			return $gOPN(O);
+		}
+		throw new $TypeError('Assertion failed: `Type` must be `"String"` or `"Symbol"`');
 	}
 });
 

@@ -2,7 +2,7 @@
 
 var assign = require('../../helpers/assign');
 
-var hasSymbols = typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol';
+var hasSymbols = require('has-symbols')();
 
 var coercibleObject = { valueOf: function () { return 3; }, toString: function () { return 42; } };
 var coercibleFnObject = {

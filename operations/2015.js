@@ -27,6 +27,7 @@ module.exports = {
 	Get: 'https://ecma-international.org/ecma-262/6.0/#sec-get-o-p',
 	GetIterator: 'https://ecma-international.org/ecma-262/6.0/#sec-getiterator',
 	GetMethod: 'https://ecma-international.org/ecma-262/6.0/#sec-getmethod',
+	GetOwnPropertyKeys: 'http://www.ecma-international.org/ecma-262/6.0/#sec-getownpropertykeys',
 	GetV: 'https://ecma-international.org/ecma-262/6.0/#sec-getv',
 	HasOwnProperty: 'https://ecma-international.org/ecma-262/6.0/#sec-hasownproperty',
 	HasProperty: 'https://ecma-international.org/ecma-262/6.0/#sec-hasproperty',

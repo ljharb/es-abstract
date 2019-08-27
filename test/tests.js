@@ -2619,12 +2619,12 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			t['throws'](
 				function () { ES.CreateHTML('', nonString, '', ''); },
 				TypeError,
-				'tag: ' + debug(nonString) + ' is not a String',
+				'tag: ' + debug(nonString) + ' is not a String'
 			);
 			t['throws'](
 				function () { ES.CreateHTML('', '', nonString, ''); },
 				TypeError,
-				'attribute: ' + debug(nonString) + ' is not a String',
+				'attribute: ' + debug(nonString) + ' is not a String'
 			);
 		});
 
@@ -2647,6 +2647,61 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			),
 			'<some HTML tag! attr="value &quot;with quotes&quot;">the string</some HTML tag!>',
 			'works with an attribute, and a value with quotes'
+		);
+
+		t.end();
+	});
+
+	test('GetOwnPropertyKeys', function (t) {
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.GetOwnPropertyKeys(primitive, 'String'); },
+				TypeError,
+				'O: ' + debug(primitive) + ' is not an Object'
+			);
+		});
+
+		t['throws'](
+			function () { ES.GetOwnPropertyKeys({}, 'not string or symbol'); },
+			TypeError,
+			'Type: must be "String" or "Symbol"'
+		);
+
+		t.test('Symbols', { skip: !v.hasSymbols }, function (st) {
+			var O = { a: 1 };
+			O[Symbol.iterator] = true;
+			var s = Symbol('test');
+			Object.defineProperty(O, s, { enumerable: false, value: true });
+
+			st.deepEqual(
+				ES.GetOwnPropertyKeys(O, 'Symbol'),
+				[Symbol.iterator, s],
+				'works with Symbols, enumerable or not'
+			);
+
+			st.end();
+		});
+
+		t.test('non-enumerable names', { skip: !Object.defineProperty }, function (st) {
+			var O = { a: 1 };
+			Object.defineProperty(O, 'b', { enumerable: false, value: 2 });
+			if (v.hasSymbols) {
+				O[Symbol.iterator] = true;
+			}
+
+			st.deepEqual(
+				ES.GetOwnPropertyKeys(O, 'String').sort(),
+				['a', 'b'].sort(),
+				'works with Strings, enumerable or not'
+			);
+
+			st.end();
+		});
+
+		t.deepEqual(
+			ES.GetOwnPropertyKeys({ a: 1, b: 2 }, 'String').sort(),
+			['a', 'b'].sort(),
+			'works with enumerable keys'
 		);
 
 		t.end();
