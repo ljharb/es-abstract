@@ -9,8 +9,11 @@ var forEach = require('./helpers/forEach');
 var GetIntrinsic = require('./GetIntrinsic');
 
 var $TypeError = GetIntrinsic('%TypeError%');
+var $Array = GetIntrinsic('%Array%');
+var $Function = GetIntrinsic('%Function%');
 var $isEnumerable = bind.call(Function.call, GetIntrinsic('%ObjectPrototype%').propertyIsEnumerable);
 var $pushApply = bind.call(Function.apply, GetIntrinsic('%ArrayPrototype%').push);
+var $arrayPush = bind.call($Function.call, $Array.prototype.push);
 
 var ES2017 = assign(assign({}, ES2016), {
 	ToIndex: function ToIndex(value) {
@@ -46,6 +49,21 @@ var ES2017 = assign(assign({}, ES2016), {
 			return results;
 		}
 		throw new $TypeError('Assertion failed: "kind" is not "key", "value", or "key+value": ' + kind);
+	},
+
+	// http://www.ecma-international.org/ecma-262/8.0/#sec-iterabletolist
+	IterableToList: function IterableToList(items, method) {
+		var iterator = this.GetIterator(items, method);
+		var values = [];
+		var next = true;
+		while (next) {
+			next = this.IteratorStep(iterator);
+			if (next) {
+				var nextValue = this.IteratorValue(next);
+				$arrayPush(values, nextValue);
+			}
+		}
+		return values;
 	}
 });
 

@@ -2857,6 +2857,46 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('IterableToList', function (t) {
+		var customIterator = function () {
+			var i = -1;
+			return {
+				next: function () {
+					i += 1;
+					return {
+						done: i >= 5,
+						value: i
+					};
+				}
+			};
+		};
+
+		t.deepEqual(
+			ES.IterableToList({}, customIterator),
+			[0, 1, 2, 3, 4],
+			'iterator method is called and values collected'
+		);
+
+		t.test('Symbol support', { skip: !v.hasSymbols }, function (st) {
+			st.deepEqual(ES.IterableToList('abc', String.prototype[Symbol.iterator]), ['a', 'b', 'c'], 'a string of code units spreads');
+			st.deepEqual(ES.IterableToList('☃', String.prototype[Symbol.iterator]), ['☃'], 'a string of code points spreads');
+
+			var arr = [1, 2, 3];
+			st.deepEqual(ES.IterableToList(arr, arr[Symbol.iterator]), arr, 'an array becomes a similar array');
+			st.notEqual(ES.IterableToList(arr, arr[Symbol.iterator]), arr, 'an array becomes a different, but similar, array');
+
+			st.end();
+		});
+
+		t['throws'](
+			function () { ES.IterableToList({}, void 0); },
+			TypeError,
+			'non-function iterator method'
+		);
+
+		t.end();
+	});
 };
 
 var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
