@@ -50,5 +50,6 @@ var ES2017 = assign(assign({}, ES2016), {
 });
 
 delete ES2017.EnumerableOwnNames; // replaced with EnumerableOwnProperties
+delete ES2017.IterableToArrayLike; // replaced with IterableToList
 
 module.exports = ES2017;

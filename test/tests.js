@@ -2779,11 +2779,49 @@ var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('IterableToArrayLike', { skip: skips && skips.IterableToArrayLike }, function (t) {
+		t.test('custom iterables', { skip: !v.hasSymbols }, function (st) {
+			var O = {};
+			O[Symbol.iterator] = function () {
+				var i = -1;
+				return {
+					next: function () {
+						i += 1;
+						return {
+							done: i >= 5,
+							value: i
+						};
+					}
+				};
+			};
+			st.deepEqual(
+				ES.IterableToArrayLike(O),
+				[0, 1, 2, 3, 4],
+				'Symbol.iterator method is called and values collected'
+			);
+
+			st.end();
+		});
+
+		t.deepEqual(ES.IterableToArrayLike('abc'), ['a', 'b', 'c'], 'a string of code units spreads');
+		t.deepEqual(ES.IterableToArrayLike('☃'), ['☃'], 'a string of code points spreads');
+
+		var arr = [1, 2, 3];
+		t.deepEqual(ES.IterableToArrayLike(arr), arr, 'an array becomes a similar array');
+		t.notEqual(ES.IterableToArrayLike(arr), arr, 'an array becomes a different, but similar, array');
+
+		var O = {};
+		t.equal(ES.IterableToArrayLike(O), O, 'a non-iterable non-array non-string object is returned directly');
+
+		t.end();
+	});
 };
 
 var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 	es2016(ES, ops, expectedMissing, assign({}, skips, {
-		EnumerableOwnNames: true
+		EnumerableOwnNames: true,
+		IterableToArrayLike: true
 	}));
 
 	test('ToIndex', function (t) {
