@@ -65,6 +65,7 @@ module.exports = {
 	Set: 'https://ecma-international.org/ecma-262/6.0/#sec-set-o-p-v-throw',
 	SetIntegrityLevel: 'https://ecma-international.org/ecma-262/6.0/#sec-setintegritylevel',
 	SpeciesConstructor: 'https://ecma-international.org/ecma-262/6.0/#sec-speciesconstructor',
+	SymbolDescriptiveString: 'http://www.ecma-international.org/ecma-262/6.0/#sec-symboldescriptivestring',
 	TestIntegrityLevel: 'https://ecma-international.org/ecma-262/6.0/#sec-testintegritylevel',
 	thisBooleanValue: 'https://ecma-international.org/ecma-262/6.0/#sec-properties-of-the-boolean-prototype-object',
 	thisNumberValue: 'https://ecma-international.org/ecma-262/6.0/#sec-properties-of-the-number-prototype-object',

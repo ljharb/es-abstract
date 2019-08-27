@@ -2779,6 +2779,27 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('SymbolDescriptiveString', function (t) {
+		forEach(v.nonSymbolPrimitives.concat(v.objects), function (nonSymbol) {
+			t['throws'](
+				function () { ES.SymbolDescriptiveString(nonSymbol); },
+				TypeError,
+				debug(nonSymbol) + ' is not a Symbol'
+			);
+		});
+
+		t.test('Symbols', { skip: !v.hasSymbols }, function (st) {
+			st.equal(ES.SymbolDescriptiveString(Symbol()), 'Symbol()', 'undefined description');
+			st.equal(ES.SymbolDescriptiveString(Symbol('')), 'Symbol()', 'empty string description');
+			st.equal(ES.SymbolDescriptiveString(Symbol.iterator), 'Symbol(Symbol.iterator)', 'well-known symbol');
+			st.equal(ES.SymbolDescriptiveString(Symbol('foo')), 'Symbol(foo)', 'string description');
+
+			st.end();
+		});
+
+		t.end();
+	});
 };
 
 var es2016 = function ES2016(ES, ops, expectedMissing, skips) {

@@ -59,6 +59,7 @@ var $NumberValueOf = bind.call($Function.call, GetIntrinsic('%NumberPrototype%')
 var $BooleanValueOf = bind.call($Function.call, GetIntrinsic('%BooleanPrototype%').valueOf);
 var $StringValueOf = bind.call($Function.call, GetIntrinsic('%StringPrototype%').valueOf);
 var $DateValueOf = bind.call($Function.call, GetIntrinsic('%DatePrototype%').valueOf);
+var $SymbolToString = hasSymbols && bind.call($Function.call, GetIntrinsic('%SymbolPrototype%').toString);
 
 var $floor = Math.floor;
 var $abs = Math.abs;
@@ -1288,6 +1289,14 @@ var ES6 = assign(assign({}, ES5), {
 			return $gOPN(O);
 		}
 		throw new $TypeError('Assertion failed: `Type` must be `"String"` or `"Symbol"`');
+	},
+
+	// http://www.ecma-international.org/ecma-262/6.0/#sec-symboldescriptivestring
+	SymbolDescriptiveString: function SymbolDescriptiveString(sym) {
+		if (this.Type(sym) !== 'Symbol') {
+			throw new $TypeError('Assertion failed: `sym` must be a Symbol');
+		}
+		return $SymbolToString(sym);
 	}
 });
 
