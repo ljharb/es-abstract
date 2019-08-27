@@ -536,12 +536,11 @@ var ES6 = assign(assign({}, ES5), {
 
 	// https://ecma-international.org/ecma-262/6.0/#sec-getiterator
 	GetIterator: function GetIterator(obj, method) {
-		if (!hasSymbols) {
-			throw new SyntaxError('ES.GetIterator depends on native iterator support.');
-		}
-
 		var actualMethod = method;
 		if (arguments.length < 2) {
+			if (!hasSymbols) {
+				throw new SyntaxError('GetIterator depends on native Symbol support when `method` is not passed');
+			}
 			actualMethod = this.GetMethod(obj, $Symbol.iterator);
 		}
 		var iterator = this.Call(actualMethod, obj);
