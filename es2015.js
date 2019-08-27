@@ -20,7 +20,7 @@ var $RegExp = GetIntrinsic('%RegExp%');
 var $Promise = GetIntrinsic('%Promise%', true);
 var $preventExtensions = $Object.preventExtensions;
 
-var hasSymbols = !!$Symbol;
+var hasSymbols = require('has-symbols')();
 
 var assertRecord = require('./helpers/assertRecord');
 var $isNaN = require('./helpers/isNaN');
