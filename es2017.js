@@ -1,19 +1,17 @@
 'use strict';
 
-var bind = require('function-bind');
+var GetIntrinsic = require('./GetIntrinsic');
 
 var ES2016 = require('./es2016');
 var assign = require('./helpers/assign');
 var forEach = require('./helpers/forEach');
-
-var GetIntrinsic = require('./GetIntrinsic');
+var callBind = require('./helpers/callBind');
 
 var $TypeError = GetIntrinsic('%TypeError%');
 var $Array = GetIntrinsic('%Array%');
-var $Function = GetIntrinsic('%Function%');
-var $isEnumerable = bind.call(Function.call, GetIntrinsic('%ObjectPrototype%').propertyIsEnumerable);
-var $pushApply = bind.call(Function.apply, GetIntrinsic('%ArrayPrototype%').push);
-var $arrayPush = bind.call($Function.call, $Array.prototype.push);
+var $isEnumerable = callBind(GetIntrinsic('%ObjectPrototype%').propertyIsEnumerable);
+var $pushApply = callBind.apply(GetIntrinsic('%ArrayPrototype%').push);
+var $arrayPush = callBind($Array.prototype.push);
 
 var ES2017 = assign(assign({}, ES2016), {
 	ToIndex: function ToIndex(value) {

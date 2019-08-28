@@ -1,16 +1,16 @@
 'use strict';
 
-var hasSymbols = require('has-symbols')();
-var bind = require('function-bind');
-
-var ES2015 = require('./es2015');
-var assign = require('./helpers/assign');
 var GetIntrinsic = require('./GetIntrinsic');
 
 var $Array = GetIntrinsic('%Array%');
-var $Function = GetIntrinsic('%Function%');
 
-var $arrayPush = bind.call($Function.call, $Array.prototype.push);
+var hasSymbols = require('has-symbols')();
+
+var ES2015 = require('./es2015');
+var assign = require('./helpers/assign');
+var callBind = require('./helpers/callBind');
+
+var $arrayPush = callBind($Array.prototype.push);
 
 var ES2016 = assign(assign({}, ES2015), {
 	// https://www.ecma-international.org/ecma-262/7.0/#sec-samevaluenonnumber

@@ -7,7 +7,6 @@ var inspect = require('object-inspect');
 
 var GetIntrinsic = require('./GetIntrinsic');
 
-var $Function = GetIntrinsic('%Function%');
 var $TypeError = GetIntrinsic('%TypeError%');
 var $RangeError = GetIntrinsic('%RangeError%');
 var $SyntaxError = GetIntrinsic('%SyntaxError%');
@@ -38,28 +37,28 @@ var every = require('./helpers/every');
 var isSamePropertyDescriptor = require('./helpers/isSamePropertyDescriptor');
 var isPropertyDescriptor = require('./helpers/isPropertyDescriptor');
 var parseInteger = parseInt;
-var bind = require('function-bind');
-var $PromiseThen = $Promise ? bind.call($Function.call, GetIntrinsic('%PromiseProto_then%')) : null;
-var arraySlice = bind.call($Function.call, $Array.prototype.slice);
-var strSlice = bind.call($Function.call, $String.prototype.slice);
-var isBinary = bind.call($Function.call, $RegExp.prototype.test, /^0b[01]+$/i);
-var isOctal = bind.call($Function.call, $RegExp.prototype.test, /^0o[0-7]+$/i);
-var regexExec = bind.call($Function.call, $RegExp.prototype.exec);
+var callBind = require('./helpers/callBind');
+var $PromiseThen = $Promise ? callBind(GetIntrinsic('%PromiseProto_then%')) : null;
+var arraySlice = callBind($Array.prototype.slice);
+var strSlice = callBind($String.prototype.slice);
+var isBinary = callBind($RegExp.prototype.test, /^0b[01]+$/i);
+var isOctal = callBind($RegExp.prototype.test, /^0o[0-7]+$/i);
+var regexExec = callBind($RegExp.prototype.exec);
 var nonWS = ['\u0085', '\u200b', '\ufffe'].join('');
 var nonWSregex = new $RegExp('[' + nonWS + ']', 'g');
-var hasNonWS = bind.call($Function.call, $RegExp.prototype.test, nonWSregex);
+var hasNonWS = callBind($RegExp.prototype.test, nonWSregex);
 var invalidHexLiteral = /^[-+]0x[0-9a-f]+$/i;
-var isInvalidHexLiteral = bind.call($Function.call, $RegExp.prototype.test, invalidHexLiteral);
-var $charCodeAt = bind.call($Function.call, $String.prototype.charCodeAt);
-var $isEnumerable = bind.call($Function.call, $Object.prototype.propertyIsEnumerable);
+var isInvalidHexLiteral = callBind($RegExp.prototype.test, invalidHexLiteral);
+var $charCodeAt = callBind($String.prototype.charCodeAt);
+var $isEnumerable = callBind($Object.prototype.propertyIsEnumerable);
 
-var toStr = bind.call($Function.call, $Object.prototype.toString);
+var toStr = callBind($Object.prototype.toString);
 
-var $NumberValueOf = bind.call($Function.call, GetIntrinsic('%NumberPrototype%').valueOf);
-var $BooleanValueOf = bind.call($Function.call, GetIntrinsic('%BooleanPrototype%').valueOf);
-var $StringValueOf = bind.call($Function.call, GetIntrinsic('%StringPrototype%').valueOf);
-var $DateValueOf = bind.call($Function.call, GetIntrinsic('%DatePrototype%').valueOf);
-var $SymbolToString = hasSymbols && bind.call($Function.call, GetIntrinsic('%SymbolPrototype%').toString);
+var $NumberValueOf = callBind(GetIntrinsic('%NumberPrototype%').valueOf);
+var $BooleanValueOf = callBind(GetIntrinsic('%BooleanPrototype%').valueOf);
+var $StringValueOf = callBind(GetIntrinsic('%StringPrototype%').valueOf);
+var $DateValueOf = callBind(GetIntrinsic('%DatePrototype%').valueOf);
+var $SymbolToString = hasSymbols && callBind(GetIntrinsic('%SymbolPrototype%').toString);
 
 var $floor = Math.floor;
 var $abs = Math.abs;
@@ -113,9 +112,9 @@ var ws = [
 	'\u2029\uFEFF'
 ].join('');
 var trimRegex = new RegExp('(^[' + ws + ']+)|([' + ws + ']+$)', 'g');
-var replace = bind.call(Function.call, $String.prototype.replace);
+var $replace = callBind($String.prototype.replace);
 var trim = function (value) {
-	return replace(value, trimRegex, '');
+	return $replace(value, trimRegex, '');
 };
 
 var ES5 = require('./es5');
@@ -373,7 +372,7 @@ var ES6 = assign(assign({}, ES5), {
 		}
 		// 7.3.1.2
 		if (!this.IsPropertyKey(P)) {
-			throw new $TypeError('Assertion failed: IsPropertyKey(P) is not true');
+			throw new $TypeError('Assertion failed: IsPropertyKey(P) is not true, got ' + inspect(P));
 		}
 		// 7.3.1.3
 		return O[P];
@@ -1268,7 +1267,7 @@ var ES6 = assign(assign({}, ES5), {
 		var p1 = '<' + tag;
 		if (attribute !== '') {
 			var V = this.ToString(value);
-			var escapedV = replace(V, /\x22/g, '&quot;');
+			var escapedV = $replace(V, /\x22/g, '&quot;');
 			p1 += '\x20' + attribute + '\x3D\x22' + escapedV + '\x22';
 		}
 		return p1 + '>' + S + '</' + tag + '>';

@@ -1,27 +1,27 @@
 'use strict';
 
-var bind = require('function-bind');
+var GetIntrinsic = require('./GetIntrinsic');
+
 var keys = require('object-keys');
 
 var ES2017 = require('./es2017');
 var assign = require('./helpers/assign');
 var forEach = require('./helpers/forEach');
-
-var GetIntrinsic = require('./GetIntrinsic');
+var callBind = require('./helpers/callBind');
 
 var $String = GetIntrinsic('%String%');
 var $Object = GetIntrinsic('%Object%');
 
 var $SymbolProto = GetIntrinsic('%SymbolPrototype%', true);
-var $SymbolValueOf = $SymbolProto ? bind.call(Function.call, $SymbolProto.valueOf) : null;
+var $SymbolValueOf = $SymbolProto ? callBind($SymbolProto.valueOf) : null;
 var $StringProto = GetIntrinsic('%StringPrototype%');
-var $charAt = bind.call(Function.call, $StringProto.charAt);
+var $charAt = callBind($StringProto.charAt);
 
 var $PromiseResolveOrig = GetIntrinsic('%Promise_resolve%', true);
-var $PromiseResolve = $PromiseResolveOrig ? bind.call(Function.call, $PromiseResolveOrig) : null;
+var $PromiseResolve = $PromiseResolveOrig ? callBind($PromiseResolveOrig) : null;
 
-var $isEnumerable = bind.call(Function.call, GetIntrinsic('%ObjectPrototype%').propertyIsEnumerable);
-var $pushApply = bind.call(Function.apply, GetIntrinsic('%ArrayPrototype%').push);
+var $isEnumerable = callBind(GetIntrinsic('%ObjectPrototype%').propertyIsEnumerable);
+var $pushApply = callBind.apply(GetIntrinsic('%ArrayPrototype%').push);
 var $gOPS = $SymbolValueOf ? $Object.getOwnPropertySymbols : null;
 
 var OwnPropertyKeys = function OwnPropertyKeys(ES, source) {

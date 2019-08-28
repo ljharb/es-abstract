@@ -4,7 +4,6 @@ var GetIntrinsic = require('./GetIntrinsic');
 
 var $Object = GetIntrinsic('%Object%');
 var $TypeError = GetIntrinsic('%TypeError%');
-var $Function = GetIntrinsic('%Function%');
 var $String = GetIntrinsic('%String%');
 var $Number = GetIntrinsic('%Number%');
 
@@ -21,8 +20,8 @@ var toPrimitive = require('es-to-primitive/es5');
 
 var has = require('has');
 
-var bind = require('function-bind');
-var strSlice = bind.call($Function.call, $String.prototype.slice);
+var callBind = require('./helpers/callBind');
+var strSlice = callBind($String.prototype.slice);
 
 var isPrefixOf = function isPrefixOf(prefix, string) {
 	if (prefix === string) {

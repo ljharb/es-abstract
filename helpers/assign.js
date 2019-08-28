@@ -1,9 +1,10 @@
 'use strict';
 
-var bind = require('function-bind');
-var has = bind.call(Function.call, Object.prototype.hasOwnProperty);
+var GetIntrinsic = require('../GetIntrinsic');
 
-var $assign = Object.assign;
+var has = require('has');
+
+var $assign = GetIntrinsic('%Object%').assign;
 
 module.exports = function assign(target, source) {
 	if ($assign) {
