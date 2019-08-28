@@ -224,7 +224,7 @@ var ES5 = {
 		return desc;
 	},
 
-	// http://www.ecma-international.org/ecma-262/5.1/#sec-11.9.3
+	// https://www.ecma-international.org/ecma-262/5.1/#sec-11.9.3
 	'Abstract Equality Comparison': function AbstractEqualityComparison(x, y) {
 		var xType = this.Type(x);
 		var yType = this.Type(y);
@@ -255,7 +255,7 @@ var ES5 = {
 		return false;
 	},
 
-	// http://www.ecma-international.org/ecma-262/5.1/#sec-11.9.6
+	// https://www.ecma-international.org/ecma-262/5.1/#sec-11.9.6
 	'Strict Equality Comparison': function StrictEqualityComparison(x, y) {
 		var xType = this.Type(x);
 		var yType = this.Type(y);
@@ -268,7 +268,7 @@ var ES5 = {
 		return x === y; // shortcut for steps 4-7
 	},
 
-	// http://www.ecma-international.org/ecma-262/5.1/#sec-11.8.5
+	// https://www.ecma-international.org/ecma-262/5.1/#sec-11.8.5
 	// eslint-disable-next-line max-statements
 	'Abstract Relational Comparison': function AbstractRelationalComparison(x, y, LeftFirst) {
 		if (this.Type(LeftFirst) !== 'Boolean') {

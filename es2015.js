@@ -105,7 +105,7 @@ var DefineOwnProperty = function DefineOwnProperty(ES, O, P, desc) {
 	return true;
 };
 
-// whitespace from: http://es5.github.io/#x15.5.4.20
+// whitespace from: https://es5.github.io/#x15.5.4.20
 // implementation from https://github.com/es-shims/es5-shim/blob/v3.4.0/es5-shim.js#L1304-L1324
 var ws = [
 	'\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u2003',
@@ -408,7 +408,7 @@ var ES6 = assign(assign({}, ES5), {
 		throw new $TypeError('no constructor found');
 	},
 
-	// http://www.ecma-international.org/ecma-262/6.0/#sec-frompropertydescriptor
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-frompropertydescriptor
 	FromPropertyDescriptor: function FromPropertyDescriptor(Desc) {
 		if (typeof Desc === 'undefined') {
 			return Desc;
@@ -864,7 +864,7 @@ var ES6 = assign(assign({}, ES5), {
 		return $DateValueOf(value);
 	},
 
-	// http://www.ecma-international.org/ecma-262/6.0/#sec-setintegritylevel
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-setintegritylevel
 	SetIntegrityLevel: function SetIntegrityLevel(O, level) {
 		if (this.Type(O) !== 'Object') {
 			throw new $TypeError('Assertion failed: Type(O) is not Object');
@@ -905,7 +905,7 @@ var ES6 = assign(assign({}, ES5), {
 		return true;
 	},
 
-	// http://www.ecma-international.org/ecma-262/6.0/#sec-testintegritylevel
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-testintegritylevel
 	TestIntegrityLevel: function TestIntegrityLevel(O, level) {
 		if (this.Type(O) !== 'Object') {
 			throw new $TypeError('Assertion failed: Type(O) is not Object');
@@ -933,7 +933,7 @@ var ES6 = assign(assign({}, ES5), {
 		});
 	},
 
-	// http://www.ecma-international.org/ecma-262/6.0/#sec-ordinaryhasinstance
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-ordinaryhasinstance
 	OrdinaryHasInstance: function OrdinaryHasInstance(C, O) {
 		if (this.IsCallable(C) === false) {
 			return false;
@@ -948,7 +948,7 @@ var ES6 = assign(assign({}, ES5), {
 		return O instanceof C;
 	},
 
-	// http://www.ecma-international.org/ecma-262/6.0/#sec-ordinaryhasproperty
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-ordinaryhasproperty
 	OrdinaryHasProperty: function OrdinaryHasProperty(O, P) {
 		if (this.Type(O) !== 'Object') {
 			throw new $TypeError('Assertion failed: Type(O) is not Object');
@@ -959,7 +959,7 @@ var ES6 = assign(assign({}, ES5), {
 		return P in O;
 	},
 
-	// http://www.ecma-international.org/ecma-262/6.0/#sec-instanceofoperator
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-instanceofoperator
 	InstanceofOperator: function InstanceofOperator(O, C) {
 		if (this.Type(O) !== 'Object') {
 			throw new $TypeError('Assertion failed: Type(O) is not Object');
@@ -974,7 +974,7 @@ var ES6 = assign(assign({}, ES5), {
 		return this.OrdinaryHasInstance(C, O);
 	},
 
-	// http://www.ecma-international.org/ecma-262/6.0/#sec-ispromise
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-ispromise
 	IsPromise: function IsPromise(x) {
 		if (this.Type(x) !== 'Object') {
 			return false;
@@ -990,7 +990,7 @@ var ES6 = assign(assign({}, ES5), {
 		return true;
 	},
 
-	// http://www.ecma-international.org/ecma-262/6.0/#sec-abstract-equality-comparison
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-abstract-equality-comparison
 	'Abstract Equality Comparison': function AbstractEqualityComparison(x, y) {
 		var xType = this.Type(x);
 		var yType = this.Type(y);
@@ -1128,7 +1128,7 @@ var ES6 = assign(assign({}, ES5), {
 		return true;
 	},
 
-	// http://www.ecma-international.org/ecma-262/6.0/#sec-ordinarydefineownproperty
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-ordinarydefineownproperty
 	OrdinaryDefineOwnProperty: function OrdinaryDefineOwnProperty(O, P, Desc) {
 		if (this.Type(O) !== 'Object') {
 			throw new $TypeError('Assertion failed: O must be an Object');
@@ -1145,7 +1145,7 @@ var ES6 = assign(assign({}, ES5), {
 		return this.ValidateAndApplyPropertyDescriptor(O, P, extensible, Desc, current);
 	},
 
-	// http://www.ecma-international.org/ecma-262/6.0/#sec-ordinarygetownproperty
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-ordinarygetownproperty
 	OrdinaryGetOwnProperty: function OrdinaryGetOwnProperty(O, P) {
 		if (this.Type(O) !== 'Object') {
 			throw new $TypeError('Assertion failed: O must be an Object');
@@ -1170,7 +1170,7 @@ var ES6 = assign(assign({}, ES5), {
 		return this.ToPropertyDescriptor($gOPD(O, P));
 	},
 
-	// http://www.ecma-international.org/ecma-262/6.0/#sec-arraycreate
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-arraycreate
 	ArrayCreate: function ArrayCreate(length) {
 		if (!this.IsInteger(length) || length < 0) {
 			throw new $TypeError('Assertion failed: `length` must be an integer Number >= 0');
@@ -1258,7 +1258,7 @@ var ES6 = assign(assign({}, ES5), {
 		return true;
 	},
 
-	// http://www.ecma-international.org/ecma-262/6.0/#sec-createhtml
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-createhtml
 	CreateHTML: function CreateHTML(string, tag, attribute, value) {
 		if (this.Type(tag) !== 'String' || this.Type(attribute) !== 'String') {
 			throw new $TypeError('Assertion failed: `tag` and `attribute` must be strings');
@@ -1274,7 +1274,7 @@ var ES6 = assign(assign({}, ES5), {
 		return p1 + '>' + S + '</' + tag + '>';
 	},
 
-	// http://www.ecma-international.org/ecma-262/6.0/#sec-getownpropertykeys
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-getownpropertykeys
 	GetOwnPropertyKeys: function GetOwnPropertyKeys(O, Type) {
 		if (this.Type(O) !== 'Object') {
 			throw new $TypeError('Assertion failed: Type(O) is not Object');
@@ -1291,7 +1291,7 @@ var ES6 = assign(assign({}, ES5), {
 		throw new $TypeError('Assertion failed: `Type` must be `"String"` or `"Symbol"`');
 	},
 
-	// http://www.ecma-international.org/ecma-262/6.0/#sec-symboldescriptivestring
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-symboldescriptivestring
 	SymbolDescriptiveString: function SymbolDescriptiveString(sym) {
 		if (this.Type(sym) !== 'Symbol') {
 			throw new $TypeError('Assertion failed: `sym` must be a Symbol');

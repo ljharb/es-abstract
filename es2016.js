@@ -13,7 +13,7 @@ var $Function = GetIntrinsic('%Function%');
 var $arrayPush = bind.call($Function.call, $Array.prototype.push);
 
 var ES2016 = assign(assign({}, ES2015), {
-	// http://www.ecma-international.org/ecma-262/7.0/#sec-samevaluenonnumber
+	// https://www.ecma-international.org/ecma-262/7.0/#sec-samevaluenonnumber
 	SameValueNonNumber: function SameValueNonNumber(x, y) {
 		if (typeof x === 'number' || typeof x !== typeof y) {
 			throw new TypeError('SameValueNonNumber requires two non-number values of the same type.');
@@ -21,7 +21,7 @@ var ES2016 = assign(assign({}, ES2015), {
 		return this.SameValue(x, y);
 	},
 
-	// http://www.ecma-international.org/ecma-262/7.0/#sec-iterabletoarraylike
+	// https://www.ecma-international.org/ecma-262/7.0/#sec-iterabletoarraylike
 	IterableToArrayLike: function IterableToArrayLike(items) {
 		var usingIterator;
 		if (hasSymbols) {

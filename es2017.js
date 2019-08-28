@@ -51,7 +51,7 @@ var ES2017 = assign(assign({}, ES2016), {
 		throw new $TypeError('Assertion failed: "kind" is not "key", "value", or "key+value": ' + kind);
 	},
 
-	// http://www.ecma-international.org/ecma-262/8.0/#sec-iterabletolist
+	// https://www.ecma-international.org/ecma-262/8.0/#sec-iterabletolist
 	IterableToList: function IterableToList(items, method) {
 		var iterator = this.GetIterator(items, method);
 		var values = [];

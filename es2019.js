@@ -49,7 +49,7 @@ var ES2019 = assign(assign({}, ES2018), {
 		}
 	},
 
-	// http://ecma-international.org/ecma-262/10.0/#sec-flattenintoarray
+	// https://ecma-international.org/ecma-262/10.0/#sec-flattenintoarray
 	// eslint-disable-next-line max-params, max-statements
 	FlattenIntoArray: function FlattenIntoArray(target, source, sourceLen, start, depth) {
 		var mapperFunction;
@@ -91,7 +91,7 @@ var ES2019 = assign(assign({}, ES2018), {
 		return targetIndex;
 	},
 
-	// http://ecma-international.org/ecma-262/10.0/#sec-trimstring
+	// https://ecma-international.org/ecma-262/10.0/#sec-trimstring
 	TrimString: function TrimString(string, where) {
 		var str = this.RequireObjectCoercible(string);
 		var S = this.ToString(str);
