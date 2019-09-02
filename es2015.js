@@ -43,6 +43,7 @@ var arraySlice = callBind($Array.prototype.slice);
 var strSlice = callBind($String.prototype.slice);
 var isBinary = callBind($RegExp.prototype.test, /^0b[01]+$/i);
 var isOctal = callBind($RegExp.prototype.test, /^0o[0-7]+$/i);
+var isDigit = callBind($RegExp.prototype.test, /^[0-9]$/);
 var regexExec = callBind($RegExp.prototype.exec);
 var nonWS = ['\u0085', '\u200b', '\ufffe'].join('');
 var nonWSregex = new $RegExp('[' + nonWS + ']', 'g');
@@ -1296,6 +1297,83 @@ var ES6 = assign(assign({}, ES5), {
 			throw new $TypeError('Assertion failed: `sym` must be a Symbol');
 		}
 		return $SymbolToString(sym);
+	},
+
+	// https://www.ecma-international.org/ecma-262/6.0/#sec-getsubstitution
+	// eslint-disable-next-line max-statements, max-params, max-lines-per-function
+	GetSubstitution: function GetSubstitution(matched, str, position, captures, replacement) {
+		if (this.Type(matched) !== 'String') {
+			throw new $TypeError('Assertion failed: `matched` must be a String');
+		}
+		var matchLength = matched.length;
+
+		if (this.Type(str) !== 'String') {
+			throw new $TypeError('Assertion failed: `str` must be a String');
+		}
+		var stringLength = str.length;
+
+		if (!this.IsInteger(position) || position < 0 || position > stringLength) {
+			throw new $TypeError('Assertion failed: `position` must be a nonnegative integer, and less than or equal to the length of `string`, got ' + inspect(position));
+		}
+
+		var ES = this;
+		var isStringOrHole = function (capture, index, arr) { return ES.Type(capture) === 'String' || !(index in arr); };
+		if (!this.IsArray(captures) || !every(captures, isStringOrHole)) {
+			throw new $TypeError('Assertion failed: `captures` must be a List of Strings, got ' + inspect(captures));
+		}
+
+		if (this.Type(replacement) !== 'String') {
+			throw new $TypeError('Assertion failed: `replacement` must be a String');
+		}
+
+		var tailPos = position + matchLength;
+		var m = captures.length;
+
+		var result = '';
+		for (var i = 0; i < replacement.length; i += 1) {
+			// if this is a $, and it's not the end of the replacement
+			var current = replacement[i];
+			var isLast = (i + 1) >= replacement.length;
+			var nextIsLast = (i + 2) >= replacement.length;
+			if (current === '$' && !isLast) {
+				var next = replacement[i + 1];
+				if (next === '$') {
+					result += '$';
+					i += 1;
+				} else if (next === '&') {
+					result += matched;
+					i += 1;
+				} else if (next === '`') {
+					result += position === 0 ? '' : strSlice(str, 0, position - 1);
+					i += 1;
+				} else if (next === "'") {
+					result += tailPos >= stringLength ? '' : strSlice(str, tailPos);
+					i += 1;
+				} else {
+					var nextNext = nextIsLast ? null : replacement[i + 2];
+					if (isDigit(next) && next !== '0' && (nextIsLast || !isDigit(nextNext))) {
+						// $1 through $9, and not followed by a digit
+						var n = parseInteger(next, 10);
+						// if (n > m, impl-defined)
+						result += (n <= m && this.Type(captures[n - 1]) === 'Undefined') ? '' : captures[n - 1];
+						i += 1;
+					} else if (isDigit(next) && (nextIsLast || isDigit(nextNext))) {
+						// $00 through $99
+						var nn = next + nextNext;
+						var nnI = parseInteger(nn, 10) - 1;
+						// if nn === '00' or nn > m, impl-defined
+						result += (nn <= m && this.Type(captures[nnI]) === 'Undefined') ? '' : captures[nnI];
+						i += 2;
+					} else {
+						result += '$';
+					}
+				}
+			} else {
+				// the final $, or else not a $
+				result += replacement[i];
+			}
+		}
+		return result;
 	}
 });
 

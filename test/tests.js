@@ -2800,6 +2800,140 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('GetSubstitution', { skip: skips && skips.GetSubstitution }, function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.GetSubstitution(nonString, '', 0, [], ''); },
+				TypeError,
+				'`matched`: ' + debug(nonString) + ' is not a String'
+			);
+
+			t['throws'](
+				function () { ES.GetSubstitution('', nonString, 0, [], ''); },
+				TypeError,
+				'`str`: ' + debug(nonString) + ' is not a String'
+			);
+
+			t['throws'](
+				function () { ES.GetSubstitution('', '', 0, [], nonString); },
+				TypeError,
+				'`replacement`: ' + debug(nonString) + ' is not a String'
+			);
+
+			t['throws'](
+				function () { ES.GetSubstitution('', '', 0, [nonString], ''); },
+				TypeError,
+				'`captures`: ' + debug([nonString]) + ' is not an Array of strings'
+			);
+		});
+
+		forEach(v.nonIntegerNumbers.concat([-1, -42, -Infinity]), function (nonNonNegativeInteger) {
+			t['throws'](
+				function () { ES.GetSubstitution('', '', nonNonNegativeInteger, [], ''); },
+				TypeError,
+				'`position`: ' + debug(nonNonNegativeInteger) + ' is not a non-negative integer'
+			);
+		});
+
+		forEach(v.nonArrays, function (nonArray) {
+			t['throws'](
+				function () { ES.GetSubstitution('', '', 0, nonArray, ''); },
+				TypeError,
+				'`captures`: ' + debug(nonArray) + ' is not an Array'
+			);
+		});
+
+		t.equal(
+			ES.GetSubstitution('def', 'abcdefghi', 3, [], '123'),
+			'123',
+			'returns the substitution'
+		);
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], '$$2$'),
+			'$2$',
+			'supports $$, and trailing $'
+		);
+
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], '>$&<'),
+			'>abcdef<',
+			'supports $&'
+		);
+
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], '>$`<'),
+			'><',
+			'supports $` at position 0'
+		);
+		t.equal(
+			ES.GetSubstitution('def', 'abcdefghi', 3, [], '>$`<'),
+			'>ab<',
+			'supports $` at position > 0'
+		);
+
+		t.equal(
+			ES.GetSubstitution('def', 'abcdefghi', 7, [], ">$'<"),
+			'><',
+			"supports $' at a position where there's less than `matched.length` chars left"
+		);
+		t.equal(
+			ES.GetSubstitution('def', 'abcdefghi', 3, [], ">$'<"),
+			'>ghi<',
+			"supports $' at a position where there's more than `matched.length` chars left"
+		);
+
+		for (var i = 0; i < 100; i += 1) {
+			var captures = [];
+			captures[i] = 'test';
+			if (i > 0) {
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], '>$' + i + '<'),
+					'>undefined<',
+					'supports $' + i + ' with no captures'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], '>$' + i),
+					'>undefined',
+					'supports $' + i + ' at the end of the replacement, with no captures'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, '>$' + i + '<'),
+					'><',
+					'supports $' + i + ' with a capture at that index'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, '>$' + i),
+					'>',
+					'supports $' + i + ' at the end of the replacement, with a capture at that index'
+				);
+			}
+			if (i < 10) {
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], '>$0' + i + '<'),
+					i === 0 ? '><' : '>undefined<',
+					'supports $0' + i + ' with no captures'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], '>$0' + i),
+					i === 0 ? '>' : '>undefined',
+					'supports $0' + i + ' at the end of the replacement, with no captures'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, '>$0' + i + '<'),
+					'><',
+					'supports $0' + i + ' with a capture at that index'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, '>$0' + i),
+					'>',
+					'supports $0' + i + ' at the end of the replacement, with a capture at that index'
+				);
+			}
+		}
+
+		t.end();
+	});
 };
 
 var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
@@ -2946,6 +3080,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 	es2017(ES, ops, expectedMissing, assign({}, skips, {
 		EnumerableOwnProperties: true,
+		GetSubstitution: true,
 		IsPropertyDescriptor: true
 	}));
 
@@ -3168,6 +3303,140 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 		t.equal(ES.IsPromise(thenable), false, 'generic thenable is not a Promise');
 
 		t.equal(ES.IsPromise(Promise.resolve()), true, 'Promise is a Promise');
+
+		t.end();
+	});
+
+	test('GetSubstitution (ES2018+)', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.GetSubstitution(nonString, '', 0, [], undefined, ''); },
+				TypeError,
+				'`matched`: ' + debug(nonString) + ' is not a String'
+			);
+
+			t['throws'](
+				function () { ES.GetSubstitution('', nonString, 0, [], undefined, ''); },
+				TypeError,
+				'`str`: ' + debug(nonString) + ' is not a String'
+			);
+
+			t['throws'](
+				function () { ES.GetSubstitution('', '', 0, [], undefined, nonString); },
+				TypeError,
+				'`replacement`: ' + debug(nonString) + ' is not a String'
+			);
+
+			t['throws'](
+				function () { ES.GetSubstitution('', '', 0, [nonString], undefined, ''); },
+				TypeError,
+				'`captures`: ' + debug([nonString]) + ' is not an Array of strings'
+			);
+		});
+
+		forEach(v.nonIntegerNumbers.concat([-1, -42, -Infinity]), function (nonNonNegativeInteger) {
+			t['throws'](
+				function () { ES.GetSubstitution('', '', nonNonNegativeInteger, [], undefined, ''); },
+				TypeError,
+				'`position`: ' + debug(nonNonNegativeInteger) + ' is not a non-negative integer'
+			);
+		});
+
+		forEach(v.nonArrays, function (nonArray) {
+			t['throws'](
+				function () { ES.GetSubstitution('', '', 0, nonArray, undefined, ''); },
+				TypeError,
+				'`captures`: ' + debug(nonArray) + ' is not an Array'
+			);
+		});
+
+		t.equal(
+			ES.GetSubstitution('def', 'abcdefghi', 3, [], undefined, '123'),
+			'123',
+			'returns the substitution'
+		);
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '$$2$'),
+			'$2$',
+			'supports $$, and trailing $'
+		);
+
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$&<'),
+			'>abcdef<',
+			'supports $&'
+		);
+
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$`<'),
+			'><',
+			'supports $` at position 0'
+		);
+		t.equal(
+			ES.GetSubstitution('def', 'abcdefghi', 3, [], undefined, '>$`<'),
+			'>ab<',
+			'supports $` at position > 0'
+		);
+
+		t.equal(
+			ES.GetSubstitution('def', 'abcdefghi', 7, [], undefined, ">$'<"),
+			'><',
+			"supports $' at a position where there's less than `matched.length` chars left"
+		);
+		t.equal(
+			ES.GetSubstitution('def', 'abcdefghi', 3, [], undefined, ">$'<"),
+			'>ghi<',
+			"supports $' at a position where there's more than `matched.length` chars left"
+		);
+
+		for (var i = 0; i < 100; i += 1) {
+			var captures = [];
+			captures[i] = 'test';
+			if (i > 0) {
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$' + i + '<'),
+					'>undefined<',
+					'supports $' + i + ' with no captures'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$' + i),
+					'>undefined',
+					'supports $' + i + ' at the end of the replacement, with no captures'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, '>$' + i + '<'),
+					'><',
+					'supports $' + i + ' with a capture at that index'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, '>$' + i),
+					'>',
+					'supports $' + i + ' at the end of the replacement, with a capture at that index'
+				);
+			}
+			if (i < 10) {
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$0' + i + '<'),
+					i === 0 ? '><' : '>undefined<',
+					'supports $0' + i + ' with no captures'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$0' + i),
+					i === 0 ? '>' : '>undefined',
+					'supports $0' + i + ' at the end of the replacement, with no captures'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, '>$0' + i + '<'),
+					'><',
+					'supports $0' + i + ' with a capture at that index'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, '>$0' + i),
+					'>',
+					'supports $0' + i + ' at the end of the replacement, with a capture at that index'
+				);
+			}
+		}
 
 		t.end();
 	});
