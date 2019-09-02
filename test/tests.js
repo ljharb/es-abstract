@@ -591,12 +591,16 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			);
 		};
 		forEach(notFuncs, throwsIfNotCallable);
-		ES.Call(function (a, b) {
-			t.equal(this, receiver, 'context matches expected');
-			t.deepEqual([a, b], [1, 2], 'named args are correct');
-			t.equal(arguments.length, 3, 'extra argument was passed');
-			t.equal(arguments[2], 3, 'extra argument was correct');
-		}, receiver, [1, 2, 3]);
+		ES.Call(
+			function (a, b) {
+				t.equal(this, receiver, 'context matches expected');
+				t.deepEqual([a, b], [1, 2], 'named args are correct');
+				t.equal(arguments.length, 3, 'extra argument was passed');
+				t.equal(arguments[2], 3, 'extra argument was correct');
+			},
+			receiver,
+			[1, 2, 3]
+		);
 		t.end();
 	});
 
@@ -707,9 +711,12 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.equal(ES.IsPropertyDescriptor(v.dataDescriptor()), true, 'data descriptor is a Property Descriptor');
 		t.equal(ES.IsPropertyDescriptor(v.genericDescriptor()), true, 'generic descriptor is a Property Descriptor');
 
-		t['throws'](function () {
-			ES.IsPropertyDescriptor(v.bothDescriptor());
-		}, TypeError, 'a Property Descriptor can not be both a Data and an Accessor Descriptor');
+		t['throws'](
+			function () {
+				ES.IsPropertyDescriptor(v.bothDescriptor());
+			}, TypeError,
+			'a Property Descriptor can not be both a Data and an Accessor Descriptor'
+		);
 
 		t.end();
 	});
@@ -868,36 +875,52 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		});
 
 		var generic = v.genericDescriptor();
-		t.deepEqual(ES.CompletePropertyDescriptor(generic), {
-			'[[Configurable]]': !!generic['[[Configurable]]'],
-			'[[Enumerable]]': !!generic['[[Enumerable]]'],
-			'[[Value]]': undefined,
-			'[[Writable]]': false
-		}, 'completes a Generic Descriptor');
+		t.deepEqual(
+			ES.CompletePropertyDescriptor(generic),
+			{
+				'[[Configurable]]': !!generic['[[Configurable]]'],
+				'[[Enumerable]]': !!generic['[[Enumerable]]'],
+				'[[Value]]': undefined,
+				'[[Writable]]': false
+			},
+			'completes a Generic Descriptor'
+		);
 
 		var data = v.dataDescriptor();
-		t.deepEqual(ES.CompletePropertyDescriptor(data), {
-			'[[Configurable]]': !!data['[[Configurable]]'],
-			'[[Enumerable]]': false,
-			'[[Value]]': data['[[Value]]'],
-			'[[Writable]]': !!data['[[Writable]]']
-		}, 'completes a Data Descriptor');
+		t.deepEqual(
+			ES.CompletePropertyDescriptor(data),
+			{
+				'[[Configurable]]': !!data['[[Configurable]]'],
+				'[[Enumerable]]': false,
+				'[[Value]]': data['[[Value]]'],
+				'[[Writable]]': !!data['[[Writable]]']
+			},
+			'completes a Data Descriptor'
+		);
 
 		var accessor = v.accessorDescriptor();
-		t.deepEqual(ES.CompletePropertyDescriptor(accessor), {
-			'[[Get]]': accessor['[[Get]]'],
-			'[[Enumerable]]': !!accessor['[[Enumerable]]'],
-			'[[Configurable]]': !!accessor['[[Configurable]]'],
-			'[[Set]]': undefined
-		}, 'completes an Accessor Descriptor');
+		t.deepEqual(
+			ES.CompletePropertyDescriptor(accessor),
+			{
+				'[[Get]]': accessor['[[Get]]'],
+				'[[Enumerable]]': !!accessor['[[Enumerable]]'],
+				'[[Configurable]]': !!accessor['[[Configurable]]'],
+				'[[Set]]': undefined
+			},
+			'completes an Accessor Descriptor'
+		);
 
 		var mutator = v.mutatorDescriptor();
-		t.deepEqual(ES.CompletePropertyDescriptor(mutator), {
-			'[[Set]]': mutator['[[Set]]'],
-			'[[Enumerable]]': !!mutator['[[Enumerable]]'],
-			'[[Configurable]]': !!mutator['[[Configurable]]'],
-			'[[Get]]': undefined
-		}, 'completes a mutator Descriptor');
+		t.deepEqual(
+			ES.CompletePropertyDescriptor(mutator),
+			{
+				'[[Set]]': mutator['[[Set]]'],
+				'[[Enumerable]]': !!mutator['[[Enumerable]]'],
+				'[[Configurable]]': !!mutator['[[Configurable]]'],
+				'[[Get]]': undefined
+			},
+			'completes a mutator Descriptor'
+		);
 
 		t['throws'](
 			function () { ES.CompletePropertyDescriptor(v.bothDescriptor()); },
@@ -1119,14 +1142,16 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		});
 
 		var value = {};
-		t.deepEqual(ES.CreateIterResultObject(value, true), {
-			value: value,
-			done: true
-		}, 'creates a "done" iteration result');
-		t.deepEqual(ES.CreateIterResultObject(value, false), {
-			value: value,
-			done: false
-		}, 'creates a "not done" iteration result');
+		t.deepEqual(
+			ES.CreateIterResultObject(value, true),
+			{ value: value, done: true },
+			'creates a "done" iteration result'
+		);
+		t.deepEqual(
+			ES.CreateIterResultObject(value, false),
+			{ value: value, done: false },
+			'creates a "not done" iteration result'
+		);
 
 		t.end();
 	});

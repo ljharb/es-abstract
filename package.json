@@ -55,10 +55,10 @@
 		"string.prototype.trimright": "^2.0.0"
 	},
 	"devDependencies": {
-		"@ljharb/eslint-config": "^14.0.2",
+		"@ljharb/eslint-config": "^14.1.0",
 		"cheerio": "^1.0.0-rc.3",
 		"eclint": "^2.8.1",
-		"eslint": "^6.2.2",
+		"eslint": "^6.3.0",
 		"foreach": "^2.0.5",
 		"nyc": "^10.3.2",
 		"object-is": "^1.0.1",

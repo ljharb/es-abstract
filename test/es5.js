@@ -211,13 +211,17 @@ test('IsPropertyDescriptor', function (t) {
 	t.equal(ES.IsPropertyDescriptor(v.dataDescriptor()), true, 'data descriptor is a Property Descriptor');
 	t.equal(ES.IsPropertyDescriptor(v.genericDescriptor()), true, 'generic descriptor is a Property Descriptor');
 
-	t['throws'](function () {
-		ES.IsPropertyDescriptor(v.bothDescriptor());
-	}, TypeError, 'a Property Descriptor can not be both a Data and an Accessor Descriptor');
+	t['throws'](
+		function () { ES.IsPropertyDescriptor(v.bothDescriptor()); },
+		TypeError,
+		'a Property Descriptor can not be both a Data and an Accessor Descriptor'
+	);
 
-	t['throws'](function () {
-		ES.IsPropertyDescriptor(v.bothDescriptorWritable());
-	}, TypeError, 'a Property Descriptor can not be both a Data and an Accessor Descriptor');
+	t['throws'](
+		function () { ES.IsPropertyDescriptor(v.bothDescriptorWritable()); },
+		TypeError,
+		'a Property Descriptor can not be both a Data and an Accessor Descriptor'
+	);
 
 	t.end();
 });
