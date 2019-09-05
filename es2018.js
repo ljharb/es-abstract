@@ -10,6 +10,7 @@ var assign = require('./helpers/assign');
 var forEach = require('./helpers/forEach');
 var callBind = require('./helpers/callBind');
 var every = require('./helpers/every');
+var isPrefixOf = require('./helpers/isPrefixOf');
 
 var $String = GetIntrinsic('%String%');
 var $Object = GetIntrinsic('%Object%');
@@ -19,7 +20,7 @@ var $RegExp = GetIntrinsic('%RegExp%');
 var $SymbolProto = GetIntrinsic('%SymbolPrototype%', true);
 var $SymbolValueOf = $SymbolProto ? callBind($SymbolProto.valueOf) : null;
 var $StringProto = GetIntrinsic('%StringPrototype%');
-var $charAt = callBind($StringProto.charAt);
+// var $charAt = callBind($StringProto.charAt);
 var strSlice = callBind($StringProto.slice);
 var $indexOf = callBind($StringProto.indexOf);
 var $parseInt = parseInt;
@@ -64,6 +65,8 @@ var ES2018 = assign(assign({}, ES2017), {
 			throw new TypeError('Assertion failed: "q" must be a String');
 		}
 
+		return isPrefixOf(p, q);
+		/*
 		if (p === q || p === '') {
 			return true;
 		}
@@ -82,6 +85,7 @@ var ES2018 = assign(assign({}, ES2017), {
 			}
 		}
 		return true;
+		*/
 	},
 
 	// https://www.ecma-international.org/ecma-262/9.0/#sec-tostring-applied-to-the-number-type
