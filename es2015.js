@@ -26,7 +26,7 @@ var assertRecord = require('./helpers/assertRecord');
 var $isNaN = require('./helpers/isNaN');
 var $isFinite = require('./helpers/isFinite');
 var MAX_ARRAY_LENGTH = Math.pow(2, 32) - 1;
-var MAX_SAFE_INTEGER = $Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1;
+var MAX_SAFE_INTEGER = require('./helpers/maxSafeInteger');
 
 var assign = require('./helpers/assign');
 var sign = require('./helpers/sign');
