@@ -20,18 +20,7 @@ var toPrimitive = require('es-to-primitive/es5');
 
 var has = require('has');
 
-var callBind = require('./helpers/callBind');
-var strSlice = callBind($String.prototype.slice);
-
-var isPrefixOf = function isPrefixOf(prefix, string) {
-	if (prefix === string) {
-		return true;
-	}
-	if (prefix.length > string.length) {
-		return false;
-	}
-	return strSlice(string, 0, prefix.length) === prefix;
-};
+var isPrefixOf = require('./helpers/isPrefixOf');
 
 // https://es5.github.io/#x9
 var ES5 = {
