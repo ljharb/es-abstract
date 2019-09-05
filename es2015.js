@@ -17,7 +17,6 @@ var $Object = GetIntrinsic('%Object%');
 var $Number = GetIntrinsic('%Number%');
 var $Symbol = GetIntrinsic('%Symbol%', true);
 var $RegExp = GetIntrinsic('%RegExp%');
-var $Promise = GetIntrinsic('%Promise%', true);
 var $preventExtensions = $Object.preventExtensions;
 
 var hasSymbols = require('has-symbols')();
@@ -38,7 +37,7 @@ var isSamePropertyDescriptor = require('./helpers/isSamePropertyDescriptor');
 var isPropertyDescriptor = require('./helpers/isPropertyDescriptor');
 var parseInteger = parseInt;
 var callBind = require('./helpers/callBind');
-var $PromiseThen = $Promise ? callBind(GetIntrinsic('%PromiseProto_then%')) : null;
+var $PromiseThen = callBind(GetIntrinsic('%Promise.prototype.then%', true));
 var arraySlice = callBind($Array.prototype.slice);
 var strSlice = callBind($String.prototype.slice);
 var isBinary = callBind($RegExp.prototype.test, /^0b[01]+$/i);
@@ -55,11 +54,11 @@ var $isEnumerable = callBind($Object.prototype.propertyIsEnumerable);
 
 var toStr = callBind($Object.prototype.toString);
 
-var $NumberValueOf = callBind(GetIntrinsic('%NumberPrototype%').valueOf);
-var $BooleanValueOf = callBind(GetIntrinsic('%BooleanPrototype%').valueOf);
-var $StringValueOf = callBind(GetIntrinsic('%StringPrototype%').valueOf);
-var $DateValueOf = callBind(GetIntrinsic('%DatePrototype%').valueOf);
-var $SymbolToString = hasSymbols && callBind(GetIntrinsic('%SymbolPrototype%').toString);
+var $NumberValueOf = callBind(GetIntrinsic('%Number.prototype.valueOf%'));
+var $BooleanValueOf = callBind(GetIntrinsic('%Boolean.prototype.valueOf%'));
+var $StringValueOf = callBind(GetIntrinsic('%String.prototype.valueOf%'));
+var $DateValueOf = callBind(GetIntrinsic('%Date.prototype.valueOf%'));
+var $SymbolToString = callBind(GetIntrinsic('%Symbol.prototype.toString%', true));
 
 var $floor = Math.floor;
 var $abs = Math.abs;
@@ -979,7 +978,7 @@ var ES6 = assign(assign({}, ES5), {
 		if (this.Type(x) !== 'Object') {
 			return false;
 		}
-		if (!$Promise) { // Promises are not supported
+		if (!$PromiseThen) { // Promises are not supported
 			return false;
 		}
 		try {
