@@ -36,20 +36,21 @@ var every = require('./helpers/every');
 var isSamePropertyDescriptor = require('./helpers/isSamePropertyDescriptor');
 var isPropertyDescriptor = require('./helpers/isPropertyDescriptor');
 var parseInteger = parseInt;
-var callBind = require('./helpers/callBind');
 var callBound = require('./helpers/callBound');
+var regexTester = require('./helpers/regexTester');
+
 var $PromiseThen = callBound('Promise.prototype.then', true);
 var arraySlice = callBound('Array.prototype.slice');
 var strSlice = callBound('String.prototype.slice');
-var isBinary = callBind($RegExp.prototype.test, /^0b[01]+$/i);
-var isOctal = callBind($RegExp.prototype.test, /^0o[0-7]+$/i);
-var isDigit = callBind($RegExp.prototype.test, /^[0-9]$/);
+
+var isBinary = regexTester(/^0b[01]+$/i);
+var isOctal = regexTester(/^0o[0-7]+$/i);
+var isDigit = regexTester(/^[0-9]$/);
 var regexExec = callBound('RegExp.prototype.exec');
 var nonWS = ['\u0085', '\u200b', '\ufffe'].join('');
 var nonWSregex = new $RegExp('[' + nonWS + ']', 'g');
-var hasNonWS = callBind($RegExp.prototype.test, nonWSregex);
-var invalidHexLiteral = /^[-+]0x[0-9a-f]+$/i;
-var isInvalidHexLiteral = callBind($RegExp.prototype.test, invalidHexLiteral);
+var hasNonWS = regexTester(nonWSregex);
+var isInvalidHexLiteral = regexTester(/^[-+]0x[0-9a-f]+$/i);
 var $charCodeAt = callBound('String.prototype.charCodeAt');
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 
