@@ -37,28 +37,29 @@ var isSamePropertyDescriptor = require('./helpers/isSamePropertyDescriptor');
 var isPropertyDescriptor = require('./helpers/isPropertyDescriptor');
 var parseInteger = parseInt;
 var callBind = require('./helpers/callBind');
-var $PromiseThen = callBind(GetIntrinsic('%Promise.prototype.then%', true));
-var arraySlice = callBind($Array.prototype.slice);
-var strSlice = callBind($String.prototype.slice);
+var callBound = require('./helpers/callBound');
+var $PromiseThen = callBound('Promise.prototype.then', true);
+var arraySlice = callBound('Array.prototype.slice');
+var strSlice = callBound('String.prototype.slice');
 var isBinary = callBind($RegExp.prototype.test, /^0b[01]+$/i);
 var isOctal = callBind($RegExp.prototype.test, /^0o[0-7]+$/i);
 var isDigit = callBind($RegExp.prototype.test, /^[0-9]$/);
-var regexExec = callBind($RegExp.prototype.exec);
+var regexExec = callBound('RegExp.prototype.exec');
 var nonWS = ['\u0085', '\u200b', '\ufffe'].join('');
 var nonWSregex = new $RegExp('[' + nonWS + ']', 'g');
 var hasNonWS = callBind($RegExp.prototype.test, nonWSregex);
 var invalidHexLiteral = /^[-+]0x[0-9a-f]+$/i;
 var isInvalidHexLiteral = callBind($RegExp.prototype.test, invalidHexLiteral);
-var $charCodeAt = callBind($String.prototype.charCodeAt);
-var $isEnumerable = callBind($Object.prototype.propertyIsEnumerable);
+var $charCodeAt = callBound('String.prototype.charCodeAt');
+var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 
-var toStr = callBind($Object.prototype.toString);
+var toStr = callBound('Object.prototype.toString');
 
-var $NumberValueOf = callBind(GetIntrinsic('%Number.prototype.valueOf%'));
-var $BooleanValueOf = callBind(GetIntrinsic('%Boolean.prototype.valueOf%'));
-var $StringValueOf = callBind(GetIntrinsic('%String.prototype.valueOf%'));
-var $DateValueOf = callBind(GetIntrinsic('%Date.prototype.valueOf%'));
-var $SymbolToString = callBind(GetIntrinsic('%Symbol.prototype.toString%', true));
+var $NumberValueOf = callBound('Number.prototype.valueOf');
+var $BooleanValueOf = callBound('Boolean.prototype.valueOf');
+var $StringValueOf = callBound('String.prototype.valueOf');
+var $DateValueOf = callBound('Date.prototype.valueOf');
+var $SymbolToString = callBound('Symbol.prototype.toString', true);
 
 var $floor = Math.floor;
 var $abs = Math.abs;
@@ -112,7 +113,7 @@ var ws = [
 	'\u2029\uFEFF'
 ].join('');
 var trimRegex = new RegExp('(^[' + ws + ']+)|([' + ws + ']+$)', 'g');
-var $replace = callBind($String.prototype.replace);
+var $replace = callBound('String.prototype.replace');
 var trim = function (value) {
 	return $replace(value, trimRegex, '');
 };

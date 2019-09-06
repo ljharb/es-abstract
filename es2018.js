@@ -16,19 +16,17 @@ var $String = GetIntrinsic('%String%');
 var $TypeError = GetIntrinsic('%TypeError%');
 var $RegExp = GetIntrinsic('%RegExp%');
 
-var $SymbolValueOfOrig = GetIntrinsic('%Symbol.prototype.valueOf%', true);
-var $SymbolValueOf = $SymbolValueOfOrig ? callBind($SymbolValueOfOrig) : null;
-var $StringProto = GetIntrinsic('%String.prototype%');
-// var $charAt = callBind($StringProto.charAt);
-var strSlice = callBind($StringProto.slice);
-var $indexOf = callBind($StringProto.indexOf);
+var callBound = require('./helpers/callBound');
+var $SymbolValueOf = callBound('Symbol.prototype.valueOf', true);
+// var $charAt = callBound('String.prototype.charAt');
+var strSlice = callBound('String.prototype.slice');
+var $indexOf = callBound('String.prototype.indexOf');
 var $parseInt = parseInt;
 var isDigit = callBind($RegExp.prototype.test, /^[0-9]$/);
 
-var $PromiseResolveOrig = GetIntrinsic('%Promise.resolve%', true);
-var $PromiseResolve = $PromiseResolveOrig ? callBind($PromiseResolveOrig) : null;
+var $PromiseResolve = callBound('Promise.resolve', true);
 
-var $isEnumerable = callBind(GetIntrinsic('%Object.prototype.propertyIsEnumerable%'));
+var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 var $pushApply = callBind.apply(GetIntrinsic('%Array.prototype.push%'));
 var $gOPS = $SymbolValueOf ? GetIntrinsic('%Object.getOwnPropertySymbols%') : null;
 

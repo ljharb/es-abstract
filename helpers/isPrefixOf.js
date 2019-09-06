@@ -1,11 +1,6 @@
 'use strict';
 
-var GetIntrinsic = require('../GetIntrinsic');
-
-var $String = GetIntrinsic('%String%');
-
-var callBind = require('../helpers/callBind');
-var strSlice = callBind($String.prototype.slice);
+var $strSlice = require('../helpers/callBound')('String.prototype.slice');
 
 module.exports = function isPrefixOf(prefix, string) {
 	if (prefix === string) {
@@ -14,5 +9,5 @@ module.exports = function isPrefixOf(prefix, string) {
 	if (prefix.length > string.length) {
 		return false;
 	}
-	return strSlice(string, 0, prefix.length) === prefix;
+	return $strSlice(string, 0, prefix.length) === prefix;
 };
