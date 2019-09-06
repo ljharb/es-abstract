@@ -14,15 +14,17 @@ var isPrefixOf = require('./helpers/isPrefixOf');
 
 var $String = GetIntrinsic('%String%');
 var $TypeError = GetIntrinsic('%TypeError%');
-var $RegExp = GetIntrinsic('%RegExp%');
 
 var callBound = require('./helpers/callBound');
+var regexTester = require('./helpers/regexTester');
+
 var $SymbolValueOf = callBound('Symbol.prototype.valueOf', true);
 // var $charAt = callBound('String.prototype.charAt');
 var strSlice = callBound('String.prototype.slice');
 var $indexOf = callBound('String.prototype.indexOf');
 var $parseInt = parseInt;
-var isDigit = callBind($RegExp.prototype.test, /^[0-9]$/);
+
+var isDigit = regexTester(/^[0-9]$/);
 
 var $PromiseResolve = callBound('Promise.resolve', true);
 
