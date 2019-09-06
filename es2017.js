@@ -8,10 +8,10 @@ var forEach = require('./helpers/forEach');
 var callBind = require('./helpers/callBind');
 
 var $TypeError = GetIntrinsic('%TypeError%');
-var $isEnumerable = callBind(GetIntrinsic('%Object.prototype.propertyIsEnumerable%'));
-var $push = GetIntrinsic('%Array.prototype.push%');
-var $pushApply = callBind.apply($push);
-var $arrayPush = callBind($push);
+var callBound = require('./helpers/callBound');
+var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
+var $pushApply = callBind.apply(GetIntrinsic('%Array.prototype.push%'));
+var $arrayPush = callBound('Array.prototype.push');
 
 var ES2017 = assign(assign({}, ES2016), {
 	ToIndex: function ToIndex(value) {
