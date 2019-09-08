@@ -3008,7 +3008,8 @@ var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 		});
 
 		t.deepEqual(ES.IterableToArrayLike('abc'), ['a', 'b', 'c'], 'a string of code units spreads');
-		t.deepEqual(ES.IterableToArrayLike('☃'), ['☃'], 'a string of code points spreads');
+		t.deepEqual(ES.IterableToArrayLike('💩'), ['💩'], 'a string of code points spreads');
+		t.deepEqual(ES.IterableToArrayLike('a💩c'), ['a', '💩', 'c'], 'a string of code points and units spreads');
 
 		var arr = [1, 2, 3];
 		t.deepEqual(ES.IterableToArrayLike(arr), arr, 'an array becomes a similar array');

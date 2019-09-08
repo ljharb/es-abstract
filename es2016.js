@@ -11,6 +11,8 @@ var assign = require('./helpers/assign');
 var callBind = require('./helpers/callBind');
 
 var $arrayPush = callBind($Array.prototype.push);
+var $arraySlice = callBind($Array.prototype.slice);
+var $arrayJoin = callBind($Array.prototype.join);
 
 var ES2016 = assign(assign({}, ES2015), {
 	// https://www.ecma-international.org/ecma-262/7.0/#sec-samevaluenonnumber
@@ -41,7 +43,21 @@ var ES2016 = assign(assign({}, ES2015), {
 				};
 			};
 		} else if (this.Type(items) === 'String') {
-			// fallback for strings
+			var ES = this;
+			usingIterator = function () {
+				var i = 0;
+				return {
+					next: function () {
+						var nextIndex = ES.AdvanceStringIndex(items, i, true);
+						var value = $arrayJoin($arraySlice(items, i, nextIndex), '');
+						i = nextIndex;
+						return {
+							done: nextIndex > items.length,
+							value: value
+						};
+					}
+				};
+			};
 		}
 		if (typeof usingIterator !== 'undefined') {
 			var iterator = this.GetIterator(items, usingIterator);
