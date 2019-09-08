@@ -27,6 +27,13 @@
 
 	"overrides": [
 		{
+			"files": "./es5.js",
+			"rules": {
+				"max-lines": [2, 600],
+				"max-statements": [2, 30],
+			},
+		},
+		{
 			"files": "./es2015.js",
 			"rules": {
 				"max-lines": [2, 1400],
@@ -36,6 +43,12 @@
 			"files": "operations/*",
 			"rules": {
 				"max-lines": 0,
+			},
+		},
+		{
+			"files": "operations/getOps.js",
+			"parserOptions": {
+				"ecmaVersion": "2018",
 			},
 		},
 		{
