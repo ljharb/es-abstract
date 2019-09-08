@@ -1,3 +1,8 @@
+1.14.2 / 2019-09-08
+=================
+  * [Fix] `ES2016`: `IterableToArrayLike`: add proper fallback for strings, pre-Symbols
+  * [Tests] on `node` `v12.10`
+
 1.14.1 / 2019-09-03
 =================
   * [meta] republish with some extra files removed
