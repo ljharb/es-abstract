@@ -36,6 +36,11 @@ var entries = aOps.toArray().map(function (x) {
 	if (!id) {
 		id = op.closest('[id]').attr('id');
 	}
+	// years other than 2016 have `id.startsWith('eqn-')`
+	var isConstant = op.text().trim().split('\n').length === 1 && op.text().startsWith(aoid + ' = ');
+	if (isConstant) {
+		return null;
+	}
 
 	if (!id) {
 		missings.push(aoid);
@@ -45,19 +50,29 @@ var entries = aOps.toArray().map(function (x) {
 		aoid,
 		'https://ecma-international.org/ecma-262/' + edition + '.0/#' + id
 	];
-});
+}).filter(Boolean);
 
 if (missings.length > 0) {
 	console.error('Missing URLs:', missings);
 	process.exit(1);
 }
 
+if (year === 2016) {
+	entries.push(
+		['thisNumberValue', 'https://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-number-prototype-object'],
+		['thisStringValue', 'https://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-string-prototype-object']
+	);
+}
 entries.sort(function (a, b) { return a[0].localeCompare(b[0]); });
 
 var obj = fromEntries(entries);
 
 var outputPath = path.join('operations', year + '.js');
-fs.writeFileSync(outputPath, '\'use strict\';\n\nmodule.exports = ' + JSON.stringify(obj, null, '\t') + ';\n');
+var output = '\'use strict\';\n\nmodule.exports = ' + JSON.stringify(obj, null, '\t') + ';\n';
+if (year >= 2015 && year < 2018) {
+	output = output.replace(/= \{\n/m, "= {\n\tIsPropertyDescriptor: 'https://ecma-international.org/ecma-262/6.0/#sec-property-descriptor-specification-type', // not actually an abstract op\n\n");
+}
+fs.writeFileSync(outputPath, output);
 
 console.log('npx eslint --quiet --fix ' + outputPath);
 execSync('npx eslint --quiet --fix ' + outputPath);
