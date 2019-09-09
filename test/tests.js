@@ -3212,6 +3212,21 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.equal(ES.modulo(-3, 2), 1, '-3 mod 2 is +1');
 		t.end();
 	});
+
+	test('ToDateString', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.ToDateString(nonNumber); },
+				TypeError,
+				debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		t.equal(ES.ToDateString(NaN), 'Invalid Date', 'NaN becomes "Invalid Date"');
+		var now = Date.now();
+		t.equal(ES.ToDateString(now), Date(now), 'any timestamp becomes `Date(timestamp)`');
+		t.end();
+	});
 };
 
 var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
