@@ -17,6 +17,7 @@ var $Object = GetIntrinsic('%Object%');
 var $Number = GetIntrinsic('%Number%');
 var $Symbol = GetIntrinsic('%Symbol%', true);
 var $RegExp = GetIntrinsic('%RegExp%');
+var $Date = GetIntrinsic('%Date%');
 var $preventExtensions = $Object.preventExtensions;
 
 var hasSymbols = require('has-symbols')();
@@ -1375,6 +1376,17 @@ var ES6 = assign(assign({}, ES5), {
 			}
 		}
 		return result;
+	},
+
+	// https://ecma-international.org/ecma-262/6.0/#sec-todatestring
+	ToDateString: function ToDateString(tv) {
+		if (this.Type(tv) !== 'Number') {
+			throw new $TypeError('Assertion failed: `tv` must be a Number');
+		}
+		if ($isNaN(tv)) {
+			return 'Invalid Date';
+		}
+		return $Date(tv);
 	}
 });
 

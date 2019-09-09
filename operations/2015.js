@@ -91,6 +91,7 @@ module.exports = {
 	TimeFromYear: 'https://ecma-international.org/ecma-262/6.0/#sec-year-number',
 	TimeWithinDay: 'https://ecma-international.org/ecma-262/6.0/#sec-day-number-and-time-within-day',
 	ToBoolean: 'https://ecma-international.org/ecma-262/6.0/#sec-toboolean',
+	ToDateString: 'https://ecma-international.org/ecma-262/6.0/#sec-todatestring',
 	ToInt16: 'https://ecma-international.org/ecma-262/6.0/#sec-toint16',
 	ToInt32: 'https://ecma-international.org/ecma-262/6.0/#sec-toint32',
 	ToInt8: 'https://ecma-international.org/ecma-262/6.0/#sec-toint8',
