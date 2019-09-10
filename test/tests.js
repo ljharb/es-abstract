@@ -3734,6 +3734,34 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('DateString', function (t) {
+		forEach(v.nonNumbers.concat(NaN), function (nonNumberOrNaN) {
+			t['throws'](
+				function () { ES.DateString(nonNumberOrNaN); },
+				TypeError,
+				debug(nonNumberOrNaN) + ' is not a non-NaN Number'
+			);
+		});
+
+		t.equal(ES.DateString(Date.UTC(2019, 8, 10, 7, 8, 9)), 'Tue Sep 10 2019');
+		t.equal(ES.DateString(Date.UTC(2016, 1, 29, 7, 8, 9)), 'Mon Feb 29 2016'); // leap day
+		t.end();
+	});
+
+	test('TimeString', function (t) {
+		forEach(v.nonNumbers.concat(NaN), function (nonNumberOrNaN) {
+			t['throws'](
+				function () { ES.TimeString(nonNumberOrNaN); },
+				TypeError,
+				debug(nonNumberOrNaN) + ' is not a non-NaN Number'
+			);
+		});
+
+		var tv = Date.UTC(2019, 8, 10, 7, 8, 9);
+		t.equal(ES.TimeString(tv), '07:08:09 GMT');
+		t.end();
+	});
 };
 
 var es2019 = function ES2018(ES, ops, expectedMissing, skips) {
