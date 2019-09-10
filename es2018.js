@@ -17,10 +17,11 @@ var $TypeError = GetIntrinsic('%TypeError%');
 
 var callBound = require('./helpers/callBound');
 var regexTester = require('./helpers/regexTester');
+var $isNaN = require('./helpers/isNaN');
 
 var $SymbolValueOf = callBound('Symbol.prototype.valueOf', true);
 // var $charAt = callBound('String.prototype.charAt');
-var strSlice = callBound('String.prototype.slice');
+var $strSlice = callBound('String.prototype.slice');
 var $indexOf = callBound('String.prototype.indexOf');
 var $parseInt = parseInt;
 
@@ -31,6 +32,13 @@ var $PromiseResolve = callBound('Promise.resolve', true);
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 var $pushApply = callBind.apply(GetIntrinsic('%Array.prototype.push%'));
 var $gOPS = $SymbolValueOf ? GetIntrinsic('%Object.getOwnPropertySymbols%') : null;
+
+var padTimeComponent = function padTimeComponent(c, count) {
+	return $strSlice('00' + c, -(count || 2));
+};
+
+var weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 var OwnPropertyKeys = function OwnPropertyKeys(ES, source) {
 	var ownKeys = keys(source);
@@ -200,10 +208,10 @@ var ES2018 = assign(assign({}, ES2017), {
 					result += matched;
 					i += 1;
 				} else if (next === '`') {
-					result += position === 0 ? '' : strSlice(str, 0, position - 1);
+					result += position === 0 ? '' : $strSlice(str, 0, position - 1);
 					i += 1;
 				} else if (next === "'") {
-					result += tailPos >= stringLength ? '' : strSlice(str, tailPos);
+					result += tailPos >= stringLength ? '' : $strSlice(str, tailPos);
 					i += 1;
 				} else {
 					var nextNext = nextIsLast ? null : replacement[i + 2];
@@ -229,7 +237,7 @@ var ES2018 = assign(assign({}, ES2017), {
 							var endIndex = $indexOf(replacement, '>', i);
 							// eslint-disable-next-line max-depth
 							if (endIndex > -1) {
-								var groupName = strSlice(replacement, i, endIndex);
+								var groupName = $strSlice(replacement, i, endIndex);
 								var capture = this.Get(namedCaptures, groupName);
 								// eslint-disable-next-line max-depth
 								if (this.Type(capture) !== 'Undefined') {
@@ -248,6 +256,29 @@ var ES2018 = assign(assign({}, ES2017), {
 			}
 		}
 		return result;
+	},
+
+	// https://www.ecma-international.org/ecma-262/9.0/#sec-datestring
+	DateString: function DateString(tv) {
+		if (this.Type(tv) !== 'Number' || $isNaN(tv)) {
+			throw new $TypeError('Assertion failed: `tv` must be a non-NaN Number');
+		}
+		var weekday = weekdays[this.WeekDay(tv)];
+		var month = months[this.MonthFromTime(tv)];
+		var day = padTimeComponent(this.DateFromTime(tv));
+		var year = padTimeComponent(this.YearFromTime(tv), 4);
+		return weekday + '\x20' + month + '\x20' + day + '\x20' + year;
+	},
+
+	// https://www.ecma-international.org/ecma-262/9.0/#sec-timestring
+	TimeString: function TimeString(tv) {
+		if (this.Type(tv) !== 'Number' || $isNaN(tv)) {
+			throw new $TypeError('Assertion failed: `tv` must be a non-NaN Number');
+		}
+		var hour = this.HourFromTime(tv);
+		var minute = this.MinFromTime(tv);
+		var second = this.SecFromTime(tv);
+		return padTimeComponent(hour) + ':' + padTimeComponent(minute) + ':' + padTimeComponent(second) + '\x20GMT';
 	}
 });
 
