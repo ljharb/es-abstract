@@ -20,6 +20,9 @@
 	"license": "MIT",
 	"main": "index.js",
 	"scripts": {
+		"prespackle": "git ls-files | xargs git check-attr spackled | grep -v 'unspecified$' | cut -d: -f1 | xargs rm",
+		"spackle": "node operations/spackle 1",
+		"postspackle": "git ls-files | xargs git check-attr spackled | grep -v 'unspecified$' | cut -d: -f1 | xargs git add",
 		"prepublish": "safe-publish-latest",
 		"pretest": "npm run --silent lint",
 		"test": "npm run tests-only",
