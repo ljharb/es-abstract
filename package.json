@@ -57,6 +57,7 @@
 	"devDependencies": {
 		"@ljharb/eslint-config": "^14.1.0",
 		"cheerio": "^1.0.0-rc.3",
+		"diff": "^4.0.1",
 		"eclint": "^2.8.1",
 		"eslint": "^6.3.0",
 		"foreach": "^2.0.5",

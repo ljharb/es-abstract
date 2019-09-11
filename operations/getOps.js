@@ -69,7 +69,7 @@ var obj = fromEntries(entries);
 
 var outputPath = path.join('operations', year + '.js');
 var output = '\'use strict\';\n\nmodule.exports = ' + JSON.stringify(obj, null, '\t') + ';\n';
-if (year >= 2015 && year < 2018) {
+if ((year === 5 || year >= 2015) && year < 2018) {
 	output = output.replace(/= \{\n/m, "= {\n\tIsPropertyDescriptor: 'https://ecma-international.org/ecma-262/6.0/#sec-property-descriptor-specification-type', // not actually an abstract op\n\n");
 }
 fs.writeFileSync(outputPath, output);
