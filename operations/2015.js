@@ -1,6 +1,8 @@
 'use strict';
 
 module.exports = {
+	IsPropertyDescriptor: 'https://ecma-international.org/ecma-262/6.0/#sec-property-descriptor-specification-type', // not actually an abstract op
+
 	'Abstract Equality Comparison': 'https://ecma-international.org/ecma-262/6.0/#sec-abstract-equality-comparison',
 	'Abstract Relational Comparison': 'https://ecma-international.org/ecma-262/6.0/#sec-abstract-relational-comparison',
 	'Strict Equality Comparison': 'https://ecma-international.org/ecma-262/6.0/#sec-strict-equality-comparison',
@@ -51,7 +53,6 @@ module.exports = {
 	IsGenericDescriptor: 'https://ecma-international.org/ecma-262/6.0/#sec-isgenericdescriptor',
 	IsInteger: 'https://ecma-international.org/ecma-262/6.0/#sec-isinteger',
 	IsPromise: 'https://ecma-international.org/ecma-262/6.0/#sec-ispromise',
-	IsPropertyDescriptor: 'https://ecma-international.org/ecma-262/6.0/#sec-property-descriptor-specification-type',
 	IsPropertyKey: 'https://ecma-international.org/ecma-262/6.0/#sec-ispropertykey',
 	IsRegExp: 'https://ecma-international.org/ecma-262/6.0/#sec-isregexp',
 	IteratorClose: 'https://ecma-international.org/ecma-262/6.0/#sec-iteratorclose',

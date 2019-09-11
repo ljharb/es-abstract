@@ -8,6 +8,7 @@
 	},
 
 	"rules": {
+		"arrow-parens": [2, "always"],
 		"array-bracket-newline": 0,
 		"array-element-newline": 0,
 		"complexity": 0,
@@ -46,9 +47,16 @@
 			},
 		},
 		{
-			"files": "operations/getOps.js",
+			"files": "operations/*.js",
 			"parserOptions": {
 				"ecmaVersion": "2018",
+			},
+			"rules": {
+//camelcase
+//array-callback-return
+//consistent-return
+				"no-console": 0,
+				"no-multi-str": 0,
 			},
 		},
 		{
