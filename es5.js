@@ -4,7 +4,9 @@ var GetIntrinsic = require('./GetIntrinsic');
 
 var $Object = GetIntrinsic('%Object%');
 var $EvalError = GetIntrinsic('%EvalError%');
+var $RangeError = GetIntrinsic('%RangeError%');
 var $TypeError = GetIntrinsic('%TypeError%');
+var $URIError = GetIntrinsic('%URIError%');
 var $String = GetIntrinsic('%String%');
 var $Date = GetIntrinsic('%Date%');
 var $Number = GetIntrinsic('%Number%');
@@ -20,6 +22,7 @@ var sign = require('./helpers/sign');
 var mod = require('./helpers/mod');
 var isPrefixOf = require('./helpers/isPrefixOf');
 var callBound = require('./helpers/callBound');
+var padLeft = require('./helpers/padLeft');
 
 var IsCallable = require('is-callable');
 var toPrimitive = require('es-to-primitive/es5');
@@ -27,6 +30,11 @@ var toPrimitive = require('es-to-primitive/es5');
 var has = require('has');
 
 var $getUTCFullYear = callBound('Date.prototype.getUTCFullYear');
+var $charAt = callBound('String.prototype.charAt');
+var $charCodeAt = callBound('String.prototype.charCodeAt');
+var $indexOf = callBound('String.prototype.indexOf');
+var $numberToString = callBound('Number.prototype.toString');
+var $toUpperCase = callBound('String.prototype.toUpperCase');
 
 var HoursPerDay = 24;
 var MinutesPerHour = 60;
@@ -35,6 +43,36 @@ var msPerSecond = 1e3;
 var msPerMinute = msPerSecond * SecondsPerMinute;
 var msPerHour = msPerMinute * MinutesPerHour;
 var msPerDay = 86400000;
+
+var utf8Transform = function utf8Transform(c) {
+	if (c < 0x80) {
+		return [
+			c >> 0 & 0x7F | 0x00
+		];
+	}
+	if (c < 0x0800) {
+		return [
+			c >> 6 & 0x1F | 0xC0,
+			c >> 0 & 0x3F | 0x80
+		];
+	}
+	if (c < 0x010000) {
+		return [
+			c >> 12 & 0x0F | 0xE0,
+			c >> 6 & 0x3F | 0x80,
+			c >> 0 & 0x3F | 0x80
+		];
+	}
+	if (c < 0x110000) {
+		return [
+			c >> 18 & 0x07 | 0xF0,
+			c >> 12 & 0x3F | 0x80,
+			c >> 6 & 0x3F | 0x80,
+			c >> 0 & 0x3F | 0x80
+		];
+	}
+	throw new $RangeError('utf-8 code point is too large');
+};
 
 // https://es5.github.io/#x9
 var ES5 = {
@@ -538,6 +576,55 @@ var ES5 = {
 	// https://ecma-international.org/ecma-262/5.1/#sec-5.2
 	modulo: function modulo(x, y) {
 		return mod(x, y);
+	},
+
+	// https://ecma-international.org/ecma-262/5.1/#sec-15.1.3
+	// eslint-disable-next-line max-statements
+	Encode: function Encode(string, unescapedSet) {
+		if (this.Type(string) !== 'String') {
+			throw new $TypeError('Assertion failed: `string`` argument must be a String');
+		}
+		if (this.Type(unescapedSet) !== 'String') {
+			throw new $TypeError('Assertion failed: `unescapedSet`` argument must be a String');
+		}
+		var strLen = string.length;
+		var R = '';
+		var k = 0;
+		while (k !== strLen) {
+			var C = $charAt(string, k);
+			if ($indexOf(unescapedSet, C) > -1) {
+				R += C;
+			} else {
+				var cChar = $charCodeAt(C, 0);
+				if (cChar >= 0xDC00 && cChar <= 0xDFFF) {
+					throw new $TypeError('??? todo');
+				}
+				var V;
+				if (cChar < 0xD800 || cChar > 0xDBFF) {
+					V = cChar;
+				} else {
+					k += 1;
+					if (k === strLen) {
+						throw new $URIError('Encode: something went wrong! Please report this.');
+					}
+					var kChar = $charCodeAt(string, k);
+					if (kChar < 0xDC00 || kChar > 0xDFFF) {
+						throw new $URIError('Encode: something went wrong! Please report this.');
+					}
+					V = ((cChar - 0xD800) * 0x400) + (kChar - 0xDC00) + 0x10000;
+				}
+				var Octets = utf8Transform(V);
+				var L = Octets.length;
+				var j = 0;
+				while (j < L) {
+					var jOctet = Octets[j];
+					R += '%' + $toUpperCase(padLeft($numberToString(jOctet, 16)));
+					j += 1;
+				}
+			}
+			k += 1;
+		}
+		return R;
 	}
 };
 

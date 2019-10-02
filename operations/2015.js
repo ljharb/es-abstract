@@ -29,6 +29,7 @@ module.exports = {
 	DayWithinYear: 'https://ecma-international.org/ecma-262/6.0/#sec-month-number',
 	DefinePropertyOrThrow: 'https://ecma-international.org/ecma-262/6.0/#sec-definepropertyorthrow',
 	DeletePropertyOrThrow: 'https://ecma-international.org/ecma-262/6.0/#sec-deletepropertyorthrow',
+	Encode: 'https://ecma-international.org/ecma-262/6.0/#sec-encode',
 	EnumerableOwnNames: 'https://ecma-international.org/ecma-262/6.0/#sec-enumerableownnames',
 	FromPropertyDescriptor: 'https://ecma-international.org/ecma-262/6.0/#sec-frompropertydescriptor',
 	Get: 'https://ecma-international.org/ecma-262/6.0/#sec-get-o-p',

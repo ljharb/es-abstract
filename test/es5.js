@@ -780,3 +780,22 @@ test('modulo', function (t) {
 	t.equal(ES.modulo(-3, 2), 1, '-3 mod 2 is +1');
 	t.end();
 });
+
+test('Encode', function (t) {
+	forEach(v.nonStrings, function (nonString) {
+		t['throws'](
+			function () { ES.Encode(nonString, ''); },
+			TypeError,
+			'string: ' + debug(nonString) + ' is not a String'
+		);
+		t['throws'](
+			function () { ES.Encode('', nonString); },
+			TypeError,
+			'unescapedSet: ' + debug(nonString) + ' is not a String'
+		);
+	});
+
+	t.equal(ES.Encode('💩', ''), '%F0%9F%92%A9', 'surrogate pairs are encoded as expected');
+	t.equal(ES.Encode('abcZ', 'ac'), 'a%62c%5A', 'unescapedSet is respected; hex digits are capitalized');
+	t.end();
+});

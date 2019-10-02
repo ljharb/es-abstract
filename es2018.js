@@ -18,6 +18,7 @@ var $TypeError = GetIntrinsic('%TypeError%');
 var callBound = require('./helpers/callBound');
 var regexTester = require('./helpers/regexTester');
 var $isNaN = require('./helpers/isNaN');
+var padLeft = require('./helpers/padLeft');
 
 var $SymbolValueOf = callBound('Symbol.prototype.valueOf', true);
 // var $charAt = callBound('String.prototype.charAt');
@@ -32,10 +33,6 @@ var $PromiseResolve = callBound('Promise.resolve', true);
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 var $pushApply = callBind.apply(GetIntrinsic('%Array.prototype.push%'));
 var $gOPS = $SymbolValueOf ? GetIntrinsic('%Object.getOwnPropertySymbols%') : null;
-
-var padTimeComponent = function padTimeComponent(c, count) {
-	return $strSlice('00' + c, -(count || 2));
-};
 
 var weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -265,8 +262,8 @@ var ES2018 = assign(assign({}, ES2017), {
 		}
 		var weekday = weekdays[this.WeekDay(tv)];
 		var month = months[this.MonthFromTime(tv)];
-		var day = padTimeComponent(this.DateFromTime(tv));
-		var year = padTimeComponent(this.YearFromTime(tv), 4);
+		var day = padLeft(this.DateFromTime(tv));
+		var year = padLeft(this.YearFromTime(tv), 4);
 		return weekday + '\x20' + month + '\x20' + day + '\x20' + year;
 	},
 
@@ -278,7 +275,7 @@ var ES2018 = assign(assign({}, ES2017), {
 		var hour = this.HourFromTime(tv);
 		var minute = this.MinFromTime(tv);
 		var second = this.SecFromTime(tv);
-		return padTimeComponent(hour) + ':' + padTimeComponent(minute) + ':' + padTimeComponent(second) + '\x20GMT';
+		return padLeft(hour) + ':' + padLeft(minute) + ':' + padLeft(second) + '\x20GMT';
 	}
 });
 
