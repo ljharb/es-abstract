@@ -1,3 +1,18 @@
+1.15.0 / 2019-10-02
+=================
+  * [New] `ES2018`+: add `DateString`, `TimeString`
+  * [New] `ES2015`+: add `ToDateString`
+  * [New] `ES5`+: add `msFromTime`, `SecFromTime`, `MinFromTime`, `HourFromTime`, `TimeWithinDay`, `Day`, `DayFromYear`, `TimeFromYear`, `YearFromTime`, `WeekDay`, `DaysInYear`, `InLeapYear`, `DayWithinYear`, `MonthFromTime`, `DateFromTime`, `MakeDay`, `MakeDate`, `MakeTime`, `TimeClip`, `modulo`
+  * [New] add `regexTester` helper
+  * [New] add `callBound` helper
+  * [New] add ES2020’s intrinsic dot notation
+  * [New] add `isPrefixOf` helper
+  * [New] add `maxSafeInteger` helper
+  * [Deps] update `string.prototype.trimleft`, `string.prototype.trimright`
+  * [Dev Deps] update `eslint`
+  * [Tests] on `node` `v12.11`
+  * [meta] npmignore operations scripts; add "deltas"
+
 1.14.2 / 2019-09-08
 =================
   * [Fix] `ES2016`: `IterableToArrayLike`: add proper fallback for strings, pre-Symbols
