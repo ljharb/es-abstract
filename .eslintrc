@@ -30,7 +30,7 @@
 		{
 			"files": "./es5.js",
 			"rules": {
-				"max-lines": [2, 600],
+				"max-lines": [2, 800],
 				"max-statements": [2, 30],
 			},
 		},

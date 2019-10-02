@@ -52,7 +52,8 @@
 		"object-inspect": "^1.6.0",
 		"object-keys": "^1.1.1",
 		"string.prototype.trimleft": "^2.0.0",
-		"string.prototype.trimright": "^2.0.0"
+		"string.prototype.trimright": "^2.0.0",
+		"utf8": "^3.0.0"
 	},
 	"devDependencies": {
 		"@ljharb/eslint-config": "^14.1.0",

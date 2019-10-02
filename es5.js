@@ -4,13 +4,17 @@ var GetIntrinsic = require('./GetIntrinsic');
 
 var $Object = GetIntrinsic('%Object%');
 var $EvalError = GetIntrinsic('%EvalError%');
+var $RangeError = GetIntrinsic('%RangeError%');
 var $TypeError = GetIntrinsic('%TypeError%');
+var $URIError = GetIntrinsic('%URIError%');
 var $String = GetIntrinsic('%String%');
 var $Date = GetIntrinsic('%Date%');
 var $Number = GetIntrinsic('%Number%');
 var $floor = GetIntrinsic('%Math.floor%');
 var $DateUTC = GetIntrinsic('%Date.UTC%');
 var $abs = GetIntrinsic('%Math.abs%');
+var $parseInt = GetIntrinsic('%parseInt%');
+var $fromCharCode = GetIntrinsic('%String.fromCharCode%');
 
 var assertRecord = require('./helpers/assertRecord');
 var isPropertyDescriptor = require('./helpers/isPropertyDescriptor');
@@ -20,6 +24,8 @@ var sign = require('./helpers/sign');
 var mod = require('./helpers/mod');
 var isPrefixOf = require('./helpers/isPrefixOf');
 var callBound = require('./helpers/callBound');
+var padLeft = require('./helpers/padLeft');
+var regexTester = require('./helpers/regexTester');
 
 var IsCallable = require('is-callable');
 var toPrimitive = require('es-to-primitive/es5');
@@ -27,6 +33,12 @@ var toPrimitive = require('es-to-primitive/es5');
 var has = require('has');
 
 var $getUTCFullYear = callBound('Date.prototype.getUTCFullYear');
+var $charAt = callBound('String.prototype.charAt');
+var $charCodeAt = callBound('String.prototype.charCodeAt');
+var $indexOf = callBound('String.prototype.indexOf');
+var $numberToString = callBound('Number.prototype.toString');
+var $toUpperCase = callBound('String.prototype.toUpperCase');
+var $strSlice = callBound('String.prototype.slice');
 
 var HoursPerDay = 24;
 var MinutesPerHour = 60;
@@ -35,6 +47,94 @@ var msPerSecond = 1e3;
 var msPerMinute = msPerSecond * SecondsPerMinute;
 var msPerHour = msPerMinute * MinutesPerHour;
 var msPerDay = 86400000;
+
+var isHexDigit = regexTester(/^[0-9a-f]{2}$/i);
+
+var utf8Transform = function utf8Transform(c) {
+	/* eslint no-bitwise: 0, no-mixed-operators: 0 */
+	// stolen from http://www.herongyang.com/Unicode/UTF-8-UTF-8-Encoding-Algorithm.html
+	if (c < 0x80) {
+		return [
+			c >> 0 & 0x7F | 0x00
+		];
+	}
+	if (c < 0x0800) {
+		return [
+			c >> 6 & 0x1F | 0xC0,
+			c >> 0 & 0x3F | 0x80
+		];
+	}
+	if (c < 0x010000) {
+		return [
+			c >> 12 & 0x0F | 0xE0,
+			c >> 6 & 0x3F | 0x80,
+			c >> 0 & 0x3F | 0x80
+		];
+	}
+	if (c < 0x110000) {
+		return [
+			c >> 18 & 0x07 | 0xF0,
+			c >> 12 & 0x3F | 0x80,
+			c >> 6 & 0x3F | 0x80,
+			c >> 0 & 0x3F | 0x80
+		];
+	}
+	throw new $RangeError('utf-8 code point is too large');
+};
+
+// adapted from https://jsfiddle.net/3VuLx/1/
+// found on http://ecmanaut.blogspot.com/2006/07/encoding-decoding-utf8-in-javascript.html
+var unutf8Transform = function unutf8Transform(Octets) {
+	/*
+	var char2, char3;
+
+	var out = 0;
+	var len = Octets.length;
+	var i = 0;
+	while (i < len) {
+		var c = Octets[i++];
+		switch (c >> 4) {
+			case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
+			// 0xxxxxxx
+				out += c;
+				break;
+			case 12: case 13:
+			// 110x xxxx   10xx xxxx
+				char2 = Octets[i++];
+				out += ((c & 0x1F) << 6) | (char2 & 0x3F);
+				break;
+			case 14:
+			// 1110 xxxx  10xx xxxx  10xx xxxx
+				char2 = Octets[i++];
+				char3 = Octets[i++];
+				out += ((c & 0x0F) << 12)
+					| ((char2 & 0x3F) << 6)
+					| ((char3 & 0x3F) << 0);
+				break;
+			default:
+		}
+	}
+
+	return out;
+	*/
+};
+var unutf8Transform = ([m,n,o,p])=>
+m<0x80
+?( m&0x7f)<<0
+:0xc1<m&&m<0xe0&&n===(n&0xbf)
+?( m&0x1f)<<6|( n&0x3f)<<0
+:( m===0xe0&&0x9f<n&&n<0xc0
+||0xe0<m&&m<0xed&&0x7f<n&&n<0xc0
+||m===0xed&&0x7f<n&&n<0xa0
+||0xed<m&&m<0xf0&&0x7f<n&&n<0xc0)
+&&o===o&0xbf
+?( m&0x0f)<<12|( n&0x3f)<<6|( o&0x3f)<<0
+:( m===0xf0&&0x8f<n&&n<0xc0
+||m===0xf4&&0x7f<n&&n<0x90
+||0xf0<m&&m<0xf4&&0x7f<n&&n<0xc0)
+&&o===o&0xbf&&p===p&0xbf
+?( m&0x07)<<18|( n&0x3f)<<12|( o&0x3f)<<6|( p&0x3f)<<0
+:(()=>{throw'Invalid UTF-8 encoding!'})();
 
 // https://es5.github.io/#x9
 var ES5 = {
@@ -538,6 +638,155 @@ var ES5 = {
 	// https://ecma-international.org/ecma-262/5.1/#sec-5.2
 	modulo: function modulo(x, y) {
 		return mod(x, y);
+	},
+
+	// https://ecma-international.org/ecma-262/5.1/#sec-15.1.3
+	// eslint-disable-next-line max-statements
+	Encode: function Encode(string, unescapedSet) {
+		if (this.Type(string) !== 'String') {
+			throw new $TypeError('Assertion failed: `string`` argument must be a String');
+		}
+		if (this.Type(unescapedSet) !== 'String') {
+			throw new $TypeError('Assertion failed: `unescapedSet`` argument must be a String');
+		}
+		var strLen = string.length;
+		var R = '';
+		var k = 0;
+		while (k !== strLen) {
+			var C = $charAt(string, k);
+			if ($indexOf(unescapedSet, C) > -1) {
+				R += C;
+			} else {
+				var cChar = $charCodeAt(C, 0);
+				if (cChar >= 0xDC00 && cChar <= 0xDFFF) {
+					throw new $TypeError('??? todo');
+				}
+				var V;
+				if (cChar < 0xD800 || cChar > 0xDBFF) {
+					V = cChar;
+				} else {
+					k += 1;
+					if (k === strLen) {
+						throw new $URIError('Encode: something went wrong! Please report this.');
+					}
+					var kChar = $charCodeAt(string, k);
+					if (kChar < 0xDC00 || kChar > 0xDFFF) {
+						throw new $URIError('Encode: something went wrong! Please report this.');
+					}
+					V = ((cChar - 0xD800) * 0x400) + (kChar - 0xDC00) + 0x10000;
+				}
+				var Octets = utf8Transform(V);
+				var L = Octets.length;
+				var j = 0;
+				while (j < L) {
+					var jOctet = Octets[j];
+					R += '%' + $toUpperCase(padLeft($numberToString(jOctet, 16)));
+					j += 1;
+				}
+			}
+			k += 1;
+		}
+		return R;
+	},
+
+	// https://ecma-international.org/ecma-262/5.1/#sec-15.1.3
+	// eslint-disable-next-line max-statements, max-lines-per-function
+	Decode: function Decode(string, reservedSet) {
+		/* eslint max-depth: 0 */
+		if (this.Type(string) !== 'String') {
+			throw new $TypeError('Assertion failed: `string`` argument must be a String');
+		}
+		if (this.Type(reservedSet) !== 'String') {
+			throw new $TypeError('Assertion failed: `reservedSet`` argument must be a String');
+		}
+		var strLen = string.length;
+		var R = '';
+		var k = 0;
+		while (k !== strLen) {
+			var C = $charAt(string, k);
+			var S;
+			// eslint-disable-next-line no-negated-condition
+			if (C !== '%') {
+				S = C;
+			} else {
+				var start = k;
+				if ((k + 2) >= strLen) {
+					throw new $URIError('URI error');
+				}
+				if (isHexDigit($charAt(string, k + 1)) || isHexDigit($charAt(string, k + 2))) {
+					throw new $URIError('URI error');
+				}
+				var B = $parseInt($strSlice(string, k + 1, k + 1 + 2), 16);
+				k += 2;
+				var bitsOfB = $numberToString(B, 2);
+				var mostSignificantBitOfB = $charAt(bitsOfB, 0);
+				if (mostSignificantBitOfB === '0') {
+					C = $fromCharCode(B);
+					if ($indexOf(reservedSet, C) === -1) {
+						S = C;
+					} else {
+						S = $strSlice(string, start, k);
+					}
+				} else {
+					// assert: mostSignificantBitOfB === '1'
+
+					// Let n be the smallest non-negative number such that (B << n) & 0x80 is equal to 0.
+					// * This is saying, `(B << n).toString(2).slice(-8) === '10000000'` (0x80)
+					// * thus, `B.toString(2)` needs to have `n` zeroes added to the end of it such that it ends in a 1 and 7 zeroes
+					var n = 1;
+					while ((B << n & 0x80) !== 0 && n < 5) {
+						n += 1;
+					}
+
+					if (n === 1 || n > 4) {
+						throw new $URIError('URI error: ' + n);
+					}
+					var Octets = Array(n);
+					Octets[0] = B;
+					if ((k + (3 * (n - 1))) >= strLen) {
+						throw new $URIError('URI error');
+					}
+					var j = 1;
+					while (j < n) {
+						k += 1;
+						if ($charAt(string, k) !== '%') {
+							throw new $URIError('URI error');
+						}
+						if (isHexDigit($charAt(string, k + 1)) || isHexDigit($charAt(string, k + 2))) {
+							throw new $URIError('URI error');
+						}
+						B = $parseInt($strSlice(string, k + 1, k + 1 + 2), 16);
+						if ($strSlice($numberToString(B, 2), 0, 2) !== '10') {
+							throw new $URIError('URI error');
+						}
+						k += 2;
+						Octets[j] = B;
+						j += 1;
+					}
+					var V = unutf8Transform(Octets);
+					// V = 128169;
+					console.log(string, n, Octets, V, k, strLen);
+					/*
+					Let V be the value obtained by applying the UTF-8 transformation to Octets, that is, from an array of octets into a 21-bit value. If Octets does not contain a valid UTF-8 encoding of a Unicode code point throw an URIError exception.
+					*/
+					if (V < 0x10000) {
+						C = $fromCharCode(V);
+						if ($indexOf(reservedSet, C) === -1) {
+							S = C;
+						} else {
+							S = $strSlice(string, 0, k);
+						}
+					} else {
+						var L = (((V - 0x10000) & 0x3FF) + 0xDC00);
+						var H = ((((V - 0x10000) >> 10) & 0x3FF) + 0xD800);
+						S = $fromCharCode(H) + $fromCharCode(L);
+					}
+				}
+			}
+			R += S;
+			k += 1;
+		}
+		return R;
 	}
 };
 
