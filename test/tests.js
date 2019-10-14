@@ -3309,6 +3309,17 @@ var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 		});
 		t.end();
 	});
+
+	test('OrdinarySetPrototypeOf', function (t) {
+		var a = [];
+		var proto = {};
+
+		t.equal(ES.OrdinaryGetPrototypeOf(a), Array.prototype, 'precondition');
+		t.equal(ES.OrdinarySetPrototypeOf(a, proto), true, 'setting prototype is successful');
+		t.equal(ES.OrdinaryGetPrototypeOf(a), proto, 'postcondition');
+
+		t.end();
+	});
 };
 
 var es2017 = function ES2017(ES, ops, expectedMissing, skips) {

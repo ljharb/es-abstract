@@ -5,6 +5,7 @@ var hasSymbols = require('has-symbols')();
 var ES2015 = require('./es2015');
 var GetIntrinsic = require('./GetIntrinsic');
 var assign = require('./helpers/assign');
+var $setProto = require('./helpers/setProto');
 
 var callBound = require('./helpers/callBound');
 
@@ -85,6 +86,48 @@ var ES2016 = assign(assign({}, ES2015), {
 			throw new $TypeError('This environment does not support fetching prototypes.');
 		}
 		return $getProto(O);
+	},
+
+	// https://ecma-international.org/ecma-262/7.0/#sec-ordinarysetprototypeof
+	OrdinarySetPrototypeOf: function (O, V) {
+		if (this.Type(V) !== 'Object' && this.Type(V) !== 'Null') {
+			throw new $TypeError('Assertion failed: V must be Object or Null');
+		}
+		/*
+		var extensible = this.IsExtensible(O);
+		var current = this.OrdinaryGetPrototypeOf(O);
+		if (this.SameValue(V, current)) {
+			return true;
+		}
+		if (!extensible) {
+			return false;
+		}
+		*/
+		try {
+			$setProto(O, V);
+		} catch (e) {
+			return false;
+		}
+		return this.OrdinaryGetPrototypeOf(O) === V;
+		/*
+		var p = V;
+		var done = false;
+		while (!done) {
+			if (p === null) {
+				done = true;
+			} else if (this.SameValue(p, O)) {
+				return false;
+			} else {
+				if (wat) {
+					done = true;
+				} else {
+					p = p.[[Prototype]];
+				}
+			}
+		 }
+		 O.[[Prototype]] = V;
+		 return true;
+		 */
 	}
 });
 

@@ -72,15 +72,7 @@ var $gOPN = $Object.getOwnPropertyNames;
 var $gOPS = $Object.getOwnPropertySymbols;
 var $isExtensible = $Object.isExtensible;
 var $defineProperty = $Object.defineProperty;
-var $setProto = Object.setPrototypeOf || (
-	// eslint-disable-next-line no-proto, no-negated-condition
-	[].__proto__ !== Array.prototype
-		? null
-		: function (O, proto) {
-			O.__proto__ = proto; // eslint-disable-line no-proto
-			return O;
-		}
-);
+var $setProto = require('./helpers/setProto');
 
 var DefineOwnProperty = function DefineOwnProperty(ES, O, P, desc) {
 	if (!$defineProperty) {
