@@ -39,6 +39,7 @@ var isPropertyDescriptor = require('./helpers/isPropertyDescriptor');
 var parseInteger = parseInt;
 var callBound = require('./helpers/callBound');
 var regexTester = require('./helpers/regexTester');
+var getIteratorMethod = require('./helpers/getIteratorMethod');
 
 var $PromiseThen = callBound('Promise.prototype.then', true);
 var arraySlice = callBound('Array.prototype.slice');
@@ -533,10 +534,7 @@ var ES6 = assign(assign({}, ES5), {
 	GetIterator: function GetIterator(obj, method) {
 		var actualMethod = method;
 		if (arguments.length < 2) {
-			if (!hasSymbols) {
-				throw new SyntaxError('GetIterator depends on native Symbol support when `method` is not passed');
-			}
-			actualMethod = this.GetMethod(obj, $Symbol.iterator);
+			actualMethod = getIteratorMethod(this, obj);
 		}
 		var iterator = this.Call(actualMethod, obj);
 		if (this.Type(iterator) !== 'Object') {

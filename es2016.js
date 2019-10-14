@@ -1,18 +1,15 @@
 'use strict';
 
-var hasSymbols = require('has-symbols')();
-
 var ES2015 = require('./es2015');
 var GetIntrinsic = require('./GetIntrinsic');
 var assign = require('./helpers/assign');
 var $setProto = require('./helpers/setProto');
 
 var callBound = require('./helpers/callBound');
+var getIteratorMethod = require('./helpers/getIteratorMethod');
 
 var $TypeError = GetIntrinsic('%TypeError%');
 var $arrayPush = callBound('Array.prototype.push');
-var $arraySlice = callBound('Array.prototype.slice');
-var $arrayJoin = callBound('Array.prototype.join');
 var $getProto = require('./helpers/getProto');
 
 var ES2016 = assign(assign({}, ES2015), {
@@ -26,40 +23,7 @@ var ES2016 = assign(assign({}, ES2015), {
 
 	// https://www.ecma-international.org/ecma-262/7.0/#sec-iterabletoarraylike
 	IterableToArrayLike: function IterableToArrayLike(items) {
-		var usingIterator;
-		if (hasSymbols) {
-			usingIterator = this.GetMethod(items, Symbol.iterator);
-		} else if (this.IsArray(items)) {
-			usingIterator = function () {
-				var i = -1;
-				var arr = this; // eslint-disable-line no-invalid-this
-				return {
-					next: function () {
-						i += 1;
-						return {
-							done: i >= arr.length,
-							value: arr[i]
-						};
-					}
-				};
-			};
-		} else if (this.Type(items) === 'String') {
-			var ES = this;
-			usingIterator = function () {
-				var i = 0;
-				return {
-					next: function () {
-						var nextIndex = ES.AdvanceStringIndex(items, i, true);
-						var value = $arrayJoin($arraySlice(items, i, nextIndex), '');
-						i = nextIndex;
-						return {
-							done: nextIndex > items.length,
-							value: value
-						};
-					}
-				};
-			};
-		}
+		var usingIterator = getIteratorMethod(this, items);
 		if (typeof usingIterator !== 'undefined') {
 			var iterator = this.GetIterator(items, usingIterator);
 			var values = [];

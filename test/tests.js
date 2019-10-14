@@ -29,6 +29,16 @@ var getArraySubclassWithSpeciesConstructor = function getArraySubclass(speciesCo
 	return Bar;
 };
 
+var testIterator = function (t, iterator, expected) {
+	var resultCount = 0;
+	var result;
+	while (result = iterator.next(), !result.done) { // eslint-disable-line no-sequences
+		t.deepEqual(result, { done: false, value: expected[resultCount] }, 'result ' + resultCount);
+		resultCount += 1;
+	}
+	t.equal(resultCount, expected.length, 'expected ' + expected.length + ', got ' + resultCount);
+};
+
 var hasSpecies = v.hasSymbols && Symbol.species;
 
 var hasGroups = 'groups' in (/a/).exec('a');
@@ -1120,7 +1130,24 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('GetIterator', { skip: true });
+	test('GetIterator', function (t) {
+		var arr = [1, 2];
+		testIterator(t, ES.GetIterator(arr), arr);
+
+		testIterator(t, ES.GetIterator('abc'), 'abc'.split(''));
+
+		t.test('Symbol.iterator', { skip: !v.hasSymbols }, function (st) {
+			var m = new Map();
+			m.set(1, 'a');
+			m.set(2, 'b');
+
+			testIterator(st, ES.GetIterator(m), [[1, 'a'], [2, 'b']]);
+
+			st.end();
+		});
+
+		t.end();
+	});
 
 	test('IteratorNext', { skip: true });
 
