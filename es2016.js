@@ -3,13 +3,16 @@
 var hasSymbols = require('has-symbols')();
 
 var ES2015 = require('./es2015');
+var GetIntrinsic = require('./GetIntrinsic');
 var assign = require('./helpers/assign');
 
 var callBound = require('./helpers/callBound');
 
+var $TypeError = GetIntrinsic('%TypeError%');
 var $arrayPush = callBound('Array.prototype.push');
 var $arraySlice = callBound('Array.prototype.slice');
 var $arrayJoin = callBound('Array.prototype.join');
+var $getProto = require('./helpers/getProto');
 
 var ES2016 = assign(assign({}, ES2015), {
 	// https://www.ecma-international.org/ecma-262/7.0/#sec-samevaluenonnumber
@@ -71,6 +74,17 @@ var ES2016 = assign(assign({}, ES2015), {
 		}
 
 		return this.ToObject(items);
+	},
+
+	// https://ecma-international.org/ecma-262/7.0/#sec-ordinarygetprototypeof
+	OrdinaryGetPrototypeOf: function (O) {
+		if (this.Type(O) !== 'Object') {
+			throw new $TypeError('Assertion failed: O must be an Object');
+		}
+		if (!$getProto) {
+			throw new $TypeError('This environment does not support fetching prototypes.');
+		}
+		return $getProto(O);
 	}
 });
 

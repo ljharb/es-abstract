@@ -3288,6 +3288,27 @@ var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('OrdinaryGetPrototypeOf', function (t) {
+		t.equal(ES.OrdinaryGetPrototypeOf([]), Array.prototype, 'array [[Prototype]] is Array.prototype');
+		t.equal(ES.OrdinaryGetPrototypeOf({}), Object.prototype, 'object [[Prototype]] is Object.prototype');
+		t.equal(ES.OrdinaryGetPrototypeOf(/a/g), RegExp.prototype, 'regex [[Prototype]] is RegExp.prototype');
+		t.equal(ES.OrdinaryGetPrototypeOf(Object('')), String.prototype, 'boxed string [[Prototype]] is String.prototype');
+		t.equal(ES.OrdinaryGetPrototypeOf(Object(42)), Number.prototype, 'boxed number [[Prototype]] is Number.prototype');
+		t.equal(ES.OrdinaryGetPrototypeOf(Object(true)), Boolean.prototype, 'boxed boolean [[Prototype]] is Boolean.prototype');
+		if (v.hasSymbols) {
+			t.equal(ES.OrdinaryGetPrototypeOf(Object(Symbol.iterator)), Symbol.prototype, 'boxed symbol [[Prototype]] is Symbol.prototype');
+		}
+
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.OrdinaryGetPrototypeOf(primitive); },
+				TypeError,
+				debug(primitive) + ' is not an Object'
+			);
+		});
+		t.end();
+	});
 };
 
 var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
