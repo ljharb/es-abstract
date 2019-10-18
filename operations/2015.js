@@ -6,6 +6,7 @@ module.exports = {
 	'Abstract Equality Comparison': 'https://ecma-international.org/ecma-262/6.0/#sec-abstract-equality-comparison',
 	'Abstract Relational Comparison': 'https://ecma-international.org/ecma-262/6.0/#sec-abstract-relational-comparison',
 	'Strict Equality Comparison': 'https://ecma-international.org/ecma-262/6.0/#sec-strict-equality-comparison',
+	AddRestrictedFunctionProperties: 'https://ecma-international.org/ecma-262/6.0/#sec-addrestrictedfunctionproperties',
 	AdvanceStringIndex: 'https://ecma-international.org/ecma-262/6.0/#sec-advancestringindex',
 	ArrayCreate: 'https://ecma-international.org/ecma-262/6.0/#sec-arraycreate',
 	ArraySetLength: 'https://ecma-international.org/ecma-262/6.0/#sec-arraysetlength',

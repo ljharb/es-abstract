@@ -1407,7 +1407,30 @@ var ES6 = assign(assign({}, ES5), {
 			index += 1;
 		}
 		return list;
-	}
+	},
+
+	AddRestrictedFunctionProperties: function AddRestrictedFunctionProperties(F, realm) {
+		if (!this.IsCallable(F)) {
+			throw new $TypeError('Assertion failed: F must be a function object');
+		}
+		if (arguments.length > 1) {
+			throw new $TypeError('the realm argument is not supported; current realm is assumed');
+		}
+		var thrower = GetIntrinsic('%ThrowTypeError%');
+		this.DefinePropertyOrThrow(F, 'caller', {
+			'[[Get]]': thrower,
+			'[[Set]]': thrower,
+			'[[Enumerable]]': false,
+			'[[Configurable]]': true
+		});
+		this.DefinePropertyOrThrow(F, 'arguments', {
+			'[[Get]]': thrower,
+			'[[Set]]': thrower,
+			'[[Enumerable]]': false,
+			'[[Configurable]]': true
+		});
+		return true;
+	},
 });
 
 delete ES6.CheckObjectCoercible; // renamed in ES6 to RequireObjectCoercible

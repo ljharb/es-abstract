@@ -3279,6 +3279,39 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('AddRestrictedFunctionProperties', function (t) {
+		forEach(v.nonFunctions, function (nonFunction) {
+			t['throws'](
+				function () { ES.AddRestrictedFunctionProperties(nonFunction); },
+				TypeError,
+				'F must be a function'
+			);
+		});
+
+		forEach(v.primitives.concat(v.objects), function (value) {
+			t['throws'](
+				function () { ES.AddRestrictedFunctionProperties(function () {}, value); },
+				TypeError,
+				'realm must not be provided, got ' + debug(value)
+			);
+		});
+
+		var f = Function();
+		t.notOk(f.arguments, 'arguments is falsy');
+		t.notOk(f.caller, 'caller is falsy');
+		ES.AddRestrictedFunctionProperties(f);
+		t['throws'](
+			function () { return f.arguments; },
+			'f.arguments throws'
+		);
+		t['throws'](
+			function () { return f.caller; },
+			'f.caller throws'
+		);
+
+		t.end();
+	});
 };
 
 var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
