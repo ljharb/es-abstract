@@ -41,6 +41,7 @@ var parseInteger = parseInt;
 var callBound = require('./helpers/callBound');
 var regexTester = require('./helpers/regexTester');
 var getIteratorMethod = require('./helpers/getIteratorMethod');
+var getSymbolDescription = require('./helpers/getSymbolDescription');
 
 var $PromiseThen = callBound('Promise.prototype.then', true);
 var arraySlice = callBound('Array.prototype.slice');
@@ -1425,6 +1426,36 @@ var ES6 = assign(assign({}, ES5), {
 			proto = intrinsic;
 		}
 		return proto;
+	},
+
+	// https://ecma-international.org/ecma-262/6.0/#sec-setfunctionname
+	SetFunctionName: function SetFunctionName(F, name) {
+		if (typeof F !== 'function') {
+			throw new $TypeError('Assertion failed: `F` must be a function');
+		}
+		if (!this.IsExtensible(F) || has(F, 'name')) {
+			throw new $TypeError('Assertion failed: `F` must be extensible, and must not have a `name` own property');
+		}
+		var nameType = this.Type(name);
+		if (nameType !== 'Symbol' && nameType !== 'String') {
+			throw new $TypeError('Assertion failed: `name` must be a Symbol or a String');
+		}
+		if (nameType === 'Symbol') {
+			var description = getSymbolDescription(name);
+			// eslint-disable-next-line no-param-reassign
+			name = typeof description === 'undefined' ? '' : '[' + description + ']';
+		}
+		if (arguments.length > 2) {
+			var prefix = arguments[2];
+			// eslint-disable-next-line no-param-reassign
+			name = prefix + ' ' + name;
+		}
+		return this.DefinePropertyOrThrow(F, 'name', {
+			'[[Value]]': name,
+			'[[Writable]]': false,
+			'[[Enumerable]]': false,
+			'[[Configurable]]': true
+		});
 	}
 });
 

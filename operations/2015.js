@@ -81,6 +81,7 @@ module.exports = {
 	SameValueZero: 'https://ecma-international.org/ecma-262/6.0/#sec-samevaluezero',
 	SecFromTime: 'https://ecma-international.org/ecma-262/6.0/#sec-hours-minutes-second-and-milliseconds',
 	Set: 'https://ecma-international.org/ecma-262/6.0/#sec-set-o-p-v-throw',
+	SetFunctionName: 'https://ecma-international.org/ecma-262/6.0/#sec-setfunctionname',
 	SetIntegrityLevel: 'https://ecma-international.org/ecma-262/6.0/#sec-setintegritylevel',
 	SpeciesConstructor: 'https://ecma-international.org/ecma-262/6.0/#sec-speciesconstructor',
 	SymbolDescriptiveString: 'https://ecma-international.org/ecma-262/6.0/#sec-symboldescriptivestring',

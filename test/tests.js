@@ -10,6 +10,7 @@ var keys = require('object-keys');
 var has = require('has');
 var arrowFns = require('make-arrow-function').list();
 
+var getInferredName = require('../helpers/getInferredName');
 var assertRecordTests = require('./helpers/assertRecord');
 var v = require('./helpers/values');
 var diffOps = require('./diffOps');
@@ -3215,6 +3216,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			(1 * msPerHour) + (2 * msPerMinute) + (3 * msPerSecond) + 4,
 			'all numbers are converted to integer, multiplied by the right number of ms, and summed'
 		);
+
 		t.end();
 	});
 
@@ -3311,6 +3313,79 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				Array.prototype,
 				'function with non-object `prototype` property (' + debug(truthyPrimitive) + ') returns default intrinsic'
 			);
+		});
+
+		t.end();
+	});
+
+	var getNamelessFunction = function () {
+		var f = Object(function () {});
+		try {
+			delete f.name;
+		} catch (e) { /**/ }
+		return f;
+	};
+
+	test('SetFunctionName', function (t) {
+		t.test('non-extensible function', { skip: !Object.preventExtensions }, function (st) {
+			var f = getNamelessFunction();
+			Object.preventExtensions(f);
+			st['throws'](
+				function () { ES.SetFunctionName(f, ''); },
+				TypeError,
+				'throws on a non-extensible function'
+			);
+			st.end();
+		});
+
+		t['throws'](
+			function () { ES.SetFunctionName(function g() {}, ''); },
+			TypeError,
+			'throws if function has an own `name` property'
+		);
+
+		forEach(v.nonPropertyKeys, function (nonPropertyKey) {
+			t['throws'](
+				function () { ES.SetFunctionName(getNamelessFunction(), nonPropertyKey); },
+				TypeError,
+				debug(nonPropertyKey) + ' is not a Symbol or String'
+			);
+		});
+
+		t.test('symbols', { skip: !v.hasSymbols || has(getNamelessFunction(), 'name') }, function (st) {
+			var pairs = [
+				[Symbol(), ''],
+				[Symbol(undefined), ''],
+				[Symbol(null), '[null]'],
+				[Symbol(''), getInferredName ? '[]' : ''],
+				[Symbol.iterator, '[Symbol.iterator]'],
+				[Symbol('foo'), '[foo]']
+			];
+			forEach(pairs, function (pair) {
+				var sym = pair[0];
+				var desc = pair[1];
+				var f = getNamelessFunction();
+				ES.SetFunctionName(f, sym);
+				st.equal(f.name, desc, debug(sym) + ' yields a name of ' + debug(desc));
+			});
+
+			st.end();
+		});
+
+		var f = getNamelessFunction();
+		t.test('when names are configurable', { skip: has(f, 'name') }, function (st) {
+			// without prefix
+			st.notEqual(f.name, 'foo', 'precondition');
+			ES.SetFunctionName(f, 'foo');
+			st.equal(f.name, 'foo', 'function name is set without a prefix');
+
+			// with prefix
+			var g = getNamelessFunction();
+			st.notEqual(g.name, 'pre- foo', 'precondition');
+			ES.SetFunctionName(g, 'foo', 'pre-');
+			st.equal(g.name, 'pre- foo', 'function name is set with a prefix');
+
+			st.end();
 		});
 
 		t.end();
