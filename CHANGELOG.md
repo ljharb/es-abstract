@@ -1,3 +1,16 @@
+1.16.0 / 2019-10-18
+=================
+  * [New] `ES2015+`: add `SetFunctionName`
+  * [New] `ES2015+`: add `GetPrototypeFromConstructor`, with caveats
+  * [New] `ES2015+`: add `CreateListFromArrayLike`
+  * [New] `ES2016+`: add `OrdinarySetPrototypeOf`
+  * [New] `ES2016+`: add `OrdinaryGetPrototypeOf`
+  * [New] add `getSymbolDescription` and `getInferredName` helpers
+  * [Fix] `GetIterator`: add fallback for pre-Symbol environments, tests
+  * [Dev Deps] update `object.fromentries`
+  * [Tests] add `node` `v12.2`
+
+
 1.15.0 / 2019-10-02
 =================
   * [New] `ES2018`+: add `DateString`, `TimeString`
