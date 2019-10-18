@@ -35,6 +35,7 @@ module.exports = {
 	GetIterator: 'https://ecma-international.org/ecma-262/6.0/#sec-getiterator',
 	GetMethod: 'https://ecma-international.org/ecma-262/6.0/#sec-getmethod',
 	GetOwnPropertyKeys: 'https://ecma-international.org/ecma-262/6.0/#sec-getownpropertykeys',
+	GetPrototypeFromConstructor: 'https://ecma-international.org/ecma-262/6.0/#sec-getprototypefromconstructor',
 	GetSubstitution: 'https://ecma-international.org/ecma-262/6.0/#sec-getsubstitution',
 	GetV: 'https://ecma-international.org/ecma-262/6.0/#sec-getv',
 	HasOwnProperty: 'https://ecma-international.org/ecma-262/6.0/#sec-hasownproperty',

@@ -18,6 +18,7 @@ var $Number = GetIntrinsic('%Number%');
 var $Symbol = GetIntrinsic('%Symbol%', true);
 var $RegExp = GetIntrinsic('%RegExp%');
 var $Date = GetIntrinsic('%Date%');
+var $Function = GetIntrinsic('%Function%');
 var $preventExtensions = $Object.preventExtensions;
 
 var hasSymbols = require('has-symbols')();
@@ -256,7 +257,7 @@ var ES6 = assign(assign({}, ES5), {
 
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-isconstructor
 	IsConstructor: function IsConstructor(argument) {
-		return typeof argument === 'function' && !!argument.prototype; // unfortunately there's no way to truly check this without try/catch `new argument`
+		return typeof argument === 'function' && !!argument.prototype; // unfortunately there's no way to truly check this without try/catch `new argument` or Proxy
 	},
 
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-isextensible-o
@@ -1407,6 +1408,23 @@ var ES6 = assign(assign({}, ES5), {
 			index += 1;
 		}
 		return list;
+	},
+
+	// https://ecma-international.org/ecma-262/6.0/#sec-getprototypefromconstructor
+	GetPrototypeFromConstructor: function GetPrototypeFromConstructor(constructor, intrinsicDefaultProto) {
+		var intrinsic = GetIntrinsic(intrinsicDefaultProto); // throws if not a valid intrinsic
+		if (!this.IsConstructor(constructor)) {
+			throw new $TypeError('Assertion failed: `constructor` must be a constructor');
+		}
+		var proto = this.Get(constructor, 'prototype');
+		if (this.Type(proto) !== 'Object') {
+			if (!(constructor instanceof $Function)) {
+				// ignore other realms, for now
+				throw new $TypeError('cross-realm constructors not currently supported');
+			}
+			proto = intrinsic;
+		}
+		return proto;
 	}
 });
 

@@ -8,6 +8,7 @@ var debug = require('object-inspect');
 var assign = require('object.assign');
 var keys = require('object-keys');
 var has = require('has');
+var arrowFns = require('make-arrow-function').list();
 
 var assertRecordTests = require('./helpers/assertRecord');
 var v = require('./helpers/values');
@@ -3276,6 +3277,41 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			['a', 'b'],
 			'arraylike stops at the length'
 		);
+
+		t.end();
+	});
+
+	test('GetPrototypeFromConstructor', function (t) {
+		forEach(v.nonFunctions, function (nonFunction) {
+			t['throws'](
+				function () { ES.GetPrototypeFromConstructor(nonFunction, '%Array%'); },
+				TypeError,
+				debug(nonFunction) + ' is not a constructor'
+			);
+		});
+
+		forEach(arrowFns, function (arrowFn) {
+			t['throws'](
+				function () { ES.GetPrototypeFromConstructor(arrowFn, '%Array%'); },
+				TypeError,
+				debug(arrowFn) + ' is not a constructor'
+			);
+		});
+
+		var f = function () {};
+		t.equal(
+			ES.GetPrototypeFromConstructor(f, '%Array.prototype%'),
+			f.prototype,
+			'function with normal `prototype` property returns it'
+		);
+		forEach([true, 'foo', 42], function (truthyPrimitive) {
+			f.prototype = truthyPrimitive;
+			t.equal(
+				ES.GetPrototypeFromConstructor(f, '%Array.prototype%'),
+				Array.prototype,
+				'function with non-object `prototype` property (' + debug(truthyPrimitive) + ') returns default intrinsic'
+			);
+		});
 
 		t.end();
 	});

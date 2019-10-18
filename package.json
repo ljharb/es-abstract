@@ -61,6 +61,7 @@
 		"eclint": "^2.8.1",
 		"eslint": "^6.5.1",
 		"foreach": "^2.0.5",
+		"make-arrow-function": "^1.1.0",
 		"nyc": "^10.3.2",
 		"object-is": "^1.0.1",
 		"object.assign": "^4.1.0",
