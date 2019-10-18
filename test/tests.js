@@ -1526,7 +1526,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('null proto', { skip: !Object.create }, function (st) {
-			st.equal('toString' in ({}), true, 'normal objects have toString');
+			st.equal('toString' in {}, true, 'normal objects have toString');
 			st.equal('toString' in ES.ObjectCreate(null), false, 'makes a null object');
 
 			st.end();
@@ -3252,6 +3252,31 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.equal(ES.ToDateString(NaN), 'Invalid Date', 'NaN becomes "Invalid Date"');
 		var now = Date.now();
 		t.equal(ES.ToDateString(now), Date(now), 'any timestamp becomes `Date(timestamp)`');
+		t.end();
+	});
+
+	test('CreateListFromArrayLike', function (t) {
+		forEach(v.primitives, function (nonObject) {
+			t['throws'](
+				function () { ES.CreateListFromArrayLike(nonObject); },
+				TypeError,
+				debug(nonObject) + ' is not an Object'
+			);
+		});
+		forEach(v.nonArrays, function (nonArray) {
+			t['throws'](
+				function () { ES.CreateListFromArrayLike({}, nonArray); },
+				TypeError,
+				debug(nonArray) + ' is not an Array'
+			);
+		});
+
+		t.deepEqual(
+			ES.CreateListFromArrayLike({ length: 2, 0: 'a', 1: 'b', 2: 'c' }),
+			['a', 'b'],
+			'arraylike stops at the length'
+		);
+
 		t.end();
 	});
 };

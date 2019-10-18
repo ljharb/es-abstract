@@ -44,6 +44,8 @@ var getIteratorMethod = require('./helpers/getIteratorMethod');
 var $PromiseThen = callBound('Promise.prototype.then', true);
 var arraySlice = callBound('Array.prototype.slice');
 var strSlice = callBound('String.prototype.slice');
+var $indexOf = callBound('Array.prototype.indexOf');
+var $push = callBound('Array.prototype.push');
 
 var isBinary = regexTester(/^0b[01]+$/i);
 var isOctal = regexTester(/^0o[0-7]+$/i);
@@ -1377,6 +1379,34 @@ var ES6 = assign(assign({}, ES5), {
 			return 'Invalid Date';
 		}
 		return $Date(tv);
+	},
+
+	// https://ecma-international.org/ecma-262/6.0/#sec-createlistfromarraylike
+	CreateListFromArrayLike: function CreateListFromArrayLike(obj) {
+		var elementTypes = arguments.length > 1
+			? arguments[1]
+			: ['Undefined', 'Null', 'Boolean', 'String', 'Symbol', 'Number', 'Object'];
+
+		if (this.Type(obj) !== 'Object') {
+			throw new $TypeError('Assertion failed: `obj` must be an Object');
+		}
+		if (!this.IsArray(elementTypes)) {
+			throw new $TypeError('Assertion failed: `elementTypes`, if provided, must be an array');
+		}
+		var len = this.ToLength(this.Get(obj, 'length'));
+		var list = [];
+		var index = 0;
+		while (index < len) {
+			var indexName = this.ToString(index);
+			var next = this.Get(obj, indexName);
+			var nextType = this.Type(next);
+			if ($indexOf(elementTypes, nextType) < 0) {
+				throw new $TypeError('item type ' + nextType + ' is not a valid elementType');
+			}
+			$push(list, next);
+			index += 1;
+		}
+		return list;
 	}
 });
 

@@ -37,7 +37,7 @@
 		{
 			"files": "./es2015.js",
 			"rules": {
-				"max-lines": [2, 1400],
+				"max-lines": [2, 1500],
 			},
 		},
 		{
