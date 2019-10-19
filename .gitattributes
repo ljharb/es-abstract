@@ -716,7 +716,6 @@
 2021/IsStringPrefix.js	spackled linguist-generated=true
 2021/IsUnclampedIntegerElementType.js	spackled linguist-generated=true
 2021/IsUnsignedElementType.js	spackled linguist-generated=true
-2021/IterableToList.js	spackled linguist-generated=true
 2021/IteratorClose.js	spackled linguist-generated=true
 2021/IteratorComplete.js	spackled linguist-generated=true
 2021/IteratorNext.js	spackled linguist-generated=true

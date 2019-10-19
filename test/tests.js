@@ -7912,6 +7912,18 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('IterableToList', function (t) {
+		// see ES2017 tests for the rest of the IterableToList tests
+
+		t.deepEqual(
+			ES.IterableToList(['a', 'b', 'c']),
+			['a', 'b', 'c'],
+			'method is optional in ES2021+'
+		);
+
+		t.end();
+	});
+
 	test('SetFunctionLength', function (t) {
 		forEach(v.nonFunctions, function (nonFunction) {
 			t['throws'](
