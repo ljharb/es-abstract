@@ -42,7 +42,7 @@ var ES2019 = assign(assign({}, ES2018), {
 			} catch (e) {
 				return this.IteratorClose(
 					iteratorRecord,
-					function () { throw e; } // eslint-disable-line no-loop-func
+					function () { throw e; }
 				);
 			}
 		}

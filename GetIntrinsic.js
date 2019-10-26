@@ -5,7 +5,7 @@
 	SharedArrayBuffer,
 */
 
-var undefined; // eslint-disable-line no-shadow-restricted-names
+var undefined;
 
 var $TypeError = TypeError;
 

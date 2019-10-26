@@ -18,7 +18,7 @@
 		"max-params": [2, 4],
 		"max-statements": [2, 24],
 		"max-statements-per-line": [2, { "max": 2 }],
-		"multiline-comment-style": 1,
+		"multiline-comment-style": 0,
 		"no-magic-numbers": 0,
 		"new-cap": 0,
 		"no-extra-parens": 1,
@@ -52,9 +52,6 @@
 				"ecmaVersion": "2018",
 			},
 			"rules": {
-//camelcase
-//array-callback-return
-//consistent-return
 				"no-console": 0,
 				"no-multi-str": 0,
 			},
@@ -64,6 +61,20 @@
 			"rules": {
 				"no-console": 0,
 				"no-process-exit": 0,
+			},
+		},
+		{
+			"files": "test/**",
+			"rules": {
+				"id-length": 0,
+				"max-lines": 0,
+				"max-lines-per-function": 0,
+				"max-statements-per-line": [2, { "max": 3 }],
+				"max-nested-callbacks": [2, 4],
+				"max-statements": 0,
+				"no-implicit-coercion": 0,
+				"no-invalid-this": 1,
+				"object-curly-newline": 0,
 			},
 		},
 	],
