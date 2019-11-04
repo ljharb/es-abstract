@@ -13,12 +13,18 @@ var every = require('./helpers/every');
 var isPrefixOf = require('./helpers/isPrefixOf');
 
 var $String = GetIntrinsic('%String%');
+/** @type {typeof TypeError} */
 var $TypeError = GetIntrinsic('%TypeError%');
 
+var hasSymbols = require('has-symbols')();
+
 var callBound = require('./helpers/callBound');
+var getIteratorMethod = require('./helpers/getIteratorMethod');
 var regexTester = require('./helpers/regexTester');
 var $isNaN = require('./helpers/isNaN');
 
+/** @type {typeof Symbol.asyncIterator} */
+var $asyncIterator = GetIntrinsic('%Symbol.asyncIterator%', true);
 var $SymbolValueOf = callBound('Symbol.prototype.valueOf', true);
 // var $charAt = callBound('String.prototype.charAt');
 var $strSlice = callBound('String.prototype.slice');
@@ -31,6 +37,7 @@ var $PromiseResolve = callBound('Promise.resolve', true);
 
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 var $pushApply = callBind.apply(GetIntrinsic('%Array.prototype.push%'));
+var $arrayPush = callBound('Array.prototype.push');
 var $gOPS = $SymbolValueOf ? GetIntrinsic('%Object.getOwnPropertySymbols%') : null;
 
 var padTimeComponent = function padTimeComponent(c, count) {
@@ -150,6 +157,62 @@ var ES2018 = assign(assign({}, ES2017), {
 		});
 
 		return target;
+	},
+
+	// https://ecma-international.org/ecma-262/9.0/#sec-getiterator
+	GetIterator: function GetIterator(obj, hint, method) {
+		var actualHint = hint;
+		if (arguments.length < 2) {
+			actualHint = 'sync';
+		}
+		if (actualHint !== 'sync' && actualHint !== 'async') {
+			throw new $TypeError("Assertion failed: `hint` must be one of 'sync' or 'async', got " + inspect(hint));
+		}
+		var actualMethod = method;
+		if (arguments.length < 3) {
+			if (actualHint === 'async') {
+				if (hasSymbols && $asyncIterator) {
+					actualMethod = this.GetMethod(obj, $asyncIterator);
+				}
+				if (actualMethod === undefined) {
+					throw new $TypeError("async from sync iterators aren't currently supported");
+				}
+			} else {
+				actualMethod = getIteratorMethod(this, obj);
+			}
+		}
+
+		var iterator = this.Call(actualMethod, obj);
+		if (this.Type(iterator) !== 'Object') {
+			throw new $TypeError('iterator must return an object');
+		}
+
+		return iterator;
+
+		// TODO: This should return an IteratorRecord
+		/*
+		var nextMethod = this.GetV(iterator, 'next');
+		return {
+			'[[Iterator]]': iterator,
+			'[[NextMethod]]': nextMethod,
+			'[[Done]]': false
+		};
+		*/
+	},
+
+	// https://www.ecma-international.org/ecma-262/9.0/#sec-iterabletolist
+	IterableToList: function IterableToList(items, method) {
+		var iterator = this.GetIterator(items, 'sync', method);
+		var values = [];
+		var next = true;
+		while (next) {
+			next = this.IteratorStep(iterator);
+			if (next) {
+				var nextValue = this.IteratorValue(next);
+				$arrayPush(values, nextValue);
+			}
+		}
+		return values;
 	},
 
 	// https://ecma-international.org/ecma-262/9.0/#sec-promise-resolve
