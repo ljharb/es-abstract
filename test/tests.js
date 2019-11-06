@@ -3798,6 +3798,8 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('AsyncIteratorClose', { skip: true });
+
 	test('PromiseResolve', function (t) {
 		t.test('Promises unsupported', { skip: typeof Promise === 'function' }, function (st) {
 			st['throws'](

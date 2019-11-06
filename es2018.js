@@ -33,7 +33,11 @@ var $parseInt = parseInt;
 
 var isDigit = regexTester(/^[0-9]$/);
 
-var $PromiseResolve = callBound('Promise.resolve', true);
+/** @type {typeof Promise} */
+var $Promise = GetIntrinsic('%Promise%', true);
+var $PromiseResolve = callBound('%Promise.resolve%', true);
+/** @type {(<T>(value: T | PromiseLike<T>) => Promise<T>) & (() => Promise<void>)} */
+var $NewPromise = $Promise.resolve.bind($Promise);
 
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 var $pushApply = callBind.apply(GetIntrinsic('%Array.prototype.push%'));
@@ -246,6 +250,60 @@ var ES2018 = assign(assign({}, ES2017), {
 		}
 
 		return completionRecord;
+	},
+
+	// https://ecma-international.org/ecma-262/9.0/#sec-asynciteratorclose
+	/**
+	 * @template T
+	 * @param {{'[[Iterator]]': AsyncIterator<any>, '[[NextMethod]]': AsyncIterator<any>['next'], '[[Done]]': boolean}} iteratorRecord
+	 * @param {() => T | PromiseLike<T>} completion
+	 * @return {Promise<T>}
+	 */
+	AsyncIteratorClose: function AsyncIteratorClose(iteratorRecord, completion) {
+		/** @type {typeof completion} */
+		var completionThunk, iterator, iteratorReturn, completionRecord;
+		var ES = this;
+
+		// Heavily modified from the output of https://www.npmjs.com/package/babel-plugin-async-to-promises
+		return $NewPromise().then(function () {
+			if (ES.Type(iteratorRecord['[[Iterator]]']) !== 'Object') {
+				throw new $TypeError('Assertion failed: Type(iteratorRecord.[[Iterator]]) is not Object');
+			}
+
+			if (!ES.IsCallable(completion)) {
+				throw new $TypeError('Assertion failed: completion is not a thunk for a Completion Record');
+			}
+
+			completionThunk = completion;
+			iterator = iteratorRecord['[[Iterator]]'];
+			iteratorReturn = ES.GetMethod(iterator, 'return');
+
+			if (typeof iteratorReturn === 'undefined') {
+				return completionThunk();
+			} else {
+				return $NewPromise().then(function () {
+					return ES.Call(iteratorReturn, iterator, []);
+				}).then(function (innerResult) {
+					completionRecord = completionThunk(); // if innerResult worked, then throw if the completion does
+					completionThunk = null; // ensure it's not called twice.
+
+					if (ES.Type(innerResult) !== 'Object') {
+						throw new $TypeError('iterator .return must return an object');
+					}
+
+					return completionRecord;
+				}, function (e) {
+					// if we hit here, then "e" is the innerResult completion that needs re-throwing
+
+					// if the completion is of type "throw", this will throw.
+					completionRecord = completionThunk();
+					completionThunk = null; // ensure it's not called twice.
+
+					// if not, then return the innerResult completion
+					throw e;
+				});
+			}
+		});
 	},
 
 	// https://www.ecma-international.org/ecma-262/9.0/#sec-iterabletolist
