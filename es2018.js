@@ -187,17 +187,65 @@ var ES2018 = assign(assign({}, ES2017), {
 			throw new $TypeError('iterator must return an object');
 		}
 
-		return iterator;
-
-		// TODO: This should return an IteratorRecord
-		/*
 		var nextMethod = this.GetV(iterator, 'next');
 		return {
 			'[[Iterator]]': iterator,
 			'[[NextMethod]]': nextMethod,
 			'[[Done]]': false
 		};
-		*/
+	},
+
+	// https://ecma-international.org/ecma-262/9.0/#sec-iteratornext
+	IteratorNext: function IteratorNext(iteratorRecord, value) {
+		var result = this.Call(
+			iteratorRecord['[[NextMethod]]'],
+			iteratorRecord['[[Iterator]]'],
+			arguments.length < 2 ? [] : [value]
+		);
+		if (this.Type(result) !== 'Object') {
+			throw new $TypeError('iterator next must return an object');
+		}
+		return result;
+	},
+
+	// https://ecma-international.org/ecma-262/9.0/#sec-iteratorclose
+	IteratorClose: function IteratorClose(iteratorRecord, completion) {
+		if (this.Type(iteratorRecord['[[Iterator]]']) !== 'Object') {
+			throw new $TypeError('Assertion failed: Type(iteratorRecord.[[Iterator]]) is not Object');
+		}
+		if (!this.IsCallable(completion)) {
+			throw new $TypeError('Assertion failed: completion is not a thunk for a Completion Record');
+		}
+		var completionThunk = completion;
+
+		var iterator = iteratorRecord['[[Iterator]]'];
+		var iteratorReturn = this.GetMethod(iterator, 'return');
+
+		if (typeof iteratorReturn === 'undefined') {
+			return completionThunk();
+		}
+
+		var completionRecord;
+		try {
+			var innerResult = this.Call(iteratorReturn, iterator, []);
+		} catch (e) {
+			// if we hit here, then "e" is the innerResult completion that needs re-throwing
+
+			// if the completion is of type "throw", this will throw.
+			completionRecord = completionThunk();
+			completionThunk = null; // ensure it's not called twice.
+
+			// if not, then return the innerResult completion
+			throw e;
+		}
+		completionRecord = completionThunk(); // if innerResult worked, then throw if the completion does
+		completionThunk = null; // ensure it's not called twice.
+
+		if (this.Type(innerResult) !== 'Object') {
+			throw new $TypeError('iterator .return must return an object');
+		}
+
+		return completionRecord;
 	},
 
 	// https://www.ecma-international.org/ecma-262/9.0/#sec-iterabletolist

@@ -31,7 +31,21 @@ var getArraySubclassWithSpeciesConstructor = function getArraySubclass(speciesCo
 	return Bar;
 };
 
-var testIterator = function (t, iterator, expected) {
+/**
+ * @template T
+ * @param {tape.Test} t
+ * @param {Iterator<T> | {'[[Iterator]]': Iterator<T>}} iteratorOrIteratorRecord
+ * @param {T[]} expected
+ */
+var testIterator = function (t, iteratorOrIteratorRecord, expected) {
+	/** @type {Iterator<T>} */
+	var iterator;
+	if ('[[Iterator]]' in iteratorOrIteratorRecord) {
+		iterator = iteratorOrIteratorRecord['[[Iterator]]'];
+	} else {
+		iterator = iteratorOrIteratorRecord;
+	}
+
 	var resultCount = 0;
 	var result;
 	while (result = iterator.next(), !result.done) { // eslint-disable-line no-sequences
@@ -3774,7 +3788,9 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 				return it;
 			};
 
-			st.equal(ES.GetIterator(obj, 'async'), it);
+			var iteratorRecord = ES.GetIterator(obj, 'async');
+			st.equal(iteratorRecord['[[Iterator]]'], it);
+			st.equal(iteratorRecord['[[NextMethod]]'], it.next);
 
 			st.end();
 		});
