@@ -12,3 +12,4 @@ yarn.lock
 
 # dev scripts
 operations/*.js
+!operations/201*.js
