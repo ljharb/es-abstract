@@ -6,6 +6,9 @@
 		"email": "ljharb@gmail.com",
 		"url": "http://ljharb.codes"
 	},
+	"funding": {
+		"url": "https://github.com/sponsors/ljharb"
+	},
 	"contributors": [
 		{
 			"name": "Jordan Harband",
