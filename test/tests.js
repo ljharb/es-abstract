@@ -3784,6 +3784,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		});
 
 		t.equal(ES.ToDateString(NaN), 'Invalid Date', 'NaN becomes "Invalid Date"');
+		// todo
 		var now = +new Date();
 		t.equal(ES.ToDateString(now), Date(now), 'any timestamp becomes `Date(timestamp)`');
 		t.end();
