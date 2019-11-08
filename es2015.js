@@ -97,6 +97,7 @@ var DefineOwnProperty = function DefineOwnProperty(ES, O, P, desc) {
 
 		// property does not exist at all, or exists but is enumerable
 		var V = desc['[[Value]]'];
+		// eslint-disable-next-line no-param-reassign
 		O[P] = V; // will use [[Define]]
 		return ES.SameValue(O[P], V);
 	}
@@ -439,6 +440,7 @@ var ES6 = assign(assign({}, ES5), {
 
 	// https://ecma-international.org/ecma-262/6.0/#sec-completepropertydescriptor
 	CompletePropertyDescriptor: function CompletePropertyDescriptor(Desc) {
+		/* eslint no-param-reassign: 0 */
 		assertRecord(this, 'Property Descriptor', 'Desc', Desc);
 
 		if (this.IsGenericDescriptor(Desc) || this.IsDataDescriptor(Desc)) {
