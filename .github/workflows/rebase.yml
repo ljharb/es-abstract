@@ -1,0 +1,16 @@
+name: Automatic Rebase
+
+on: [pull_request]
+
+jobs:
+  _:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        ref: action
+    - uses: ljharb/rebase@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
