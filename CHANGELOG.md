@@ -1,3 +1,14 @@
+1.16.1 / 2019-11-24
+=================
+  * [Fix] `GetIntrinsics`: turns out IE 8 throws when `Object.getOwnPropertyDescriptor(arguments);`, and does not throw on `callee` anyways
+  * [Deps] update `es-to-primitive`, `has-symbols`, `object-inspect`
+  * [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `safe-publish-latest`
+  * [meta] re-include year files inside `operations`
+  * [meta] add `funding` field
+  * [actions] add Automatic Rebase github action
+  * [Tests] use shared travis-ci config
+  * [Tests] disable `check-coverage`, and let codecov do it
+
 1.16.0 / 2019-10-18
 =================
   * [New] `ES2015+`: add `SetFunctionName`
@@ -9,7 +20,6 @@
   * [Fix] `GetIterator`: add fallback for pre-Symbol environments, tests
   * [Dev Deps] update `object.fromentries`
   * [Tests] add `node` `v12.2`
-
 
 1.15.0 / 2019-10-02
 =================
