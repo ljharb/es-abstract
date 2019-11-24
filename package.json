@@ -46,13 +46,13 @@
 		"ES7"
 	],
 	"dependencies": {
-		"es-to-primitive": "^1.2.0",
+		"es-to-primitive": "^1.2.1",
 		"function-bind": "^1.1.1",
 		"has": "^1.0.3",
-		"has-symbols": "^1.0.0",
+		"has-symbols": "^1.0.1",
 		"is-callable": "^1.1.4",
 		"is-regex": "^1.0.4",
-		"object-inspect": "^1.6.0",
+		"object-inspect": "^1.7.0",
 		"object-keys": "^1.1.1",
 		"string.prototype.trimleft": "^2.1.0",
 		"string.prototype.trimright": "^2.1.0"
