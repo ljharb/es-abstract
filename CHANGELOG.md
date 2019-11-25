@@ -1,3 +1,9 @@
+1.16.2 / 2019-11-24
+=================
+  * [Fix] IE 6-7 lack JSON
+  * [Fix] IE 6-8 strings can’t use array slice, they need string slice
+  * [Dev Deps] update `eslint`
+
 1.16.1 / 2019-11-24
 =================
   * [Fix] `GetIntrinsics`: turns out IE 8 throws when `Object.getOwnPropertyDescriptor(arguments);`, and does not throw on `callee` anyways
