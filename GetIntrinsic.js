@@ -9,8 +9,10 @@ var undefined;
 
 var $TypeError = TypeError;
 
+var $gOPD = Object.getOwnPropertyDescriptor;
+
 var throwTypeError = function () { throw new $TypeError(); };
-var ThrowTypeError = Object.getOwnPropertyDescriptor
+var ThrowTypeError = $gOPD
 	? (function () {
 		try {
 			// eslint-disable-next-line no-unused-expressions, no-caller, no-restricted-properties
@@ -19,7 +21,7 @@ var ThrowTypeError = Object.getOwnPropertyDescriptor
 		} catch (calleeThrows) {
 			try {
 				// IE 8 throws on Object.getOwnPropertyDescriptor(arguments, '')
-				return Object.getOwnPropertyDescriptor(arguments, 'callee').get;
+				return $gOPD(arguments, 'callee').get;
 			} catch (gOPDthrows) {
 				return throwTypeError;
 			}
@@ -196,7 +198,12 @@ module.exports = function GetIntrinsic(name, allowMissing) {
 	var value = getBaseIntrinsic('%' + parts[0] + '%', allowMissing);
 	for (var i = 1; i < parts.length; i += 1) {
 		if (value != null) {
-			value = value[parts[i]];
+			if ($gOPD && (i + 1) >= parts.length) {
+				var desc = $gOPD(value, parts[i]);
+				value = desc ? (desc.get || desc.value) : value[parts[i]];
+			} else {
+				value = value[parts[i]];
+			}
 		}
 	}
 	return value;
