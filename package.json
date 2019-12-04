@@ -62,7 +62,7 @@
 		"cheerio": "^1.0.0-rc.3",
 		"diff": "^4.0.1",
 		"eclint": "^2.8.1",
-		"eslint": "^6.7.1",
+		"eslint": "^6.7.2",
 		"foreach": "^2.0.5",
 		"make-arrow-function": "^1.1.0",
 		"nyc": "^10.3.2",

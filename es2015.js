@@ -97,7 +97,6 @@ var DefineOwnProperty = function DefineOwnProperty(ES, O, P, desc) {
 
 		// property does not exist at all, or exists but is enumerable
 		var V = desc['[[Value]]'];
-		// eslint-disable-next-line no-param-reassign
 		O[P] = V; // will use [[Define]]
 		return ES.SameValue(O[P], V);
 	}
@@ -1444,12 +1443,10 @@ var ES6 = assign(assign({}, ES5), {
 		}
 		if (nameType === 'Symbol') {
 			var description = getSymbolDescription(name);
-			// eslint-disable-next-line no-param-reassign
 			name = typeof description === 'undefined' ? '' : '[' + description + ']';
 		}
 		if (arguments.length > 2) {
 			var prefix = arguments[2];
-			// eslint-disable-next-line no-param-reassign
 			name = prefix + ' ' + name;
 		}
 		return this.DefinePropertyOrThrow(F, 'name', {
