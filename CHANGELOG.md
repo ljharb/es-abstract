@@ -1,3 +1,8 @@
+1.16.3 / 2019-12-04
+=================
+  * [Fix] `GetIntrinsic`: when given a path to a getter, return the actual getter
+  * [Dev Deps] update `eslint`
+
 1.16.2 / 2019-11-24
 =================
   * [Fix] IE 6-7 lack JSON
