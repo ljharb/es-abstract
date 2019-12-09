@@ -41,6 +41,12 @@
 			},
 		},
 		{
+			"files": "./es2018.js",
+			"rules": {
+				"max-lines": [2, 500],
+			},
+		},
+		{
 			"files": "operations/*",
 			"rules": {
 				"max-lines": 0,

@@ -31,7 +31,21 @@ var getArraySubclassWithSpeciesConstructor = function getArraySubclass(speciesCo
 	return Bar;
 };
 
-var testIterator = function (t, iterator, expected) {
+/**
+ * @template T
+ * @param {tape.Test} t
+ * @param {Iterator<T> | {'[[Iterator]]': Iterator<T>}} iteratorOrIteratorRecord
+ * @param {T[]} expected
+ */
+var testIterator = function (t, iteratorOrIteratorRecord, expected) {
+	/** @type {Iterator<T>} */
+	var iterator;
+	if ('[[Iterator]]' in iteratorOrIteratorRecord) {
+		iterator = iteratorOrIteratorRecord['[[Iterator]]'];
+	} else {
+		iterator = iteratorOrIteratorRecord;
+	}
+
 	var resultCount = 0;
 	var result;
 	while (result = iterator.next(), !result.done) { // eslint-disable-line no-sequences
@@ -3731,6 +3745,60 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('GetIterator', function (t) {
+		try {
+			ES.GetIterator({}, null);
+		} catch (e) {
+			t.ok(e.message.indexOf("Assertion failed: `hint` must be one of 'sync' or 'async'" >= 0));
+		}
+
+		var arr = [1, 2];
+		testIterator(t, ES.GetIterator(arr), arr);
+
+		testIterator(t, ES.GetIterator('abc'), 'abc'.split(''));
+
+		t.test('Symbol.iterator', { skip: !v.hasSymbols }, function (st) {
+			var m = new Map();
+			m.set(1, 'a');
+			m.set(2, 'b');
+
+			testIterator(st, ES.GetIterator(m), [[1, 'a'], [2, 'b']]);
+
+			st.end();
+		});
+
+		t.test('Symbol.asyncIterator', { skip: !v.hasSymbols || !Symbol.asyncIterator }, function (st) {
+			try {
+				ES.GetIterator(arr, 'async');
+			} catch (e) {
+				st.ok(e.message.indexOf("async from sync iterators aren't currently supported") >= 0);
+			}
+
+			/** @type {AsyncIterator<any>} */
+			var it = {
+				next: function () {
+					return Promise.resolve({
+						done: true
+					});
+				}
+			};
+			var obj = {};
+			obj[Symbol.asyncIterator] = function () {
+				return it;
+			};
+
+			var iteratorRecord = ES.GetIterator(obj, 'async');
+			st.equal(iteratorRecord['[[Iterator]]'], it);
+			st.equal(iteratorRecord['[[NextMethod]]'], it.next);
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('AsyncIteratorClose', { skip: true });
 
 	test('PromiseResolve', function (t) {
 		t.test('Promises unsupported', { skip: typeof Promise === 'function' }, function (st) {

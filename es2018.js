@@ -13,12 +13,18 @@ var every = require('./helpers/every');
 var isPrefixOf = require('./helpers/isPrefixOf');
 
 var $String = GetIntrinsic('%String%');
+/** @type {typeof TypeError} */
 var $TypeError = GetIntrinsic('%TypeError%');
 
+var hasSymbols = require('has-symbols')();
+
 var callBound = require('./helpers/callBound');
+var getIteratorMethod = require('./helpers/getIteratorMethod');
 var regexTester = require('./helpers/regexTester');
 var $isNaN = require('./helpers/isNaN');
 
+/** @type {typeof Symbol.asyncIterator} */
+var $asyncIterator = GetIntrinsic('%Symbol.asyncIterator%', true);
 var $SymbolValueOf = callBound('Symbol.prototype.valueOf', true);
 // var $charAt = callBound('String.prototype.charAt');
 var $strSlice = callBound('String.prototype.slice');
@@ -27,10 +33,15 @@ var $parseInt = parseInt;
 
 var isDigit = regexTester(/^[0-9]$/);
 
-var $PromiseResolve = callBound('Promise.resolve', true);
+/** @type {typeof Promise} */
+var $Promise = GetIntrinsic('%Promise%', true);
+var $PromiseResolve = callBound('%Promise.resolve%', true);
+/** @type {(<T>(value: T | PromiseLike<T>) => Promise<T>) & (() => Promise<void>)} */
+var $NewPromise = $Promise.resolve.bind($Promise);
 
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 var $pushApply = callBind.apply(GetIntrinsic('%Array.prototype.push%'));
+var $arrayPush = callBound('Array.prototype.push');
 var $gOPS = $SymbolValueOf ? GetIntrinsic('%Object.getOwnPropertySymbols%') : null;
 
 var padTimeComponent = function padTimeComponent(c, count) {
@@ -150,6 +161,164 @@ var ES2018 = assign(assign({}, ES2017), {
 		});
 
 		return target;
+	},
+
+	// https://ecma-international.org/ecma-262/9.0/#sec-getiterator
+	GetIterator: function GetIterator(obj, hint, method) {
+		var actualHint = hint;
+		if (arguments.length < 2) {
+			actualHint = 'sync';
+		}
+		if (actualHint !== 'sync' && actualHint !== 'async') {
+			throw new $TypeError("Assertion failed: `hint` must be one of 'sync' or 'async', got " + inspect(hint));
+		}
+		var actualMethod = method;
+		if (arguments.length < 3) {
+			if (actualHint === 'async') {
+				if (hasSymbols && $asyncIterator) {
+					actualMethod = this.GetMethod(obj, $asyncIterator);
+				}
+				if (actualMethod === undefined) {
+					throw new $TypeError("async from sync iterators aren't currently supported");
+				}
+			} else {
+				actualMethod = getIteratorMethod(this, obj);
+			}
+		}
+
+		var iterator = this.Call(actualMethod, obj);
+		if (this.Type(iterator) !== 'Object') {
+			throw new $TypeError('iterator must return an object');
+		}
+
+		var nextMethod = this.GetV(iterator, 'next');
+		return {
+			'[[Iterator]]': iterator,
+			'[[NextMethod]]': nextMethod,
+			'[[Done]]': false
+		};
+	},
+
+	// https://ecma-international.org/ecma-262/9.0/#sec-iteratornext
+	IteratorNext: function IteratorNext(iteratorRecord, value) {
+		var result = this.Call(
+			iteratorRecord['[[NextMethod]]'],
+			iteratorRecord['[[Iterator]]'],
+			arguments.length < 2 ? [] : [value]
+		);
+		if (this.Type(result) !== 'Object') {
+			throw new $TypeError('iterator next must return an object');
+		}
+		return result;
+	},
+
+	// https://ecma-international.org/ecma-262/9.0/#sec-iteratorclose
+	IteratorClose: function IteratorClose(iteratorRecord, completion) {
+		if (this.Type(iteratorRecord['[[Iterator]]']) !== 'Object') {
+			throw new $TypeError('Assertion failed: Type(iteratorRecord.[[Iterator]]) is not Object');
+		}
+		if (!this.IsCallable(completion)) {
+			throw new $TypeError('Assertion failed: completion is not a thunk for a Completion Record');
+		}
+		var completionThunk = completion;
+
+		var iterator = iteratorRecord['[[Iterator]]'];
+		var iteratorReturn = this.GetMethod(iterator, 'return');
+
+		if (typeof iteratorReturn === 'undefined') {
+			return completionThunk();
+		}
+
+		var completionRecord;
+		try {
+			var innerResult = this.Call(iteratorReturn, iterator, []);
+		} catch (e) {
+			// if we hit here, then "e" is the innerResult completion that needs re-throwing
+
+			// if the completion is of type "throw", this will throw.
+			completionRecord = completionThunk();
+			completionThunk = null; // ensure it's not called twice.
+
+			// if not, then return the innerResult completion
+			throw e;
+		}
+		completionRecord = completionThunk(); // if innerResult worked, then throw if the completion does
+		completionThunk = null; // ensure it's not called twice.
+
+		if (this.Type(innerResult) !== 'Object') {
+			throw new $TypeError('iterator .return must return an object');
+		}
+
+		return completionRecord;
+	},
+
+	// https://ecma-international.org/ecma-262/9.0/#sec-asynciteratorclose
+	/**
+	 * @template T
+	 * @param {{'[[Iterator]]': AsyncIterator<any>, '[[NextMethod]]': AsyncIterator<any>['next'], '[[Done]]': boolean}} iteratorRecord
+	 * @param {() => T | PromiseLike<T>} completion
+	 * @return {Promise<T>}
+	 */
+	AsyncIteratorClose: function AsyncIteratorClose(iteratorRecord, completion) {
+		/** @type {typeof completion} */
+		var completionThunk, iterator, iteratorReturn, completionRecord;
+		var ES = this;
+
+		// Heavily modified from the output of https://www.npmjs.com/package/babel-plugin-async-to-promises
+		return $NewPromise().then(function () {
+			if (ES.Type(iteratorRecord['[[Iterator]]']) !== 'Object') {
+				throw new $TypeError('Assertion failed: Type(iteratorRecord.[[Iterator]]) is not Object');
+			}
+
+			if (!ES.IsCallable(completion)) {
+				throw new $TypeError('Assertion failed: completion is not a thunk for a Completion Record');
+			}
+
+			completionThunk = completion;
+			iterator = iteratorRecord['[[Iterator]]'];
+			iteratorReturn = ES.GetMethod(iterator, 'return');
+
+			if (typeof iteratorReturn === 'undefined') {
+				return completionThunk();
+			} else {
+				return $NewPromise().then(function () {
+					return ES.Call(iteratorReturn, iterator, []);
+				}).then(function (innerResult) {
+					completionRecord = completionThunk(); // if innerResult worked, then throw if the completion does
+					completionThunk = null; // ensure it's not called twice.
+
+					if (ES.Type(innerResult) !== 'Object') {
+						throw new $TypeError('iterator .return must return an object');
+					}
+
+					return completionRecord;
+				}, function (e) {
+					// if we hit here, then "e" is the innerResult completion that needs re-throwing
+
+					// if the completion is of type "throw", this will throw.
+					completionRecord = completionThunk();
+					completionThunk = null; // ensure it's not called twice.
+
+					// if not, then return the innerResult completion
+					throw e;
+				});
+			}
+		});
+	},
+
+	// https://www.ecma-international.org/ecma-262/9.0/#sec-iterabletolist
+	IterableToList: function IterableToList(items, method) {
+		var iterator = this.GetIterator(items, 'sync', method);
+		var values = [];
+		var next = true;
+		while (next) {
+			next = this.IteratorStep(iterator);
+			if (next) {
+				var nextValue = this.IteratorValue(next);
+				$arrayPush(values, nextValue);
+			}
+		}
+		return values;
 	},
 
 	// https://ecma-international.org/ecma-262/9.0/#sec-promise-resolve
