@@ -1,3 +1,7 @@
+1.17.0-next.0 / 2019-12-11
+=================
+  * [New] Split up each operation into its own file
+
 1.16.3 / 2019-12-04
 =================
   * [Fix] `GetIntrinsic`: when given a path to a getter, return the actual getter

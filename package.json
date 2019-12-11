@@ -1,6 +1,6 @@
 {
 	"name": "es-abstract",
-	"version": "1.16.3",
+	"version": "1.17.0-next.0",
 	"author": {
 		"name": "Jordan Harband",
 		"email": "ljharb@gmail.com",
@@ -23,7 +23,7 @@
 		"prespackle": "git ls-files | xargs git check-attr spackled | grep -v 'unspecified$' | cut -d: -f1 | xargs rm",
 		"spackle": "node operations/spackle 1",
 		"postspackle": "git ls-files | xargs git check-attr spackled | grep -v 'unspecified$' | cut -d: -f1 | xargs git add",
-		"prepublish": "safe-publish-latest",
+		"prepublish": "safe-publish-latest && npm run spackle",
 		"pretest": "npm run --silent lint",
 		"test": "npm run tests-only",
 		"posttest": "npx aud --production",
