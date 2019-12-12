@@ -1,3 +1,8 @@
+1.17.0-next.1 / 2019-12-11
+=================
+  * [Fix] `object.assign` is a runtime dep
+  * [meta] only run spackle script in publish (#78)
+
 1.17.0-next.0 / 2019-12-11
 =================
   * [New] Split up each operation into its own file
