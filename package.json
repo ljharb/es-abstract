@@ -57,6 +57,7 @@
 		"is-regex": "^1.0.4",
 		"object-inspect": "^1.7.0",
 		"object-keys": "^1.1.1",
+		"object.assign": "^4.1.0",
 		"string.prototype.trimleft": "^2.1.0",
 		"string.prototype.trimright": "^2.1.0"
 	},
@@ -71,7 +72,6 @@
 		"make-arrow-function": "^1.1.0",
 		"nyc": "^10.3.2",
 		"object-is": "^1.0.1",
-		"object.assign": "^4.1.0",
 		"object.fromentries": "^2.0.1",
 		"replace": "^1.1.1",
 		"safe-publish-latest": "^1.1.4",
