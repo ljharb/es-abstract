@@ -73,9 +73,7 @@
 		"nyc": "^10.3.2",
 		"object-is": "^1.0.1",
 		"object.fromentries": "^2.0.1",
-		"replace": "^1.1.1",
 		"safe-publish-latest": "^1.1.4",
-		"semver": "^6.3.0",
 		"tape": "^4.11.0"
 	},
 	"testling": {
