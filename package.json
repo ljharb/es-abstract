@@ -71,7 +71,7 @@
 		"in-publish": "^2.0.0",
 		"make-arrow-function": "^1.1.0",
 		"nyc": "^10.3.2",
-		"object-is": "^1.0.1",
+		"object-is": "^1.0.2",
 		"object.fromentries": "^2.0.2",
 		"safe-publish-latest": "^1.1.4",
 		"tape": "^4.11.0"
