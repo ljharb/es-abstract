@@ -30,19 +30,35 @@ test('throws', function (t) {
 		);
 	});
 
+	forEach([
+		'toString',
+		'propertyIsEnumerable',
+		'hasOwnProperty'
+	], function (objectProtoMember) {
+		t['throws'](
+			function () { GetIntrinsic(objectProtoMember); },
+			SyntaxError,
+			debug(objectProtoMember) + ' is not an intrinsic'
+		);
+	});
+
 	t.end();
 });
 
 test('base intrinsics', function (t) {
 	t.equal(GetIntrinsic('%Object%'), Object, '%Object% yields Object');
+	t.equal(GetIntrinsic('Object'), Object, 'Object yields Object');
 	t.equal(GetIntrinsic('%Array%'), Array, '%Array% yields Array');
+	t.equal(GetIntrinsic('Array'), Array, 'Array yields Array');
 
 	t.end();
 });
 
 test('dotted paths', function (t) {
 	t.equal(GetIntrinsic('%Object.prototype.toString%'), Object.prototype.toString, '%Object.prototype.toString% yields Object.prototype.toString');
+	t.equal(GetIntrinsic('Object.prototype.toString'), Object.prototype.toString, 'Object.prototype.toString yields Object.prototype.toString');
 	t.equal(GetIntrinsic('%Array.prototype.push%'), Array.prototype.push, '%Array.prototype.push% yields Array.prototype.push');
+	t.equal(GetIntrinsic('Array.prototype.push'), Array.prototype.push, 'Array.prototype.push yields Array.prototype.push');
 
 	t.end();
 });
@@ -52,6 +68,7 @@ test('accessors', { skip: !Object.getOwnPropertyDescriptor || typeof Map !== 'fu
 	t.ok(actual, 'Map.prototype.size has a descriptor');
 	t.equal(typeof actual.get, 'function', 'Map.prototype.size has a getter function');
 	t.equal(GetIntrinsic('%Map.prototype.size%'), actual.get, '%Map.prototype.size% yields the getter for it');
+	t.equal(GetIntrinsic('Map.prototype.size'), actual.get, 'Map.prototype.size yields the getter for it');
 
 	t.end();
 });
