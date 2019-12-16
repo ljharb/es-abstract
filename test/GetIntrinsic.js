@@ -22,6 +22,26 @@ test('throws', function (t) {
 		'nonexistent intrinsic throws a syntax error'
 	);
 
+	t['throws'](
+		function () { GetIntrinsic(''); },
+		TypeError,
+		'empty string intrinsic throws a type error'
+	);
+
+	t['throws'](
+		function () { GetIntrinsic('.'); },
+		SyntaxError,
+		'"just a dot" intrinsic throws a syntax error'
+	);
+
+	forEach(v.nonStrings, function (nonString) {
+		t['throws'](
+			function () { GetIntrinsic(nonString); },
+			TypeError,
+			debug(nonString) + ' is not a String'
+		);
+	});
+
 	forEach(v.nonBooleans, function (nonBoolean) {
 		t['throws'](
 			function () { GetIntrinsic('%', nonBoolean); },
