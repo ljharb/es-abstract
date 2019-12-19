@@ -53,13 +53,13 @@
 		"function-bind": "^1.1.1",
 		"has": "^1.0.3",
 		"has-symbols": "^1.0.1",
-		"is-callable": "^1.1.4",
+		"is-callable": "^1.1.5",
 		"is-regex": "^1.0.5",
 		"object-inspect": "^1.7.0",
 		"object-keys": "^1.1.1",
 		"object.assign": "^4.1.0",
-		"string.prototype.trimleft": "^2.1.0",
-		"string.prototype.trimright": "^2.1.0"
+		"string.prototype.trimleft": "^2.1.1",
+		"string.prototype.trimright": "^2.1.1"
 	},
 	"devDependencies": {
 		"@ljharb/eslint-config": "^15.0.2",
