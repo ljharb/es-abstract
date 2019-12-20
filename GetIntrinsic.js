@@ -10,6 +10,13 @@ var undefined;
 var $TypeError = TypeError;
 
 var $gOPD = Object.getOwnPropertyDescriptor;
+if ($gOPD) {
+	try {
+		$gOPD({}, '');
+	} catch (e) {
+		$gOPD = null; // this is IE 8, which has a broken gOPD
+	}
+}
 
 var throwTypeError = function () { throw new $TypeError(); };
 var ThrowTypeError = $gOPD
