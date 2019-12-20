@@ -1,3 +1,16 @@
+1.17.0 / 2019-12-20
+=================
+  * [New] Split up each operation into its own file (prereleased)
+  * [Fix] `GetIntrinsic`: IE 8 has a broken `Object.getOwnPropertyDescriptor`
+  * [Fix] `object.assign` is a runtime dep (prereleased)
+  * [Refactor] `GetIntrinsic`: remove the internal property salts, since % already handles that
+  * [Refactor] `GetIntrinsic`: further simplification
+  * [Deps] update `is-callable`, `string.prototype.trimleft`, `string.prototype.trimright`, `is-regex`
+  * [Dev Deps] update `@ljharb/eslint-config`, `object-is`, `object.fromentries`, `tape`
+  * [Tests] add `.eslintignore`
+  * [meta] remove unused Makefile and associated utils
+  * [meta] only run spackle script in publish (#78) (prereleased)
+
 1.17.0-next.1 / 2019-12-11
 =================
   * [Fix] `object.assign` is a runtime dep
