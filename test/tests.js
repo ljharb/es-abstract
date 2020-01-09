@@ -1337,7 +1337,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			var Bar = getArraySubclassWithSpeciesConstructor(Foo);
 			var bar = new Bar();
 
-			t.equal(ES.IsArray(bar), true, 'Bar instance is an array');
+			st.equal(ES.IsArray(bar), true, 'Bar instance is an array');
 
 			var arr = ES.ArraySpeciesCreate(bar, 3);
 			st.equal(arr.constructor, Foo, 'result used species constructor');
@@ -1351,7 +1351,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			var Bar = getArraySubclassWithSpeciesConstructor(null);
 			var bar = new Bar();
 
-			t.equal(ES.IsArray(bar), true, 'Bar instance is an array');
+			st.equal(ES.IsArray(bar), true, 'Bar instance is an array');
 
 			var arr = ES.ArraySpeciesCreate(bar, 3);
 			st.equal(arr.constructor, Array, 'result used default constructor');
@@ -1364,7 +1364,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			var Bar = getArraySubclassWithSpeciesConstructor();
 			var bar = new Bar();
 
-			t.equal(ES.IsArray(bar), true, 'Bar instance is an array');
+			st.equal(ES.IsArray(bar), true, 'Bar instance is an array');
 
 			var arr = ES.ArraySpeciesCreate(bar, 3);
 			st.equal(arr.constructor, Array, 'result used default constructor');
@@ -2610,7 +2610,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				writable: true
 			});
 
-			t.deepEqual(
+			st.deepEqual(
 				ES.OrdinaryGetOwnProperty(O, 'foo'),
 				ES.ToPropertyDescriptor({
 					configurable: false,
