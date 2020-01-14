@@ -1,3 +1,9 @@
+1.17.1 / 2020-01-14
+=================
+  * [Refactor] add `OwnPropertyKeys` helper, use it in `CopyDataProperties`
+  * [Refactor] `IteratorClose`: remove useless assignment
+  * [Dev Deps] update `eslint`, `tape`, `diff`
+
 1.17.0 / 2019-12-20
 =================
   * [New] Split up each operation into its own file (prereleased)
