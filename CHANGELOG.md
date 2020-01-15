@@ -1,3 +1,7 @@
+1.17.2 / 2020-01-14
+=================
+  * [Fix] `helpers/OwnPropertyKeys`: include non-enumerables too
+
 1.17.1 / 2020-01-14
 =================
   * [Refactor] add `OwnPropertyKeys` helper, use it in `CopyDataProperties`
