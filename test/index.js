@@ -20,6 +20,9 @@ test('methods match', function (t) {
 
 require('./GetIntrinsic');
 
+require('./helpers/getSymbolDescription');
+require('./helpers/OwnPropertyKeys');
+
 require('./es5');
 require('./es6');
 require('./es2015');

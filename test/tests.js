@@ -3682,6 +3682,19 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 				st.deepEqual(keys(result), keys(Object(objectCoercible)), 'target ends up with keys of ' + debug(objectCoercible));
 			});
 
+			st.test('enumerable accessor property', { skip: !Object.defineProperty }, function (s2t) {
+				var target = {};
+				var source = {};
+				Object.defineProperty(source, 'a', {
+					enumerable: true,
+					get: function () { return 42; }
+				});
+				var result = ES.CopyDataProperties(target, source, []);
+				s2t.equal(result, target, 'result === target');
+				s2t.deepEqual(result, { a: 42 }, 'target ends up with enumerable accessor of source');
+				s2t.end();
+			});
+
 			st.end();
 		});
 
@@ -3703,7 +3716,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 			});
 
 			var result = ES.CopyDataProperties({}, { a: 1, b: 2, c: 3 }, ['b']);
-			st.deepEqual(keys(result), ['a', 'c'], 'excluded string keys are excluded');
+			st.deepEqual(keys(result).sort(), ['a', 'c'].sort(), 'excluded string keys are excluded');
 
 			st.test('excluding symbols', { skip: !v.hasSymbols }, function (s2t) {
 				var source = {};
