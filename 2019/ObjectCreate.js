@@ -2,7 +2,7 @@
 
 var GetIntrinsic = require('../GetIntrinsic');
 
-var $ObjectCreate = GetIntrinsic('%Object.create%');
+var $ObjectCreate = GetIntrinsic('%Object.create%', true);
 var $TypeError = GetIntrinsic('%TypeError%');
 var $SyntaxError = GetIntrinsic('%SyntaxError%');
 
