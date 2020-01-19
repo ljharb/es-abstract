@@ -1,3 +1,8 @@
+1.17.3 / 2020-01-19
+=================
+  * [Fix] `ObjectCreate` `2015+`: Fall back to `__proto__` and normal `new` in older browsers
+  * [Fix] `GetIntrinsic`: ensure the `allowMissing` property actually works on dotted intrinsics
+
 1.17.2 / 2020-01-14
 =================
   * [Fix] `helpers/OwnPropertyKeys`: include non-enumerables too
