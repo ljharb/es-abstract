@@ -17,6 +17,9 @@ var diffOps = require('./diffOps');
 
 var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1;
 
+// eslint-disable-next-line no-proto
+var hasProto = [].__proto__ === Array.prototype;
+
 var getArraySubclassWithSpeciesConstructor = function getArraySubclass(speciesConstructor) {
 	var Bar = function Bar() {
 		var inst = [];
@@ -1526,14 +1529,14 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
-		t.test('null proto', { skip: !Object.create }, function (st) {
+		t.test('null proto', { skip: !hasProto }, function (st) {
 			st.equal('toString' in {}, true, 'normal objects have toString');
 			st.equal('toString' in ES.ObjectCreate(null), false, 'makes a null object');
 
 			st.end();
 		});
 
-		t.test('null proto when no native Object.create', { skip: Object.create }, function (st) {
+		t.test('null proto when no native Object.create', { skip: hasProto }, function (st) {
 			st['throws'](
 				function () { ES.ObjectCreate(null); },
 				SyntaxError,
@@ -2689,8 +2692,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		// eslint-disable-next-line no-sparse-arrays, comma-spacing
 		t.deepEqual(ES.ArrayCreate(2), [,,], 'length of 2 creates a sparse array of length 2');
 
-		// eslint-disable-next-line no-proto
-		t.test('proto argument', { skip: [].__proto__ !== Array.prototype }, function (st) {
+		t.test('proto argument', { skip: !hasProto }, function (st) {
 			var fakeProto = {
 				push: { toString: function () { return 'not array push'; } }
 			};
