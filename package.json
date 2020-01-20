@@ -63,18 +63,21 @@
 	},
 	"devDependencies": {
 		"@ljharb/eslint-config": "^15.1.0",
+		"array.prototype.indexof": "^1.0.0",
 		"cheerio": "^1.0.0-rc.3",
 		"diff": "^4.0.2",
 		"eclint": "^2.8.1",
 		"eslint": "^6.8.0",
 		"foreach": "^2.0.5",
+		"functions-have-names": "^1.2.1",
+		"has-strict-mode": "^1.0.0",
 		"in-publish": "^2.0.0",
 		"make-arrow-function": "^1.1.0",
 		"nyc": "^10.3.2",
 		"object-is": "^1.0.2",
 		"object.fromentries": "^2.0.2",
 		"safe-publish-latest": "^1.1.4",
-		"tape": "^5.0.0-next.3"
+		"tape": "^5.0.0-next.4"
 	},
 	"testling": {
 		"files": "test/index.js",

@@ -4,6 +4,7 @@ var test = require('tape');
 var hasSymbols = require('has-symbols')();
 
 var OwnPropertyKeys = require('../../helpers/OwnPropertyKeys');
+var defineProperty = require('./defineProperty');
 
 test('OwnPropertyKeys', function (t) {
 	t.deepEqual(OwnPropertyKeys({ a: 1, b: 2 }).sort(), ['a', 'b'].sort(), 'returns own string keys');
@@ -18,14 +19,14 @@ test('OwnPropertyKeys', function (t) {
 		st.end();
 	});
 
-	t.test('non-enumerables', { skip: !Object.defineProperty }, function (st) {
+	t.test('non-enumerables', { skip: !defineProperty.oDP }, function (st) {
 		var o = { a: 1, b: 42, c: NaN };
-		Object.defineProperty(o, 'b', { enumerable: false, value: 42 });
-		Object.defineProperty(o, 'c', { enumerable: false, get: function () { return NaN; } });
+		defineProperty(o, 'b', { enumerable: false, value: 42 });
+		defineProperty(o, 'c', { enumerable: false, get: function () { return NaN; } });
 
 		if (hasSymbols) {
-			Object.defineProperty(o, 'd', { enumerable: false, value: true });
-			Object.defineProperty(o, 'e', { enumerable: false, get: function () { return true; } });
+			defineProperty(o, 'd', { enumerable: false, value: true });
+			defineProperty(o, 'e', { enumerable: false, get: function () { return true; } });
 		}
 
 		st.deepEqual(
