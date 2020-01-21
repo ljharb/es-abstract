@@ -1,3 +1,8 @@
+1.17.4 / 2020-01-21
+=================
+  * [Fix] `2015+`: add code to handle IE 8’s problems
+  * [Tests] fix tests for IE 8
+
 1.17.3 / 2020-01-19
 =================
   * [Fix] `ObjectCreate` `2015+`: Fall back to `__proto__` and normal `new` in older browsers
