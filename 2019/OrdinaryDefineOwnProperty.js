@@ -35,7 +35,7 @@ module.exports = function OrdinaryDefineOwnProperty(O, P, Desc) {
 	}
 	if (!$gOPD) {
 		// ES3/IE 8 fallback
-		if (!IsDataDescriptor(Desc)) {
+		if (IsAccessorDescriptor(Desc)) {
 			throw new $SyntaxError('This environment does not support accessor property descriptors.');
 		}
 		var creatingNormalDataProperty = !(P in O)
