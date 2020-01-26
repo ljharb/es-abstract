@@ -62,7 +62,7 @@
 		"string.prototype.trimright": "^2.1.1"
 	},
 	"devDependencies": {
-		"@ljharb/eslint-config": "^15.1.0",
+		"@ljharb/eslint-config": "^16.0.0",
 		"array.prototype.indexof": "^1.0.0",
 		"cheerio": "^1.0.0-rc.3",
 		"diff": "^4.0.2",
