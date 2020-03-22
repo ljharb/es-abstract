@@ -1430,7 +1430,8 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		var sentinel = {};
+		var sentinel = { id: 'sentinel' };
+		var secondSentinel = { id: 'second sentinel' };
 		forEach(v.propertyKeys, function (propertyKey) {
 			var obj = {};
 			var status = ES.CreateDataProperty(obj, propertyKey, sentinel);
@@ -1439,6 +1440,13 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				obj[propertyKey],
 				sentinel,
 				debug(sentinel) + ' is installed on "' + debug(propertyKey) + '" on the object'
+			);
+			var secondStatus = ES.CreateDataProperty(obj, propertyKey, secondSentinel);
+			t.equal(secondStatus, true, 'second status is true');
+			t.equal(
+				obj[propertyKey],
+				secondSentinel,
+				debug(secondSentinel) + ' is installed on "' + debug(propertyKey) + '" on the object'
 			);
 
 			t.test('with defineProperty', { skip: !defineProperty.oDP }, function (st) {
