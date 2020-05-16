@@ -49,14 +49,14 @@ test('getSymbolDescription', function (t) {
 		}, function (s2t) {
 			s2t.equal(getSymbolDescription(Symbol('')), '', 'Symbol("") description is ""');
 
-			s2t.test('only possible when global symbols are supported', {
-				skip: !has(Symbol, 'for') || !has(Symbol, 'keyFor')
-			}, function (s3t) {
-				// eslint-disable-next-line no-restricted-properties
-				s3t.equal(getSymbolDescription(Symbol['for']('')), '', 'Symbol.for("") description is ""');
-				s3t.end();
-			});
+			s2t.end();
+		});
 
+		st.test('only possible when global symbols are supported', {
+			skip: !has(Symbol, 'for') || !has(Symbol, 'keyFor')
+		}, function (s2t) {
+			// eslint-disable-next-line no-restricted-properties
+			s2t.equal(getSymbolDescription(Symbol['for']('')), '', 'Symbol.for("") description is ""');
 			s2t.end();
 		});
 
