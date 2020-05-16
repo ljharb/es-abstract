@@ -9,7 +9,7 @@ var symToStr = callBound('Symbol.prototype.toString', true);
 
 var getInferredName = require('./getInferredName');
 
-module.exports = function getSymbolDescription(symbol) {
+module.exports = callBound('%Symbol.prototype.description%', true) || function getSymbolDescription(symbol) {
 	if (!symToStr) {
 		throw new $SyntaxError('Symbols are not supported in this environment');
 	}
