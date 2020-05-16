@@ -455,6 +455,22 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		forEach(nonCallables, function (nonCallable) {
 			t.equal(false, ES.IsCallable(nonCallable), debug(nonCallable) + ' is not callable');
 		});
+
+		var foo;
+		try {
+			foo = Function('return () => {}')(); // eslint-disable-line no-new-func
+			t.equal(ES.IsCallable(foo), true, 'arrow function is callable');
+		} catch (e) {
+			t.comment('SKIP: arrow function syntax not supported.');
+		}
+
+		try {
+			foo = Function('return class Foo {}')(); // eslint-disable-line no-new-func
+			t.equal(ES.IsCallable(foo), true, 'class is callable');
+		} catch (e) {
+			t.comment('SKIP: class syntax not supported.');
+		}
+
 		t.end();
 	});
 
