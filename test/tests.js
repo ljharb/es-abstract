@@ -609,11 +609,25 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		});
 
 		try {
+			var arrow = Function('return () => {}')(); // eslint-disable-line no-new-func
+			t.equal(ES.IsConstructor(arrow), false, 'arrow function is not constructor');
+		} catch (e) {
+			t.comment('SKIP: arrow function syntax not supported.');
+		}
+
+		try {
 			var foo = Function('return class Foo {}')(); // eslint-disable-line no-new-func
 			t.equal(ES.IsConstructor(foo), true, 'class is constructor');
 		} catch (e) {
 			t.comment('SKIP: class syntax not supported.');
 		}
+
+		if (typeof Reflect !== 'object' || typeof Proxy !== 'function' || has(Proxy, 'prototype')) {
+			t.comment('SKIP: Proxy is constructor');
+		} else {
+			t.equal(ES.IsConstructor(Proxy), true, 'Proxy is constructor');
+		}
+
 		t.end();
 	});
 
