@@ -197,14 +197,14 @@ var expectedMissing = [
 	'TypedArrayCreate',
 	'TypedArraySpeciesCreate',
 	'UpdateEmpty',
-	'UTC',
+	'UTC', // depends on LocalTZA'UTC',
 	'UTF16Decode',
 	'ValidateAtomicAccess',
 	'ValidateSharedIntegerTypedArray',
 	'ValidateTypedArray',
 	'ValueOfReadEvent',
 	'WakeWaiter',
-	'WordCharacters',
+	'WordCharacters', // depends on Canonicalize
 	'AddRestrictedFunctionProperties',
 	'synchronizes-with'
 ];

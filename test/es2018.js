@@ -218,14 +218,14 @@ var expectedMissing = [
 	'UnicodeMatchProperty',
 	'UnicodeMatchPropertyValue',
 	'UpdateEmpty',
-	'UTC',
+	'UTC', // depends on LocalTZA'UTC',
 	'UTF16Decode',
 	'ValidateAtomicAccess',
 	'ValidateSharedIntegerTypedArray',
 	'ValidateTypedArray',
 	'ValueOfReadEvent',
 	'WakeWaiter',
-	'WordCharacters'
+	'WordCharacters' // depends on Canonicalize
 ];
 
 require('./tests').es2018(boundES, ops, expectedMissing);

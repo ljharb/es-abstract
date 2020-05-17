@@ -72,6 +72,7 @@
 		"eslint": "^7.7.0",
 		"foreach": "^2.0.5",
 		"functions-have-names": "^1.2.1",
+		"has-bigints": "^1.0.0",
 		"has-strict-mode": "^1.0.0",
 		"in-publish": "^2.0.1",
 		"make-arrow-function": "^1.2.0",
