@@ -3,6 +3,7 @@
 var assign = require('../../helpers/assign');
 
 var hasSymbols = require('has-symbols')();
+var hasBigInts = require('has-bigints')();
 
 var coercibleObject = { valueOf: function () { return 3; }, toString: function () { return 42; } };
 var coercibleFnObject = {
@@ -25,11 +26,12 @@ var numbers = zeroes.concat([42], infinities, nonIntegerNumbers);
 var strings = ['', 'foo', 'a\uD83D\uDCA9c'];
 var booleans = [true, false];
 var symbols = hasSymbols ? [Symbol.iterator, Symbol('foo')] : [];
-var nonSymbolPrimitives = [].concat(nullPrimitives, booleans, strings, numbers);
+var bigints = hasBigInts ? [BigInt(42), BigInt(0)] : [];
+var nonSymbolPrimitives = [].concat(nullPrimitives, booleans, strings, numbers, bigints);
 var nonNumberPrimitives = [].concat(nullPrimitives, booleans, strings, symbols);
-var nonNullPrimitives = [].concat(booleans, strings, numbers, symbols);
+var nonNullPrimitives = [].concat(booleans, strings, numbers, symbols, bigints);
 var nonUndefinedPrimitives = [].concat(null, nonNullPrimitives);
-var nonStrings = [].concat(nullPrimitives, booleans, numbers, symbols, objects);
+var nonStrings = [].concat(nullPrimitives, booleans, numbers, symbols, objects, bigints);
 var primitives = [].concat(nullPrimitives, nonNullPrimitives);
 var nonPropertyKeys = [].concat(nullPrimitives, booleans, numbers, objects);
 var propertyKeys = [].concat(strings, symbols);
@@ -39,6 +41,7 @@ var truthies = [].concat(true, 'foo', 42, symbols, objects);
 var timestamps = [].concat(0, 946713600000, 1546329600000);
 var nonFunctions = [].concat(primitives, objects, [42]);
 var nonArrays = [].concat(nonFunctions);
+var nonBigInts = [].concat(nonNumberPrimitives, numbers);
 
 var descriptors = {
 	configurable: function (descriptor) {
@@ -85,6 +88,7 @@ module.exports = {
 	nonUndefinedPrimitives: nonUndefinedPrimitives,
 	nonStrings: nonStrings,
 	nonNumbers: nonNumberPrimitives.concat(objects),
+	nonBigInts: nonBigInts,
 	nonIntegerNumbers: nonIntegerNumbers,
 	primitives: primitives,
 	nonPropertyKeys: nonPropertyKeys,

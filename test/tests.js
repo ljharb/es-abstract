@@ -12,6 +12,7 @@ var arrowFns = require('make-arrow-function').list();
 var hasStrictMode = require('has-strict-mode')();
 var functionsHaveNames = require('functions-have-names')();
 var functionsHaveConfigurableNames = require('functions-have-names').functionsHaveConfigurableNames();
+var hasBigInts = require('has-bigints')();
 
 var $getProto = require('../helpers/getProto');
 var $setProto = require('../helpers/setProto');
@@ -1524,7 +1525,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('ObjectCreate', function (t) {
+	test('ObjectCreate', { skip: skips && skips.ObjectCreate }, function (t) {
 		forEach(v.nonNullPrimitives, function (value) {
 			t['throws'](
 				function () { ES.ObjectCreate(value); },
@@ -3431,7 +3432,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 	es2015(ES, ops, expectedMissing, skips);
 
-	test('SameValueNonNumber', function (t) {
+	test('SameValueNonNumber', { skip: skips && skips.SameValueNonNumber }, function (t) {
 		var willThrow = [
 			[3, 4],
 			[NaN, 4],
@@ -3677,7 +3678,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('NumberToString', function (t) {
+	test('NumberToString', { skip: skips && skips.NumberToString }, function (t) {
 		forEach(v.nonNumbers, function (nonNumber) {
 			t['throws'](
 				function () { ES.NumberToString(nonNumber); },
@@ -4119,10 +4120,182 @@ var es2019 = function ES2018(ES, ops, expectedMissing, skips) {
 	});
 };
 
+var es2020 = function ES2019(ES, ops, expectedMissing, skips) {
+	es2019(ES, ops, expectedMissing, assign({}, skips, {
+		NumberToString: true,
+		ObjectCreate: true,
+		SameValueNonNumber: true
+	}));
+
+	test('BinaryAnd', function (t) {
+		t.equal(ES.BinaryAnd(0, 0), 0);
+		t.equal(ES.BinaryAnd(0, 1), 0);
+		t.equal(ES.BinaryAnd(1, 0), 0);
+		t.equal(ES.BinaryAnd(1, 1), 1);
+
+		forEach(v.nonIntegerNumbers.concat(v.nonNumberPrimitives, v.objects), function (nonBit) {
+			t['throws'](
+				function () { ES.BinaryAnd(0, nonBit); },
+				TypeError
+			);
+			t['throws'](
+				function () { ES.BinaryAnd(nonBit, 1); },
+				TypeError
+			);
+		});
+		t.end();
+	});
+
+	test('BinaryOr', function (t) {
+		t.equal(ES.BinaryOr(0, 0), 0);
+		t.equal(ES.BinaryOr(0, 1), 1);
+		t.equal(ES.BinaryOr(1, 0), 1);
+		t.equal(ES.BinaryOr(1, 1), 1);
+
+		forEach(v.nonIntegerNumbers.concat(v.nonNumberPrimitives, v.objects), function (nonBit) {
+			t['throws'](
+				function () { ES.BinaryOr(0, nonBit); },
+				TypeError
+			);
+			t['throws'](
+				function () { ES.BinaryOr(nonBit, 1); },
+				TypeError
+			);
+		});
+		t.end();
+	});
+
+	test('BinaryXor', function (t) {
+		t.equal(ES.BinaryXor(0, 0), 0);
+		t.equal(ES.BinaryXor(0, 1), 1);
+		t.equal(ES.BinaryXor(1, 0), 1);
+		t.equal(ES.BinaryXor(1, 1), 0);
+
+		forEach(v.nonIntegerNumbers.concat(v.nonNumberPrimitives, v.objects), function (nonBit) {
+			t['throws'](
+				function () { ES.BinaryXor(0, nonBit); },
+				TypeError
+			);
+			t['throws'](
+				function () { ES.BinaryXor(nonBit, 1); },
+				TypeError
+			);
+		});
+		t.end();
+	});
+
+	test('IsBigIntElementType', function (t) {
+		t.equal(ES.IsBigIntElementType('BigUint64'), true);
+		t.equal(ES.IsBigIntElementType('BigInt64'), true);
+		t.equal(ES.IsBigIntElementType('anything else'), false);
+
+		t.end();
+	});
+
+	test('OrdinaryObjectCreate', function (t) {
+		forEach(v.nonNullPrimitives, function (value) {
+			t['throws'](
+				function () { ES.OrdinaryObjectCreate(value); },
+				TypeError,
+				debug(value) + ' is not null, or an object'
+			);
+		});
+
+		t.test('proto arg', function (st) {
+			var Parent = function Parent() {};
+			Parent.prototype.foo = {};
+			var child = ES.OrdinaryObjectCreate(Parent.prototype);
+			st.equal(child instanceof Parent, true, 'child is instanceof Parent');
+			st.equal(child.foo, Parent.prototype.foo, 'child inherits properties from Parent.prototype');
+
+			st.end();
+		});
+
+		t.test('internal slots arg', function (st) {
+			st.doesNotThrow(function () { ES.OrdinaryObjectCreate({}, []); }, 'an empty slot list is valid');
+
+			st['throws'](
+				function () { ES.OrdinaryObjectCreate({}, ['a']); },
+				SyntaxError,
+				'internal slots are not supported'
+			);
+
+			st.end();
+		});
+
+		t.test('null proto', { skip: !$setProto }, function (st) {
+			st.equal('toString' in {}, true, 'normal objects have toString');
+			st.equal('toString' in ES.OrdinaryObjectCreate(null), false, 'makes a null object');
+
+			st.end();
+		});
+
+		t.test('null proto when no native Object.create', { skip: $setProto }, function (st) {
+			st['throws'](
+				function () { ES.OrdinaryObjectCreate(null); },
+				SyntaxError,
+				'without a native Object.create, can not create null objects'
+			);
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('SameValueNonNumeric', function (t) {
+		var willThrow = [
+			[3, 4],
+			[NaN, 4],
+			[4, ''],
+			['abc', true],
+			[{}, false]
+		];
+		forEach(willThrow, function (nums) {
+			t['throws'](function () { return ES.SameValueNonNumeric.apply(ES, nums); }, TypeError, 'value must be same type and non-number');
+		});
+
+		forEach(v.objects.concat(v.nonNumberPrimitives), function (val) {
+			t.equal(val === val, ES.SameValueNonNumeric(val, val), debug(val) + ' is SameValueNonNumeric to itself');
+		});
+
+		t.end();
+	});
+
+	test('StringPad', function (t) {
+		t.equal(ES.StringPad('a', 3, undefined, 'start'), '  a');
+		t.equal(ES.StringPad('a', 3, undefined, 'end'), 'a  ');
+		t.equal(ES.StringPad('a', 3, '0', 'start'), '00a');
+		t.equal(ES.StringPad('a', 3, '0', 'end'), 'a00');
+		t.equal(ES.StringPad('a', 3, '012', 'start'), '01a');
+		t.equal(ES.StringPad('a', 3, '012', 'end'), 'a01');
+		t.equal(ES.StringPad('a', 7, '012', 'start'), '012012a');
+		t.equal(ES.StringPad('a', 7, '012', 'end'), 'a012012');
+
+		t.end();
+	});
+
+	test('thisBigIntValue', { skip: !hasBigInts }, function (t) {
+		t.equal(ES.thisBigIntValue(BigInt(42)), BigInt(42));
+		t.equal(ES.thisBigIntValue(Object(BigInt(42))), BigInt(42));
+
+		forEach(v.nonBigInts, function (nonBigInt) {
+			t['throws'](
+				function () { ES.thisBigIntValue(nonBigInt); },
+				TypeError,
+				debug(nonBigInt) + ' is not a BigInt'
+			);
+		});
+
+		t.end();
+	});
+};
+
 module.exports = {
 	es2015: es2015,
 	es2016: es2016,
 	es2017: es2017,
 	es2018: es2018,
-	es2019: es2019
+	es2019: es2019,
+	es2020: es2020
 };
