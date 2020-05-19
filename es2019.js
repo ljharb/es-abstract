@@ -87,6 +87,7 @@ var ES2019 = {
 	SameValueZero: require('./2019/SameValueZero'),
 	SecFromTime: require('./2019/SecFromTime'),
 	Set: require('./2019/Set'),
+	SetFunctionLength: require('./2019/SetFunctionLength'),
 	SetFunctionName: require('./2019/SetFunctionName'),
 	SetIntegrityLevel: require('./2019/SetIntegrityLevel'),
 	SpeciesConstructor: require('./2019/SpeciesConstructor'),
@@ -121,6 +122,7 @@ var ES2019 = {
 	ToUint8Clamp: require('./2019/ToUint8Clamp'),
 	TrimString: require('./2019/TrimString'),
 	Type: require('./2019/Type'),
+	UnicodeEscape: require('./2019/UnicodeEscape'),
 	ValidateAndApplyPropertyDescriptor: require('./2019/ValidateAndApplyPropertyDescriptor'),
 	WeekDay: require('./2019/WeekDay'),
 	YearFromTime: require('./2019/YearFromTime')

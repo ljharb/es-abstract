@@ -85,6 +85,7 @@ var ES2018 = {
 	SameValueZero: require('./2018/SameValueZero'),
 	SecFromTime: require('./2018/SecFromTime'),
 	Set: require('./2018/Set'),
+	SetFunctionLength: require('./2018/SetFunctionLength'),
 	SetFunctionName: require('./2018/SetFunctionName'),
 	SetIntegrityLevel: require('./2018/SetIntegrityLevel'),
 	SpeciesConstructor: require('./2018/SpeciesConstructor'),
@@ -118,6 +119,7 @@ var ES2018 = {
 	ToUint8: require('./2018/ToUint8'),
 	ToUint8Clamp: require('./2018/ToUint8Clamp'),
 	Type: require('./2018/Type'),
+	UnicodeEscape: require('./2018/UnicodeEscape'),
 	ValidateAndApplyPropertyDescriptor: require('./2018/ValidateAndApplyPropertyDescriptor'),
 	WeekDay: require('./2018/WeekDay'),
 	YearFromTime: require('./2018/YearFromTime')

@@ -432,6 +432,7 @@
 2019/SameValueZero.js	spackled linguist-generated=true
 2019/SecFromTime.js	spackled linguist-generated=true
 2019/Set.js	spackled linguist-generated=true
+2019/SetFunctionLength.js	spackled linguist-generated=true
 2019/SetFunctionName.js	spackled linguist-generated=true
 2019/SetIntegrityLevel.js	spackled linguist-generated=true
 2019/SpeciesConstructor.js	spackled linguist-generated=true
@@ -461,6 +462,7 @@
 2019/ToUint8.js	spackled linguist-generated=true
 2019/ToUint8Clamp.js	spackled linguist-generated=true
 2019/Type.js	spackled linguist-generated=true
+2019/UnicodeEscape.js	spackled linguist-generated=true
 2019/ValidateAndApplyPropertyDescriptor.js	spackled linguist-generated=true
 2019/WeekDay.js	spackled linguist-generated=true
 2019/YearFromTime.js	spackled linguist-generated=true

@@ -36,6 +36,10 @@ var noThrowOnStrictViolation = (function () {
 	}
 }());
 
+var leadingPoo = '\uD83D';
+var trailingPoo = '\uDCA9';
+var wholePoo = leadingPoo + trailingPoo;
+
 var getArraySubclassWithSpeciesConstructor = function getArraySubclass(speciesConstructor) {
 	var Bar = function Bar() {
 		var inst = [];
@@ -1670,7 +1674,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		var str = 'a\uD83D\uDCA9c';
+		var str = 'a' + wholePoo + 'c';
 
 		t.test('non-unicode mode', function (st) {
 			for (var i = 0; i < str.length + 2; i += 1) {
@@ -1691,7 +1695,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('lone surrogates', function (st) {
-			var halfPoo = 'a\uD83Dc';
+			var halfPoo = 'a' + leadingPoo + 'c';
 
 			st.equal(ES.AdvanceStringIndex(halfPoo, 0, true), 1, '0 advances to 1');
 			st.equal(ES.AdvanceStringIndex(halfPoo, 1, true), 2, '1 advances to 2');
@@ -4072,6 +4076,92 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 
 		var tv = Date.UTC(2019, 8, 10, 7, 8, 9);
 		t.equal(ES.TimeString(tv), '07:08:09 GMT');
+		t.end();
+	});
+
+	test('SetFunctionLength', function (t) {
+		forEach(v.nonFunctions, function (nonFunction) {
+			t['throws'](
+				function () { ES.SetFunctionLength(nonFunction, 0); },
+				TypeError,
+				debug(nonFunction) + ' is not a Function'
+			);
+		});
+
+		t.test('non-extensible function', { skip: !Object.preventExtensions }, function (st) {
+			var F = function F() {};
+			Object.preventExtensions(F);
+
+			st['throws'](
+				function () { ES.SetFunctionLength(F, 0); },
+				TypeError,
+				'non-extensible function throws'
+			);
+			st.end();
+		});
+
+		var HasLength = function HasLength(_) { return _; };
+		t.equal(has(HasLength, 'length'), true, 'precondition: `HasLength` has own length');
+		t['throws'](
+			function () { ES.SetFunctionLength(HasLength, 0); },
+			TypeError,
+			'function with own length throws'
+		);
+
+		t.test('no length', { skip: !functionsHaveConfigurableNames }, function (st) {
+			var HasNoLength = function HasNoLength() {};
+			delete HasNoLength.length;
+
+			st.equal(has(HasNoLength, 'length'), false, 'precondition: `HasNoLength` has no own length');
+
+			forEach(v.nonNumbers, function (nonNumber) {
+				st['throws'](
+					function () { ES.SetFunctionLength(HasNoLength, nonNumber); },
+					TypeError,
+					debug(nonNumber) + ' is not a Number'
+				);
+			});
+
+			forEach([-1, -42].concat(v.nonIntegerNumbers), function (nonPositiveInteger) {
+				st['throws'](
+					function () { ES.SetFunctionLength(HasNoLength, nonPositiveInteger); },
+					TypeError,
+					debug(nonPositiveInteger) + ' is not a positive integer Number'
+				);
+			});
+
+			st.end();
+		});
+
+		// defines an own configurable non-enum non-write length property
+
+		t.end();
+	});
+
+	test('UnicodeEscape', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.UnicodeEscape(nonString); },
+				TypeError,
+				debug(nonString) + ' is not a String'
+			);
+		});
+		t['throws'](
+			function () { ES.UnicodeEscape(''); },
+			TypeError,
+			'empty string does not have length 1'
+		);
+		t['throws'](
+			function () { ES.UnicodeEscape('ab'); },
+			TypeError,
+			'2-char string does not have length 1'
+		);
+
+		t.equal(ES.UnicodeEscape(' '), '\\u0020');
+		t.equal(ES.UnicodeEscape('a'), '\\u0061');
+		t.equal(ES.UnicodeEscape(leadingPoo), '\\ud83d');
+		t.equal(ES.UnicodeEscape(trailingPoo), '\\udca9');
+
 		t.end();
 	});
 };
