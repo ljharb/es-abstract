@@ -259,7 +259,6 @@ var expectedMissing = [
 	'IsValidRegularExpressionLiteral',
 	'LengthOfArrayLike',
 	'LocalTZA',
-	'MakeBasicObject',
 	'NewPromiseReactionJob',
 	'NewPromiseResolveThenableJob',
 	'Number::toString',
