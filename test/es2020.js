@@ -241,7 +241,6 @@ var expectedMissing = [
 	'SynchronizeEventSet',
 	'BigInt::toString',
 	'BigIntBitwiseOp',
-	'CodePointAt',
 	'CreateForInIterator',
 	'CreateRegExpStringIterator',
 	'EvaluatePropertyAccessWithExpressionKey',
@@ -277,7 +276,6 @@ var expectedMissing = [
 	'ToBigUint64',
 	'ToNumeric',
 	'UTF16DecodeString',
-	'UTF16DecodeSurrogatePair',
 	'UTF16Encode'
 ];
 

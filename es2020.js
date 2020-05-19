@@ -16,6 +16,7 @@ var ES2020 = {
 	BinaryXor: require('./2020/BinaryXor'),
 	Call: require('./2020/Call'),
 	CanonicalNumericIndexString: require('./2020/CanonicalNumericIndexString'),
+	CodePointAt: require('./2020/CodePointAt'),
 	CompletePropertyDescriptor: require('./2020/CompletePropertyDescriptor'),
 	CopyDataProperties: require('./2020/CopyDataProperties'),
 	CreateDataProperty: require('./2020/CreateDataProperty'),
@@ -126,6 +127,7 @@ var ES2020 = {
 	ToUint8Clamp: require('./2020/ToUint8Clamp'),
 	TrimString: require('./2020/TrimString'),
 	Type: require('./2020/Type'),
+	UTF16DecodeSurrogatePair: require('./2020/UTF16DecodeSurrogatePair'),
 	ValidateAndApplyPropertyDescriptor: require('./2020/ValidateAndApplyPropertyDescriptor'),
 	WeekDay: require('./2020/WeekDay'),
 	YearFromTime: require('./2020/YearFromTime')

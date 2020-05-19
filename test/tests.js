@@ -4289,6 +4289,85 @@ var es2020 = function ES2019(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('CodePointAt', function (t) {
+		t['throws'](
+			function () { ES.CodePointAt('abc', -1); },
+			TypeError,
+			'requires an index >= 0'
+		);
+		t['throws'](
+			function () { ES.CodePointAt('abc', 3); },
+			TypeError,
+			'requires an index < string length'
+		);
+
+		t.equal(ES.CodePointAt('abc', 0), {
+			'[[CodePoint]]': 'a',
+			'[[CodeUnitCount]]': 1,
+			'[[IsUnpairedSurrogate]]': false
+		});
+		t.equal(ES.CodePointAt('abc', 1), {
+			'[[CodePoint]]': 'b',
+			'[[CodeUnitCount]]': 1,
+			'[[IsUnpairedSurrogate]]': false
+		});
+		t.equal(ES.CodePointAt('abc', 2), {
+			'[[CodePoint]]': 'c',
+			'[[CodeUnitCount]]': 1,
+			'[[IsUnpairedSurrogate]]': false
+		});
+
+		var leadingPoo = '\uD83D';
+		var trailingPoo = '\uDCA9';
+		var wholePoo = leadingPoo + trailingPoo;
+		var strWithHalfPoo = 'a' + leadingPoo + 'c';
+		var strWithWholePoo = 'a' + wholePoo + 'd';
+
+		t.equal(ES.CodePointAt(strWithHalfPoo, 0, {
+			'[[CodePoint]]': 'a',
+			'[[CodeUnitCount]]': 1,
+			'[[IsUnpairedSurrogate]]': false
+		}));
+		t.equal(ES.CodePointAt(strWithHalfPoo, 1, {
+			'[[CodePoint]]': leadingPoo,
+			'[[CodeUnitCount]]': 1,
+			'[[IsUnpairedSurrogate]]': true
+		}));
+		t.equal(ES.CodePointAt(strWithHalfPoo, 1, {
+			'[[CodePoint]]': 'c',
+			'[[CodeUnitCount]]': 1,
+			'[[IsUnpairedSurrogate]]': false
+		}));
+
+		t.equal(ES.CodePointAt(strWithWholePoo, 0, {
+			'[[CodePoint]]': 'a',
+			'[[CodeUnitCount]]': 1,
+			'[[IsUnpairedSurrogate]]': false
+		}));
+		t.equal(ES.CodePointAt(strWithWholePoo, 1, {
+			'[[CodePoint]]': wholePoo,
+			'[[CodeUnitCount]]': 2,
+			'[[IsUnpairedSurrogate]]': false
+		}));
+		t.equal(ES.CodePointAt(strWithWholePoo, 2, {
+			'[[CodePoint]]': trailingPoo,
+			'[[CodeUnitCount]]': 1,
+			'[[IsUnpairedSurrogate]]': true
+		}));
+		t.equal(ES.CodePointAt(strWithWholePoo, 3, {
+			'[[CodePoint]]': 'd',
+			'[[CodeUnitCount]]': 1,
+			'[[IsUnpairedSurrogate]]': false
+		}));
+
+		t.end();
+	});
+
+	test('UTF16DecodeSurrogatePair', function (t) {
+
+		t.end();
+	});
 };
 
 module.exports = {
