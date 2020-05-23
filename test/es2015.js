@@ -5,7 +5,13 @@ var boundES = require('./helpers/createBoundESNamespace')(ES);
 
 var ops = require('../operations/2015');
 
-var expectedMissing = ['Construct', 'CreateArrayFromList', 'CreateListIterator', 'NormalCompletion', 'RegExpBuiltinExec'];
+var expectedMissing = [
+	'Construct',
+	'CreateArrayFromList',
+	'CreateListIterator',
+	'NormalCompletion',
+	'RegExpBuiltinExec'
+];
 
 require('./tests').es2015(boundES, ops, expectedMissing);
 
