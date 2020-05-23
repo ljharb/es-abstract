@@ -215,7 +215,6 @@ var expectedMissing = [
 	'SortCompare',
 	'SplitMatch',
 	'StringCreate',
-	'StringGetOwnProperty',
 	'Suspend',
 	'SynchronizeEventSet',
 	'synchronizes-with',

@@ -89,6 +89,7 @@ var ES2018 = {
 	SetFunctionName: require('./2018/SetFunctionName'),
 	SetIntegrityLevel: require('./2018/SetIntegrityLevel'),
 	SpeciesConstructor: require('./2018/SpeciesConstructor'),
+	StringGetOwnProperty: require('./2018/StringGetOwnProperty'),
 	SymbolDescriptiveString: require('./2018/SymbolDescriptiveString'),
 	TestIntegrityLevel: require('./2018/TestIntegrityLevel'),
 	thisBooleanValue: require('./2018/thisBooleanValue'),

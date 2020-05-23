@@ -321,6 +321,7 @@
 2018/SetIntegrityLevel.js	spackled linguist-generated=true
 2018/SpeciesConstructor.js	spackled linguist-generated=true
 2018/StrictEqualityComparison.js	spackled linguist-generated=true
+2018/StringGetOwnProperty.js	spackled linguist-generated=true
 2018/SymbolDescriptiveString.js	spackled linguist-generated=true
 2018/TestIntegrityLevel.js	spackled linguist-generated=true
 2018/TimeClip.js	spackled linguist-generated=true
@@ -439,6 +440,7 @@
 2019/SetIntegrityLevel.js	spackled linguist-generated=true
 2019/SpeciesConstructor.js	spackled linguist-generated=true
 2019/StrictEqualityComparison.js	spackled linguist-generated=true
+2019/StringGetOwnProperty.js	spackled linguist-generated=true
 2019/SymbolDescriptiveString.js	spackled linguist-generated=true
 2019/TestIntegrityLevel.js	spackled linguist-generated=true
 2019/TimeClip.js	spackled linguist-generated=true

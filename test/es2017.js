@@ -194,7 +194,6 @@ var expectedMissing = [
 	'SortCompare',
 	'SplitMatch',
 	'StringCreate',
-	'StringGetOwnProperty',
 	'Suspend',
 	'TopLevelModuleEvaluationJob',
 	'ToString Applied to the Number Type',

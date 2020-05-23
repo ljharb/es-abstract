@@ -91,6 +91,7 @@ var ES2019 = {
 	SetFunctionName: require('./2019/SetFunctionName'),
 	SetIntegrityLevel: require('./2019/SetIntegrityLevel'),
 	SpeciesConstructor: require('./2019/SpeciesConstructor'),
+	StringGetOwnProperty: require('./2019/StringGetOwnProperty'),
 	SymbolDescriptiveString: require('./2019/SymbolDescriptiveString'),
 	TestIntegrityLevel: require('./2019/TestIntegrityLevel'),
 	thisBooleanValue: require('./2019/thisBooleanValue'),
