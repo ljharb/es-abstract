@@ -3591,6 +3591,33 @@ var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('UTF16Encoding', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.UTF16Encoding(nonNumber); },
+				TypeError,
+				debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		t['throws'](
+			function () { ES.UTF16Encoding(-1); },
+			TypeError,
+			'-1 is < 0'
+		);
+
+		t['throws'](
+			function () { ES.UTF16Encoding(0x10FFFF + 1); },
+			TypeError,
+			'0x10FFFF + 1 is > 0x10FFFF'
+		);
+
+		t.equal(ES.UTF16Encoding(0xd83d), leadingPoo.charCodeAt(0), '0xD83D is the first half of ' + wholePoo);
+		t.equal(ES.UTF16Encoding(0xdca9), trailingPoo.charCodeAt(0), '0xD83D is the last half of ' + wholePoo);
+
+		t.end();
+	});
 };
 
 var es2017 = function ES2017(ES, ops, expectedMissing, skips) {

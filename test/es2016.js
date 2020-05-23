@@ -164,7 +164,6 @@ var expectedMissing = [
 	'UpdateEmpty',
 	'UTC',
 	'UTF16Decode',
-	'UTF16Encoding',
 	'ValidateTypedArray'
 ];
 

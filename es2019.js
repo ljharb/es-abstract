@@ -76,9 +76,9 @@ var ES2019 = {
 	OrdinaryDefineOwnProperty: require('./2019/OrdinaryDefineOwnProperty'),
 	OrdinaryGetOwnProperty: require('./2019/OrdinaryGetOwnProperty'),
 	OrdinaryGetPrototypeOf: require('./2019/OrdinaryGetPrototypeOf'),
-	OrdinarySetPrototypeOf: require('./2019/OrdinarySetPrototypeOf'),
 	OrdinaryHasInstance: require('./2019/OrdinaryHasInstance'),
 	OrdinaryHasProperty: require('./2019/OrdinaryHasProperty'),
+	OrdinarySetPrototypeOf: require('./2019/OrdinarySetPrototypeOf'),
 	PromiseResolve: require('./2019/PromiseResolve'),
 	RegExpExec: require('./2019/RegExpExec'),
 	RequireObjectCoercible: require('./2019/RequireObjectCoercible'),
@@ -123,6 +123,7 @@ var ES2019 = {
 	TrimString: require('./2019/TrimString'),
 	Type: require('./2019/Type'),
 	UnicodeEscape: require('./2019/UnicodeEscape'),
+	UTF16Encoding: require('./2019/UTF16Encoding'),
 	ValidateAndApplyPropertyDescriptor: require('./2019/ValidateAndApplyPropertyDescriptor'),
 	WeekDay: require('./2019/WeekDay'),
 	YearFromTime: require('./2019/YearFromTime')

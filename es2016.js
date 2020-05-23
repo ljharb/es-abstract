@@ -71,9 +71,9 @@ var ES2016 = {
 	OrdinaryDefineOwnProperty: require('./2016/OrdinaryDefineOwnProperty'),
 	OrdinaryGetOwnProperty: require('./2016/OrdinaryGetOwnProperty'),
 	OrdinaryGetPrototypeOf: require('./2016/OrdinaryGetPrototypeOf'),
-	OrdinarySetPrototypeOf: require('./2016/OrdinarySetPrototypeOf'),
 	OrdinaryHasInstance: require('./2016/OrdinaryHasInstance'),
 	OrdinaryHasProperty: require('./2016/OrdinaryHasProperty'),
+	OrdinarySetPrototypeOf: require('./2016/OrdinarySetPrototypeOf'),
 	RegExpExec: require('./2016/RegExpExec'),
 	RequireObjectCoercible: require('./2016/RequireObjectCoercible'),
 	SameValue: require('./2016/SameValue'),
@@ -111,6 +111,7 @@ var ES2016 = {
 	ToUint8: require('./2016/ToUint8'),
 	ToUint8Clamp: require('./2016/ToUint8Clamp'),
 	Type: require('./2016/Type'),
+	UTF16Encoding: require('./2016/UTF16Encoding'),
 	ValidateAndApplyPropertyDescriptor: require('./2016/ValidateAndApplyPropertyDescriptor'),
 	WeekDay: require('./2016/WeekDay'),
 	YearFromTime: require('./2016/YearFromTime')

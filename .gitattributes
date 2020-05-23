@@ -235,6 +235,7 @@
 2017/ToUint8.js	spackled linguist-generated=true
 2017/ToUint8Clamp.js	spackled linguist-generated=true
 2017/Type.js	spackled linguist-generated=true
+2017/UTF16Encoding.js	spackled linguist-generated=true
 2017/ValidateAndApplyPropertyDescriptor.js	spackled linguist-generated=true
 2017/WeekDay.js	spackled linguist-generated=true
 2017/YearFromTime.js	spackled linguist-generated=true
@@ -344,6 +345,7 @@
 2018/ToUint8.js	spackled linguist-generated=true
 2018/ToUint8Clamp.js	spackled linguist-generated=true
 2018/Type.js	spackled linguist-generated=true
+2018/UTF16Encoding.js	spackled linguist-generated=true
 2018/ValidateAndApplyPropertyDescriptor.js	spackled linguist-generated=true
 2018/WeekDay.js	spackled linguist-generated=true
 2018/YearFromTime.js	spackled linguist-generated=true
@@ -462,6 +464,7 @@
 2019/ToUint8.js	spackled linguist-generated=true
 2019/ToUint8Clamp.js	spackled linguist-generated=true
 2019/Type.js	spackled linguist-generated=true
+2019/UTF16Encoding.js	spackled linguist-generated=true
 2019/UnicodeEscape.js	spackled linguist-generated=true
 2019/ValidateAndApplyPropertyDescriptor.js	spackled linguist-generated=true
 2019/WeekDay.js	spackled linguist-generated=true

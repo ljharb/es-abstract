@@ -204,7 +204,6 @@ var expectedMissing = [
 	'UpdateEmpty',
 	'UTC',
 	'UTF16Decode',
-	'UTF16Encoding',
 	'ValidateAtomicAccess',
 	'ValidateSharedIntegerTypedArray',
 	'ValidateTypedArray',
