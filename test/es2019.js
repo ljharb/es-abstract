@@ -6,7 +6,6 @@ var boundES = require('./helpers/createBoundESNamespace')(ES);
 var ops = require('../operations/2019');
 
 var expectedMissing = [
-	'abs',
 	'AddRestrictedFunctionProperties',
 	'AddWaiter',
 	'agent-order',
@@ -72,7 +71,6 @@ var expectedMissing = [
 	'EvaluateNew',
 	'EventSet',
 	'ExecuteModule',
-	'floor',
 	'ForBodyEvaluation',
 	'ForIn/OfBodyEvaluation',
 	'ForIn/OfHeadEvaluation',

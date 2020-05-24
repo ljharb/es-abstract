@@ -26,6 +26,8 @@
 2015/ToUint32.js	spackled linguist-generated=true
 2015/WeekDay.js	spackled linguist-generated=true
 2015/YearFromTime.js	spackled linguist-generated=true
+2015/abs.js	spackled linguist-generated=true
+2015/floor.js	spackled linguist-generated=true
 2015/modulo.js	spackled linguist-generated=true
 2015/msFromTime.js	spackled linguist-generated=true
 2016/AbstractEqualityComparison.js	spackled linguist-generated=true
@@ -131,6 +133,8 @@
 2016/ValidateAndApplyPropertyDescriptor.js	spackled linguist-generated=true
 2016/WeekDay.js	spackled linguist-generated=true
 2016/YearFromTime.js	spackled linguist-generated=true
+2016/abs.js	spackled linguist-generated=true
+2016/floor.js	spackled linguist-generated=true
 2016/modulo.js	spackled linguist-generated=true
 2016/msFromTime.js	spackled linguist-generated=true
 2016/thisBooleanValue.js	spackled linguist-generated=true
@@ -243,6 +247,8 @@
 2017/ValidateAndApplyPropertyDescriptor.js	spackled linguist-generated=true
 2017/WeekDay.js	spackled linguist-generated=true
 2017/YearFromTime.js	spackled linguist-generated=true
+2017/abs.js	spackled linguist-generated=true
+2017/floor.js	spackled linguist-generated=true
 2017/modulo.js	spackled linguist-generated=true
 2017/msFromTime.js	spackled linguist-generated=true
 2017/thisBooleanValue.js	spackled linguist-generated=true
@@ -355,6 +361,8 @@
 2018/ValidateAndApplyPropertyDescriptor.js	spackled linguist-generated=true
 2018/WeekDay.js	spackled linguist-generated=true
 2018/YearFromTime.js	spackled linguist-generated=true
+2018/abs.js	spackled linguist-generated=true
+2018/floor.js	spackled linguist-generated=true
 2018/modulo.js	spackled linguist-generated=true
 2018/msFromTime.js	spackled linguist-generated=true
 2018/thisBooleanValue.js	spackled linguist-generated=true
@@ -477,6 +485,8 @@
 2019/ValidateAndApplyPropertyDescriptor.js	spackled linguist-generated=true
 2019/WeekDay.js	spackled linguist-generated=true
 2019/YearFromTime.js	spackled linguist-generated=true
+2019/abs.js	spackled linguist-generated=true
+2019/floor.js	spackled linguist-generated=true
 2019/modulo.js	spackled linguist-generated=true
 2019/msFromTime.js	spackled linguist-generated=true
 2019/thisBooleanValue.js	spackled linguist-generated=true

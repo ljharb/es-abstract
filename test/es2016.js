@@ -6,7 +6,6 @@ var boundES = require('./helpers/createBoundESNamespace')(ES);
 var ops = require('../operations/2016');
 
 var expectedMissing = [
-	'abs',
 	'AddRestrictedFunctionProperties',
 	'AllocateArrayBuffer',
 	'AllocateTypedArray',
@@ -46,7 +45,6 @@ var expectedMissing = [
 	'EvaluateCall',
 	'EvaluateDirectCall',
 	'EvaluateNew',
-	'floor',
 	'ForBodyEvaluation',
 	'ForIn/OfBodyEvaluation',
 	'ForIn/OfHeadEvaluation',
