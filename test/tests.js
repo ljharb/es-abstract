@@ -32,8 +32,8 @@ var noThrowOnStrictViolation = (function () {
 		delete [].length;
 		return true;
 	} catch (e) {
-		return false;
 	}
+	return false;
 }());
 
 var leadingPoo = '\uD83D';
@@ -3495,6 +3495,52 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('OrdinaryCreateFromConstructor', function (t) {
+		forEach(v.nonFunctions, function (nonFunction) {
+			t['throws'](
+				function () { ES.OrdinaryCreateFromConstructor(nonFunction, '%Array.prototype%'); },
+				TypeError,
+				debug(nonFunction) + ' is not a constructor'
+			);
+		});
+
+		forEach(arrowFns, function (arrowFn) {
+			t['throws'](
+				function () { ES.OrdinaryCreateFromConstructor(arrowFn, '%Array.prototype%'); },
+				TypeError,
+				debug(arrowFn) + ' is not a constructor'
+			);
+		});
+
+		t.test('proto arg', function (st) {
+			var Parent = function Parent() {};
+			Parent.prototype.foo = {};
+			var child = ES.OrdinaryCreateFromConstructor(Parent, '%Array.prototype%');
+			st.equal(child instanceof Parent, true, 'child is instanceof Parent');
+			st.equal(child instanceof Array, false, 'child is not instanceof Array');
+			st.equal(child.foo, Parent.prototype.foo, 'child inherits properties from Parent.prototype');
+
+			st.end();
+		});
+
+		t.test('internal slots arg', function (st) {
+			st.doesNotThrow(
+				function () { ES.OrdinaryCreateFromConstructor(function () {}, '%Array.prototype%', []); },
+				'an empty slot list is valid'
+			);
+
+			st['throws'](
+				function () { ES.OrdinaryCreateFromConstructor(function () {}, '%Array.prototype%', ['a']); },
+				SyntaxError,
+				'internal slots are not supported'
+			);
+
+			st.end();
+		});
+
+		t.end();
+	});
 };
 
 var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
@@ -3615,6 +3661,29 @@ var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 
 		t.equal(ES.UTF16Encoding(0xd83d), leadingPoo.charCodeAt(0), '0xD83D is the first half of ' + wholePoo);
 		t.equal(ES.UTF16Encoding(0xdca9), trailingPoo.charCodeAt(0), '0xD83D is the last half of ' + wholePoo);
+
+		t.end();
+	});
+
+	test('QuoteJSONString', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.QuoteJSONString(nonString); },
+				TypeError,
+				debug(nonString) + ' is not a String'
+			);
+		});
+
+		t.equal(ES.QuoteJSONString(''), '""', '"" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('a'), '"a"', '"a" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('"'), '"\\""', '"\\"" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\b'), '"\\b"', '"\\b" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\t'), '"\\t"', '"\\t" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\n'), '"\\n"', '"\\n" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\f'), '"\\f"', '"\\f" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\r'), '"\\r"', '"\\r" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\\'), '"\\\\"', '"\\\\" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\\'), '"\\\\"', '"\\\\" gets properly JSON-quoted');
 
 		t.end();
 	});

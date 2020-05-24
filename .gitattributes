@@ -89,10 +89,12 @@
 2016/MinFromTime.js	spackled linguist-generated=true
 2016/MonthFromTime.js	spackled linguist-generated=true
 2016/ObjectCreate.js	spackled linguist-generated=true
+2016/OrdinaryCreateFromConstructor.js	spackled linguist-generated=true
 2016/OrdinaryDefineOwnProperty.js	spackled linguist-generated=true
 2016/OrdinaryGetOwnProperty.js	spackled linguist-generated=true
 2016/OrdinaryHasInstance.js	spackled linguist-generated=true
 2016/OrdinaryHasProperty.js	spackled linguist-generated=true
+2016/QuoteJSONString.js	spackled linguist-generated=true
 2016/RegExpExec.js	spackled linguist-generated=true
 2016/RequireObjectCoercible.js	spackled linguist-generated=true
 2016/SameValue.js	spackled linguist-generated=true
@@ -195,12 +197,14 @@
 2017/MinFromTime.js	spackled linguist-generated=true
 2017/MonthFromTime.js	spackled linguist-generated=true
 2017/ObjectCreate.js	spackled linguist-generated=true
+2017/OrdinaryCreateFromConstructor.js	spackled linguist-generated=true
 2017/OrdinaryDefineOwnProperty.js	spackled linguist-generated=true
 2017/OrdinaryGetOwnProperty.js	spackled linguist-generated=true
 2017/OrdinaryGetPrototypeOf.js	spackled linguist-generated=true
 2017/OrdinaryHasInstance.js	spackled linguist-generated=true
 2017/OrdinaryHasProperty.js	spackled linguist-generated=true
 2017/OrdinarySetPrototypeOf.js	spackled linguist-generated=true
+2017/QuoteJSONString.js	spackled linguist-generated=true
 2017/RegExpExec.js	spackled linguist-generated=true
 2017/RequireObjectCoercible.js	spackled linguist-generated=true
 2017/SameValue.js	spackled linguist-generated=true
@@ -304,6 +308,7 @@
 2018/MinFromTime.js	spackled linguist-generated=true
 2018/MonthFromTime.js	spackled linguist-generated=true
 2018/ObjectCreate.js	spackled linguist-generated=true
+2018/OrdinaryCreateFromConstructor.js	spackled linguist-generated=true
 2018/OrdinaryDefineOwnProperty.js	spackled linguist-generated=true
 2018/OrdinaryGetOwnProperty.js	spackled linguist-generated=true
 2018/OrdinaryGetPrototypeOf.js	spackled linguist-generated=true
@@ -421,6 +426,7 @@
 2019/MonthFromTime.js	spackled linguist-generated=true
 2019/NumberToString.js	spackled linguist-generated=true
 2019/ObjectCreate.js	spackled linguist-generated=true
+2019/OrdinaryCreateFromConstructor.js	spackled linguist-generated=true
 2019/OrdinaryDefineOwnProperty.js	spackled linguist-generated=true
 2019/OrdinaryGetOwnProperty.js	spackled linguist-generated=true
 2019/OrdinaryGetPrototypeOf.js	spackled linguist-generated=true
