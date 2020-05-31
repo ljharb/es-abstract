@@ -4,7 +4,7 @@ var GetIntrinsic = require('../GetIntrinsic');
 
 var $TypeError = GetIntrinsic('%TypeError%');
 
-var $hasInstance = GetIntrinsic('Symbol.hasInstance', true);
+var $hasInstance = GetIntrinsic('%Symbol.hasInstance%', true);
 
 var Call = require('./Call');
 var GetMethod = require('./GetMethod');

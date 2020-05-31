@@ -5,7 +5,7 @@ var GetIntrinsic = require('../GetIntrinsic');
 var callBound = require('./callBound');
 
 var $iterator = GetIntrinsic('%Symbol.iterator%', true);
-var $stringSlice = callBound('String.prototype.slice');
+var $stringSlice = callBound('%String.prototype.slice%');
 
 module.exports = function getIteratorMethod(ES, iterable) {
 	var usingIterator;

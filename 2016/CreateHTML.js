@@ -6,7 +6,7 @@ var $TypeError = GetIntrinsic('%TypeError%');
 
 var callBound = require('../helpers/callBound');
 
-var $replace = callBound('String.prototype.replace');
+var $replace = callBound('%String.prototype.replace%');
 
 var RequireObjectCoercible = require('./RequireObjectCoercible');
 var ToString = require('./ToString');

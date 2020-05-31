@@ -8,7 +8,7 @@ var isPrefixOf = require('../helpers/isPrefixOf');
 
 // var callBound = require('../helpers/callBound');
 
-// var $charAt = callBound('String.prototype.charAt');
+// var $charAt = callBound('%String.prototype.charAt%');
 
 var Type = require('./Type');
 

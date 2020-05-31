@@ -14,8 +14,8 @@ var every = require('../helpers/every');
 
 var isDigit = regexTester(/^[0-9]$/);
 
-var $charAt = callBound('String.prototype.charAt');
-var $strSlice = callBound('String.prototype.slice');
+var $charAt = callBound('%String.prototype.charAt%');
+var $strSlice = callBound('%String.prototype.slice%');
 
 var IsArray = require('./IsArray');
 var IsInteger = require('./IsInteger');

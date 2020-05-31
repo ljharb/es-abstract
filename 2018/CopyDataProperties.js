@@ -4,7 +4,7 @@ var callBound = require('../helpers/callBound');
 var forEach = require('../helpers/forEach');
 var OwnPropertyKeys = require('../helpers/OwnPropertyKeys');
 
-var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
+var $isEnumerable = callBound('%Object.prototype.propertyIsEnumerable%');
 
 var CreateDataProperty = require('./CreateDataProperty');
 var Get = require('./Get');

@@ -7,7 +7,7 @@ var $TypeError = GetIntrinsic('%TypeError%');
 
 var callBound = require('../helpers/callBound');
 
-var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
+var $isEnumerable = callBound('%Object.prototype.propertyIsEnumerable%');
 
 var has = require('has');
 

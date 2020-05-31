@@ -15,7 +15,7 @@ if ($defineProperty) {
 
 var callBound = require('../helpers/callBound');
 
-var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
+var $isEnumerable = callBound('%Object.prototype.propertyIsEnumerable%');
 
 // eslint-disable-next-line max-params
 module.exports = function DefineOwnProperty(IsDataDescriptor, SameValue, FromPropertyDescriptor, O, P, desc) {

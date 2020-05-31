@@ -5,7 +5,7 @@ var GetIntrinsic = require('../GetIntrinsic');
 var callBound = require('./callBound');
 
 var $SyntaxError = GetIntrinsic('%SyntaxError%');
-var symToStr = callBound('Symbol.prototype.toString', true);
+var symToStr = callBound('%Symbol.prototype.toString%', true);
 
 var getInferredName = require('./getInferredName');
 
