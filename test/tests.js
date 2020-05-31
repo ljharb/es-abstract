@@ -610,7 +610,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	test('Call', function (t) {
 		var receiver = {};
 		var notFuncs = v.nonFunctions.concat([/a/g, new RegExp('a', 'g')]);
-		t.plan(notFuncs.length + 4);
+		t.plan(notFuncs.length + 5);
 		var throwsIfNotCallable = function (notFunc) {
 			t['throws'](
 				function () { return ES.Call(notFunc, receiver); },
@@ -629,6 +629,25 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			receiver,
 			[1, 2, 3]
 		);
+
+		t.test('Call doesn’t use func.apply', function (st) {
+			st.plan(4);
+
+			var bad = function (a, b) {
+				st.equal(this, receiver, 'context matches expected');
+				st.deepEqual([a, b], [1, 2], 'named args are correct');
+				st.equal(arguments.length, 3, 'extra argument was passed');
+				st.equal(arguments[2], 3, 'extra argument was correct');
+			};
+
+			bad.apply = function () {
+				st.fail('bad.apply shouldn’t get called');
+			};
+
+			ES.Call(bad, receiver, [1, 2, 3]);
+			st.end();
+		});
+
 		t.end();
 	});
 
