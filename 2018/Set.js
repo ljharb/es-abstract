@@ -5,6 +5,7 @@ var GetIntrinsic = require('../GetIntrinsic');
 var $TypeError = GetIntrinsic('%TypeError%');
 
 var IsPropertyKey = require('./IsPropertyKey');
+var SameValue = require('./SameValue');
 var Type = require('./Type');
 
 // https://ecma-international.org/ecma-262/6.0/#sec-set-o-p-v-throw
@@ -21,6 +22,9 @@ module.exports = function Set(O, P, V, Throw) {
 	}
 	if (Throw) {
 		O[P] = V; // eslint-disable-line no-param-reassign
+		if (!SameValue(O[P], V)) {
+			throw new $TypeError('Attempted to assign to readonly property.');
+		}
 		return true;
 	} else {
 		try {

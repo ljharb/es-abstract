@@ -26,6 +26,16 @@ var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1;
 
 var canDistinguishSparseFromUndefined = 0 in [undefined]; // IE 6 - 8 have a bug where this returns false
 
+// IE 9 does not throw in strict mode when writability/configurability/extensibility is violated
+var noThrowOnStrictViolation = (function () {
+	try {
+		delete [].length;
+		return true;
+	} catch (e) {
+		return false;
+	}
+}());
+
 var getArraySubclassWithSpeciesConstructor = function getArraySubclass(speciesConstructor) {
 	var Bar = function Bar() {
 		var inst = [];
@@ -1012,13 +1022,13 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			defineProperty(obj, 'a', { writable: false });
 
 			st['throws'](
-				function () { ES.Set(obj, 'a', value, true); },
+				function () { ES.Set(obj, 'a', {}, true); },
 				TypeError,
 				'can not Set nonwritable property'
 			);
 
 			st.doesNotThrow(
-				function () { ES.Set(obj, 'a', value, false); },
+				function () { ES.Set(obj, 'a', {}, false); },
 				'setting Throw to false prevents an exception'
 			);
 
@@ -1574,14 +1584,14 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
-		t.test('null proto', { skip: !$setProto }, function (st) {
+		t.test('null proto', { skip: !Object.create && !$setProto }, function (st) {
 			st.equal('toString' in {}, true, 'normal objects have toString');
 			st.equal('toString' in ES.ObjectCreate(null), false, 'makes a null object');
 
 			st.end();
 		});
 
-		t.test('null proto when no native Object.create', { skip: $setProto }, function (st) {
+		t.test('null proto when no native Object.create', { skip: Object.create || $setProto }, function (st) {
 			st['throws'](
 				function () { ES.ObjectCreate(null); },
 				SyntaxError,
@@ -1954,7 +1964,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		);
 
 		var O = { a: 1 };
-		t.test('sealed', { skip: !Object.preventExtensions }, function (st) {
+		t.test('sealed', { skip: !Object.preventExtensions || noThrowOnStrictViolation }, function (st) {
 			st.equal(ES.SetIntegrityLevel(O, 'sealed'), true);
 			st['throws'](
 				function () { O.b = 2; },
@@ -1966,7 +1976,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
-		t.test('frozen', { skip: !Object.freeze }, function (st) {
+		t.test('frozen', { skip: !Object.freeze || noThrowOnStrictViolation }, function (st) {
 			st.equal(ES.SetIntegrityLevel(O, 'frozen'), true);
 			st['throws'](
 				function () { O.a = 3; },
