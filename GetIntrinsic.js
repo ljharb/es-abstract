@@ -7,6 +7,7 @@
 
 var undefined;
 
+var $SyntaxError = SyntaxError;
 var $TypeError = TypeError;
 
 var $gOPD = Object.getOwnPropertyDescriptor;
@@ -164,14 +165,29 @@ var INTRINSICS = {
 
 var bind = require('function-bind');
 var $replace = bind.call(Function.call, String.prototype.replace);
+var $strSlice = bind.call(Function.call, String.prototype.slice);
 
 /* adapted from https://github.com/lodash/lodash/blob/4.17.15/dist/lodash.js#L6735-L6744 */
-var rePropName = /[^%.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|%$))/g;
-var reEscapeChar = /\\(\\)?/g; /** Used to match backslashes in property paths. */
+var rePropName = /[^.[\]]+|\[((?:-?\d+(?:\.\d+)?)|(["'])(?:(?:(?!\2)[^\\]|\\.)*?)\2|(?:(?:[^[\]\\]|\\.)*?))\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
 var stringToPath = function stringToPath(string) {
+	if (string[0] === '%') {
+		if (string[string.length - 1] !== '%') {
+			throw new $SyntaxError("invalid intrinsic syntax, expected closing '%', got end of input");
+		}
+		// eslint-disable-next-line no-param-reassign
+		string = $strSlice(string, 1, -1);
+	} else if (string[string.length - 1] === '%') {
+		throw new $SyntaxError("invalid intrinsic syntax, unexpected closing '%'");
+	}
+
 	var result = [];
-	$replace(string, rePropName, function (match, number, quote, subString) {
-		result[result.length] = quote ? $replace(subString, reEscapeChar, '$1') : (number || match);
+	$replace(string, rePropName, function (match, dynamic) {
+		var part = match;
+		if (typeof dynamic === 'string') {
+			// TODO: Support symbol properties
+			throw new $SyntaxError('invalid intrinsic syntax, unexpected dynamic property access: ' + dynamic);
+		}
+		result[result.length] = part;
 	});
 	return result;
 };
