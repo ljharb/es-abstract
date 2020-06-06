@@ -1028,7 +1028,9 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			);
 
 			st.doesNotThrow(
-				function () { ES.Set(obj, 'a', {}, false); },
+				function () {
+					st.equal(ES.Set(obj, 'a', {}, false), false, 'unsuccessful Set returns false');
+				},
 				'setting Throw to false prevents an exception'
 			);
 
@@ -1039,8 +1041,28 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			var obj = { a: value };
 			defineProperty(obj, 'a', { configurable: false });
 
-			ES.Set(obj, 'a', value, true);
+			st.equal(ES.Set(obj, 'a', value, true), true, 'successful Set returns true');
 			st.deepEqual(obj, { a: value }, 'key is set');
+
+			st.end();
+		});
+
+		t.test('doesn’t call [[Get]] in conforming strict mode environments', { skip: noThrowOnStrictViolation }, function (st) {
+			var getterCalled = false;
+			var setterCalls = 0;
+			var obj = {};
+			defineProperty(obj, 'a', {
+				get: function () {
+					getterCalled = true;
+				},
+				set: function () {
+					setterCalls += 1;
+				}
+			});
+
+			st.equal(ES.Set(obj, 'a', value, false), true, 'successful Set returns true');
+			st.equal(setterCalls, 1, 'setter was called once');
+			st.equal(getterCalled, false, 'getter was not called');
 
 			st.end();
 		});
