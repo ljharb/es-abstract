@@ -2,6 +2,7 @@
 
 var GetIntrinsic = require('../GetIntrinsic');
 
+var hasSymbols = require('has-symbols')();
 var test = require('tape');
 var forEach = require('foreach');
 var debug = require('object-inspect');
@@ -119,6 +120,46 @@ test('accessors', { skip: !Object.getOwnPropertyDescriptor || typeof Map !== 'fu
 	t.equal(typeof actual.get, 'function', 'Map.prototype.size has a getter function');
 	t.equal(GetIntrinsic('%Map.prototype.size%'), actual.get, '%Map.prototype.size% yields the getter for it');
 	t.equal(GetIntrinsic('Map.prototype.size'), actual.get, 'Map.prototype.size yields the getter for it');
+
+	t.end();
+});
+
+test('symbol properties', { skip: !hasSymbols }, function (t) {
+	t.equal(
+		typeof GetIntrinsic('%Array.prototype[%Symbol.iterator%]%', true),
+		'function',
+		"typeof %Array.prototype[%Symbol.iterator%]% === 'function'"
+	);
+
+	if (typeof Uint8Array === 'function') {
+		t.equal(
+			typeof GetIntrinsic('%TypedArray.prototype[%Symbol.iterator%]%', true),
+			'function',
+			"typeof %TypedArray.prototype[%Symbol.iterator%]% === 'function'"
+		);
+	} else {
+		t.skip("typeof %TypedArray.prototype[%Symbol.iterator%]% === 'function'");
+	}
+
+	if (typeof Set === 'function') {
+		t.equal(
+			typeof GetIntrinsic('%Set.prototype[%Symbol.iterator%]%', true),
+			'function',
+			"typeof %Set.prototype[%Symbol.iterator%]% === 'function'"
+		);
+	} else {
+		t.skip("typeof %Set.prototype[%Symbol.iterator%]% === 'function'");
+	}
+
+	if (typeof Map === 'function') {
+		t.equal(
+			typeof GetIntrinsic('%Map.prototype[%Symbol.iterator%]%', true),
+			'function',
+			"typeof %Map.prototype[%Symbol.iterator%]% === 'function'"
+		);
+	} else {
+		t.skip("typeof %Map.prototype[%Symbol.iterator%]% === 'function'");
+	}
 
 	t.end();
 });
