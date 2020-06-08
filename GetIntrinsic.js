@@ -7,7 +7,16 @@
 
 var undefined;
 
+var $SyntaxError = SyntaxError;
 var $TypeError = TypeError;
+
+// eslint-disable-next-line consistent-return
+var getEvalledConstructor = function (expressionSyntax) {
+	try {
+		// eslint-disable-next-line no-new-func
+		return Function('"use strict"; return (' + expressionSyntax + ').constructor;')();
+	} catch (e) {}
+};
 
 var $gOPD = Object.getOwnPropertyDescriptor;
 if ($gOPD) {
@@ -40,13 +49,13 @@ var hasSymbols = require('has-symbols')();
 
 var getProto = Object.getPrototypeOf || function (x) { return x.__proto__; }; // eslint-disable-line no-proto
 
-var generator; // = function * () {};
-var generatorFunction = generator ? getProto(generator) : undefined;
-var asyncFn; // async function() {};
-var asyncFunction = asyncFn ? asyncFn.constructor : undefined;
-var asyncGen; // async function * () {};
-var asyncGenFunction = asyncGen ? getProto(asyncGen) : undefined;
-var asyncGenIterator = asyncGen ? asyncGen() : undefined;
+var generatorFunction = getEvalledConstructor('function* () {}');
+var generatorFunctionPrototype = generatorFunction ? generatorFunction.prototype : undefined;
+
+var asyncFunction = getEvalledConstructor('async function () {}');
+var asyncGenFunction = getEvalledConstructor('async function* () {}');
+var asyncGenFunctionPrototype = asyncGenFunction ? asyncGenFunction.prototype : undefined;
+var asyncGenPrototype = asyncGenFunctionPrototype ? asyncGenFunctionPrototype.prototype : undefined;
 
 var TypedArray = typeof Uint8Array === 'undefined' ? undefined : getProto(Uint8Array);
 
@@ -63,10 +72,10 @@ var INTRINSICS = {
 	'%AsyncFromSyncIteratorPrototype%': undefined,
 	'%AsyncFunction%': asyncFunction,
 	'%AsyncFunctionPrototype%': asyncFunction ? asyncFunction.prototype : undefined,
-	'%AsyncGenerator%': asyncGen ? getProto(asyncGenIterator) : undefined,
+	'%AsyncGenerator%': asyncGenFunctionPrototype,
 	'%AsyncGeneratorFunction%': asyncGenFunction,
-	'%AsyncGeneratorPrototype%': asyncGenFunction ? asyncGenFunction.prototype : undefined,
-	'%AsyncIteratorPrototype%': asyncGenIterator && hasSymbols && Symbol.asyncIterator ? asyncGenIterator[Symbol.asyncIterator]() : undefined,
+	'%AsyncGeneratorPrototype%': asyncGenPrototype,
+	'%AsyncIteratorPrototype%': asyncGenPrototype ? getProto(asyncGenPrototype) : undefined,
 	'%Atomics%': typeof Atomics === 'undefined' ? undefined : Atomics,
 	'%Boolean%': Boolean,
 	'%BooleanPrototype%': Boolean.prototype,
@@ -89,9 +98,9 @@ var INTRINSICS = {
 	'%Float64ArrayPrototype%': typeof Float64Array === 'undefined' ? undefined : Float64Array.prototype,
 	'%Function%': Function,
 	'%FunctionPrototype%': Function.prototype,
-	'%Generator%': generator ? getProto(generator()) : undefined,
+	'%Generator%': generatorFunctionPrototype,
 	'%GeneratorFunction%': generatorFunction,
-	'%GeneratorPrototype%': generatorFunction ? generatorFunction.prototype : undefined,
+	'%GeneratorPrototype%': generatorFunctionPrototype ? generatorFunctionPrototype.prototype : undefined,
 	'%Int8Array%': typeof Int8Array === 'undefined' ? undefined : Int8Array,
 	'%Int8ArrayPrototype%': typeof Int8Array === 'undefined' ? undefined : Int8Array.prototype,
 	'%Int16Array%': typeof Int16Array === 'undefined' ? undefined : Int16Array,
@@ -139,8 +148,8 @@ var INTRINSICS = {
 	'%StringPrototype%': String.prototype,
 	'%Symbol%': hasSymbols ? Symbol : undefined,
 	'%SymbolPrototype%': hasSymbols ? Symbol.prototype : undefined,
-	'%SyntaxError%': SyntaxError,
-	'%SyntaxErrorPrototype%': SyntaxError.prototype,
+	'%SyntaxError%': $SyntaxError,
+	'%SyntaxErrorPrototype%': $SyntaxError.prototype,
 	'%ThrowTypeError%': ThrowTypeError,
 	'%TypedArray%': TypedArray,
 	'%TypedArrayPrototype%': TypedArray ? TypedArray.prototype : undefined,
