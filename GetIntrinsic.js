@@ -219,16 +219,22 @@ module.exports = function GetIntrinsic(name, allowMissing) {
 	var value = getBaseIntrinsic('%' + (parts.length > 0 ? parts[0] : '') + '%', allowMissing);
 	for (var i = 1; i < parts.length; i += 1) {
 		if (value != null) {
-			if ($gOPD && (i + 1) >= parts.length) {
-				var desc = $gOPD(value, parts[i]);
-				if (!allowMissing && !(parts[i] in value)) {
+			if (!(parts[i] in value)) {
+				if (!allowMissing) {
 					throw new $TypeError('base intrinsic for ' + name + ' exists, but the property is not available.');
 				}
+				return;
+			}
+
+			if ($gOPD && (i + 1) >= parts.length) {
+				var desc = $gOPD(value, parts[i]);
 				value = desc ? (desc.get || desc.value) : value[parts[i]];
 			} else {
 				value = value[parts[i]];
 			}
 		}
 	}
+
+	// eslint-disable-next-line consistent-return
 	return value;
 };

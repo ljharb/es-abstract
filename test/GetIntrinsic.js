@@ -64,6 +64,12 @@ test('throws', function (t) {
 		'Dynamic property access is disallowed for intrinsics (unterminated string)'
 	);
 
+	t['throws'](
+		function () { GetIntrinsic('%Proxy.prototype.undefined%'); },
+		TypeError,
+		"Throws when middle part doesn't exist (%Proxy.prototype.undefined%)"
+	);
+
 	forEach(v.nonStrings, function (nonString) {
 		t['throws'](
 			function () { GetIntrinsic(nonString); },
