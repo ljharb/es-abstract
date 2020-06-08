@@ -38,7 +38,6 @@ var ThrowTypeError = $gOPD
 	: throwTypeError;
 
 var hasSymbols = require('has-symbols')();
-var $Symbol = hasSymbols ? Symbol : undefined;
 
 var getProto = Object.getPrototypeOf || function (x) { return x.__proto__; }; // eslint-disable-line no-proto
 
@@ -139,7 +138,7 @@ var INTRINSICS = {
 	'%String%': String,
 	'%StringIteratorPrototype%': hasSymbols ? getProto(''[Symbol.iterator]()) : undefined,
 	'%StringPrototype%': String.prototype,
-	'%Symbol%': $Symbol,
+	'%Symbol%': hasSymbols ? Symbol : undefined,
 	'%SymbolPrototype%': hasSymbols ? Symbol.prototype : undefined,
 	'%SyntaxError%': SyntaxError,
 	'%SyntaxErrorPrototype%': SyntaxError.prototype,
@@ -165,16 +164,12 @@ var INTRINSICS = {
 };
 
 var bind = require('function-bind');
-var hasOwn = require('has');
 var $replace = bind.call(Function.call, String.prototype.replace);
 var $strSlice = bind.call(Function.call, String.prototype.slice);
-var $reExec = bind.call(Function.call, RegExp.prototype.exec);
 
 /* adapted from https://github.com/lodash/lodash/blob/4.17.15/dist/lodash.js#L6735-L6744 */
 var rePropName = /[^.[\]]+|\[((?:-?\d+(?:\.\d+)?)|(["'])(?:(?:(?!\2)[^\\]|\\.)*?)\2|(?:(?:[^[\]\\]|\\.)*?))\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
-var reSymbol = /^\s*(%|)?Symbol.([^.[\]]+)\1\s*$/;
-
-var stringToPath = function stringToPath(string, allowMissingSymbols) {
+var stringToPath = function stringToPath(string) {
 	if (string[0] === '%') {
 		if (string[string.length - 1] !== '%') {
 			throw new $SyntaxError("invalid intrinsic syntax, expected closing '%', got end of input");
@@ -189,23 +184,8 @@ var stringToPath = function stringToPath(string, allowMissingSymbols) {
 	$replace(string, rePropName, function (match, dynamic) {
 		var part = match;
 		if (typeof dynamic === 'string') {
-			var symbolPropertyMatch = $reExec(reSymbol, dynamic);
-			if (symbolPropertyMatch) {
-				var symbolName = symbolPropertyMatch[2];
-				if (hasSymbols) {
-					var symbol = hasOwn($Symbol, symbolName) ? $Symbol[symbolName] : undefined;
-					if (typeof symbol !== 'symbol' && (!allowMissingSymbols || symbol !== undefined)) {
-						throw new $TypeError('No such symbol: %Symbol.' + symbolName + '%');
-					}
-					result[result.length] = symbol || '@@' + symbolName;
-				} else if (allowMissingSymbols) {
-					result[result.length] = '@@' + symbolName;
-				} else {
-					throw new $TypeError("This environment doesn't support symbols");
-				}
-				return;
-			}
-			throw new $SyntaxError('invalid intrinsic syntax, unexpected dynamic property access: ' + dynamic);
+			// TODO: Support symbol properties
+			throw new $SyntaxError('invalid intrinsic syntax, unexpected dynamic property access: ' + string);
 		}
 		result[result.length] = part;
 	});
@@ -234,7 +214,7 @@ module.exports = function GetIntrinsic(name, allowMissing) {
 		throw new TypeError('"allowMissing" argument must be a boolean');
 	}
 
-	var parts = stringToPath(name, allowMissing);
+	var parts = stringToPath(name);
 
 	var value = getBaseIntrinsic('%' + (parts.length > 0 ? parts[0] : '') + '%', allowMissing);
 	for (var i = 1; i < parts.length; i += 1) {
