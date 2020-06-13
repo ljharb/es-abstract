@@ -1,7 +1,7 @@
 'use strict';
 
 var callBound = require('../helpers/callBound');
-var $arrayPush = callBound('Array.prototype.push');
+var $arrayPush = callBound('%Array.prototype.push%');
 
 var GetIterator = require('./GetIterator');
 var IteratorStep = require('./IteratorStep');

@@ -2,7 +2,7 @@
 
 var callBound = require('../helpers/callBound');
 
-var $SymbolValueOf = callBound('Symbol.prototype.valueOf', true);
+var $SymbolValueOf = callBound('%Symbol.prototype.valueOf%', true);
 
 var Type = require('./Type');
 

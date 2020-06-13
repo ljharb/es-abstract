@@ -6,7 +6,7 @@ var $Date = GetIntrinsic('%Date%');
 
 var callBound = require('../helpers/callBound');
 
-var $getUTCFullYear = callBound('Date.prototype.getUTCFullYear');
+var $getUTCFullYear = callBound('%Date.prototype.getUTCFullYear%');
 
 // https://ecma-international.org/ecma-262/5.1/#sec-15.9.1.3
 

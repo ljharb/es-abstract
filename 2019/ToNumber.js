@@ -11,7 +11,7 @@ var callBound = require('../helpers/callBound');
 var regexTester = require('../helpers/regexTester');
 var isPrimitive = require('../helpers/isPrimitive');
 
-var $strSlice = callBound('String.prototype.slice');
+var $strSlice = callBound('%String.prototype.slice%');
 var isBinary = regexTester(/^0b[01]+$/i);
 var isOctal = regexTester(/^0o[0-7]+$/i);
 var isInvalidHexLiteral = regexTester(/^[-+]0x[0-9a-f]+$/i);
@@ -27,7 +27,7 @@ var ws = [
 	'\u2029\uFEFF'
 ].join('');
 var trimRegex = new RegExp('(^[' + ws + ']+)|([' + ws + ']+$)', 'g');
-var $replace = callBound('String.prototype.replace');
+var $replace = callBound('%String.prototype.replace%');
 var $trim = function (value) {
 	return $replace(value, trimRegex, '');
 };

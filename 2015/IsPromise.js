@@ -2,7 +2,7 @@
 
 var callBound = require('../helpers/callBound');
 
-var $PromiseThen = callBound('Promise.prototype.then', true);
+var $PromiseThen = callBound('%Promise.prototype.then%', true);
 
 var Type = require('./Type');
 

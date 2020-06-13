@@ -2,7 +2,7 @@
 
 var GetIntrinsic = require('../GetIntrinsic');
 
-var $test = GetIntrinsic('RegExp.prototype.test');
+var $test = GetIntrinsic('%RegExp.prototype.test%');
 
 var callBind = require('./callBind');
 

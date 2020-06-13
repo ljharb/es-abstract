@@ -9,7 +9,7 @@ var MAX_SAFE_INTEGER = require('../helpers/maxSafeInteger');
 
 var $TypeError = GetIntrinsic('%TypeError%');
 
-var $charCodeAt = require('../helpers/callBound')('String.prototype.charCodeAt');
+var $charCodeAt = require('../helpers/callBound')('%String.prototype.charCodeAt%');
 
 // https://ecma-international.org/ecma-262/6.0/#sec-advancestringindex
 

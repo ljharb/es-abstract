@@ -4,7 +4,7 @@ var callBound = require('../helpers/callBound');
 
 var Type = require('./Type');
 
-var $NumberValueOf = callBound('Number.prototype.valueOf');
+var $NumberValueOf = callBound('%Number.prototype.valueOf%');
 
 // https://ecma-international.org/ecma-262/6.0/#sec-properties-of-the-number-prototype-object
 
@@ -15,4 +15,3 @@ module.exports = function thisNumberValue(value) {
 
 	return $NumberValueOf(value);
 };
-

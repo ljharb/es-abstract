@@ -2,13 +2,13 @@
 
 var GetIntrinsic = require('../GetIntrinsic');
 
-var $Array = GetIntrinsic('%Array%');
+var $isArray = GetIntrinsic('%Array.isArray%', true);
 
 // eslint-disable-next-line global-require
-var toStr = !$Array.isArray && require('../helpers/callBound')('Object.prototype.toString');
+var toStr = !$isArray && require('../helpers/callBound')('%Object.prototype.toString%');
 
 // https://www.ecma-international.org/ecma-262/6.0/#sec-isarray
 
-module.exports = $Array.isArray || function IsArray(argument) {
+module.exports = $isArray || function IsArray(argument) {
 	return toStr(argument) === '[object Array]';
 };

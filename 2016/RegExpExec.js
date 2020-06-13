@@ -4,7 +4,7 @@ var GetIntrinsic = require('../GetIntrinsic');
 
 var $TypeError = GetIntrinsic('%TypeError%');
 
-var regexExec = require('../helpers/callBound')('RegExp.prototype.exec');
+var regexExec = require('../helpers/callBound')('%RegExp.prototype.exec%');
 
 var Call = require('./Call');
 var Get = require('./Get');

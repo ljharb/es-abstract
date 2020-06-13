@@ -8,9 +8,9 @@ var callBound = require('../helpers/callBound');
 var regexTester = require('../helpers/regexTester');
 var every = require('../helpers/every');
 
-var $charAt = callBound('String.prototype.charAt');
-var $strSlice = callBound('String.prototype.slice');
-var $indexOf = callBound('String.prototype.indexOf');
+var $charAt = callBound('%String.prototype.charAt%');
+var $strSlice = callBound('%String.prototype.slice%');
+var $indexOf = callBound('%String.prototype.indexOf%');
 var $parseInt = parseInt;
 
 var isDigit = regexTester(/^[0-9]$/);
