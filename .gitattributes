@@ -367,10 +367,12 @@
 2019/ArrayCreate.js	spackled linguist-generated=true
 2019/ArraySetLength.js	spackled linguist-generated=true
 2019/ArraySpeciesCreate.js	spackled linguist-generated=true
+2019/AsyncFromSyncIteratorContinuation.js	spackled linguist-generated=true
 2019/Call.js	spackled linguist-generated=true
 2019/CanonicalNumericIndexString.js	spackled linguist-generated=true
 2019/CompletePropertyDescriptor.js	spackled linguist-generated=true
 2019/CopyDataProperties.js	spackled linguist-generated=true
+2019/CreateAsyncFromSyncIterator.js	spackled linguist-generated=true
 2019/CreateDataProperty.js	spackled linguist-generated=true
 2019/CreateDataPropertyOrThrow.js	spackled linguist-generated=true
 2019/CreateHTML.js	spackled linguist-generated=true
