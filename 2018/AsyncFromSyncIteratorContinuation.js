@@ -13,7 +13,7 @@ var PromiseResolve = require('./PromiseResolve.js');
 var $Promise = GetIntrinsic('%Promise%', true);
 var PerformPromiseThen = callBound('%Promise.prototype.then%', true);
 
-// https://www.ecma-international.org/ecma-262/9.0/#sec-asyncfromsynciteratorcontinuation
+// https://www.ecma-international.org/ecma-262/10.0/#sec-asyncfromsynciteratorcontinuation
 
 module.exports = function AsyncFromSyncIteratorContinuation(result, promiseCapability) {
 	try {
