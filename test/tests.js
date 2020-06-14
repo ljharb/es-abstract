@@ -161,7 +161,7 @@ var getArraySubclassWithSpeciesConstructor = function getArraySubclass(speciesCo
 var testIterator = function (t, iterator, expected) {
 	var resultCount = 0;
 	var result;
-	while (result = iterator.next(), !result.done && resultCount < expected.length + 1) { // eslint-disable-line no-sequences
+	while (result = (iterator['[[Iterator]]'] || iterator).next(), !result.done && resultCount < expected.length + 1) { // eslint-disable-line no-sequences
 		t.deepEqual(result, { done: false, value: expected[resultCount] }, 'result ' + resultCount);
 		resultCount += 1;
 	}
@@ -6727,8 +6727,13 @@ var makeAsyncFromSyncIterator = function makeAsyncFromSyncIterator(ES, end, thro
 var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 	es2017(ES, ops, expectedMissing, assign({}, skips, {
 		EnumerableOwnProperties: true,
-		GetSubstitution: true
+		GetIterator: true,
+		GetSubstitution: true,
+		IteratorClose: true,
+		IteratorNext: true,
+		IteratorStep: true
 	}));
+
 	var test = makeTest(ES, skips);
 
 	test('Abstract Relational Comparison', function (t) {
@@ -7095,6 +7100,49 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('GetIterator', function (t) {
+		var arr = [1, 2];
+		testIterator(t, ES.GetIterator(arr), arr);
+
+		testIterator(t, ES.GetIterator('abc'), 'abc'.split(''));
+
+		var sentinel = {};
+		forEach(v.primitives, function (nonObject) {
+			var method = function () {
+				return nonObject;
+			};
+			t['throws'](
+				function () { ES.GetIterator(sentinel, method); },
+				TypeError,
+				debug(nonObject) + ' is not an Object; iterator method must return an Object'
+			);
+		});
+
+		t.test('Symbol.iterator', { skip: !v.hasSymbols }, function (st) {
+			var m = new Map();
+			m.set(1, 'a');
+			m.set(2, 'b');
+
+			testIterator(st, ES.GetIterator(m), [[1, 'a'], [2, 'b']]);
+
+			forEach(v.primitives, function (nonObject) {
+				var badIterable = {};
+				badIterable[Symbol.iterator] = function () {
+					return nonObject;
+				};
+				st['throws'](
+					function () { return ES.GetIterator(badIterable); },
+					TypeError,
+					debug(nonObject) + ' is not an Object; iterator method must return an Object'
+				);
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
 	test('GetSubstitution', function (t) {
 		forEach(v.nonStrings, function (nonString) {
 			t['throws'](
@@ -7298,6 +7346,219 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 		t.equal(ES.IsStringPrefix('abcd', 'abc'), false, '"abcd" is not a prefix of "abc"');
 
 		t.equal(ES.IsStringPrefix('a', 'bc'), false, '"a" is not a prefix of "bc"');
+
+		t.end();
+	});
+
+	test('IteratorClose', function (t) {
+		forEach(v.primitives, function (nonObject) {
+			t['throws'](
+				function () { ES.IteratorClose(nonObject); },
+				TypeError,
+				debug(nonObject) + ' is not an Object'
+			);
+
+			t['throws'](
+				function () {
+					ES.IteratorClose(
+						makeIteratorRecord({
+							'return': function () { return nonObject; }
+						}),
+						function () {}
+					);
+				},
+				TypeError,
+				'`.return` returns ' + debug(nonObject) + ', which is not an Object'
+			);
+		});
+
+		forEach(v.nonFunctions, function (nonFunction) {
+			t['throws'](
+				function () { ES.IteratorClose(makeIteratorRecord({}), nonFunction); },
+				TypeError,
+				debug(nonFunction) + ' is not a thunk for a Completion Record'
+			);
+
+			if (nonFunction != null) {
+				t['throws'](
+					function () {
+						ES.IteratorClose(
+							makeIteratorRecord({ 'return': nonFunction }),
+							function () {}
+						);
+					},
+					TypeError,
+					'`.return` of ' + debug(nonFunction) + ' is not a Function'
+				);
+			}
+		});
+
+		var sentinel = {};
+		t.equal(
+			ES.IteratorClose(
+				makeIteratorRecord({ 'return': undefined }),
+				function () { return sentinel; }
+			),
+			sentinel,
+			'when `.return` is `undefined`, invokes and returns the completion thunk'
+		);
+		t.equal(
+			ES.IteratorClose(
+				makeIteratorRecord({ 'return': undefined }),
+				ES.NormalCompletion(sentinel)
+			),
+			sentinel,
+			'when `.return` is `undefined`, invokes and returns the Completion Record'
+		);
+
+		/* eslint no-throw-literal: 0 */
+		t['throws'](
+			function () {
+				ES.IteratorClose(
+					makeIteratorRecord({ 'return': function () { throw sentinel; } }),
+					function () {}
+				);
+			},
+			sentinel,
+			'`.return` that throws, when completionThunk does not, throws exception from `.return`'
+		);
+		t['throws'](
+			function () {
+				ES.IteratorClose(
+					makeIteratorRecord({ 'return': function () { throw sentinel; } }),
+					ES.NormalCompletion()
+				);
+			},
+			sentinel,
+			'`.return` that throws, when Completion Record does not, throws exception from `.return`'
+		);
+
+		t['throws'](
+			function () {
+				ES.IteratorClose(
+					makeIteratorRecord({ 'return': function () { throw sentinel; } }),
+					function () { throw -1; }
+				);
+			},
+			-1,
+			'`.return` that throws, when completionThunk does too, throws exception from completionThunk'
+		);
+		t['throws'](
+			function () {
+				ES.IteratorClose(
+					makeIteratorRecord({ 'return': function () { throw sentinel; } }),
+				 ES.CompletionRecord('throw', -1)
+				);
+			},
+			-1,
+			'`.return` that throws, when completionThunk does too, throws exception from Completion Record'
+		);
+
+		t['throws'](
+			function () {
+				ES.IteratorClose(
+					makeIteratorRecord({ 'return': function () { } }),
+					function () { throw -1; }
+				);
+			},
+			-1,
+			'`.return` that does not throw, when completionThunk does, throws exception from completionThunk'
+		);
+		t['throws'](
+			function () {
+				ES.IteratorClose(
+					makeIteratorRecord({ 'return': function () { } }),
+					ES.CompletionRecord('throw', -1)
+				);
+			},
+			-1,
+			'`.return` that does not throw, when completionThunk does, throws exception from Competion Record'
+		);
+
+		t.equal(
+			ES.IteratorClose(
+				makeIteratorRecord({ 'return': function () { return sentinel; } }),
+				function () { return 42; }
+			),
+			42,
+			'when `.return` and completionThunk do not throw, and `.return` returns an Object, returns completionThunk'
+		);
+		t.equal(
+			ES.IteratorClose(
+				makeIteratorRecord({ 'return': function () { return sentinel; } }),
+				ES.NormalCompletion(42)
+			),
+			42,
+			'when `.return` and Completion Record do not throw, and `.return` returns an Object, returns completionThunk'
+		);
+
+		t.end();
+	});
+
+	test('IteratorNext', function (t) {
+		forEach(v.primitives, function (nonObject) {
+			t['throws'](
+				function () { ES.IteratorNext(nonObject); },
+				TypeError,
+				debug(nonObject) + ' is not an Object'
+			);
+
+			t['throws'](
+				function () { ES.IteratorNext({ next: function () { return nonObject; } }); },
+				TypeError,
+				'`next()` returns ' + debug(nonObject) + ', which is not an Object'
+			);
+		});
+
+		var iterator = {
+			next: function (value) {
+				return [arguments.length, value];
+			}
+		};
+		var iteratorRecord = {
+			'[[Iterator]]': iterator,
+			'[[NextMethod]]': iterator.next,
+			'[[Done]]': false
+		};
+		t.deepEqual(
+			ES.IteratorNext(iteratorRecord),
+			[0, undefined],
+			'returns expected value from `.next()`; `next` receives expected 0 arguments'
+		);
+		t.deepEqual(
+			ES.IteratorNext(iteratorRecord, iterator),
+			[1, iterator],
+			'returns expected value from `.next()`; `next` receives expected 1 argument'
+		);
+
+		t.end();
+	});
+
+	test('IteratorStep', function (t) {
+		t.deepEqual(
+			ES.IteratorStep(makeIteratorRecord({
+				next: function () {
+					return {
+						done: false,
+						value: [1, arguments.length]
+					};
+				}
+			})),
+			{ done: false, value: [1, 0] },
+			'not-done iterator result yields iterator result'
+		);
+		t.deepEqual(
+			ES.IteratorStep(makeIteratorRecord({
+				next: function () {
+					return {
+						done: true,
+						value: [2, arguments.length]
+					};
+				}
+			})),
+			false,
+			'done iterator result yields false'
+		);
 
 		t.end();
 	});
@@ -8927,7 +9188,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
-		t.test('no Symbol.asyncIterator', { skip: v.hasAsyncIterator }, function (st) {
+		t.test('no Symbol.asyncIterator', { skip: v.hasSymbols && Symbol.asyncIterator }, function (st) {
 			st['throws'](
 				function () { ES.GetIterator(arr, 'async'); },
 				SyntaxError,
@@ -8956,7 +9217,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				return it;
 			};
 
-			st.equal(ES.GetIterator(obj, 'async'), it);
+			st.deepEqual(ES.GetIterator(obj, 'async'), makeIteratorRecord(it));
 
 			forEach(v.primitives, function (primitive) {
 				var badObj = {};

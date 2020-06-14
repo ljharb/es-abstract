@@ -3,40 +3,37 @@
 var GetIntrinsic = require('get-intrinsic');
 
 var $TypeError = GetIntrinsic('%TypeError%');
-var $SyntaxError = GetIntrinsic('%SyntaxError%');
 var $asyncIterator = GetIntrinsic('%Symbol.asyncIterator%', true);
 
 var inspect = require('object-inspect');
 var hasSymbols = require('has-symbols')();
 
-var getIteratorMethod = require('../helpers/getIteratorMethod');
 var AdvanceStringIndex = require('./AdvanceStringIndex');
 var Call = require('./Call');
+var CreateAsyncFromSyncIterator = require('./CreateAsyncFromSyncIterator');
 var GetMethod = require('./GetMethod');
+var GetV = require('./GetV');
 var IsArray = require('./IsArray');
 var Type = require('./Type');
 
+var getIteratorMethod = require('../helpers/getIteratorMethod');
+
 // https://262.ecma-international.org/9.0/#sec-getiterator
-module.exports = function GetIterator(obj, hint, method) {
-	var actualHint = hint;
-	if (arguments.length < 2) {
-		actualHint = 'sync';
-	}
-	if (actualHint !== 'sync' && actualHint !== 'async') {
+
+module.exports = function GetIterator(obj) {
+	var hint = arguments.length > 1 ? arguments[1] : 'sync'; // step 1
+	if (hint !== 'sync' && hint !== 'async') {
 		throw new $TypeError("Assertion failed: `hint` must be one of 'sync' or 'async', got " + inspect(hint));
 	}
 
-	var actualMethod = method;
-	if (arguments.length < 3) {
-		if (actualHint === 'async') {
-			if (hasSymbols && $asyncIterator) {
-				actualMethod = GetMethod(obj, $asyncIterator);
-			}
-			if (actualMethod === undefined) {
-				throw new $SyntaxError("async from sync iterators aren't currently supported");
-			}
-		} else {
-			actualMethod = getIteratorMethod(
+	var method;
+	if (arguments.length < 3) { // step 2
+		if (hint === 'async' && hasSymbols && $asyncIterator) {
+			method = GetMethod(obj, $asyncIterator); // step 2.a.i
+		}
+		if (typeof method === 'undefined') {
+			// var syncMethod = GetMethod(obj, $iterator); // step 2.a.ii.1
+			var syncMethod = getIteratorMethod(
 				{
 					AdvanceStringIndex: AdvanceStringIndex,
 					GetMethod: GetMethod,
@@ -44,22 +41,24 @@ module.exports = function GetIterator(obj, hint, method) {
 				},
 				obj
 			);
+			if (hint === 'async') {
+				var syncIteratorRecord = GetIterator(obj, 'sync', syncMethod); // step 2.a.ii.2
+				return CreateAsyncFromSyncIterator(syncIteratorRecord); // step 2.a.ii.3
+			}
+			method = syncMethod; // step 2.b
 		}
+	} else {
+		method = arguments[2];
 	}
-	var iterator = Call(actualMethod, obj);
+	var iterator = Call(method, obj); // step 3
 	if (Type(iterator) !== 'Object') {
-		throw new $TypeError('iterator must return an object');
+		throw new $TypeError('iterator must return an object'); // step 4
 	}
 
-	return iterator;
-
-	// TODO: This should return an IteratorRecord
-	/*
-	var nextMethod = GetV(iterator, 'next');
-	return {
+	var nextMethod = GetV(iterator, 'next'); // step 5
+	return { // steps 6-7
 		'[[Iterator]]': iterator,
 		'[[NextMethod]]': nextMethod,
 		'[[Done]]': false
 	};
-	*/
 };

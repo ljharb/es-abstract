@@ -10,16 +10,16 @@ var IteratorValue = require('./IteratorValue');
 // https://262.ecma-international.org/12.0/#sec-iterabletolist
 
 module.exports = function IterableToList(items) {
-	var iterator;
+	var iteratorRecord;
 	if (arguments.length > 1) {
-		iterator = GetIterator(items, 'sync', arguments[1]);
+		iteratorRecord = GetIterator(items, 'sync', arguments[1]);
 	} else {
-		iterator = GetIterator(items, 'sync');
+		iteratorRecord = GetIterator(items, 'sync');
 	}
 	var values = [];
 	var next = true;
 	while (next) {
-		next = IteratorStep(iterator);
+		next = IteratorStep(iteratorRecord);
 		if (next) {
 			var nextValue = IteratorValue(next);
 			$arrayPush(values, nextValue);

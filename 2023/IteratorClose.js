@@ -12,7 +12,7 @@ var Type = require('./Type');
 
 var assertRecord = require('../helpers/assertRecord');
 
-// https://262.ecma-international.org/14.0/#sec-iteratorclose
+// https://262.ecma-international.org/12.0/#sec-iteratorclose
 
 module.exports = function IteratorClose(iteratorRecord, completion) {
 	assertRecord(Type, 'Iterator Record', 'iteratorRecord', iteratorRecord);

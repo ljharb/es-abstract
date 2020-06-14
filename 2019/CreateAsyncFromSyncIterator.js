@@ -29,9 +29,9 @@ var $AsyncFromSyncIteratorPrototype = GetIntrinsic('%AsyncFromSyncIteratorProtot
 			var syncIteratorRecord = SLOT.get(O, '[[SyncIteratorRecord]]'); // step 4
 			var result;
 			if (argsLength > 0) {
-				result = IteratorNext(syncIteratorRecord['[[Iterator]]'], value); // step 5.a
+				result = IteratorNext(syncIteratorRecord, value); // step 5.a
 			} else { // step 6
-				result = IteratorNext(syncIteratorRecord['[[Iterator]]']);// step 6.a
+				result = IteratorNext(syncIteratorRecord);// step 6.a
 			}
 			resolve(AsyncFromSyncIteratorContinuation(result)); // step 8
 		});

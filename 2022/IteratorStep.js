@@ -2,12 +2,17 @@
 
 var IteratorComplete = require('./IteratorComplete');
 var IteratorNext = require('./IteratorNext');
+var Type = require('./Type');
 
-// https://262.ecma-international.org/6.0/#sec-iteratorstep
+var assertRecord = require('../helpers/assertRecord');
 
-module.exports = function IteratorStep(iterator) {
-	var result = IteratorNext(iterator);
-	var done = IteratorComplete(result);
-	return done === true ? false : result;
+// https://ecma-international.org/ecma-262/9.0/#sec-iteratorstep
+
+module.exports = function IteratorStep(iteratorRecord) {
+	assertRecord(Type, 'Iterator Record', 'iteratorRecord', iteratorRecord);
+
+	var result = IteratorNext(iteratorRecord); // step 1
+	var done = IteratorComplete(result); // step 2
+	return done === true ? false : result; // steps 3-4
 };
 

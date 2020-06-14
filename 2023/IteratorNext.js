@@ -9,7 +9,7 @@ var Type = require('./Type');
 
 var assertRecord = require('../helpers/assertRecord');
 
-// https://262.ecma-international.org/14.0/#sec-iteratornext
+// https://262.ecma-international.org/9.0/#sec-iteratornext
 
 module.exports = function IteratorNext(iteratorRecord) {
 	assertRecord(Type, 'Iterator Record', 'iteratorRecord', iteratorRecord);

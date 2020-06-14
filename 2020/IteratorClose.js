@@ -10,21 +10,27 @@ var GetMethod = require('./GetMethod');
 var IsCallable = require('./IsCallable');
 var Type = require('./Type');
 
-// https://262.ecma-international.org/6.0/#sec-iteratorclose
+var assertRecord = require('../helpers/assertRecord');
 
-module.exports = function IteratorClose(iterator, completion) {
-	if (Type(iterator) !== 'Object') {
-		throw new $TypeError('Assertion failed: Type(iterator) is not Object');
+// https://262.ecma-international.org/9.0/#sec-iteratorclose
+
+module.exports = function IteratorClose(iteratorRecord, completion) {
+	assertRecord(Type, 'Iterator Record', 'iteratorRecord', iteratorRecord);
+	if (Type(iteratorRecord['[[Iterator]]']) !== 'Object') {
+		throw new $TypeError('Assertion failed: iteratorRecord.[[Iterator]] must be an Object'); // step 1
 	}
-	if (!IsCallable(completion) && !(completion instanceof CompletionRecord)) {
+
+	if (!IsCallable(completion) && !(completion instanceof CompletionRecord)) { // step 2
 		throw new $TypeError('Assertion failed: completion is not a thunk representing a Completion Record, nor a Completion Record instance');
 	}
 	var completionThunk = completion instanceof CompletionRecord ? function () { return completion['?'](); } : completion;
 
-	var iteratorReturn = GetMethod(iterator, 'return');
+	var iterator = iteratorRecord['[[Iterator]]']; // step 3
+
+	var iteratorReturn = GetMethod(iterator, 'return'); // step 4
 
 	if (typeof iteratorReturn === 'undefined') {
-		return completionThunk();
+		return completionThunk(); // step 5
 	}
 
 	var completionRecord;
@@ -44,8 +50,8 @@ module.exports = function IteratorClose(iterator, completion) {
 	completionThunk = null; // ensure it's not called twice.
 
 	if (Type(innerResult) !== 'Object') {
-		throw new $TypeError('iterator .return must return an object');
+		throw new $TypeError('iterator .return must return an object'); // step 9
 	}
 
-	return completionRecord;
+	return completionRecord; // step 10
 };

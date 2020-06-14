@@ -7,7 +7,7 @@ var GetIterator = require('./GetIterator');
 var IteratorStep = require('./IteratorStep');
 var IteratorValue = require('./IteratorValue');
 
-// https://262.ecma-international.org/14.0/#sec-iterabletolist
+// https://262.ecma-international.org/12.0/#sec-iterabletolist
 
 module.exports = function IterableToList(items) {
 	var iteratorRecord;

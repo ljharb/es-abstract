@@ -321,7 +321,6 @@
 /2018/FromPropertyDescriptor.js	spackled linguist-generated=true
 /2018/Get.js	spackled linguist-generated=true
 /2018/GetGlobalObject.js	spackled linguist-generated=true
-/2018/GetIterator.js	spackled linguist-generated=true
 /2018/GetMethod.js	spackled linguist-generated=true
 /2018/GetOwnPropertyKeys.js	spackled linguist-generated=true
 /2018/GetPrototypeFromConstructor.js	spackled linguist-generated=true
@@ -348,11 +347,7 @@
 /2018/IsRegExp.js	spackled linguist-generated=true
 /2018/IsSharedArrayBuffer.js	spackled linguist-generated=true
 /2018/IsWordChar.js	spackled linguist-generated=true
-/2018/IterableToList.js	spackled linguist-generated=true
-/2018/IteratorClose.js	spackled linguist-generated=true
 /2018/IteratorComplete.js	spackled linguist-generated=true
-/2018/IteratorNext.js	spackled linguist-generated=true
-/2018/IteratorStep.js	spackled linguist-generated=true
 /2018/IteratorValue.js	spackled linguist-generated=true
 /2018/MakeDate.js	spackled linguist-generated=true
 /2018/MakeDay.js	spackled linguist-generated=true
@@ -611,6 +606,7 @@
 /2020/FromPropertyDescriptor.js	spackled linguist-generated=true
 /2020/Get.js	spackled linguist-generated=true
 /2020/GetGlobalObject.js	spackled linguist-generated=true
+/2020/GetIterator.js	spackled linguist-generated=true
 /2020/GetMethod.js	spackled linguist-generated=true
 /2020/GetOwnPropertyKeys.js	spackled linguist-generated=true
 /2020/GetPrototypeFromConstructor.js	spackled linguist-generated=true
@@ -801,7 +797,6 @@
 /2021/IsStringPrefix.js	spackled linguist-generated=true
 /2021/IsUnclampedIntegerElementType.js	spackled linguist-generated=true
 /2021/IsUnsignedElementType.js	spackled linguist-generated=true
-/2021/IteratorClose.js	spackled linguist-generated=true
 /2021/IteratorComplete.js	spackled linguist-generated=true
 /2021/IteratorNext.js	spackled linguist-generated=true
 /2021/IteratorStep.js	spackled linguist-generated=true
@@ -1181,6 +1176,7 @@
 /2023/FromPropertyDescriptor.js	spackled linguist-generated=true
 /2023/Get.js	spackled linguist-generated=true
 /2023/GetGlobalObject.js	spackled linguist-generated=true
+/2023/GetIterator.js	spackled linguist-generated=true
 /2023/GetMatchIndexPair.js	spackled linguist-generated=true
 /2023/GetMatchString.js	spackled linguist-generated=true
 /2023/GetMethod.js	spackled linguist-generated=true
@@ -1216,7 +1212,11 @@
 /2023/IsSharedArrayBuffer.js	spackled linguist-generated=true
 /2023/IsUnclampedIntegerElementType.js	spackled linguist-generated=true
 /2023/IsUnsignedElementType.js	spackled linguist-generated=true
+/2023/IterableToList.js	spackled linguist-generated=true
+/2023/IteratorClose.js	spackled linguist-generated=true
 /2023/IteratorComplete.js	spackled linguist-generated=true
+/2023/IteratorNext.js	spackled linguist-generated=true
+/2023/IteratorStep.js	spackled linguist-generated=true
 /2023/IteratorValue.js	spackled linguist-generated=true
 /2023/LengthOfArrayLike.js	spackled linguist-generated=true
 /2023/MakeDate.js	spackled linguist-generated=true

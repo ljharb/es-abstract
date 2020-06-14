@@ -18,7 +18,7 @@ var Type = require('./Type');
 
 var getIteratorMethod = require('../helpers/getIteratorMethod');
 
-// https://262.ecma-international.org/14.0/#sec-getiterator
+// https://262.ecma-international.org/9.0/#sec-getiterator
 
 module.exports = function GetIterator(obj) {
 	var hint = arguments.length > 1 ? arguments[1] : 'sync'; // step 1
