@@ -16,6 +16,7 @@ var expectedMissing = [
 	'AllocateSharedArrayBuffer',
 	'AllocateTypedArray',
 	'AllocateTypedArrayBuffer',
+	'AsyncFromSyncIteratorContinuation',
 	'AsyncFunctionCreate',
 	'AsyncFunctionStart',
 	'AsyncGeneratorEnqueue',

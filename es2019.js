@@ -11,7 +11,6 @@ var ES2019 = {
 	ArrayCreate: require('./2019/ArrayCreate'),
 	ArraySetLength: require('./2019/ArraySetLength'),
 	ArraySpeciesCreate: require('./2019/ArraySpeciesCreate'),
-	AsyncFromSyncIteratorContinuation: require('./2019/AsyncFromSyncIteratorContinuation'),
 	Call: require('./2019/Call'),
 	CanonicalNumericIndexString: require('./2019/CanonicalNumericIndexString'),
 	CompletePropertyDescriptor: require('./2019/CompletePropertyDescriptor'),
