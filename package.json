@@ -62,6 +62,7 @@
 		"is-callable": "^1.2.4",
 		"is-negative-zero": "^2.0.1",
 		"is-regex": "^1.1.4",
+		"is-shared-array-buffer": "^1.0.1",
 		"is-string": "^1.0.7",
 		"object-inspect": "^1.11.0",
 		"object-keys": "^1.1.1",

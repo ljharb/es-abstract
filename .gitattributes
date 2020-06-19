@@ -314,6 +314,7 @@
 2018/IsPromise.js	spackled linguist-generated=true
 2018/IsPropertyKey.js	spackled linguist-generated=true
 2018/IsRegExp.js	spackled linguist-generated=true
+2018/IsSharedArrayBuffer.js	spackled linguist-generated=true
 2018/IterableToList.js	spackled linguist-generated=true
 2018/IteratorClose.js	spackled linguist-generated=true
 2018/IteratorComplete.js	spackled linguist-generated=true
@@ -333,6 +334,7 @@
 2018/OrdinaryHasInstance.js	spackled linguist-generated=true
 2018/OrdinaryHasProperty.js	spackled linguist-generated=true
 2018/OrdinarySetPrototypeOf.js	spackled linguist-generated=true
+2018/OrdinaryToPrimitive.js	spackled linguist-generated=true
 2018/RegExpCreate.js	spackled linguist-generated=true
 2018/RegExpExec.js	spackled linguist-generated=true
 2018/RequireObjectCoercible.js	spackled linguist-generated=true
@@ -438,6 +440,7 @@
 2019/IsPromise.js	spackled linguist-generated=true
 2019/IsPropertyKey.js	spackled linguist-generated=true
 2019/IsRegExp.js	spackled linguist-generated=true
+2019/IsSharedArrayBuffer.js	spackled linguist-generated=true
 2019/IsStringPrefix.js	spackled linguist-generated=true
 2019/IterableToList.js	spackled linguist-generated=true
 2019/IteratorClose.js	spackled linguist-generated=true
@@ -459,6 +462,7 @@
 2019/OrdinaryHasInstance.js	spackled linguist-generated=true
 2019/OrdinaryHasProperty.js	spackled linguist-generated=true
 2019/OrdinarySetPrototypeOf.js	spackled linguist-generated=true
+2019/OrdinaryToPrimitive.js	spackled linguist-generated=true
 2019/PromiseResolve.js	spackled linguist-generated=true
 2019/RegExpCreate.js	spackled linguist-generated=true
 2019/RegExpExec.js	spackled linguist-generated=true
@@ -565,6 +569,7 @@
 2020/IsPromise.js	spackled linguist-generated=true
 2020/IsPropertyKey.js	spackled linguist-generated=true
 2020/IsRegExp.js	spackled linguist-generated=true
+2020/IsSharedArrayBuffer.js	spackled linguist-generated=true
 2020/IsStringPrefix.js	spackled linguist-generated=true
 2020/IteratorClose.js	spackled linguist-generated=true
 2020/IteratorComplete.js	spackled linguist-generated=true
@@ -582,6 +587,7 @@
 2020/OrdinaryHasInstance.js	spackled linguist-generated=true
 2020/OrdinaryHasProperty.js	spackled linguist-generated=true
 2020/OrdinarySetPrototypeOf.js	spackled linguist-generated=true
+2020/OrdinaryToPrimitive.js	spackled linguist-generated=true
 2020/PromiseResolve.js	spackled linguist-generated=true
 2020/RegExpCreate.js	spackled linguist-generated=true
 2020/RegExpExec.js	spackled linguist-generated=true
