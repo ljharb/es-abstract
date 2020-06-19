@@ -59,6 +59,7 @@ var ES2019 = {
 	IsPromise: require('./2019/IsPromise'),
 	IsPropertyKey: require('./2019/IsPropertyKey'),
 	IsRegExp: require('./2019/IsRegExp'),
+	IsSharedArrayBuffer: require('./2019/IsSharedArrayBuffer'),
 	IsStringPrefix: require('./2019/IsStringPrefix'),
 	IterableToList: require('./2019/IterableToList'),
 	IteratorClose: require('./2019/IteratorClose'),

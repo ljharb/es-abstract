@@ -4563,6 +4563,30 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('IsSharedArrayBuffer', function (t) {
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.IsSharedArrayBuffer(primitive); },
+				TypeError,
+				debug(primitive) + ' is not an Object'
+			);
+		});
+
+		forEach(v.objects, function (nonSAB) {
+			t.equal(ES.IsSharedArrayBuffer(nonSAB), false, debug(nonSAB) + ' is not a SharedArrayBuffer');
+		});
+		/* globals SharedArrayBuffer: false */
+
+		t.test('real SABs', { skip: typeof SharedArrayBuffer !== 'function' }, function (st) {
+			var sab = new SharedArrayBuffer();
+			st.equal(ES.IsSharedArrayBuffer(sab), true, debug(sab) + ' is a SharedArrayBuffer');
+
+			st.end();
+		});
+
+		t.end();
+	});
 };
 
 var es2018 = function ES2018(ES, ops, expectedMissing, skips) {

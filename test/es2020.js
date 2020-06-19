@@ -131,7 +131,6 @@ var expectedMissing = [
 	'IsInTailPosition',
 	'IsLabelledFunction',
 	'IsPropertyReference',
-	'IsSharedArrayBuffer',
 	'IsStrictReference',
 	'IsSuperReference',
 	'IsUnresolvableReference',

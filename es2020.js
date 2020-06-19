@@ -68,6 +68,7 @@ var ES2020 = {
 	IsPromise: require('./2020/IsPromise'),
 	IsPropertyKey: require('./2020/IsPropertyKey'),
 	IsRegExp: require('./2020/IsRegExp'),
+	IsSharedArrayBuffer: require('./2020/IsSharedArrayBuffer'),
 	IsStringPrefix: require('./2020/IsStringPrefix'),
 	IsUnclampedIntegerElementType: require('./2020/IsUnclampedIntegerElementType'),
 	IsUnsignedElementType: require('./2020/IsUnsignedElementType'),
