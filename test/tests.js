@@ -1,6 +1,7 @@
 'use strict';
 
 var tape = require('tape');
+var CollapsedAssert = require('collapsed-assert');
 
 var forEach = require('foreach');
 var debug = require('object-inspect');
@@ -23,6 +24,14 @@ var v = require('es-value-fixtures');
 var diffOps = require('./diffOps');
 
 var $BigInt = hasBigInts ? BigInt : null;
+
+var forEachAssert = function forEachAssert(t, items, msg, callback) {
+	var c = new CollapsedAssert();
+	forEach(items, function (item) {
+		callback(c, item);
+	});
+	c.report(t, msg);
+};
 
 var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1;
 
@@ -94,8 +103,8 @@ var kludgeMatch = function kludgeMatch(R, matchObject) {
 };
 
 var testEnumerableOwnNames = function (t, enumerableOwnNames) {
-	forEach(v.primitives, function (nonObject) {
-		t['throws'](
+	forEachAssert(t, v.primitives, 'primitives', function (c, nonObject) {
+		c['throws'](
 			function () { enumerableOwnNames(nonObject); },
 			debug(nonObject) + ' is not an Object'
 		);
@@ -138,8 +147,8 @@ var testToNumber = function (t, ES, ToNumber) {
 
 	t.test('numbers', function (st) {
 		st.equal(NaN, ToNumber(NaN), 'NaN returns itself');
-		forEach(v.zeroes.concat(v.infinities, 42), function (num) {
-			st.equal(num, ToNumber(num), num + ' returns itself');
+		forEachAssert(st, v.zeroes.concat(v.infinities, 42), 'non-NaN numbers', function (c, num) {
+			c.equal(num, ToNumber(num), num + ' returns itself');
 		});
 		forEach(['foo', '0', '4a', '2.0', 'Infinity', '-Infinity'], function (numString) {
 			st.equal(+numString, ToNumber(numString), '"' + numString + '" coerces to ' + Number(numString));
@@ -148,8 +157,8 @@ var testToNumber = function (t, ES, ToNumber) {
 	});
 
 	t.test('objects', function (st) {
-		forEach(v.objects, function (object) {
-			st.equal(ToNumber(object), ToNumber(ES.ToPrimitive(object)), 'object ' + object + ' coerces to same as ToPrimitive of object does');
+		forEachAssert(st, v.objects, 'coercible objects', function (c, object) {
+			c.equal(ToNumber(object), ToNumber(ES.ToPrimitive(object)), 'object ' + object + ' coerces to same as ToPrimitive of object does');
 		});
 		st['throws'](function () { return ToNumber(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 		st.end();

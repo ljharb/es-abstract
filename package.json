@@ -74,6 +74,7 @@
 		"array.prototype.indexof": "^1.0.2",
 		"aud": "^1.1.5",
 		"cheerio": "=1.0.0-rc.3",
+		"collapsed-assert": "^1.1.0",
 		"diff": "^5.0.0",
 		"eclint": "^2.8.1",
 		"es-value-fixtures": "^1.2.1",
