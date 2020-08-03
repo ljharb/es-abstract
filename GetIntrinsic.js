@@ -191,7 +191,7 @@ var reEscapeChar = /\\(\\)?/g; /** Used to match backslashes in property paths. 
 var stringToPath = function stringToPath(string) {
 	var result = [];
 	$replace(string, rePropName, function (match, number, quote, subString) {
-		result[result.length] = quote ? $replace(subString, reEscapeChar, '$1') : (number || match);
+		result[result.length] = quote ? $replace(subString, reEscapeChar, '$1') : number || match;
 	});
 	return result;
 };
@@ -262,7 +262,7 @@ module.exports = function GetIntrinsic(name, allowMissing) {
 				if (!allowMissing && !(part in value)) {
 					throw new $TypeError('base intrinsic for ' + name + ' exists, but the property is not available.');
 				}
-				value = isOwn ? (desc.get || desc.value) : value[part];
+				value = isOwn ? desc.get || desc.value : value[part];
 			} else {
 				isOwn = hasOwn(value, part);
 				value = value[part];
