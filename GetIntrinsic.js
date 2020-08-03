@@ -1,8 +1,11 @@
 'use strict';
 
 /* globals
+	AggregateError,
 	Atomics,
+	FinalizationRegistry,
 	SharedArrayBuffer,
+	WeakRef,
 */
 
 var undefined;
@@ -57,6 +60,7 @@ var asyncGenPrototype = asyncGenFunctionPrototype ? asyncGenFunctionPrototype.pr
 var TypedArray = typeof Uint8Array === 'undefined' ? undefined : getProto(Uint8Array);
 
 var INTRINSICS = {
+	'%AggregateError%': typeof AggregateError === 'undefined' ? undefined : AggregateError,
 	'%Array%': Array,
 	'%ArrayBuffer%': typeof ArrayBuffer === 'undefined' ? undefined : ArrayBuffer,
 	'%ArrayIteratorPrototype%': hasSymbols ? getProto([][Symbol.iterator]()) : undefined,
@@ -78,6 +82,7 @@ var INTRINSICS = {
 	'%EvalError%': EvalError,
 	'%Float32Array%': typeof Float32Array === 'undefined' ? undefined : Float32Array,
 	'%Float64Array%': typeof Float64Array === 'undefined' ? undefined : Float64Array,
+	'%FinalizationRegistry%': typeof FinalizationRegistry === 'undefined' ? undefined : FinalizationRegistry,
 	'%Function%': $Function,
 	'%GeneratorFunction%': getEvalledConstructor('function* () {}'),
 	'%Int8Array%': typeof Int8Array === 'undefined' ? undefined : Int8Array,
@@ -116,6 +121,7 @@ var INTRINSICS = {
 	'%Uint32Array%': typeof Uint32Array === 'undefined' ? undefined : Uint32Array,
 	'%URIError%': URIError,
 	'%WeakMap%': typeof WeakMap === 'undefined' ? undefined : WeakMap,
+	'%WeakRef%': typeof WeakRef === 'undefined' ? undefined : WeakRef,
 	'%WeakSet%': typeof WeakSet === 'undefined' ? undefined : WeakSet
 };
 
