@@ -16,6 +16,7 @@ var ES2019 = {
 	CanonicalNumericIndexString: require('./2019/CanonicalNumericIndexString'),
 	CompletePropertyDescriptor: require('./2019/CompletePropertyDescriptor'),
 	CopyDataProperties: require('./2019/CopyDataProperties'),
+	CreateAsyncFromSyncIterator: require('./2019/CreateAsyncFromSyncIterator'),
 	CreateDataProperty: require('./2019/CreateDataProperty'),
 	CreateDataPropertyOrThrow: require('./2019/CreateDataPropertyOrThrow'),
 	CreateHTML: require('./2019/CreateHTML'),

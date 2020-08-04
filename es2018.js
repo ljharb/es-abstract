@@ -15,6 +15,7 @@ var ES2018 = {
 	CanonicalNumericIndexString: require('./2018/CanonicalNumericIndexString'),
 	CompletePropertyDescriptor: require('./2018/CompletePropertyDescriptor'),
 	CopyDataProperties: require('./2018/CopyDataProperties'),
+	CreateAsyncFromSyncIterator: require('./2018/CreateAsyncFromSyncIterator'),
 	CreateDataProperty: require('./2018/CreateDataProperty'),
 	CreateDataPropertyOrThrow: require('./2018/CreateDataPropertyOrThrow'),
 	CreateHTML: require('./2018/CreateHTML'),

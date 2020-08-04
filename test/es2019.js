@@ -44,7 +44,6 @@ var expectedMissing = [
 	'CopyDataBlockBytes',
 	'CreateArrayFromList',
 	'CreateArrayIterator',
-	'CreateAsyncFromSyncIterator',
 	'CreateBuiltinFunction',
 	'CreateByteDataBlock',
 	'CreateDynamicFunction',
