@@ -6,5 +6,7 @@ try {
 	getInferredName = Function('s', 'return { [s]() {} }[s].name;');
 } catch (e) {}
 
-var inferred = function () {};
+// eslint-disable-next-line no-new-func
+var inferred = Function('var inferred = function () {}; return inferred;')();
+
 module.exports = getInferredName && inferred.name === 'inferred' ? getInferredName : null;
