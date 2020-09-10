@@ -546,7 +546,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			st.equal(true, ES.IsRegExp(obj), 'object with truthy Symbol.match is regex');
 
 			var regex = /a/;
-			regex[Symbol.match] = false;
+			defineProperty(regex, Symbol.match, { value: false });
 			st.equal(false, ES.IsRegExp(regex), 'regex with falsy Symbol.match is not regex');
 
 			st.end();
@@ -675,9 +675,11 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				st.equal(arguments[2], 3, 'extra argument was correct');
 			};
 
-			bad.apply = function () {
-				st.fail('bad.apply shouldn’t get called');
-			};
+			defineProperty(bad, 'apply', {
+				value: function () {
+					st.fail('bad.apply shouldn’t get called');
+				}
+			});
 
 			ES.Call(bad, receiver, [1, 2, 3]);
 			st.end();
@@ -1338,7 +1340,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.test('actual regex that should match against a string, with shadowed "exec"', function (st) {
 			var S = 'aabc';
 			var R = /a/g;
-			R.exec = undefined;
+			defineProperty(R, 'exec', { value: undefined });
 			var match1 = ES.RegExpExec(R, S);
 			var expected1 = assign(['a'], kludgeMatch(R, { index: 0, input: S }));
 			var match2 = ES.RegExpExec(R, S);

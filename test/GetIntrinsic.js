@@ -12,6 +12,7 @@ var asyncGenFns = require('make-async-generator-function')();
 var callBound = require('../helpers/callBound');
 var v = require('./helpers/values');
 var $gOPD = require('../helpers/getOwnPropertyDescriptor');
+var defineProperty = require('./helpers/defineProperty');
 
 var $isProto = callBound('%Object.prototype.isPrototypeOf%');
 
@@ -98,15 +99,15 @@ test('dotted paths', function (t) {
 			'%ObjProto_toString%',
 			'ObjProto_toString'
 		], function (name) {
-			// eslint-disable-next-line no-extend-native
-			Object.prototype.toString = function toString() {
-				return original.apply(this, arguments);
-			};
+			defineProperty(Object.prototype, 'toString', {
+				value: function toString() {
+					return original.apply(this, arguments);
+				}
+			});
 			st.equal(GetIntrinsic(name), original, name + ' yields original Object.prototype.toString');
 		});
 
-		// eslint-disable-next-line no-extend-native
-		Object.prototype.toString = original;
+		defineProperty(Object.prototype, 'toString', { value: original });
 		st.end();
 	});
 
