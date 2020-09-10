@@ -1,3 +1,20 @@
+1.18.0-next.0 / 2020-08-14
+=================
+  * [New] add `ES2020`
+  * [New] `GetIntrinsic`: add `%AggregateError%`, `%FinalizationRegistry%`, and `%WeakRef%`
+  * [New] `ES5`+: add `abs`, `floor`; use `modulo` consistently
+  * [New] `GetIntrinsic`: Cache accessed intrinsics (#98)
+  * [New] `GetIntrinsic`: Add ES201x function intrinsics (#97)
+  * [New] `ES2015`+: add `QuoteJSONString`, `OrdinaryCreateFromConstructor`
+  * [New] `ES2017`+: add `StringGetOwnProperty`
+  * [New] `ES2016`+: add `UTF16Encoding`
+  * [New] `ES2018`+: add `SetFunctionLength`, `UnicodeEscape`
+  * [New] add `isLeadingSurrogate`/`isTrailingSurrogate` helpers
+  * [Fix] `ES5`+: `ToPropertyDescriptor`: use intrinsic TypeError
+  * [Fix] `ES2018+`: `CopyDataProperties`/`NumberToString`: use intrinsic TypeError
+  * [Deps] update `is-regex`, `object-inspect`
+  * [Dev Deps] update `eslint`
+
 1.17.6 / 2020-06-13
 =================
   * [Fix] `helpers/getSymbolDescription`: use the global Symbol registry when available (#92)
