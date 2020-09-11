@@ -2700,16 +2700,18 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			'array length yields expected descriptor'
 		);
 
-		t.deepEqual(
-			ES.OrdinaryGetOwnProperty(Object.prototype, 'toString'),
-			ES.ToPropertyDescriptor({
-				configurable: true,
-				enumerable: false,
-				value: Object.prototype.toString,
-				writable: true
-			}),
-			'own non-enumerable data property yields expected descriptor'
-		);
+		if (!Object.isFrozen || !Object.isFrozen(Object.prototype)) {
+			t.deepEqual(
+				ES.OrdinaryGetOwnProperty(Object.prototype, 'toString'),
+				ES.ToPropertyDescriptor({
+					configurable: true,
+					enumerable: false,
+					value: Object.prototype.toString,
+					writable: true
+				}),
+				'own non-enumerable data property yields expected descriptor'
+			);
+		}
 
 		t.test('ES5+', { skip: !defineProperty.oDP }, function (st) {
 			var O = {};

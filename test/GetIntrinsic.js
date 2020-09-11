@@ -88,7 +88,7 @@ test('dotted paths', function (t) {
 	t.equal(GetIntrinsic('%Array.prototype.push%'), Array.prototype.push, '%Array.prototype.push% yields Array.prototype.push');
 	t.equal(GetIntrinsic('Array.prototype.push'), Array.prototype.push, 'Array.prototype.push yields Array.prototype.push');
 
-	test('underscore paths are aliases for dotted paths', function (st) {
+	test('underscore paths are aliases for dotted paths', { skip: !Object.isFrozen || Object.isFrozen(Object.prototype) }, function (st) {
 		var original = GetIntrinsic('%ObjProto_toString%');
 
 		forEach([
@@ -111,7 +111,7 @@ test('dotted paths', function (t) {
 		st.end();
 	});
 
-	test('dotted paths cache', function (st) {
+	test('dotted paths cache', { skip: !Object.isFrozen || Object.isFrozen(Object.prototype) }, function (st) {
 		var original = GetIntrinsic('%Object.prototype.propertyIsEnumerable%');
 
 		forEach([

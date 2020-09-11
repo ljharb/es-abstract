@@ -83,6 +83,7 @@
 		"object-is": "^1.1.2",
 		"object.fromentries": "^2.0.2",
 		"safe-publish-latest": "^1.1.4",
+		"ses": "^0.10.4",
 		"tape": "^5.0.1"
 	},
 	"testling": {
