@@ -222,7 +222,7 @@ var getBaseIntrinsic = function getBaseIntrinsic(name, allowMissing) {
 	throw new $SyntaxError('intrinsic ' + name + ' does not exist!');
 };
 
-module.exports = function GetIntrinsic(name, allowMissing) {
+var GetIntrinsicPropDesc = function GetIntrinsicPropDesc(name, allowMissing) {
 	if (typeof name !== 'string' || name.length === 0) {
 		throw new $TypeError('intrinsic name must be a non-empty string');
 	}
@@ -232,7 +232,6 @@ module.exports = function GetIntrinsic(name, allowMissing) {
 
 	var parts = stringToPath(name);
 	var intrinsicBaseName = parts.length > 0 ? parts[0] : '';
-
 	var intrinsic = getBaseIntrinsic('%' + intrinsicBaseName + '%', allowMissing);
 	var intrinsicRealName = intrinsic.name;
 	var value = intrinsic.value;
@@ -244,6 +243,7 @@ module.exports = function GetIntrinsic(name, allowMissing) {
 		$spliceApply(parts, $concat([0, 1], alias));
 	}
 
+	var desc = { value: value };
 	for (var i = 1, isOwn = true; i < parts.length; i += 1) {
 		var part = parts[i];
 		if (part === 'constructor' || !isOwn) {
@@ -255,18 +255,27 @@ module.exports = function GetIntrinsic(name, allowMissing) {
 
 		if (hasOwn(INTRINSICS, intrinsicRealName)) {
 			value = INTRINSICS[intrinsicRealName];
+			desc = { value: value };
 		} else if (value != null) {
 			if ($gOPD && (i + 1) >= parts.length) {
-				var desc = $gOPD(value, part);
+				desc = $gOPD(value, part);
 				isOwn = !!desc;
+				var isMissing = !(part in value);
 
-				if (!allowMissing && !(part in value)) {
+				if (!allowMissing && isMissing) {
 					throw new $TypeError('base intrinsic for ' + name + ' exists, but the property is not available.');
 				}
-				value = isOwn ? desc.get || desc.value : value[part];
+
+				// create a fake prop desc if from a deeper prototype chain
+				desc = desc || { value: value[part] };
+
+				// update the value for the cache
+				value = desc.value || desc.get;
 			} else {
 				isOwn = hasOwn(value, part);
 				value = value[part];
+				// create a fake prop desc
+				desc = { value: value };
 			}
 
 			if (isOwn && !skipFurtherCaching) {
@@ -274,5 +283,30 @@ module.exports = function GetIntrinsic(name, allowMissing) {
 			}
 		}
 	}
-	return value;
+
+	return desc;
 };
+
+var GetIntrinsicLegacy = function GetIntrinsicLegacy(name, allowMissing) {
+	var desc;
+	if (arguments.length < 2) {
+		desc = GetIntrinsicPropDesc(name, false);
+	} else {
+		desc = GetIntrinsicPropDesc(name, allowMissing);
+	}
+	return desc && (desc.value || desc.get);
+};
+
+var GetIntrinsicValue = function GetIntrinsicValue(name, allowMissing) {
+	var desc;
+	if (arguments.length < 2) {
+		desc = GetIntrinsicPropDesc(name, false);
+	} else {
+		desc = GetIntrinsicPropDesc(name, allowMissing);
+	}
+	return desc && (desc.value || desc.get());
+};
+
+module.exports = GetIntrinsicLegacy;
+module.exports.GetIntrinsicValue = GetIntrinsicValue;
+module.exports.GetIntrinsicPropDesc = GetIntrinsicPropDesc;
