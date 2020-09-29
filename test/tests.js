@@ -285,11 +285,13 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('ToInteger', function (t) {
-		t.ok(is(0, ES.ToInteger(NaN)), 'NaN coerces to +0');
-		forEach([0, Infinity, 42], function (num) {
-			t.ok(is(num, ES.ToInteger(num)), num + ' returns itself');
-			t.ok(is(-num, ES.ToInteger(-num)), '-' + num + ' returns itself');
+	test('ToInteger', { skip: skips && skips.ToInteger }, function (t) {
+		forEach([NaN], function (num) {
+			t.ok(is(0, ES.ToInteger(num)), debug(num) + ' returns +0');
+		});
+		forEach([0, -0, Infinity, 42], function (num) {
+			t.ok(is(num, ES.ToInteger(num)), debug(num) + ' returns itself');
+			t.ok(is(-num, ES.ToInteger(-num)), '-' + debug(num) + ' returns itself');
 		});
 		t.equal(3, ES.ToInteger(Math.PI), 'pi returns 3');
 		t['throws'](function () { return ES.ToInteger(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
@@ -4418,8 +4420,22 @@ var es2020 = function ES2019(ES, ops, expectedMissing, skips) {
 	es2019(ES, ops, expectedMissing, assign({}, skips, {
 		NumberToString: true,
 		ObjectCreate: true,
-		SameValueNonNumber: true
+		SameValueNonNumber: true,
+		ToInteger: true
 	}));
+
+	test('ToInteger', function (t) {
+		forEach([0, -0, NaN], function (num) {
+			t.ok(is(0, ES.ToInteger(num)), debug(num) + ' returns +0');
+		});
+		forEach([Infinity, 42], function (num) {
+			t.ok(is(num, ES.ToInteger(num)), debug(num) + ' returns itself');
+			t.ok(is(-num, ES.ToInteger(-num)), '-' + debug(num) + ' returns itself');
+		});
+		t.equal(3, ES.ToInteger(Math.PI), 'pi returns 3');
+		t['throws'](function () { return ES.ToInteger(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
+		t.end();
+	});
 
 	test('BinaryAnd', function (t) {
 		t.equal(ES.BinaryAnd(0, 0), 0);
