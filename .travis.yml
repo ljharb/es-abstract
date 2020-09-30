@@ -33,3 +33,6 @@ matrix:
       env: TEST=true
     - node_js: "0.8"
       env: TEST=true
+  allow_failures:
+    - env: SES=true
+
