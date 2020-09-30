@@ -62,13 +62,13 @@
 		"string.prototype.trimstart": "^1.0.1"
 	},
 	"devDependencies": {
-		"@ljharb/eslint-config": "^17.1.0",
+		"@ljharb/eslint-config": "^17.2.0",
 		"array.prototype.indexof": "^1.0.0",
 		"aud": "^1.1.2",
 		"cheerio": "^1.0.0-rc.3",
 		"diff": "^4.0.2",
 		"eclint": "^2.8.1",
-		"eslint": "^7.2.0",
+		"eslint": "^7.10.0",
 		"foreach": "^2.0.5",
 		"functions-have-names": "^1.2.1",
 		"has-strict-mode": "^1.0.0",
