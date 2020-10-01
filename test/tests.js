@@ -1225,7 +1225,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('GetIterator', function (t) {
+	test('GetIterator', { skip: skips && skips.GetIterator }, function (t) {
 		var arr = [1, 2];
 		testIterator(t, ES.GetIterator(arr), arr);
 
@@ -4312,7 +4312,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 	});
 };
 
-var es2019 = function ES2018(ES, ops, expectedMissing, skips) {
+var es2019 = function ES2019(ES, ops, expectedMissing, skips) {
 	es2018(ES, ops, expectedMissing, assign({}, skips, {
 	}));
 
@@ -4420,13 +4420,63 @@ var es2019 = function ES2018(ES, ops, expectedMissing, skips) {
 	});
 };
 
-var es2020 = function ES2019(ES, ops, expectedMissing, skips) {
+var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	es2019(ES, ops, expectedMissing, assign({}, skips, {
+		GetIterator: true,
 		NumberToString: true,
 		ObjectCreate: true,
 		SameValueNonNumber: true,
 		ToInteger: true
 	}));
+
+	test('GetIterator', function (t) {
+		try {
+			ES.GetIterator({}, null);
+		} catch (e) {
+			t.ok(e.message.indexOf('Assertion failed: `hint` must be one of \'sync\' or \'async\'' >= 0));
+		}
+
+		var arr = [1, 2];
+		testIterator(t, ES.GetIterator(arr), arr);
+
+		testIterator(t, ES.GetIterator('abc'), 'abc'.split(''));
+
+		t.test('Symbol.iterator', { skip: !v.hasSymbols }, function (st) {
+			var m = new Map();
+			m.set(1, 'a');
+			m.set(2, 'b');
+
+			testIterator(st, ES.GetIterator(m), [[1, 'a'], [2, 'b']]);
+
+			st.end();
+		});
+
+		t.test('Symbol.asyncIterator', { skip: !v.hasSymbols || !Symbol.asyncIterator }, function (st) {
+			try {
+				ES.GetIterator(arr, 'async');
+			} catch (e) {
+				st.ok(e.message.indexOf("async from sync iterators aren't currently supported") >= 0);
+			}
+
+			var it = {
+				next: function () {
+					return Promise.resolve({
+						done: true
+					});
+				}
+			};
+			var obj = {};
+			obj[Symbol.asyncIterator] = function () {
+				return it;
+			};
+
+			st.equal(ES.GetIterator(obj, 'async'), it);
+
+			st.end();
+		});
+
+		t.end();
+	});
 
 	test('ToInteger', function (t) {
 		forEach([0, -0, NaN], function (num) {
