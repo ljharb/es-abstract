@@ -3,7 +3,7 @@
 var trimStart = require('string.prototype.trimstart');
 var trimEnd = require('string.prototype.trimend');
 
-var GetIntrinsic = require('../GetIntrinsic');
+var GetIntrinsic = require('get-intrinsic');
 
 var $TypeError = GetIntrinsic('%TypeError%');
 

@@ -1,6 +1,6 @@
 'use strict';
 
-var GetIntrinsic = require('../GetIntrinsic');
+var GetIntrinsic = require('get-intrinsic');
 
 var $Number = GetIntrinsic('%Number%');
 var $TypeError = GetIntrinsic('%TypeError%');

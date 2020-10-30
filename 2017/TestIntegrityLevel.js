@@ -1,6 +1,6 @@
 'use strict';
 
-var GetIntrinsic = require('../GetIntrinsic');
+var GetIntrinsic = require('get-intrinsic');
 
 var $gOPD = require('../helpers/getOwnPropertyDescriptor');
 var $gOPN = GetIntrinsic('%Object.getOwnPropertyNames%');

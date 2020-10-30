@@ -1,6 +1,6 @@
 'use strict';
 
-var GetIntrinsic = require('../GetIntrinsic');
+var GetIntrinsic = require('get-intrinsic');
 
 var $ObjectCreate = GetIntrinsic('%Object.create%', true);
 var $TypeError = GetIntrinsic('%TypeError%');

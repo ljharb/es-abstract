@@ -1,7 +1,7 @@
 'use strict';
 
 var hasSymbols = require('has-symbols')();
-var GetIntrinsic = require('../GetIntrinsic');
+var GetIntrinsic = require('get-intrinsic');
 var callBound = require('./callBound');
 
 var $iterator = GetIntrinsic('%Symbol.iterator%', true);

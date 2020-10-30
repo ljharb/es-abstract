@@ -1,6 +1,6 @@
 'use strict';
 
-var GetIntrinsic = require('../GetIntrinsic');
+var GetIntrinsic = require('get-intrinsic');
 
 var CodePointAt = require('./CodePointAt');
 var IsInteger = require('./IsInteger');
