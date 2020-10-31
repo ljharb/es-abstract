@@ -4,7 +4,7 @@ var GetIntrinsic = require('get-intrinsic');
 
 var $Date = GetIntrinsic('%Date%');
 
-var callBound = require('../helpers/callBound');
+var callBound = require('call-bind/callBound');
 
 var $getUTCFullYear = callBound('Date.prototype.getUTCFullYear');
 

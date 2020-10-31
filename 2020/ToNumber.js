@@ -7,7 +7,7 @@ var $Number = GetIntrinsic('%Number%');
 var $RegExp = GetIntrinsic('%RegExp%');
 var $parseInteger = GetIntrinsic('%parseInt%');
 
-var callBound = require('../helpers/callBound');
+var callBound = require('call-bind/callBound');
 var regexTester = require('../helpers/regexTester');
 var isPrimitive = require('../helpers/isPrimitive');
 

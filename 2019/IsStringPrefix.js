@@ -6,7 +6,7 @@ var $TypeError = GetIntrinsic('%TypeError%');
 
 var isPrefixOf = require('../helpers/isPrefixOf');
 
-// var callBound = require('../helpers/callBound');
+// var callBound = require('call-bind/callBound');
 
 // var $charAt = callBound('String.prototype.charAt');
 

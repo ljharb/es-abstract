@@ -2,7 +2,7 @@
 
 var hasSymbols = require('has-symbols')();
 var GetIntrinsic = require('get-intrinsic');
-var callBound = require('./callBound');
+var callBound = require('call-bind/callBound');
 
 var $iterator = GetIntrinsic('%Symbol.iterator%', true);
 var $stringSlice = callBound('String.prototype.slice');

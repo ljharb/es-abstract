@@ -5,7 +5,7 @@ var GetIntrinsic = require('get-intrinsic');
 var $fromCharCode = GetIntrinsic('%String.fromCharCode%');
 var $TypeError = GetIntrinsic('%TypeError%');
 
-var callBound = require('../helpers/callBound');
+var callBound = require('call-bind/callBound');
 var forEach = require('../helpers/forEach');
 var isLeadingSurrogate = require('../helpers/isLeadingSurrogate');
 var isTrailingSurrogate = require('../helpers/isTrailingSurrogate');

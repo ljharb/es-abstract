@@ -4,7 +4,7 @@ var GetIntrinsic = require('get-intrinsic');
 
 var $TypeError = GetIntrinsic('%TypeError%');
 
-var $arraySlice = require('../helpers/callBound')('Array.prototype.slice');
+var $arraySlice = require('call-bind/callBound')('Array.prototype.slice');
 
 var Call = require('./Call');
 var GetV = require('./GetV');

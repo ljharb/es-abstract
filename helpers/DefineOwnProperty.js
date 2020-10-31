@@ -13,7 +13,7 @@ if ($defineProperty) {
 	}
 }
 
-var callBound = require('../helpers/callBound');
+var callBound = require('call-bind/callBound');
 
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 

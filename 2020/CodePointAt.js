@@ -3,7 +3,7 @@
 var GetIntrinsic = require('get-intrinsic');
 
 var $TypeError = GetIntrinsic('%TypeError%');
-var callBound = require('../helpers/callBound');
+var callBound = require('call-bind/callBound');
 var isLeadingSurrogate = require('../helpers/isLeadingSurrogate');
 var isTrailingSurrogate = require('../helpers/isTrailingSurrogate');
 

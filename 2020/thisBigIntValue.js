@@ -1,7 +1,7 @@
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
-var callBound = require('../helpers/callBound');
+var callBound = require('call-bind/callBound');
 
 var $TypeError = GetIntrinsic('%TypeError%');
 var $bigIntValueOf = callBound('BigInt.prototype.valueOf', true);

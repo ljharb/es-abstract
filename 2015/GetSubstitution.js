@@ -9,7 +9,7 @@ var $parseInt = GetIntrinsic('%parseInt%');
 var inspect = require('object-inspect');
 
 var regexTester = require('../helpers/regexTester');
-var callBound = require('../helpers/callBound');
+var callBound = require('call-bind/callBound');
 var every = require('../helpers/every');
 
 var isDigit = regexTester(/^[0-9]$/);

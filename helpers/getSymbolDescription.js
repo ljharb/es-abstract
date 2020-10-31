@@ -2,7 +2,7 @@
 
 var GetIntrinsic = require('get-intrinsic');
 
-var callBound = require('./callBound');
+var callBound = require('call-bind/callBound');
 
 var $SyntaxError = GetIntrinsic('%SyntaxError%');
 var getGlobalSymbolDescription = GetIntrinsic('%Symbol.keyFor%', true);

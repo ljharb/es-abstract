@@ -4,7 +4,7 @@ var GetIntrinsic = require('get-intrinsic');
 
 var $TypeError = GetIntrinsic('%TypeError%');
 
-var callBound = require('../helpers/callBound');
+var callBound = require('call-bind/callBound');
 var forEach = require('../helpers/forEach');
 
 var $charCodeAt = callBound('String.prototype.charCodeAt');

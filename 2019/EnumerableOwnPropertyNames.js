@@ -6,9 +6,9 @@ var $TypeError = GetIntrinsic('%TypeError%');
 
 var objectKeys = require('object-keys');
 
-var callBound = require('../helpers/callBound');
+var callBound = require('call-bind/callBound');
 
-var callBind = require('../helpers/callBind');
+var callBind = require('call-bind');
 
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 var $pushApply = callBind.apply(GetIntrinsic('%Array.prototype.push%'));
