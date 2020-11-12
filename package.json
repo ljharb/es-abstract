@@ -28,9 +28,7 @@
 		"test": "npm run tests-only && npm run test:ses",
 		"test:ses": "node test/ses-compat",
 		"posttest": "aud --production",
-		"tests-only": "node test",
-		"coverage": "nyc npm run tests-only >/dev/null",
-		"postcoverage": "nyc report",
+		"tests-only": "nyc node test",
 		"lint": "eslint .",
 		"eccheck": "eclint check *.js **/*.js > /dev/null"
 	},
