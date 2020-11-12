@@ -1,0 +1,28 @@
+name: 'Tests: SES'
+
+on: [pull_request, push]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [
+          "14",
+          "12"
+        ]
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ljharb/actions/node/run@main
+        name: 'npm install && npm run test:ses'
+        with:
+          node-version: ${{ matrix.node-version }}
+          command: 'test:ses'
+
+  SES:
+    needs: [tests]
+    runs-on: ubuntu-latest
+    steps:
+      - run: 'echo tests completed'
