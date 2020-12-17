@@ -51,17 +51,17 @@
 		"call-bind": "^1.0.0",
 		"es-to-primitive": "^1.2.1",
 		"function-bind": "^1.1.1",
-		"get-intrinsic": "^1.0.0",
+		"get-intrinsic": "^1.0.1",
 		"has": "^1.0.3",
 		"has-symbols": "^1.0.1",
 		"is-callable": "^1.2.2",
-		"is-negative-zero": "^2.0.0",
+		"is-negative-zero": "^2.0.1",
 		"is-regex": "^1.1.1",
-		"object-inspect": "^1.8.0",
+		"object-inspect": "^1.9.0",
 		"object-keys": "^1.1.1",
-		"object.assign": "^4.1.1",
-		"string.prototype.trimend": "^1.0.1",
-		"string.prototype.trimstart": "^1.0.1"
+		"object.assign": "^4.1.2",
+		"string.prototype.trimend": "^1.0.3",
+		"string.prototype.trimstart": "^1.0.3"
 	},
 	"devDependencies": {
 		"@ljharb/eslint-config": "^17.2.0",
