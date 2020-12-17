@@ -4194,6 +4194,20 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 			}
 		}
 
+		t.test('named captures', function (st) {
+			var namedCaptures = {
+				foo: 'foo!'
+			};
+
+			st.equal(
+				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, 'a>$<foo><z'),
+				'a>foo!<z',
+				'supports named captures'
+			);
+
+			st.end();
+		});
+
 		t.end();
 	});
 

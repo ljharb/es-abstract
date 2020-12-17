@@ -106,13 +106,13 @@ module.exports = function GetSubstitution(matched, str, position, captures, name
 						var endIndex = $indexOf(replacement, '>', i);
 						// eslint-disable-next-line max-depth
 						if (endIndex > -1) {
-							var groupName = $strSlice(replacement, i, endIndex);
+							var groupName = $strSlice(replacement, i + '$<'.length, endIndex);
 							var capture = Get(namedCaptures, groupName);
 							// eslint-disable-next-line max-depth
 							if (Type(capture) !== 'Undefined') {
 								result += ToString(capture);
 							}
-							i += '$<' + groupName + '>'.length;
+							i += ('<' + groupName + '>').length;
 						}
 					}
 				} else {
