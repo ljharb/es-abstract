@@ -51,7 +51,7 @@
 		"call-bind": "^1.0.0",
 		"es-to-primitive": "^1.2.1",
 		"function-bind": "^1.1.1",
-		"get-intrinsic": "^1.0.1",
+		"get-intrinsic": "^1.0.2",
 		"has": "^1.0.3",
 		"has-symbols": "^1.0.1",
 		"is-callable": "^1.2.2",
