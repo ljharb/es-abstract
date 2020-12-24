@@ -1,5 +1,6 @@
 # gitignore
 node_modules
+.github
 
 # code coverage output
 coverage
