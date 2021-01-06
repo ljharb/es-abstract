@@ -279,7 +279,6 @@
 2018/DeletePropertyOrThrow.js	spackled linguist-generated=true
 2018/FromPropertyDescriptor.js	spackled linguist-generated=true
 2018/Get.js	spackled linguist-generated=true
-2018/GetIterator.js	spackled linguist-generated=true
 2018/GetMethod.js	spackled linguist-generated=true
 2018/GetOwnPropertyKeys.js	spackled linguist-generated=true
 2018/GetPrototypeFromConstructor.js	spackled linguist-generated=true
@@ -302,7 +301,6 @@
 2018/IsPromise.js	spackled linguist-generated=true
 2018/IsPropertyKey.js	spackled linguist-generated=true
 2018/IsRegExp.js	spackled linguist-generated=true
-2018/IterableToList.js	spackled linguist-generated=true
 2018/IteratorClose.js	spackled linguist-generated=true
 2018/IteratorComplete.js	spackled linguist-generated=true
 2018/IteratorNext.js	spackled linguist-generated=true
@@ -519,6 +517,7 @@
 2020/EnumerableOwnPropertyNames.js	spackled linguist-generated=true
 2020/FromPropertyDescriptor.js	spackled linguist-generated=true
 2020/Get.js	spackled linguist-generated=true
+2020/GetIterator.js	spackled linguist-generated=true
 2020/GetMethod.js	spackled linguist-generated=true
 2020/GetOwnPropertyKeys.js	spackled linguist-generated=true
 2020/GetPrototypeFromConstructor.js	spackled linguist-generated=true
@@ -543,6 +542,7 @@
 2020/IsPropertyKey.js	spackled linguist-generated=true
 2020/IsRegExp.js	spackled linguist-generated=true
 2020/IsStringPrefix.js	spackled linguist-generated=true
+2020/IterableToList.js	spackled linguist-generated=true
 2020/IteratorClose.js	spackled linguist-generated=true
 2020/IteratorComplete.js	spackled linguist-generated=true
 2020/IteratorNext.js	spackled linguist-generated=true

@@ -24,7 +24,6 @@ module.exports = function GetIterator(obj, hint, method) {
 	if (actualHint !== 'sync' && actualHint !== 'async') {
 		throw new $TypeError("Assertion failed: `hint` must be one of 'sync' or 'async', got " + inspect(hint));
 	}
-
 	var actualMethod = method;
 	if (arguments.length < 3) {
 		if (actualHint === 'async') {
@@ -35,17 +34,15 @@ module.exports = function GetIterator(obj, hint, method) {
 				throw new $TypeError("async from sync iterators aren't currently supported");
 			}
 		} else {
-			actualMethod = getIteratorMethod(
-				{
-					AdvanceStringIndex: AdvanceStringIndex,
-					GetMethod: GetMethod,
-					IsArray: IsArray,
-					Type: Type
-				},
-				obj
-			);
+			actualMethod = getIteratorMethod({
+				AdvanceStringIndex: AdvanceStringIndex,
+				GetMethod: GetMethod,
+				IsArray: IsArray,
+				Type: Type
+			}, obj);
 		}
 	}
+
 	var iterator = Call(actualMethod, obj);
 	if (Type(iterator) !== 'Object') {
 		throw new $TypeError('iterator must return an object');
