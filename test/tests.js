@@ -55,7 +55,14 @@ var getArraySubclassWithSpeciesConstructor = function getArraySubclass(speciesCo
 	return Bar;
 };
 
-var testIterator = function (t, iterator, expected) {
+var testIterator = function (t, iteratorOrIteratorRecord, expected) {
+	var iterator;
+	if ('[[Iterator]]' in iteratorOrIteratorRecord) {
+		iterator = iteratorOrIteratorRecord['[[Iterator]]'];
+	} else {
+		iterator = iteratorOrIteratorRecord;
+	}
+
 	var resultCount = 0;
 	var result;
 	while (result = iterator.next(), !result.done) { // eslint-disable-line no-sequences
@@ -3823,9 +3830,44 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 	es2017(ES, ops, expectedMissing, assign({}, skips, {
 		EnumerableOwnProperties: true,
+		GetIterator: true,
 		GetSubstitution: true,
 		IsPropertyDescriptor: true
 	}));
+
+	test('GetIterator', function (t) {
+		t['throws'](
+			function () { ES.GetIterator({}, null); },
+			/^TypeError: Assertion failed: `hint` must be either ~sync~ or ~async~$/,
+			'`hint` must be either ~sync~ or ~async~'
+		);
+
+		var arr = [1, 2];
+		testIterator(t, ES.GetIterator(arr), arr);
+
+		testIterator(t, ES.GetIterator('abc'), 'abc'.split(''));
+		testIterator(t, ES.GetIterator('a' + wholePoo + 'c'), ['a', wholePoo, 'c']);
+
+		t.test('Symbol.iterator', { skip: !v.hasSymbols }, function (st) {
+			var o = {};
+			o[Symbol.iterator] = function () {
+				var i = 0;
+				var chars = ['_', 'a', 'b'];
+				return {
+					next: function () {
+						i += 1;
+						return [i, chars[i]];
+					}
+				};
+			};
+
+			testIterator(st, ES.GetIterator(o), [[1, 'a'], [2, 'b']]);
+
+			st.end();
+		});
+
+		t.end();
+	});
 
 	test('thisSymbolValue', function (t) {
 		forEach(v.nonSymbolPrimitives.concat(v.objects), function (nonSymbol) {

@@ -9,10 +9,10 @@ var GetMethod = require('./GetMethod');
 var IsCallable = require('./IsCallable');
 var Type = require('./Type');
 
-// https://ecma-international.org/ecma-262/6.0/#sec-iteratorclose
+// https://ecma-international.org/ecma-262/9.0/#sec-iteratorclose
 
-module.exports = function IteratorClose(iterator, completion) {
-	if (Type(iterator) !== 'Object') {
+module.exports = function IteratorClose(iteratorRecord, completion) {
+	if (Type(iteratorRecord['[[Iterator]]']) !== 'Object') {
 		throw new $TypeError('Assertion failed: Type(iterator) is not Object');
 	}
 	if (!IsCallable(completion)) {
@@ -20,6 +20,7 @@ module.exports = function IteratorClose(iterator, completion) {
 	}
 	var completionThunk = completion;
 
+	var iterator = iteratorRecord['[[Iterator]]'];
 	var iteratorReturn = GetMethod(iterator, 'return');
 
 	if (typeof iteratorReturn === 'undefined') {
