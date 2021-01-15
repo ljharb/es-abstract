@@ -13,7 +13,7 @@ var UTF16DecodeSurrogatePair = require('./UTF16DecodeSurrogatePair');
 var $charAt = callBound('String.prototype.charAt');
 var $charCodeAt = callBound('String.prototype.charCodeAt');
 
-// https://tc39.es/ecma262/2020/#sec-codepointat
+// https://ecma-international.org/ecma-262/11.0/#sec-codepointat
 
 module.exports = function CodePointAt(string, position) {
 	if (Type(string) !== 'String') {

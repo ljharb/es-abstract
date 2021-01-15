@@ -11,7 +11,7 @@ var $numberToString = callBound('Number.prototype.toString');
 var $toLowerCase = callBound('String.prototype.toLowerCase');
 var $strSlice = callBound('String.prototype.slice');
 
-// https://tc39.es/ecma262/2020/#sec-unicodeescape
+// https://ecma-international.org/ecma-262/9.0/#sec-unicodeescape
 
 module.exports = function UnicodeEscape(C) {
 	if (typeof C !== 'string' || C.length !== 1) {

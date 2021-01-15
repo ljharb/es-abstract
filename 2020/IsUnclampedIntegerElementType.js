@@ -1,6 +1,6 @@
 'use strict';
 
-// https://tc39.es/ecma262/2020/#sec-isunclampedintegerelementtype
+// https://ecma-international.org/ecma-262/11.0/#sec-isunclampedintegerelementtype
 
 module.exports = function IsUnclampedIntegerElementType(type) {
 	return type === 'Int8'

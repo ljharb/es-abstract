@@ -14,7 +14,7 @@ var IsPropertyKey = require('./IsPropertyKey');
 var SameValue = require('./SameValue');
 var Type = require('./Type');
 
-// https://www.ecma-international.org/ecma-262/6.0/#sec-createdataproperty
+// https://ecma-international.org/ecma-262/6.0/#sec-createdataproperty
 
 module.exports = function CreateDataProperty(O, P, V) {
 	if (Type(O) !== 'Object') {

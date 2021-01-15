@@ -11,7 +11,7 @@ var $push = callBound('Array.prototype.push');
 var CodePointAt = require('./CodePointAt');
 var Type = require('./Type');
 
-// https://tc39.es/ecma262/2020/#sec-utf16decodestring
+// https://ecma-international.org/ecma-262/11.0/#sec-utf16decodestring
 
 module.exports = function UTF16DecodeString(string) {
 	if (Type(string) !== 'String') {

@@ -16,7 +16,7 @@ var MonthFromTime = require('./MonthFromTime');
 var YearFromTime = require('./YearFromTime');
 var DateFromTime = require('./DateFromTime');
 
-// https://www.ecma-international.org/ecma-262/9.0/#sec-datestring
+// https://ecma-international.org/ecma-262/9.0/#sec-datestring
 
 module.exports = function DateString(tv) {
 	if (Type(tv) !== 'Number' || $isNaN(tv)) {

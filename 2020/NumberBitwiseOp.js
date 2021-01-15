@@ -7,7 +7,7 @@ var $TypeError = GetIntrinsic('%TypeError%');
 var ToInt32 = require('./ToInt32');
 var ToUint32 = require('./ToUint32');
 
-// https://tc39.es/ecma262/2020/#sec-numberbitwiseop
+// https://ecma-international.org/ecma-262/11.0/#sec-numberbitwiseop
 
 module.exports = function NumberBitwiseOp(op, x, y) {
 	if (op !== '&' && op !== '|' && op !== '^') {

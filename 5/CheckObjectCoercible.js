@@ -4,7 +4,7 @@ var GetIntrinsic = require('get-intrinsic');
 
 var $TypeError = GetIntrinsic('%TypeError%');
 
-// http://www.ecma-international.org/ecma-262/5.1/#sec-9.10
+// http://ecma-international.org/ecma-262/5.1/#sec-9.10
 
 module.exports = function CheckObjectCoercible(value, optMessage) {
 	if (value == null) {

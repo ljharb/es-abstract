@@ -4,7 +4,7 @@ var GetIntrinsic = require('get-intrinsic');
 
 var $TypeError = GetIntrinsic('%TypeError%');
 
-// https://tc39.es/ecma262/2020/#sec-binaryxor
+// https://ecma-international.org/ecma-262/11.0/#sec-binaryxor
 
 module.exports = function BinaryXor(x, y) {
 	if ((x !== 0 && x !== 1) || (y !== 0 && y !== 1)) {

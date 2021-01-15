@@ -17,7 +17,7 @@ var forEach = require('../helpers/forEach');
 
 var Type = require('./Type');
 
-// https://www.ecma-international.org/ecma-262/8.0/#sec-enumerableownproperties
+// https://ecma-international.org/ecma-262/8.0/#sec-enumerableownproperties
 
 module.exports = function EnumerableOwnProperties(O, kind) {
 	if (Type(O) !== 'Object') {

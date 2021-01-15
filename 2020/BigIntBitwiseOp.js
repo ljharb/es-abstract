@@ -16,7 +16,7 @@ var Type = require('./Type');
 // var negOne = $BigInt && $BigInt(-1);
 // var two = $BigInt && $BigInt(2);
 
-// https://www.ecma-international.org/ecma-262/11.0/#sec-bigintbitwiseop
+// https://ecma-international.org/ecma-262/11.0/#sec-bigintbitwiseop
 
 module.exports = function BigIntBitwiseOp(op, x, y) {
 	if (op !== '&' && op !== '|' && op !== '^') {

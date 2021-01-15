@@ -8,7 +8,7 @@ var $bigIntValueOf = callBound('BigInt.prototype.valueOf', true);
 
 var Type = require('./Type');
 
-// https://tc39.es/ecma262/2020/#sec-thisbigintvalue
+// https://ecma-international.org/ecma-262/11.0/#sec-thisbigintvalue
 
 module.exports = function thisBigIntValue(value) {
 	var type = Type(value);

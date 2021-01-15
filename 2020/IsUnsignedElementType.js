@@ -1,6 +1,6 @@
 'use strict';
 
-// https://tc39.es/ecma262/2020/#sec-isunsignedelementtype
+// https://ecma-international.org/ecma-262/11.0/#sec-isunsignedelementtype
 
 module.exports = function IsUnsignedElementType(type) {
 	return type === 'Uint8'

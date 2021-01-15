@@ -13,7 +13,7 @@ var ToNumber = require('./ToNumber');
 var ToPrimitive = require('./ToPrimitive');
 var Type = require('./Type');
 
-// https://www.ecma-international.org/ecma-262/5.1/#sec-11.8.5
+// https://ecma-international.org/ecma-262/5.1/#sec-11.8.5
 
 // eslint-disable-next-line max-statements
 module.exports = function AbstractRelationalComparison(x, y, LeftFirst) {
