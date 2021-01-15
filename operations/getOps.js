@@ -2,48 +2,48 @@
 
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
-var execSync = require('child_process').execSync;
+const fs = require('fs');
+const path = require('path');
+const execSync = require('child_process').execSync;
 
-var $ = require('cheerio');
-var fromEntries = require('object.fromentries');
+const $ = require('cheerio');
+const fromEntries = require('object.fromentries');
 
 if (process.argv.length !== 3) {
 	throw new RangeError('please provide a year');
 }
-var year = parseInt(process.argv[2], 10);
+const year = parseInt(process.argv[2], 10);
 if (year < 2015) {
 	throw new RangeError('ES2015+ only');
 }
-var edition = year - 2009;
+const edition = year - 2009;
 
-var specHTMLurl = year > 2015
+const specHTMLurl = year > 2015
 	? new URL('https://raw.githubusercontent.com/tc39/ecma262/es' + year + '/spec.html')
 	: new URL('https://ecma-international.org/ecma-262/6.0/');
 
-var specHTML = String(execSync('curl -q --silent ' + specHTMLurl, { maxBuffer: Infinity }));
+const specHTML = String(execSync('curl -q --silent ' + specHTMLurl, { maxBuffer: Infinity }));
 
-var root = $(specHTML);
+const root = $(specHTML);
 
-var aOps = root.filter('[aoid]').add(root.find('[aoid]'));
+let aOps = root.filter('[aoid]').add(root.find('[aoid]'));
 
 if (aOps.length === 0) {
 	aOps = root.find('p:contains(" abstract operation ")').closest('section').add(root.find('#sec-reference-specification-type > section'));
 }
 
-var missings = [];
+const missings = [];
 
-var entries = aOps.toArray().map(function (x) {
-	var op = $(x);
-	var aoid = op.attr('aoid');
-	var id = op.attr('id');
+const entries = aOps.toArray().map(function (x) {
+	const op = $(x);
+	let aoid = op.attr('aoid');
+	let id = op.attr('id');
 
 	if (!id) {
 		id = op.closest('[id]').attr('id');
 	}
 	// years other than 2016 have `id.startsWith('eqn-')`
-	var isConstant = op.text().trim().split('\n').length === 1 && op.text().startsWith(aoid + ' = ');
+	const isConstant = op.text().trim().split('\n').length === 1 && op.text().startsWith(aoid + ' = ');
 	if (isConstant) {
 		return null;
 	}
@@ -62,7 +62,7 @@ var entries = aOps.toArray().map(function (x) {
 		if (op.parent().attr('id') === 'sec-reference-specification-type') {
 			aoid = op.find('h1').text().match(/\s([a-zA-Z][a-z][a-zA-Z]+)\s/m)[1];
 		} else {
-			var match = op.text().match(/When the ([a-zA-Z][a-z][a-zA-Z]+) abstract operation is called/m)
+			const match = op.text().match(/When the ([a-zA-Z][a-z][a-zA-Z]+) abstract operation is called/m)
 				|| op.text().match(/The ([a-zA-Z][a-z][a-zA-Z]+) abstract operation/m)
 				|| op.text().match(/ abstract operation ([a-zA-Z/0-9]+)/m);
 			if (match) {
@@ -141,10 +141,10 @@ if (year === 2015) {
 }
 entries.sort(function (a, b) { return a[0].localeCompare(b[0]); });
 
-var obj = fromEntries(entries);
+const obj = fromEntries(entries);
 
-var outputPath = path.join('operations', year + '.js');
-var output = '\'use strict\';\n\nmodule.exports = ' + JSON.stringify(obj, null, '\t') + ';\n';
+const outputPath = path.join('operations', year + '.js');
+let output = '\'use strict\';\n\nmodule.exports = ' + JSON.stringify(obj, null, '\t') + ';\n';
 if ((year === 5 || year >= 2015) && year < 2018) {
 	output = output.replace(/= \{\n/m, "= {\n\tIsPropertyDescriptor: 'https://ecma-international.org/ecma-262/6.0/#sec-property-descriptor-specification-type', // not actually an abstract op\n\n");
 }

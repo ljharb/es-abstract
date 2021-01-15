@@ -43,8 +43,10 @@
 				"ecmaVersion": 2020,
 			},
 			"rules": {
+				"prefer-const": 2,
 				"no-console": 0,
 				"no-multi-str": 0,
+				"no-var": 2,
 			},
 		},
 		{
