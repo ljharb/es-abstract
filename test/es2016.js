@@ -91,7 +91,7 @@ var expectedMissing = [
 	'IsLabelledFunction',
 	'IsWordChar',
 	'LocalTime',
-	'LoopContinues',
+	'LoopContinues', // completion records
 	'MakeArgGetter',
 	'MakeArgSetter',
 	'MakeClassConstructor',
@@ -108,7 +108,7 @@ var expectedMissing = [
 	'NewObjectEnvironment',
 	'NewPromiseCapability',
 	'NextJob',
-	'NormalCompletion',
+	'NormalCompletion', // completion records
 	'ObjectDefineProperties',
 	'OrdinaryCallBindThis',
 	'OrdinaryCallEvaluateBody',

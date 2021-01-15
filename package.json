@@ -64,6 +64,7 @@
 		"is-regex": "^1.1.4",
 		"is-shared-array-buffer": "^1.0.1",
 		"is-string": "^1.0.7",
+		"is-weakref": "^1.0.1",
 		"object-inspect": "^1.11.0",
 		"object-keys": "^1.1.1",
 		"object.assign": "^4.1.2",

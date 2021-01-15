@@ -5263,7 +5263,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
-		// defines an own configurable non-enum non-write length property
+		// TODO: defines an own configurable non-enum non-write length property
 
 		t.end();
 	});
@@ -7587,6 +7587,575 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	});
 };
 
+var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
+	es2020(ES, ops, expectedMissing, assign({}, skips, {
+		IsInteger: true,
+		IsNonNegativeInteger: true,
+		SetFunctionLength: true,
+		ToInteger: true,
+		UTF16DecodeString: true,
+		UTF16DecodeSurrogatePair: true,
+		UTF16Encoding: true
+	}));
+	var test = makeTest(skips);
+
+	test('AddToKeptObjects', function (t) {
+		forEach(v.primitives, function (nonObject) {
+			t['throws'](
+				function () { ES.AddToKeptObjects(nonObject); },
+				debug(nonObject) + ' is not an Object'
+			);
+		});
+
+		t.equal(ES.AddToKeptObjects({}), undefined, 'returns nothing');
+
+		t.end();
+	});
+
+	test('ApplyStringOrNumericBinaryOperator', function (t) {
+		forEach(v.nonStrings.concat('', '^^', '//', '***'), function (nonOp) {
+			t['throws'](
+				function () { ES.ApplyStringOrNumericBinaryOperator(null, nonOp, null); },
+				TypeError,
+				'opText must be a valid operation: ' + debug(nonOp) + ' is not an operation'
+			);
+		});
+
+		var obj = {
+			toString: function () { return 'abc'; }
+		};
+		forEach(v.strings, function (string) {
+			t.equal(
+				ES.ApplyStringOrNumericBinaryOperator(string, '+', v.toStringOnlyObject),
+				string + '7',
+				debug(string) + ' + ' + debug(v.toStringOnlyObject) + ' is ' + debug(string + '7')
+			);
+			t.equal(
+				ES.ApplyStringOrNumericBinaryOperator(v.toStringOnlyObject, '+', string),
+				'7' + string,
+				debug(v.toStringOnlyObject) + ' + ' + debug(string) + ' is ' + debug('7' + v.toStringOnlyObject)
+			);
+			t.equal(
+				ES.ApplyStringOrNumericBinaryOperator(string, '+', string),
+				string + string,
+				debug(string) + ' + ' + debug(string) + ' is ' + debug(string + string)
+			);
+
+			t.equal(
+				ES.ApplyStringOrNumericBinaryOperator(string, '+', obj),
+				string + 'abc',
+				debug(string) + ' + ' + debug(obj) + ' is ' + debug(string + 'abc')
+			);
+			t.equal(
+				ES.ApplyStringOrNumericBinaryOperator(obj, '+', string),
+				'abc' + string,
+				debug(obj) + ' + ' + debug(string) + ' is ' + debug('abc' + string)
+			);
+		});
+		t.equal(
+			ES.ApplyStringOrNumericBinaryOperator(obj, '+', obj),
+			'abcabc',
+			debug(obj) + ' + ' + debug(obj) + ' is ' + debug('abcabc')
+		);
+		t.equal(
+			ES.ApplyStringOrNumericBinaryOperator(v.toStringOnlyObject, '+', v.toStringOnlyObject),
+			14,
+			debug(v.toStringOnlyObject) + ' + ' + debug(v.toStringOnlyObject) + ' is 14'
+		);
+
+		forEach(v.numbers, function (number) {
+			t.equal(
+				ES.ApplyStringOrNumericBinaryOperator(number, '+', number),
+				number + number,
+				debug(number) + ' + itself is ' + debug(number + number)
+			);
+			t.equal(
+				ES.ApplyStringOrNumericBinaryOperator(number, '-', number),
+				number - number,
+				debug(number) + ' - itself is ' + debug(number + number)
+			);
+			t.equal(
+				ES.ApplyStringOrNumericBinaryOperator(number, '*', number),
+				number * number,
+				debug(number) + ' * itself is ' + debug(number + number)
+			);
+			t.equal(
+				ES.ApplyStringOrNumericBinaryOperator(number, '**', number),
+				Math.pow(number, number),
+				debug(number) + ' ** itself is ' + debug(Math.pow(number, number))
+			);
+			t.equal(
+				ES.ApplyStringOrNumericBinaryOperator(number, '/', number),
+				number / number,
+				debug(number) + ' / itself is ' + debug(number / number)
+			);
+			t.equal(
+				ES.ApplyStringOrNumericBinaryOperator(number, '%', number),
+				number % number,
+				debug(number) + ' % itself is ' + debug(number % number)
+			);
+			t.equal(
+				ES.ApplyStringOrNumericBinaryOperator(number, '<<', number),
+				number << number,
+				debug(number) + ' << itself is ' + debug(number << number)
+			);
+			t.equal(
+				ES.ApplyStringOrNumericBinaryOperator(number, '>>', number),
+				number >> number,
+				debug(number) + ' >> itself is ' + debug(number >> number)
+			);
+			t.equal(
+				ES.ApplyStringOrNumericBinaryOperator(number, '>>>', number),
+				number >>> number,
+				debug(number) + ' >>> itself is ' + debug(number >>> number)
+			);
+			t.equal(
+				ES.ApplyStringOrNumericBinaryOperator(number, '&', number),
+				number & number,
+				debug(number) + ' & itself is ' + debug(number & number)
+			);
+			t.equal(
+				ES.ApplyStringOrNumericBinaryOperator(number, '^', number),
+				number ^ number,
+				debug(number) + ' ^ itself is ' + debug(number ^ number)
+			);
+			t.equal(
+				ES.ApplyStringOrNumericBinaryOperator(number, '|', number),
+				number | number,
+				debug(number) + ' | itself is ' + debug(number | number)
+			);
+		});
+
+		t.end();
+	});
+
+	test('ByteListBitwiseOp', function (t) {
+		t['throws'](
+			function () { ES.ByteListBitwiseOp('+', [], []); },
+			TypeError,
+			'op must be &, ^, or |'
+		);
+
+		forEach(v.nonArrays, function (nonArray) {
+			t['throws'](
+				function () { ES.ByteListBitwiseOp('&', nonArray); },
+				TypeError,
+				'xBytes: ' + debug(nonArray) + ' is not a sequence of byte values'
+			);
+
+			t['throws'](
+				function () { ES.ByteListBitwiseOp('&', [], nonArray); },
+				TypeError,
+				'yBytes: ' + debug(nonArray) + ' is not a sequence of byte values'
+			);
+		});
+
+		t['throws'](
+			function () { ES.ByteListBitwiseOp('&', [0], [0, 0]); },
+			TypeError,
+			'byte sequences must be the same length'
+		);
+
+		for (var i = 0; i <= 255; i += 1) {
+			var j = i === 0 ? 1 : i - 1;
+			t.deepEqual(ES.ByteListBitwiseOp('&', [i], [j]), [i & j], i + ' & ' + j);
+			t.deepEqual(ES.ByteListBitwiseOp('^', [i], [j]), [i ^ j], i + ' ^ ' + j);
+			t.deepEqual(ES.ByteListBitwiseOp('|', [i], [j]), [i | j], i + ' | ' + j);
+		}
+
+		t.end();
+	});
+
+	test('ByteListEqual', function (t) {
+		forEach(v.nonArrays, function (nonArray) {
+			t['throws'](
+				function () { ES.ByteListEqual(nonArray); },
+				TypeError,
+				'xBytes: ' + debug(nonArray) + ' is not a sequence of byte values'
+			);
+
+			t['throws'](
+				function () { ES.ByteListEqual([], nonArray); },
+				TypeError,
+				'yBytes: ' + debug(nonArray) + ' is not a sequence of byte values'
+			);
+		});
+
+		t.equal(ES.ByteListEqual([0], [0, 0]), false, 'two sequences of different length are not equal');
+
+		for (var i = 0; i <= 255; i += 1) {
+			t.equal(ES.ByteListEqual([i], [i]), true, 'two equal sequences of ' + i + ' are equal');
+			t.equal(ES.ByteListEqual([i, i === 0 ? 1 : 0], [i === 0 ? 1 : 0, i]), false, 'two inequal sequences of ' + i + ' are not equal');
+		}
+
+		t.end();
+	});
+
+	test('clamp', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.clamp(nonNumber, -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER); },
+				TypeError,
+				'argument 1: ' + debug(nonNumber) + ' is not a number'
+			);
+			t['throws'](
+				function () { ES.clamp(0, nonNumber, MAX_SAFE_INTEGER); },
+				TypeError,
+				'argument 2: ' + debug(nonNumber) + ' is not a number'
+			);
+			t['throws'](
+				function () { ES.clamp(0, -MAX_SAFE_INTEGER, nonNumber); },
+				TypeError,
+				'argument 3: ' + debug(nonNumber) + ' is not a number'
+			);
+		});
+
+		t.equal(ES.clamp(-1, 0, 2), 0, 'clamping -1 between 0 and 2 is 0');
+		t.equal(ES.clamp(0, 0, 2), 0, 'clamping 0 between 0 and 2 is 0');
+		t.equal(ES.clamp(1, 0, 2), 1, 'clamping 1 between 0 and 2 is 1');
+		t.equal(ES.clamp(2, 0, 2), 2, 'clamping 2 between 0 and 2 is 2');
+		t.equal(ES.clamp(3, 0, 2), 2, 'clamping 3 between 0 and 2 is 2');
+
+		t.end();
+	});
+
+	test('ClearKeptObjects', function (t) {
+		t.doesNotThrow(ES.ClearKeptObjects, 'appears to be a no-op');
+		t.end();
+	});
+
+	test('CodePointsToString', function (t) {
+		forEach(v.nonArrays, function (nonArray) {
+			t['throws'](
+				function () { ES.CodePointsToString(nonArray); },
+				TypeError,
+				debug(nonArray) + ' is not an Array of Code Points'
+			);
+		});
+
+		forEach(v.notNonNegativeIntegers.concat(0x10FFFF + 1), function (nonCodePoint) {
+			t['throws'](
+				function () { ES.CodePointsToString([nonCodePoint]); },
+				TypeError,
+				debug(nonCodePoint) + ' is not a Code Point'
+			);
+		});
+
+		t.equal(ES.CodePointsToString([0xD83D, 0xDCA9]), wholePoo, 'code points are converted to a string');
+
+		t.end();
+	});
+
+	test('GetPromiseResolve', function (t) {
+		forEach(v.nonFunctions.concat(v.nonConstructorFunctions), function (nonConstructor) {
+			t['throws'](
+				function () { ES.GetPromiseResolve(nonConstructor); },
+				TypeError,
+				debug(nonConstructor) + ' is not a constructor'
+			);
+		});
+
+		forEach(v.nonFunctions, function (nonCallable) {
+			var C = function C() {};
+			C.resolve = nonCallable;
+
+			t['throws'](
+				function () { ES.GetPromiseResolve(C); },
+				TypeError,
+				'`resolve` method: ' + debug(nonCallable) + ' is not callable'
+			);
+		});
+
+		t.test('Promises supported', { skip: typeof Promise !== 'function' }, function (st) {
+			st.equal(ES.GetPromiseResolve(Promise), Promise.resolve, '`GetPromiseResolve(Promise) === Promise.resolve`');
+
+			st.end();
+		});
+
+		var C = function () {};
+		var resolve = function () {};
+		C.resolve = resolve;
+		t.equal(ES.GetPromiseResolve(C), resolve, 'returns a callable `resolve` property');
+
+		t.end();
+	});
+
+	test('IsIntegralNumber', function (t) {
+		for (var i = -100; i < 100; i += 10) {
+			t.equal(true, ES.IsIntegralNumber(i), i + ' is integer');
+			t.equal(false, ES.IsIntegralNumber(i + 0.2), (i + 0.2) + ' is not integer');
+		}
+		t.equal(true, ES.IsIntegralNumber(-0), '-0 is integer');
+		var notInts = v.nonNumbers.concat(v.nonIntegerNumbers, v.infinities, [NaN, [], new Date()]);
+		forEach(notInts, function (notInt) {
+			t.equal(false, ES.IsIntegralNumber(notInt), debug(notInt) + ' is not integer');
+		});
+		t.equal(false, ES.IsIntegralNumber(v.uncoercibleObject), 'uncoercibleObject is not integer');
+		t.end();
+	});
+
+	test('SetFunctionLength', function (t) {
+		forEach(v.nonFunctions, function (nonFunction) {
+			t['throws'](
+				function () { ES.SetFunctionLength(nonFunction, 0); },
+				TypeError,
+				debug(nonFunction) + ' is not a Function'
+			);
+		});
+
+		t.test('non-extensible function', { skip: !Object.preventExtensions }, function (st) {
+			var F = function F() {};
+			Object.preventExtensions(F);
+
+			st['throws'](
+				function () { ES.SetFunctionLength(F, 0); },
+				TypeError,
+				'non-extensible function throws'
+			);
+			st.end();
+		});
+
+		var HasLength = function HasLength(_) { return _; };
+		t.equal(has(HasLength, 'length'), true, 'precondition: `HasLength` has own length');
+		t['throws'](
+			function () { ES.SetFunctionLength(HasLength, 0); },
+			TypeError,
+			'function with own length throws'
+		);
+
+		t.test('no length', { skip: !functionsHaveConfigurableNames }, function (st) {
+			var HasNoLength = function HasNoLength() {};
+			delete HasNoLength.length;
+
+			st.equal(has(HasNoLength, 'length'), false, 'precondition: `HasNoLength` has no own length');
+
+			forEach(v.nonNumbers, function (nonNumber) {
+				st['throws'](
+					function () { ES.SetFunctionLength(HasNoLength, nonNumber); },
+					TypeError,
+					debug(nonNumber) + ' is not a Number'
+				);
+			});
+
+			forEach([-1, -42, -Infinity].concat(v.nonIntegerNumbers), function (nonPositiveInteger) {
+				st['throws'](
+					function () { ES.SetFunctionLength(HasNoLength, nonPositiveInteger); },
+					TypeError,
+					debug(nonPositiveInteger) + ' is not a positive integer Number'
+				);
+			});
+
+			st.end();
+		});
+
+		// TODO: ensure it works with +Infinity
+		// TODO: defines an own configurable non-enum non-write length property
+
+		t.end();
+	});
+
+	test('ToIntegerOrInfinity', function (t) {
+		forEach([0, -0, NaN], function (num) {
+			t.equal(0, ES.ToIntegerOrInfinity(num), debug(num) + ' returns +0');
+		});
+		forEach([Infinity, 42], function (num) {
+			t.equal(num, ES.ToIntegerOrInfinity(num), debug(num) + ' returns itself');
+			t.equal(-num, ES.ToIntegerOrInfinity(-num), '-' + debug(num) + ' returns itself');
+		});
+		t.equal(3, ES.ToIntegerOrInfinity(Math.PI), 'pi returns 3');
+		t['throws'](function () { return ES.ToIntegerOrInfinity(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
+		t.end();
+	});
+
+	test('StringIndexOf', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.StringIndexOf(nonString); },
+				TypeError,
+				'`string` arg: ' + debug(nonString) + ' is not a String'
+			);
+
+			t['throws'](
+				function () { ES.StringIndexOf('', nonString); },
+				TypeError,
+				'`searchValue` arg: ' + debug(nonString) + ' is not a String'
+			);
+		});
+
+		forEach(v.notNonNegativeIntegers, function (notNonNegativeInteger) {
+			t['throws'](
+				function () { ES.StringIndexOf('', '', notNonNegativeInteger); },
+				TypeError,
+				'`fromIndex` arg: ' + debug(notNonNegativeInteger) + ' is not a non-negative integer'
+			);
+		});
+
+		var str = 'abc' + wholePoo + 'abc';
+		t.equal(ES.StringIndexOf(str, 'a', 0), 0, 'a: first index found');
+		t.equal(ES.StringIndexOf(str, 'a', 1), 5, 'a: second index found');
+		t.equal(ES.StringIndexOf(str, 'a', 6), -1, 'a: second index not found');
+
+		t.equal(ES.StringIndexOf(str, 'b', 0), 1, 'b: first index found');
+		t.equal(ES.StringIndexOf(str, 'b', 2), 6, 'b: second index found');
+		t.equal(ES.StringIndexOf(str, 'b', 7), -1, 'b: second index not found');
+
+		t.equal(ES.StringIndexOf(str, 'c', 0), 2, 'c: first index found');
+		t.equal(ES.StringIndexOf(str, 'c', 3), 7, 'c: second index found');
+		t.equal(ES.StringIndexOf(str, 'c', 8), -1, 'c: second index not found');
+
+		t.equal(ES.StringIndexOf(str, leadingPoo, 0), 3, 'first half of ' + wholePoo + ' found');
+		t.equal(ES.StringIndexOf(str, leadingPoo, 4), -1, 'first half of ' + wholePoo + ' not found');
+		t.equal(ES.StringIndexOf(str, trailingPoo, 0), 4, 'second half of ' + wholePoo + ' found');
+		t.equal(ES.StringIndexOf(str, trailingPoo, 5), -1, 'second half of ' + wholePoo + ' not found');
+		t.equal(ES.StringIndexOf(str, wholePoo, 0), 3, wholePoo + ' found');
+		t.equal(ES.StringIndexOf(str, wholePoo, 4), -1, wholePoo + ' not found');
+
+		t.equal(ES.StringIndexOf('', 'a', 0), -1, 'empty string contains nothing');
+		for (var i = 0; i < str.length; i += 1) {
+			t.equal(ES.StringIndexOf(str, '', i), i, 'empty string is found at every index: ' + i);
+		}
+
+		t.end();
+	});
+
+	test('StringToCodePoints', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.StringToCodePoints(nonString); },
+				TypeError,
+				debug(nonString) + ' is not a String'
+			);
+		});
+
+		t.deepEqual(ES.StringToCodePoints('abc'), ['a', 'b', 'c'], 'code units get split');
+		t.deepEqual(ES.StringToCodePoints('a' + wholePoo + 'c'), ['a', wholePoo, 'c'], 'code points get split too');
+
+		t.end();
+	});
+
+	test('substring', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.substring(nonString, 0, 0); },
+				TypeError,
+				debug(nonString) + ' is not a String'
+			);
+		});
+
+		forEach(v.nonNumbers.concat(v.nonIntegerNumbers), function (nonIntegerNumber) {
+			t['throws'](
+				function () { ES.substring('', nonIntegerNumber); },
+				TypeError,
+				'inclusiveStart, no end: ' + debug(nonIntegerNumber) + ' is not an integer'
+			);
+
+			t['throws'](
+				function () { ES.substring('', nonIntegerNumber, 0); },
+				TypeError,
+				'inclusiveStart: ' + debug(nonIntegerNumber) + ' is not an integer'
+			);
+
+			t['throws'](
+				function () { ES.substring('', 0, nonIntegerNumber); },
+				TypeError,
+				'exclusiveEnd: ' + debug(nonIntegerNumber) + ' is not an integer'
+			);
+		});
+
+		t.equal(ES.substring('abc', 0), 'abc', 'substring of S from 0 works');
+		t.equal(ES.substring('abc', 1), 'bc', 'substring of S from 1 works');
+		t.equal(ES.substring('abc', 2), 'c', 'substring of S from 2 works');
+		t.equal(ES.substring('abc', 3), '', 'substring of S from 3 works');
+
+		t.equal(ES.substring('abc', 0, 1), 'a', 'substring of S from 0 to 1 works');
+		t.equal(ES.substring('abc', 1, 1), '', 'substring of S from 1 to 1 works');
+		t.equal(ES.substring('abc', 2, 1), '', 'substring of S from 2 to 1 works');
+		t.equal(ES.substring('abc', 3, 1), '', 'substring of S from 3 to 1 works');
+
+		t.equal(ES.substring('abc', 0, 2), 'ab', 'substring of S from 0 to 2 works');
+		t.equal(ES.substring('abc', 1, 2), 'b', 'substring of S from 1 to 2 works');
+		t.equal(ES.substring('abc', 2, 2), '', 'substring of S from 2 to 2 works');
+		t.equal(ES.substring('abc', 3, 2), '', 'substring of S from 3 to 2 works');
+
+		t.equal(ES.substring('abc', 0, 3), 'abc', 'substring of S from 0 to 3 works');
+		t.equal(ES.substring('abc', 1, 3), 'bc', 'substring of S from 1 to 3 works');
+		t.equal(ES.substring('abc', 2, 3), 'c', 'substring of S from 2 to 3 works');
+		t.equal(ES.substring('abc', 3, 3), '', 'substring of S from 3 to 3 works');
+
+		t.equal(ES.substring('abc', 0, 4), 'abc', 'substring of S from 0 to 4 works');
+		t.equal(ES.substring('abc', 1, 4), 'bc', 'substring of S from 1 to 4 works');
+		t.equal(ES.substring('abc', 2, 4), 'c', 'substring of S from 2 to 4 works');
+		t.equal(ES.substring('abc', 3, 4), '', 'substring of S from 3 to 4 works');
+
+		t.end();
+	});
+
+	test('UTF16SurrogatePairToCodePoint', function (t) {
+		t['throws'](
+			function () { ES.UTF16SurrogatePairToCodePoint('a'.charCodeAt(0), trailingPoo.charCodeAt(0)); },
+			TypeError,
+			'"a" is not a leading surrogate'
+		);
+		t['throws'](
+			function () { ES.UTF16SurrogatePairToCodePoint(leadingPoo.charCodeAt(0), 'b'.charCodeAt(0)); },
+			TypeError,
+			'"b" is not a trailing surrogate'
+		);
+
+		t.equal(ES.UTF16SurrogatePairToCodePoint(leadingPoo.charCodeAt(0), trailingPoo.charCodeAt(0)), wholePoo);
+
+		t.end();
+	});
+
+	test('UTF16EncodeCodePoint', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.UTF16EncodeCodePoint(nonNumber); },
+				TypeError,
+				debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		t['throws'](
+			function () { ES.UTF16EncodeCodePoint(-1); },
+			TypeError,
+			'-1 is < 0'
+		);
+
+		t['throws'](
+			function () { ES.UTF16EncodeCodePoint(0x10FFFF + 1); },
+			TypeError,
+			'0x10FFFF + 1 is > 0x10FFFF'
+		);
+
+		t.equal(ES.UTF16EncodeCodePoint(0xd83d), leadingPoo.charAt(0), '0xD83D is the first half of ' + wholePoo);
+		t.equal(ES.UTF16EncodeCodePoint(0xdca9), trailingPoo.charAt(0), '0xD83D is the last half of ' + wholePoo);
+
+		t.end();
+	});
+
+	test('WeakRefDeref', function (t) {
+		forEach(v.primitives.concat(v.objects), function (nonWeakRef) {
+			t['throws'](
+				function () { ES.WeakRefDeref(nonWeakRef); },
+				TypeError,
+				debug(nonWeakRef) + ' is not a WeakRef'
+			);
+		});
+
+		t.test('WeakRefs', { skip: typeof WeakRef !== 'function' }, function (st) {
+			var sentinel = {};
+			var weakRef = new WeakRef({ foo: sentinel });
+
+			st.deepEqual(ES.WeakRefDeref(weakRef), { foo: sentinel }, 'weakRef is dereferenced');
+
+			st.end();
+		});
+
+		t.end();
+	});
+};
+
 module.exports = {
 	es5: es5,
 	es2015: es2015,
@@ -7594,5 +8163,6 @@ module.exports = {
 	es2017: es2017,
 	es2018: es2018,
 	es2019: es2019,
-	es2020: es2020
+	es2020: es2020,
+	es2021: es2021
 };

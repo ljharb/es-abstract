@@ -50,6 +50,7 @@
 				"func-style": 0,
 				"max-lines-per-function": 0,
 				"max-nested-callbacks": 0,
+				"max-statements": 0,
 				"no-throw-literal": 0,
 				"operator-linebreak": [2, "before"],
 			},

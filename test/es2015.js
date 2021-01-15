@@ -85,7 +85,7 @@ var expectedMissing = [
 	'IsUnresolvableReference',
 	'IsWordChar',
 	'LocalTime',
-	'LoopContinues',
+	'LoopContinues', // completion records
 	'MakeArgGetter',
 	'MakeArgSetter',
 	'MakeClassConstructor',
@@ -102,7 +102,7 @@ var expectedMissing = [
 	'NewModuleEnvironment',
 	'NewObjectEnvironment',
 	'NewPromiseCapability',
-	'NormalCompletion',
+	'NormalCompletion', // completion records
 	'ObjectDefineProperties',
 	'OrdinaryCallBindThis',
 	'OrdinaryCallEvaluateBody',

@@ -26,7 +26,7 @@ var expectedMissing = [
 	'AsyncIteratorClose',
 	'AtomicLoad',
 	'AtomicReadModifyWrite',
-	'Await',
+	'Await', // macro
 	'BackreferenceMatcher',
 	'BlockDeclarationInstantiation',
 	'BoundFunctionCreate',
@@ -137,7 +137,7 @@ var expectedMissing = [
 	'LeaveCriticalSection',
 	'LocalTime',
 	'LocalTZA',
-	'LoopContinues',
+	'LoopContinues', // completion records
 	'MakeArgGetter',
 	'MakeArgSetter',
 	'MakeBasicObject',
@@ -157,7 +157,7 @@ var expectedMissing = [
 	'NewPromiseCapability',
 	'NewPromiseReactionJob',
 	'NewPromiseResolveThenableJob',
-	'NormalCompletion',
+	'NormalCompletion', // completion records
 	'NotifyWaiter',
 	'NumericToRawBytes',
 	'ObjectDefineProperties',

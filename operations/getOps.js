@@ -19,7 +19,7 @@ async function getOps(year) {
 	const edition = year - 2009;
 
 	const specHTMLurl = year > 2015
-		? new URL(`https://raw.githubusercontent.com/tc39/ecma262/es${year}/spec.html`)
+		? new URL(`https://raw.githubusercontent.com/tc39/ecma262/${year === 2022 ? 'master' : `es${year}`}/spec.html`)
 		: new URL('https://262.ecma-international.org/6.0/');
 
 	const cmd = `curl -q --silent ${specHTMLurl}`;
@@ -30,7 +30,8 @@ async function getOps(year) {
 
 	let aOps = root.filter('[aoid]')
 		.add(root.find('[aoid]'))
-		.add(root.find('[id^="sec-numeric-types-"]:not([aoid])'));
+		.add(root.find('[id^="sec-numeric-types-"]:not([aoid])'))
+		.not('[type="sdo"]');
 
 	if (aOps.length === 0) {
 		aOps = root.find('p:contains(" abstract operation ")').closest('section').add(root.find('#sec-reference-specification-type > section'));
@@ -64,15 +65,15 @@ async function getOps(year) {
 				return null;
 			}
 			if (op.parent().attr('id') === 'sec-reference-specification-type') {
-				({ aoid } = op.find('h1').text().match(/\s(?<aoid>[a-zA-Z][a-z][a-zA-Z]+)\s/m));
+				({ groups: { aoid } } = op.find('h1').text().match(/\s(?<aoid>[a-zA-Z][a-z][a-zA-Z]+)\s/m));
 			} else if ((/^sec-numeric-types-(?:number|bigint)-/).test(op.attr('id'))) {
-				({ aoid } = op.find('h1').text().match(/\s?(?<aoid>[a-zA-Z][a-z][a-zA-Z]+(?:::[a-zA-Z][a-z][a-zA-Z]+))\s/m));
+				({ groups: { aoid } } = op.find('h1').text().match(/\s?(?<aoid>[a-zA-Z][a-z][a-zA-Z]+(?:::[a-zA-Z][a-z][a-zA-Z]+)+)\s/m));
 			} else {
 				const match = op.text().match(/When the (?<aoid>[a-zA-Z][a-z][a-zA-Z]+) abstract operation is called/m)
 					|| op.text().match(/The (?<aoid>[a-zA-Z][a-z][a-zA-Z]+) abstract operation/m)
 					|| op.text().match(/ abstract operation (?<aoid>[a-zA-Z/0-9]+)/m);
 				if (match) {
-					({ aoid } = match);
+					({ groups: { aoid } } = match);
 				}
 			}
 		}
@@ -147,6 +148,12 @@ async function getOps(year) {
 	}
 	if (year >= 2015 && year <= 2017) {
 		entries.push(['DaylightSavingTA', `https://262.ecma-international.org/${edition}.0/#sec-daylight-saving-time-adjustment`]);
+	}
+	if (year >= 2021) {
+		entries.push(
+			['clamp', `https://262.ecma-international.org/${edition}.0/#clamping`],
+			['substring', `https://262.ecma-international.org/${edition}.0/#substring`],
+		);
 	}
 	entries.sort(([a], [b]) => a.localeCompare(b));
 

@@ -27,7 +27,7 @@ var expectedMissing = [
 	'AsyncIteratorClose',
 	'AtomicLoad',
 	'AtomicReadModifyWrite',
-	'Await',
+	'Await', // macro
 	'BackreferenceMatcher',
 	'BlockDeclarationInstantiation',
 	'BoundFunctionCreate',
@@ -131,7 +131,7 @@ var expectedMissing = [
 	'IsWordChar',
 	'LeaveCriticalSection',
 	'LocalTime',
-	'LoopContinues',
+	'LoopContinues', // completion records
 	'MakeArgGetter',
 	'MakeArgSetter',
 	'MakeClassConstructor',
@@ -150,7 +150,7 @@ var expectedMissing = [
 	'NewModuleEnvironment',
 	'NewObjectEnvironment',
 	'NewPromiseCapability',
-	'NormalCompletion',
+	'NormalCompletion', // completion records
 	'NumberToRawBytes',
 	'ObjectDefineProperties',
 	'OrdinaryCallBindThis',
