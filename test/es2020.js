@@ -26,7 +26,7 @@ var expectedMissing = [
 	'AsyncIteratorClose',
 	'AtomicLoad',
 	'AtomicReadModifyWrite',
-	'Await',
+	'Await', // macro
 	'BackreferenceMatcher',
 	'BlockDeclarationInstantiation',
 	'BoundFunctionCreate',

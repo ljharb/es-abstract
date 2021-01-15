@@ -19,7 +19,7 @@ async function getOps(year) {
 	const edition = year - 2009;
 
 	const specHTMLurl = year > 2015
-		? new URL(`https://raw.githubusercontent.com/tc39/ecma262/es${year}/spec.html`)
+		? new URL(`https://raw.githubusercontent.com/tc39/ecma262/${year === 2022 ? 'master' : `es${year}`}/spec.html`)
 		: new URL('https://262.ecma-international.org/6.0/');
 
 	const cmd = `curl -q --silent ${specHTMLurl}`;
@@ -30,7 +30,8 @@ async function getOps(year) {
 
 	let aOps = root.filter('[aoid]')
 		.add(root.find('[aoid]'))
-		.add(root.find('[id^="sec-numeric-types-"]:not([aoid])'));
+		.add(root.find('[id^="sec-numeric-types-"]:not([aoid])'))
+		.not('[type="sdo"]');
 
 	if (aOps.length === 0) {
 		aOps = root.find('p:contains(" abstract operation ")').closest('section').add(root.find('#sec-reference-specification-type > section'));
