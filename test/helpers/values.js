@@ -4,6 +4,9 @@ var assign = require('../../helpers/assign');
 
 var hasSymbols = require('has-symbols')();
 var hasBigInts = require('has-bigints')();
+var arrowFunctions = require('make-arrow-function').list();
+var generatorFunctions = require('make-generator-function')();
+var asyncFunctions = require('make-async-function').list();
 
 var coercibleObject = { valueOf: function () { return 3; }, toString: function () { return 42; } };
 var coercibleFnObject = {
@@ -43,6 +46,7 @@ var timestamps = [].concat(0, 946713600000, 1546329600000);
 var nonFunctions = [].concat(primitives, objects, [42]);
 var nonArrays = [].concat(nonFunctions);
 var nonBigInts = [].concat(nonNumberPrimitives, numbers);
+var nonConstructorFunctions = [].concat(arrowFunctions, generatorFunctions, asyncFunctions);
 
 var descriptors = {
 	configurable: function (descriptor) {
@@ -77,6 +81,10 @@ module.exports = {
 	nonBigInts: nonBigInts,
 	nonBooleans: nonBooleans,
 	nonFunctions: nonFunctions,
+	arrowFunctions: arrowFunctions,
+	generatorFunctions: generatorFunctions,
+	asyncFunctions: asyncFunctions,
+	nonConstructorFunctions: nonConstructorFunctions,
 	nonIntegerNumbers: nonIntegerNumbers,
 	nonNullPrimitives: nonNullPrimitives,
 	nonNumberPrimitives: nonNumberPrimitives,
