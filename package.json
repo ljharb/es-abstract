@@ -48,7 +48,7 @@
 		"ES7"
 	],
 	"dependencies": {
-		"call-bind": "^1.0.0",
+		"call-bind": "^1.0.2",
 		"es-to-primitive": "^1.2.1",
 		"function-bind": "^1.1.1",
 		"get-intrinsic": "^1.0.2",
