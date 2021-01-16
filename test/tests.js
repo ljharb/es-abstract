@@ -2742,7 +2742,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	test('OrdinaryDefineOwnProperty', { skip: !getOwnPropertyDescriptor }, function (t) {
 		forEach(v.primitives, function (primitive) {
 			t['throws'](
-				function () { ES.CopyDataProperties(primitive, {}, []); },
+				function () { ES.OrdinaryDefineOwnProperty(primitive, {}, []); },
 				TypeError,
 				'O: ' + debug(primitive) + ' is not an Object'
 			);
@@ -3908,7 +3908,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('CopyDataProperties', function (t) {
+	test('CopyDataProperties', { skip: skips && skips.CopyDataProperties }, function (t) {
 		t.test('first argument: target', function (st) {
 			forEach(v.primitives, function (primitive) {
 				st['throws'](
@@ -3996,6 +3996,8 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 
 			st.end();
 		});
+
+		// TODO: CopyDataProperties does not throw when copying fails
 
 		t.end();
 	});
@@ -4436,12 +4438,107 @@ var es2019 = function ES2019(ES, ops, expectedMissing, skips) {
 
 var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	es2019(ES, ops, expectedMissing, assign({}, skips, {
+		CopyDataProperties: true,
 		GetIterator: true,
 		NumberToString: true,
 		ObjectCreate: true,
 		SameValueNonNumber: true,
 		ToInteger: true
 	}));
+
+	test('CopyDataProperties', function (t) {
+		t.test('first argument: target', function (st) {
+			forEach(v.primitives, function (primitive) {
+				st['throws'](
+					function () { ES.CopyDataProperties(primitive, {}, []); },
+					TypeError,
+					debug(primitive) + ' is not an Object'
+				);
+			});
+			st.end();
+		});
+
+		t.test('second argument: source', function (st) {
+			var frozenTarget = Object.freeze ? Object.freeze({}) : {};
+			forEach(v.nullPrimitives, function (nullish) {
+				st.equal(
+					ES.CopyDataProperties(frozenTarget, nullish, []),
+					frozenTarget,
+					debug(nullish) + ' "source" yields identical, unmodified target'
+				);
+			});
+
+			forEach(v.nonNullPrimitives, function (objectCoercible) {
+				var target = {};
+				var result = ES.CopyDataProperties(target, objectCoercible, []);
+				st.equal(result, target, 'result === target');
+				st.deepEqual(keys(result), keys(Object(objectCoercible)), 'target ends up with keys of ' + debug(objectCoercible));
+			});
+
+			st.test('enumerable accessor property', { skip: !defineProperty.oDP }, function (s2t) {
+				var target = {};
+				var source = {};
+				defineProperty(source, 'a', {
+					enumerable: true,
+					get: function () { return 42; }
+				});
+				var result = ES.CopyDataProperties(target, source, []);
+				s2t.equal(result, target, 'result === target');
+				s2t.deepEqual(result, { a: 42 }, 'target ends up with enumerable accessor of source');
+				s2t.end();
+			});
+
+			st.end();
+		});
+
+		t.test('third argument: excludedItems', function (st) {
+			forEach(v.objects.concat(v.primitives), function (nonArray) {
+				st['throws'](
+					function () { ES.CopyDataProperties({}, {}, nonArray); },
+					TypeError,
+					debug(nonArray) + ' is not an Array'
+				);
+			});
+
+			forEach(v.nonPropertyKeys, function (nonPropertyKey) {
+				st['throws'](
+					function () { ES.CopyDataProperties({}, {}, [nonPropertyKey]); },
+					TypeError,
+					debug(nonPropertyKey) + ' is not a Property Key'
+				);
+			});
+
+			var result = ES.CopyDataProperties({}, { a: 1, b: 2, c: 3 }, ['b']);
+			st.deepEqual(keys(result).sort(), ['a', 'c'].sort(), 'excluded string keys are excluded');
+
+			st.test('excluding symbols', { skip: !v.hasSymbols }, function (s2t) {
+				var source = {};
+				forEach(v.symbols, function (symbol) {
+					source[symbol] = true;
+				});
+
+				var includedSymbols = v.symbols.slice(1);
+				var excludedSymbols = v.symbols.slice(0, 1);
+				var target = ES.CopyDataProperties({}, source, excludedSymbols);
+
+				forEach(includedSymbols, function (symbol) {
+					s2t.equal(has(target, symbol), true, debug(symbol) + ' is included');
+				});
+
+				forEach(excludedSymbols, function (symbol) {
+					s2t.equal(has(target, symbol), false, debug(symbol) + ' is excluded');
+				});
+
+				s2t.end();
+			});
+
+			st.end();
+		});
+
+		// TODO: CopyDataProperties throws when copying fails
+
+		t.end();
+	});
 
 	test('GetIterator', function (t) {
 		try {
