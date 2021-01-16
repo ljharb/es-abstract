@@ -2995,7 +2995,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			}
 		});
 
-		forEach(v.nonIntegerNumbers.concat([-1, -42, -Infinity]), function (nonNonNegativeInteger) {
+		forEach(v.notNonNegativeIntegers, function (nonNonNegativeInteger) {
 			t['throws'](
 				function () { ES.GetSubstitution('', '', nonNonNegativeInteger, [], ''); },
 				TypeError,
@@ -4093,7 +4093,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(v.nonIntegerNumbers.concat([-1, -42, -Infinity]), function (nonNonNegativeInteger) {
+		forEach(v.notNonNegativeIntegers, function (nonNonNegativeInteger) {
 			t['throws'](
 				function () { ES.GetSubstitution('', '', nonNonNegativeInteger, [], undefined, ''); },
 				TypeError,
@@ -4863,15 +4863,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IsNonNegativeInteger', function (t) {
-		forEach(v.nonNumbers, function (nonNumber) {
-			t.equal(
-				ES.IsNonNegativeInteger(nonNumber),
-				false,
-				debug(nonNumber) + ' is not a non-negative integer'
-			);
-		});
-
-		forEach(v.nonIntegerNumbers, function (nonIntegerNumber) {
+		forEach(v.notNonNegativeIntegers, function (nonIntegerNumber) {
 			t.equal(
 				ES.IsNonNegativeInteger(nonIntegerNumber),
 				false,

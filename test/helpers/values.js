@@ -47,6 +47,8 @@ var nonFunctions = [].concat(primitives, objects, [42]);
 var nonArrays = [].concat(nonFunctions);
 var nonBigInts = [].concat(nonNumberPrimitives, numbers);
 var nonConstructorFunctions = [].concat(arrowFunctions, generatorFunctions, asyncFunctions);
+var nonNumbers = nonNumberPrimitives.concat(objects);
+var notNonNegativeIntegers = nonNumbers.concat(nonIntegerNumbers, infinities, [-1, -7, -42, -1e17]);
 
 var descriptors = {
 	configurable: function (descriptor) {
@@ -86,9 +88,10 @@ module.exports = {
 	asyncFunctions: asyncFunctions,
 	nonConstructorFunctions: nonConstructorFunctions,
 	nonIntegerNumbers: nonIntegerNumbers,
+	notNonNegativeIntegers: notNonNegativeIntegers,
 	nonNullPrimitives: nonNullPrimitives,
 	nonNumberPrimitives: nonNumberPrimitives,
-	nonNumbers: nonNumberPrimitives.concat(objects),
+	nonNumbers: nonNumbers,
 	nonPropertyKeys: nonPropertyKeys,
 	nonStrings: nonStrings,
 	nonSymbolPrimitives: nonSymbolPrimitives,
