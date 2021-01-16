@@ -4285,7 +4285,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			forEach([-1, -42].concat(v.nonIntegerNumbers), function (nonPositiveInteger) {
+			forEach([-1, -42, -Infinity, Infinity].concat(v.nonIntegerNumbers), function (nonPositiveInteger) {
 				st['throws'](
 					function () { ES.SetFunctionLength(HasNoLength, nonPositiveInteger); },
 					TypeError,
