@@ -3706,8 +3706,9 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 	}));
 
 	test('ToIndex', function (t) {
-		t.ok(is(ES.ToIndex(), 0), 'no value gives 0');
-		t.ok(is(ES.ToIndex(undefined), 0), 'undefined value gives 0');
+		t.ok(is(ES.ToIndex(), 0), 'no value gives +0');
+		t.ok(is(ES.ToIndex(undefined), 0), 'undefined value gives +0');
+		t.ok(is(ES.ToIndex(-0), 0), '-0 gives +0');
 
 		t['throws'](function () { ES.ToIndex(-1); }, RangeError, 'negative numbers throw');
 
