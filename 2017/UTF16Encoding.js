@@ -8,10 +8,12 @@ var $fromCharCode = GetIntrinsic('%String.fromCharCode%');
 var floor = require('./floor');
 var modulo = require('./modulo');
 
+var isCodePoint = require('../helpers/isCodePoint');
+
 // https://ecma-international.org/ecma-262/7.0/#sec-utf16encoding
 
 module.exports = function UTF16Encoding(cp) {
-	if (typeof cp !== 'number' || cp < 0 || cp > 0x10FFFF) {
+	if (!isCodePoint(cp)) {
 		throw new $TypeError('Assertion failed: `cp` must be >= 0 and <= 0x10FFFF');
 	}
 	if (cp <= 65535) {

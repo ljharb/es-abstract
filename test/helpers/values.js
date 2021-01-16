@@ -48,7 +48,7 @@ var nonArrays = [].concat(nonFunctions);
 var nonBigInts = [].concat(nonNumberPrimitives, numbers);
 var nonConstructorFunctions = [].concat(arrowFunctions, generatorFunctions, asyncFunctions);
 var nonNumbers = nonNumberPrimitives.concat(objects);
-var notNonNegativeIntegers = nonNumbers.concat(nonIntegerNumbers, infinities, [-1, -7, -42, -1e17]);
+var notNonNegativeIntegers = nonNumbers.concat(nonIntegerNumbers, NaN, infinities, [-1, -7, -42, -1e17]);
 
 var descriptors = {
 	configurable: function (descriptor) {
