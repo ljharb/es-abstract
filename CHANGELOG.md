@@ -1,3 +1,26 @@
+1.18.0-next.2 / 2021-01-17
+=================
+  * [New] `helpers`: add `isByteValue`, `isCodePoint`, `some`
+  * [Fix] `ES2018+`: fix `GetSubstitution` with named captures
+  * [Fix] `ES2020`: `GetIterator`: add omitted `hint` parameter
+  * [Fix] `ES2018`/`ES2019`: `SetFunctionLength`: Infinities should throw
+  * [Fix] `ES2020`: `ToIndex` uses `SameValue` instead of `SameValueZero`
+  * [Fix] `ES2020`: `CopyDataProperties` uses `CreateDataPropertyOrThrow` instead of `CreateDataProperty`
+  * [Refactor] use extracted `call-bind` instead of local helpers
+  * [Refactor] use extracted `get-intrinsic` package
+  * [Deps] update `call-bind`, `get-intrinsic`, `is-callable`, `is-negative-zero`, `is-regex`, `object-inspect`, `object.assign`, `string.prototype.trimend`, `string.prototype.trimstart`
+  * [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `array.prototype.indexof`, `aud`, `diff`, `functions-have-names`, `has-bigints`, `has-strict-mode`, `object-is`, `object.fromentries`, `tape`
+  * [actions] switch Automatic Rebase workflow to `pull_request_target` event
+  * [actions] add "Allow Edits" workflow
+  * [meta] pin cheerio to v1.0.0-rc.3, to fix getOps
+  * [meta] make all URLs consistent, and point to spec artifacts
+  * [meta] refactor `deltas` script; update eslint on operations scripts
+  * [meta] do not publish .github dir (#123)
+  * [Tests] add `v.notNonNegativeIntegers`, `v.nonConstructorFunctions`
+  * [Tests] migrate tests to Github Actions
+  * [Tests] run coverage on all tests
+  * [Tests] add `npm run test:ses`
+
 1.18.0-next.1 / 2020-09-30
 =================
   * [Fix] `ES2020`: `ToInteger`: `-0` should always be normalized to `+0` (#116)
