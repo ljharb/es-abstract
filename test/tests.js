@@ -7000,6 +7000,25 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('ApplyStringOrNumericBinaryOperator', function (t) {
+		forEach(v.nonStrings.concat('', '^^', '//', '***'), function (nonOp) {
+			t['throws'](
+				function () { ES.ApplyStringOrNumericBinaryOperator(null, nonOp, null); },
+				TypeError,
+				'opText must be a valid operation: ' + debug(nonOp) + ' is not an operation'
+			);
+		});
+
+		// +: primitive coercion
+		//   if either/both/neither coerces to string
+		// 	 numerics
+		//   non-numerics
+		// throws if coerced types differ (neither are string)
+		// then, test each op
+
+		t.end();
+	});
+
 	test('ByteListBitwiseOp', function (t) {
 		t['throws'](
 			function () { ES.ByteListBitwiseOp('+', [], []); },

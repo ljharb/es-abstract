@@ -10,6 +10,7 @@ var ES2021 = {
 	AddEntriesFromIterable: require('./2021/AddEntriesFromIterable'),
 	AddToKeptObjects: require('./2021/AddToKeptObjects'),
 	AdvanceStringIndex: require('./2021/AdvanceStringIndex'),
+	ApplyStringOrNumericBinaryOperator: require('./2021/ApplyStringOrNumericBinaryOperator'),
 	ArrayCreate: require('./2021/ArrayCreate'),
 	ArraySetLength: require('./2021/ArraySetLength'),
 	ArraySpeciesCreate: require('./2021/ArraySpeciesCreate'),
