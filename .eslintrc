@@ -43,9 +43,15 @@
 				"ecmaVersion": 2020,
 			},
 			"rules": {
+				"dot-notation": [2, {
+					"allowKeywords": true,
+				}],
+				"func-style": 0,
 				"prefer-const": 2,
+				"max-lines-per-function": 0,
 				"no-console": 0,
 				"no-multi-str": 0,
+				"no-throw-literal": 0,
 				"no-var": 2,
 			},
 		},
