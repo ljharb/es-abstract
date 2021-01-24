@@ -4,8 +4,9 @@ const path = require('path');
 const fs = require('fs');
 const childProcess = require('child_process');
 const deltas = require('./deltas');
+const years = require('./years');
 
-const writtenFiles = [5, 2015, 2016, 2017, 2018, 2019, 2020].flatMap((year, i, arr) => {
+const writtenFiles = [5].concat(years).flatMap((year, i, arr) => {
 	if ((i + 1) < arr.length) {
 		const ops = fs.readdirSync(path.join(process.cwd(), String(year)));
 		return ops.map((opFile) => {

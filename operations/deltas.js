@@ -2,11 +2,7 @@
 
 const diff = require('diff');
 
-const range = function range(a, z) {
-	return Array.from({ length: z + 1 - a }, (_, i) => i + a);
-};
-
-const years = range(2015, 2020);
+const years = require('./years');
 
 const keys = ['../es5'].concat(years).map((x) => [
 	x,
