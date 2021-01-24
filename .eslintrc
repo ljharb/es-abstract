@@ -38,28 +38,17 @@
 			},
 		},
 		{
-			"files": "operations/*.js",
-			"parserOptions": {
-				"ecmaVersion": 2020,
-			},
+			"files": [
+				"operations/deltas.js",
+				"operations/getOps.js",
+				"operations/spackle.js",
+				"operations/years.js",
+			],
+			"extends": "@ljharb/eslint-config/node/latest",
 			"rules": {
-				"dot-notation": [2, {
-					"allowKeywords": true,
-				}],
 				"func-style": 0,
-				"prefer-const": 2,
 				"max-lines-per-function": 0,
-				"no-console": 0,
-				"no-multi-str": 0,
 				"no-throw-literal": 0,
-				"no-var": 2,
-			},
-		},
-		{
-			"files": "operations/getOps.js",
-			"rules": {
-				"no-console": 0,
-				"no-process-exit": 0,
 			},
 		},
 		{

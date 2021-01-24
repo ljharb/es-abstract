@@ -6,12 +6,12 @@ const years = require('./years');
 
 const keys = ['../es5'].concat(years).map((x) => [
 	x,
-	Object.keys(require(`./${x}`)).sort() // eslint-disable-line global-require
+	Object.keys(require(`./${x}`)).sort(), // eslint-disable-line global-require
 ]);
 
 const results = Object.fromEntries([5].concat(years).map((y) => [
 	y,
-	{ added: new Set(), removed: new Set() }
+	{ added: new Set(), removed: new Set() },
 ]));
 
 const parse = function parse(from, to, result) {

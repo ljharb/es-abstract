@@ -19,7 +19,7 @@ async function getOps(year) {
 	const edition = year - 2009;
 
 	const specHTMLurl = year > 2015
-		? new URL('https://raw.githubusercontent.com/tc39/ecma262/es' + year + '/spec.html')
+		? new URL(`https://raw.githubusercontent.com/tc39/ecma262/es${year}/spec.html`)
 		: new URL('https://262.ecma-international.org/6.0/');
 
 	const cmd = `curl -q --silent ${specHTMLurl}`;
@@ -45,7 +45,7 @@ async function getOps(year) {
 			id = op.closest('[id]').attr('id');
 		}
 		// years other than 2016 have `id.startsWith('eqn-')`
-		const isConstant = op.text().trim().split('\n').length === 1 && op.text().startsWith(aoid + ' = ');
+		const isConstant = op.text().trim().split('\n').length === 1 && op.text().startsWith(`${aoid} = `);
 		if (isConstant) {
 			return null;
 		}
@@ -84,7 +84,7 @@ async function getOps(year) {
 
 		return [
 			aoid,
-			'https://ecma-international.org/ecma-262/' + edition + '.0/#' + id
+			`https://ecma-international.org/ecma-262/${edition}.0/#${id}`,
 		];
 	}).filter((x) => x && x[0]);
 
@@ -132,27 +132,27 @@ async function getOps(year) {
 			['ToDateString', 'https://ecma-international.org/ecma-262/6.0/#sec-todatestring'],
 			['Type', 'https://ecma-international.org/ecma-262/6.0/#sec-ecmascript-data-types-and-values'],
 			['WeekDay', 'https://ecma-international.org/ecma-262/6.0/#sec-week-day'],
-			['YearFromTime', 'https://ecma-international.org/ecma-262/6.0/#sec-year-number']
+			['YearFromTime', 'https://ecma-international.org/ecma-262/6.0/#sec-year-number'],
 		);
 	} else if (year === 2016) {
 		entries.push(
 			['thisNumberValue', 'https://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-number-prototype-object'],
-			['thisStringValue', 'https://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-string-prototype-object']
+			['thisStringValue', 'https://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-string-prototype-object'],
 		);
 	}
 	entries.sort(function (a, b) { return a[0].localeCompare(b[0]); });
 
 	const obj = fromEntries(entries);
 
-	const outputPath = path.join('operations', year + '.js');
-	let output = '\'use strict\';\n\nmodule.exports = ' + JSON.stringify(obj, null, '\t') + ';\n';
+	const outputPath = path.join('operations', `${year}.js`);
+	let output = `'use strict';\n\nmodule.exports = ${JSON.stringify(obj, null, '\t')};\n`;
 	if ((year === 5 || year >= 2015) && year < 2018) {
 		output = output.replace(/= \{\n/m, "= {\n\tIsPropertyDescriptor: 'https://ecma-international.org/ecma-262/6.0/#sec-property-descriptor-specification-type', // not actually an abstract op\n\n");
 	}
 	await fs.writeFile(outputPath, output);
 
-	console.log('npx eslint --quiet --fix ' + outputPath);
-	return exec('npx eslint --quiet --fix ' + outputPath);
+	console.log(`npx eslint --quiet --fix ${outputPath}`);
+	return exec(`npx eslint --quiet --fix ${outputPath}`);
 }
 
 Promise.all(years.map((year) => getOps(year))).catch((e) => {
