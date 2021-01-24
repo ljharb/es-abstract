@@ -20,7 +20,7 @@ const edition = year - 2009;
 
 const specHTMLurl = year > 2015
 	? new URL('https://raw.githubusercontent.com/tc39/ecma262/es' + year + '/spec.html')
-	: new URL('https://ecma-international.org/ecma-262/6.0/');
+	: new URL('https://262.ecma-international.org/6.0/');
 
 const specHTML = String(execSync('curl -q --silent ' + specHTMLurl, { maxBuffer: Infinity }));
 
