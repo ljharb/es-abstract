@@ -5019,6 +5019,19 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			'throws with an invalid op'
 		);
 
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.NumberBitwiseOp('&', nonNumber, 0); },
+				TypeError,
+				'x: ' + debug(nonNumber) + ' is not a Number'
+			);
+			t['throws'](
+				function () { ES.NumberBitwiseOp('&', 0, nonNumber); },
+				TypeError,
+				'y: ' + debug(nonNumber) + ' is not a Number'
+			);
+		});
+
 		t.equal(ES.NumberBitwiseOp('&', 1, 2), 1 & 2);
 		t.equal(ES.NumberBitwiseOp('|', 1, 2), 1 | 2);
 		t.equal(ES.NumberBitwiseOp('^', 1, 2), 1 ^ 2);
