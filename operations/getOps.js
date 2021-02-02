@@ -28,7 +28,9 @@ async function getOps(year) {
 
 	const root = $(specHTML);
 
-	let aOps = root.filter('[aoid]').add(root.find('[aoid]'));
+	let aOps = root.filter('[aoid]')
+		.add(root.find('[aoid]'))
+		.add(root.find('[id^="sec-numeric-types-"]:not([aoid])'));
 
 	if (aOps.length === 0) {
 		aOps = root.find('p:contains(" abstract operation ")').closest('section').add(root.find('#sec-reference-specification-type > section'));
@@ -63,6 +65,8 @@ async function getOps(year) {
 			}
 			if (op.parent().attr('id') === 'sec-reference-specification-type') {
 				aoid = op.find('h1').text().match(/\s([a-zA-Z][a-z][a-zA-Z]+)\s/m)[1];
+			} else if ((/^sec-numeric-types-(?:number|bigint)-/).test(op.attr('id'))) {
+				aoid = op.find('h1').text().match(/\s?([a-zA-Z][a-z][a-zA-Z]+(?:::[a-zA-Z][a-z][a-zA-Z]+))\s/m)[1];
 			} else {
 				const match = op.text().match(/When the ([a-zA-Z][a-z][a-zA-Z]+) abstract operation is called/m)
 					|| op.text().match(/The ([a-zA-Z][a-z][a-zA-Z]+) abstract operation/m)
