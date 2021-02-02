@@ -5,7 +5,7 @@ var forEach = require('foreach');
 var debug = require('object-inspect');
 
 var isCodePoint = require('../../helpers/isCodePoint');
-var v = require('./values');
+var v = require('es-value-fixtures');
 
 test('isCodePoint', function (t) {
 	forEach(v.notNonNegativeIntegers.concat(0x10FFFF + 1), function (nonCodePoints) {

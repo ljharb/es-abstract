@@ -20,7 +20,7 @@ var defineProperty = require('./helpers/defineProperty');
 var getInferredName = require('../helpers/getInferredName');
 var getOwnPropertyDescriptor = require('../helpers/getOwnPropertyDescriptor');
 var assertRecordTests = require('./helpers/assertRecord');
-var v = require('./helpers/values');
+var v = require('es-value-fixtures');
 var diffOps = require('./diffOps');
 
 var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1;

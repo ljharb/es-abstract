@@ -5,7 +5,7 @@ var forEach = require('foreach');
 var debug = require('object-inspect');
 
 var isByteValue = require('../../helpers/isByteValue');
-var v = require('./values');
+var v = require('es-value-fixtures');
 
 test('isByteValue', function (t) {
 	forEach([].concat(

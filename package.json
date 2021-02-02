@@ -70,6 +70,7 @@
 		"cheerio": "=1.0.0-rc.3",
 		"diff": "^5.0.0",
 		"eclint": "^2.8.1",
+		"es-value-fixtures": "^1.2.0",
 		"eslint": "^7.19.0",
 		"foreach": "^2.0.5",
 		"functions-have-names": "^1.2.2",

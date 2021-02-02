@@ -7,7 +7,7 @@ var forEach = require('foreach');
 var is = require('object-is');
 var debug = require('object-inspect');
 
-var v = require('./helpers/values');
+var v = require('es-value-fixtures');
 
 require('./helpers/runManifestTest')(test, ES, 5);
 
