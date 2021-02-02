@@ -5088,6 +5088,558 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('Number::add', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.Number.add(nonNumber, 0); },
+				TypeError,
+				'x: ' + debug(nonNumber) + ' is not a Number'
+			);
+			t['throws'](
+				function () { ES.Number.add(0, nonNumber); },
+				TypeError,
+				'y: ' + debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		t.ok(is(ES.Number.add(+0, +0), +0), '0 + 0 is +0');
+		t.ok(is(ES.Number.add(+0, -0), +0), '0 + -0 is +0');
+		t.ok(is(ES.Number.add(-0, +0), +0), '-0 + 0 is +0');
+		t.ok(is(ES.Number.add(-0, -0), -0), '-0 + -0 is -0');
+
+		forEach(v.numbers, function (number) {
+			if (number !== 0) {
+				t.equal(ES.Number.add(number, 0), number, debug(number) + ' + 0 adds to ' + number);
+			}
+			t.equal(ES.Number.add(number, 1), number + 1, debug(number) + ' + 1 adds to ' + (number + 1));
+			t.equal(ES.Number.add(number, -42), number - 42, debug(number) + ' + -42 adds to ' + (number - 42));
+		});
+
+		t.end();
+	});
+
+	test('Number::bitwiseAND', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.Number.bitwiseAND(nonNumber, 0); },
+				TypeError,
+				'x: ' + debug(nonNumber) + ' is not a Number'
+			);
+			t['throws'](
+				function () { ES.Number.bitwiseAND(0, nonNumber); },
+				TypeError,
+				'y: ' + debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		t.equal(ES.Number.bitwiseAND(1, 2), 1 & 2);
+
+		t.end();
+	});
+
+	test('Number::bitwiseNOT', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.Number.bitwiseNOT(nonNumber); },
+				TypeError,
+				debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		forEach(v.int32s, function (int32) {
+			t.equal(ES.Number.bitwiseNOT(int32), ~int32, debug(int32) + ' becomes ~' + debug(int32));
+		});
+
+		t.end();
+	});
+
+	test('Number::bitwiseOR', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.Number.bitwiseOR(nonNumber, 0); },
+				TypeError,
+				'x: ' + debug(nonNumber) + ' is not a Number'
+			);
+			t['throws'](
+				function () { ES.Number.bitwiseOR(0, nonNumber); },
+				TypeError,
+				'y: ' + debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		t.equal(ES.Number.bitwiseOR(1, 2), 1 | 2);
+
+		t.end();
+	});
+
+	test('Number::bitwiseXOR', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.Number.bitwiseXOR(nonNumber, 0); },
+				TypeError,
+				'x: ' + debug(nonNumber) + ' is not a Number'
+			);
+			t['throws'](
+				function () { ES.Number.bitwiseXOR(0, nonNumber); },
+				TypeError,
+				'y: ' + debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		t.equal(ES.Number.bitwiseXOR(1, 2), 1 ^ 2);
+
+		t.end();
+	});
+
+	test('Number::divide', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.Number.divide(nonNumber, 0); },
+				TypeError,
+				'x: ' + debug(nonNumber) + ' is not a Number'
+			);
+			t['throws'](
+				function () { ES.Number.divide(0, nonNumber); },
+				TypeError,
+				'y: ' + debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		t.ok(is(ES.Number.divide(Infinity, Infinity), NaN), '∞ / ∞ is NaN');
+		t.ok(is(ES.Number.divide(-Infinity, Infinity), NaN), '-∞ / ∞ is NaN');
+		t.ok(is(ES.Number.divide(Infinity, -Infinity), NaN), '∞ / -∞ is NaN');
+		t.ok(is(ES.Number.divide(-Infinity, -Infinity), NaN), '-∞ / -∞ is NaN');
+
+		t.ok(is(ES.Number.divide(NaN, NaN), NaN), 'NaN / NaN is NaN');
+
+		t.equal(ES.Number.divide(Infinity, 0), Infinity, '∞ / 0 is ∞');
+		t.equal(ES.Number.divide(-Infinity, -0), Infinity, '-∞ / -0 is ∞');
+		t.equal(ES.Number.divide(Infinity, -0), -Infinity, '∞ / -0 is -∞');
+		t.equal(ES.Number.divide(-Infinity, 0), -Infinity, '-∞ / 0 is -∞');
+
+		forEach(v.numbers, function (number) {
+			if (number !== 0 && isFinite(number)) {
+				t.equal(ES.Number.divide(number, number), 1, debug(number) + ' divided by itself is 1');
+				t.equal(ES.Number.divide(number, 2), number / 2, debug(number) + ' divided by 2 is half itself');
+			}
+		});
+
+		t.end();
+	});
+
+	test('Number::equal', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.Number.equal(nonNumber, 0); },
+				TypeError,
+				'x: ' + debug(nonNumber) + ' is not a Number'
+			);
+			t['throws'](
+				function () { ES.Number.equal(0, nonNumber); },
+				TypeError,
+				'y: ' + debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		t.equal(ES.Number.equal(Infinity, Infinity), true, '∞ === ∞');
+		t.equal(ES.Number.equal(-Infinity, Infinity), false, '-∞ !== ∞');
+		t.equal(ES.Number.equal(Infinity, -Infinity), false, '∞ !== -∞');
+		t.equal(ES.Number.equal(-Infinity, -Infinity), true, '-∞ === -∞');
+
+		t.equal(ES.Number.equal(NaN, NaN), false, 'NaN !== NaN');
+
+		t.equal(ES.Number.equal(Infinity, 0), false, '∞ !== 0');
+		t.equal(ES.Number.equal(-Infinity, -0), false, '-∞ !== -0');
+		t.equal(ES.Number.equal(Infinity, -0), false, '∞ !== -0');
+		t.equal(ES.Number.equal(-Infinity, 0), false, '-∞ !== 0');
+
+		forEach(v.numbers, function (number) {
+			if (number !== 0 && isFinite(number)) {
+				t.equal(ES.Number.equal(number, number), true, debug(number) + ' is equal to itself');
+				t.equal(ES.Number.equal(number, number + 1), false, debug(number) + ' is not equal to itself plus 1');
+			}
+		});
+
+		t.end();
+	});
+
+	test('Number::exponentiate', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.Number.exponentiate(nonNumber, 0); },
+				TypeError,
+				'base: ' + debug(nonNumber) + ' is not a Number'
+			);
+			t['throws'](
+				function () { ES.Number.exponentiate(0, nonNumber); },
+				TypeError,
+				'exponent: ' + debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		t.equal(ES.Number.exponentiate(Infinity, 0), 1, '+∞ ** 0 is 1');
+		t.equal(ES.Number.exponentiate(Infinity, -0), 1, '+∞ ** -0 is 1');
+		t.equal(ES.Number.exponentiate(-Infinity, 0), 1, '-∞ ** 0 is 1');
+		t.equal(ES.Number.exponentiate(-Infinity, -0), 1, '-∞ ** -0 is 1');
+
+		t.equal(ES.Number.exponentiate(Infinity, 1), Infinity, '+∞ ** 1 is +∞');
+		t.equal(ES.Number.exponentiate(Infinity, 2), Infinity, '+∞ ** 2 is +∞');
+		t.ok(is(ES.Number.exponentiate(Infinity, -1), +0), '+∞ ** -1 is +0');
+		t.ok(is(ES.Number.exponentiate(Infinity, -2), +0), '+∞ ** -2 is +0');
+
+		t.equal(ES.Number.exponentiate(-Infinity, 1), -Infinity, '-∞ ** 1 is -∞');
+		t.equal(ES.Number.exponentiate(-Infinity, 2), Infinity, '-∞ ** 2 is +∞');
+		t.ok(is(ES.Number.exponentiate(-Infinity, -1), -0), '-∞ ** --1 is -0');
+		t.ok(is(ES.Number.exponentiate(-Infinity, -2), +0), '-∞ ** --2 is +0');
+
+		t.ok(is(ES.Number.exponentiate(1.1, Infinity), Infinity), '1.1 ** +∞ is +∞');
+		t.ok(is(ES.Number.exponentiate(1.1, -Infinity), 0), '1.1 ** -∞ is +0');
+		t.ok(is(ES.Number.exponentiate(-1.1, Infinity), Infinity), '-1.1 ** +∞ is +∞');
+		t.ok(is(ES.Number.exponentiate(-1.1, -Infinity), 0), '-1.1 ** -∞ is +0');
+
+		t.ok(is(ES.Number.exponentiate(1, Infinity), NaN), '1 ** +∞ is NaN');
+		t.ok(is(ES.Number.exponentiate(1, -Infinity), NaN), '1 ** -∞ is NaN');
+		t.ok(is(ES.Number.exponentiate(-1, Infinity), NaN), '-1 ** +∞ is NaN');
+		t.ok(is(ES.Number.exponentiate(-1, -Infinity), NaN), '-1 ** -∞ is NaN');
+
+		t.ok(is(ES.Number.exponentiate(0.9, Infinity), 0), '0.9 ** +∞ is +0');
+		t.ok(is(ES.Number.exponentiate(0.9, -Infinity), Infinity), '0.9 ** -∞ is ∞');
+		t.ok(is(ES.Number.exponentiate(-0.9, Infinity), 0), '-0.9 ** +∞ is +0');
+		t.ok(is(ES.Number.exponentiate(-0.9, -Infinity), Infinity), '-0.9 ** -∞ is +∞');
+
+		forEach(v.numbers.concat(NaN), function (number) {
+			t.ok(is(ES.Number.exponentiate(number, NaN), NaN), debug(number) + ' ** NaN is NaN');
+
+			if (number !== 0) {
+				t.equal(ES.Number.exponentiate(number, 0), 1, debug(number) + ' ** +0 is 1');
+				t.equal(ES.Number.exponentiate(number, -0), 1, debug(number) + ' ** -0 is 1');
+				t.ok(is(ES.Number.exponentiate(NaN, number), NaN), 'NaN ** ' + debug(number) + ' is NaN');
+			}
+
+			if (number !== 0 && isFinite(number)) {
+				t.equal(ES.Number.equal(number, number), true, debug(number) + ' is equal to itself');
+				t.equal(ES.Number.equal(number, number + 1), false, debug(number) + ' is not equal to itself plus 1');
+			}
+		});
+
+		t.end();
+	});
+
+	test('Number::leftShift', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.Number.leftShift(nonNumber, 0); },
+				TypeError,
+				'x: ' + debug(nonNumber) + ' is not a Number'
+			);
+			t['throws'](
+				function () { ES.Number.leftShift(0, nonNumber); },
+				TypeError,
+				'y: ' + debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		forEach([0].concat(v.int32s), function (int32) {
+			forEach([1, 3, 5, 31, 32, 33], function (bits) {
+				t.equal(ES.Number.leftShift(int32, bits), int32 << bits, debug(int32) + ' << ' + bits + ' is ' + debug(int32 << bits));
+			});
+		});
+
+		t.end();
+	});
+
+	test('Number::lessThan', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.Number.lessThan(nonNumber, 0); },
+				TypeError,
+				'x: ' + debug(nonNumber) + ' is not a Number'
+			);
+			t['throws'](
+				function () { ES.Number.lessThan(0, nonNumber); },
+				TypeError,
+				'y: ' + debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		t.equal(ES.Number.lessThan(+0, -0), false, '+0 < -0 is false');
+		t.equal(ES.Number.lessThan(+0, +0), false, '+0 < +0 is false');
+		t.equal(ES.Number.lessThan(-0, +0), false, '-0 < +0 is false');
+		t.equal(ES.Number.lessThan(-0, -0), false, '-0 < -0 is false');
+
+		forEach(v.numbers, function (number) {
+			t.equal(ES.Number.lessThan(NaN, number), undefined, 'NaN < ' + debug(number) + ' is undefined');
+			t.equal(ES.Number.lessThan(number, NaN), undefined, debug(number) + ' < NaN is undefined');
+
+			t.equal(ES.Number.lessThan(number, number), false, debug(number) + ' is not less than itself');
+
+			if (isFinite(number)) {
+				t.equal(ES.Number.lessThan(number, number + 1), true, debug(number) + ' < ' + debug(number + 1) + ' is true');
+				t.equal(ES.Number.lessThan(number + 1, number), false, debug(number + 1) + ' < ' + debug(number) + ' is false');
+
+				t.equal(ES.Number.lessThan(Infinity, number), false, '+∞ < ' + debug(number) + ' is false');
+				t.equal(ES.Number.lessThan(number, Infinity), true, debug(number) + ' < +∞ is true');
+				t.equal(ES.Number.lessThan(-Infinity, number), true, '-∞ < ' + debug(number) + ' is true');
+				t.equal(ES.Number.lessThan(number, -Infinity), false, debug(number) + ' < -∞ is false');
+			}
+		});
+
+		t.end();
+	});
+
+	test('Number::multiply', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.Number.multiply(nonNumber, 0); },
+				TypeError,
+				'x: ' + debug(nonNumber) + ' is not a Number'
+			);
+			t['throws'](
+				function () { ES.Number.multiply(0, nonNumber); },
+				TypeError,
+				'y: ' + debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		t.ok(is(ES.Number.multiply(Infinity, +0), NaN), '+∞ * +0 is NaN');
+		t.ok(is(ES.Number.multiply(Infinity, -0), NaN), '+∞ * -0 is NaN');
+		t.ok(is(ES.Number.multiply(-Infinity, +0), NaN), '-∞ * +0 is NaN');
+		t.ok(is(ES.Number.multiply(-Infinity, -0), NaN), '-∞ * -0 is NaN');
+
+		t.equal(ES.Number.multiply(Infinity, Infinity), Infinity, '+∞ * +∞ is +∞');
+		t.equal(ES.Number.multiply(Infinity, -Infinity), -Infinity, '+∞ * -∞ is -∞');
+		t.equal(ES.Number.multiply(-Infinity, Infinity), -Infinity, '-∞ * +∞ is -∞');
+		t.equal(ES.Number.multiply(-Infinity, -Infinity), Infinity, '-∞ * -∞ is +∞');
+
+		t.ok(is(ES.Number.multiply(+0, +0), +0), '0 * 0 is +0');
+		t.ok(is(ES.Number.multiply(+0, -0), -0), '0 * -0 is -0');
+		t.ok(is(ES.Number.multiply(-0, +0), -0), '-0 * 0 is -0');
+		t.ok(is(ES.Number.multiply(-0, -0), +0), '-0 * -0 is +0');
+
+		forEach(v.numbers, function (number) {
+			t.ok(is(ES.Number.multiply(NaN, number), NaN), 'NaN * ' + debug(number) + ' is NaN');
+			t.ok(is(ES.Number.multiply(number, NaN), NaN), debug(number) + ' * NaN is NaN');
+
+			if (number !== 0 && isFinite(number)) {
+				t.ok(is(ES.Number.multiply(number, 0), number > 0 ? 0 : -0), debug(number) + ' * +0 produces ' + (number > 0 ? '+0' : '-0'));
+				t.ok(is(ES.Number.multiply(number, -0), number > 0 ? -0 : 0), debug(number) + ' * -0 produces ' + (number > 0 ? '-0' : '+0'));
+				t.equal(ES.Number.multiply(number, 1), number, debug(number) + ' * 1 produces itself');
+				t.equal(ES.Number.multiply(number, -42), number * -42, debug(number) + ' * -42 produces ' + (number - 42));
+			}
+		});
+
+		t.end();
+	});
+
+	test('Number::remainder', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.Number.remainder(nonNumber, 0); },
+				TypeError,
+				'x: ' + debug(nonNumber) + ' is not a Number'
+			);
+			t['throws'](
+				function () { ES.Number.remainder(0, nonNumber); },
+				TypeError,
+				'y: ' + debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		t.ok(is(ES.Number.remainder(NaN, NaN), NaN), 'NaN % NaN is NaN');
+
+		t.ok(is(ES.Number.remainder(+0, +0), NaN), '+0 % +0 is NaN');
+		t.ok(is(ES.Number.remainder(+0, -0), NaN), '+0 % -0 is NaN');
+		t.ok(is(ES.Number.remainder(-0, +0), NaN), '-0 % +0 is NaN');
+		t.ok(is(ES.Number.remainder(-0, -0), NaN), '-0 % -0 is NaN');
+
+		forEach(v.numbers, function (number) {
+			t.ok(is(ES.Number.remainder(number, NaN), NaN), debug(number) + ' % NaN is NaN');
+			t.ok(is(ES.Number.remainder(NaN, number), NaN), 'NaN % ' + debug(number) + ' is NaN');
+
+			t.ok(is(ES.Number.remainder(Infinity, number), NaN), '+∞ % ' + debug(number) + ' is NaN');
+			t.ok(is(ES.Number.remainder(-Infinity, number), NaN), '-∞ % ' + debug(number) + ' is NaN');
+			t.ok(is(ES.Number.remainder(number, 0), NaN), debug(number) + ' % +0 is NaN');
+			t.ok(is(ES.Number.remainder(number, -0), NaN), debug(number) + ' % -0 is NaN');
+
+			if (isFinite(number)) {
+				t.equal(ES.Number.remainder(number, Infinity), number, debug(number) + ' % +∞ is ' + debug(number));
+				t.equal(ES.Number.remainder(number, -Infinity), number, debug(number) + ' % -∞ is ' + debug(number));
+				if (number !== 0) {
+					t.ok(is(ES.Number.remainder(0, number), 0), '+0 % ' + debug(number) + ' is ' + debug(number));
+					t.ok(is(ES.Number.remainder(-0, number), -0), '-0 % ' + debug(number) + ' is ' + debug(number));
+				}
+			}
+		});
+
+		t.end();
+	});
+
+	test('Number::sameValue', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.Number.sameValue(nonNumber, 0); },
+				TypeError,
+				'x: ' + debug(nonNumber) + ' is not a Number'
+			);
+			t['throws'](
+				function () { ES.Number.sameValue(0, nonNumber); },
+				TypeError,
+				'y: ' + debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		t.ok(ES.Number.sameValue(NaN, NaN), true, 'NaN is the sameValue as NaN');
+
+		t.equal(ES.Number.sameValue(+0, +0), true, '+0 is sameValue as +0');
+		t.equal(ES.Number.sameValue(+0, -0), false, '+0 is not sameValue as -0');
+		t.equal(ES.Number.sameValue(-0, +0), false, '-0 is not sameValue as +0');
+		t.equal(ES.Number.sameValue(-0, -0), true, '-0 is sameValue as -0');
+
+		forEach(v.numbers, function (number) {
+			t.ok(ES.Number.sameValue(number, number), debug(number) + ' is the sameValue as itself');
+		});
+
+		t.end();
+	});
+
+	test('Number::sameValueZero', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.Number.sameValueZero(nonNumber, 0); },
+				TypeError,
+				'x: ' + debug(nonNumber) + ' is not a Number'
+			);
+			t['throws'](
+				function () { ES.Number.sameValueZero(0, nonNumber); },
+				TypeError,
+				'y: ' + debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		t.ok(ES.Number.sameValueZero(NaN, NaN), true, 'NaN is the sameValueZero as NaN');
+
+		t.equal(ES.Number.sameValueZero(+0, +0), true, '+0 is sameValueZero as +0');
+		t.equal(ES.Number.sameValueZero(+0, -0), true, '+0 is sameValueZero as -0');
+		t.equal(ES.Number.sameValueZero(-0, +0), true, '-0 is sameValueZero as +0');
+		t.equal(ES.Number.sameValueZero(-0, -0), true, '-0 is sameValueZero as -0');
+
+		forEach(v.numbers, function (number) {
+			t.ok(ES.Number.sameValueZero(number, number), debug(number) + ' is the sameValueZero as itself');
+		});
+
+		t.end();
+	});
+
+	test('Number::signedRightShift', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.Number.signedRightShift(nonNumber, 0); },
+				TypeError,
+				'x: ' + debug(nonNumber) + ' is not a Number'
+			);
+			t['throws'](
+				function () { ES.Number.signedRightShift(0, nonNumber); },
+				TypeError,
+				'y: ' + debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		forEach([0].concat(v.int32s), function (int32) {
+			forEach([1, 3, 5, 31, 32, 33], function (bits) {
+				t.equal(ES.Number.signedRightShift(int32, bits), int32 >> bits, debug(int32) + ' >> ' + bits + ' is ' + debug(int32 >> bits));
+			});
+		});
+
+		t.end();
+	});
+
+	test('Number::subtract', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.Number.subtract(nonNumber, 0); },
+				TypeError,
+				'x: ' + debug(nonNumber) + ' is not a Number'
+			);
+			t['throws'](
+				function () { ES.Number.subtract(0, nonNumber); },
+				TypeError,
+				'y: ' + debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		t.ok(is(ES.Number.subtract(+0, +0), +0), '0 - 0 is +0');
+		t.ok(is(ES.Number.subtract(+0, -0), +0), '0 - -0 is +0');
+		t.ok(is(ES.Number.subtract(-0, +0), -0), '-0 - 0 is -0');
+		t.ok(is(ES.Number.subtract(-0, -0), +0), '-0 - -0 is +0');
+
+		forEach(v.numbers, function (number) {
+			if (number !== 0) {
+				t.equal(ES.Number.subtract(number, 0), number, debug(number) + ' - 0 produces ' + number);
+			}
+			t.equal(ES.Number.subtract(number, 1), number - 1, debug(number) + ' - 1 produces ' + (number + 1));
+			t.equal(ES.Number.subtract(number, 42), number - 42, debug(number) + ' - 42 produces ' + (number - 42));
+		});
+
+		t.end();
+	});
+
+	test('Number::toString', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.Number.toString(nonNumber); },
+				TypeError,
+				debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		forEach(v.numbers, function (number) {
+			t.equal(ES.Number.toString(number), String(number), debug(number) + ' stringifies to ' + number);
+		});
+
+		t.end();
+	});
+
+	test('Number::unaryMinus', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.Number.unaryMinus(nonNumber); },
+				TypeError,
+				debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		t.ok(is(ES.Number.unaryMinus(NaN), NaN), 'NaN produces NaN');
+
+		forEach(v.numbers, function (number) {
+			t.ok(is(ES.Number.unaryMinus(number), -number), debug(number) + ' produces -' + debug(number));
+		});
+
+		t.end();
+	});
+
+	test('Number::unsignedRightShift', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.Number.unsignedRightShift(nonNumber, 0); },
+				TypeError,
+				'x: ' + debug(nonNumber) + ' is not a Number'
+			);
+			t['throws'](
+				function () { ES.Number.unsignedRightShift(0, nonNumber); },
+				TypeError,
+				'y: ' + debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		forEach([0].concat(v.int32s), function (int32) {
+			forEach([1, 3, 5, 31, 32, 33], function (bits) {
+				t.equal(ES.Number.unsignedRightShift(int32, bits), int32 >>> bits, debug(int32) + ' >>> ' + bits + ' is ' + debug(int32 >>> bits));
+			});
+		});
+
+		t.end();
+	});
 };
 
 module.exports = {

@@ -10,16 +10,40 @@ module.exports = function diffOperations(actual, expected, expectedMissing) {
 
 	var extra = [];
 	var missing = [];
+
 	forEach(actualKeys, function (op) {
 		if (!(op in expected)) {
-			extra.push(op);
+			if (actual[op] && typeof actual[op] === 'object') {
+				forEach(keys(actual[op]), function (nestedOp) {
+					var fullNestedOp = op + '::' + nestedOp;
+					if (!(fullNestedOp in expected)) {
+						extra.push(fullNestedOp);
+					} else if (indexOf(expectedMissing, fullNestedOp) !== -1) {
+						extra.push(fullNestedOp);
+					}
+				});
+			} else {
+				extra.push(op);
+			}
 		} else if (indexOf(expectedMissing, op) !== -1) {
 			extra.push(op);
 		}
 	});
-	forEach(expectedKeys, function (op) {
-		if (typeof actual[op] !== 'function' && indexOf(expectedMissing, op) === -1) {
+	var checkMissing = function checkMissing(op, actualValue) {
+		if (typeof actualValue !== 'function' && indexOf(expectedMissing, op) === -1) {
+			console.log('m', op);
 			missing.push(op);
+		}
+	};
+	forEach(expectedKeys, function (op) {
+		if (op.indexOf('::') > -1) {
+			var parts = op.split('::');
+			var value = actual[parts[0]];
+			if (value && typeof value === 'object' && typeof value[parts[1]] === 'function') {
+				checkMissing(op, value[parts[1]]);
+			}
+		} else {
+			checkMissing(op, actual[op]);
 		}
 	});
 

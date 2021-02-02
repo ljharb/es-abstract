@@ -9,14 +9,25 @@ const years = require('./years');
 const writtenFiles = [5].concat(years).flatMap((year, i, arr) => {
 	if ((i + 1) < arr.length) {
 		const ops = fs.readdirSync(path.join(process.cwd(), String(year)));
-		return ops.map((opFile) => {
+		return ops.flatMap((opFile) => {
+			const maybeDirPath = path.join(process.cwd(), String(year), opFile);
+			if (fs.statSync(maybeDirPath).isDirectory()) {
+				return fs.readdirSync(maybeDirPath).map((x) => `${opFile}::${path.basename(x, path.extname(x))}`);
+			}
+			return opFile;
+		}).map((opFile) => {
 			const op = path.basename(opFile, path.extname(opFile));
-			const thisFile = path.join(process.cwd(), String(year), `${op}.js`);
+			const opPath = op.replace('::', '/');
+			const thisFile = path.join(process.cwd(), String(year), `${opPath}.js`);
 			const nextYear = arr[i + 1];
-			const nextFile = path.join(process.cwd(), String(nextYear), `${op}.js`);
+			const nextFile = path.join(process.cwd(), String(nextYear), `${opPath}.js`);
+			console.log('**', opFile, op, opPath, thisFile, nextFile);
+			if (op.includes('::')) {
+				fs.mkdirSync(path.dirname(nextFile), { recursive: true });
+			}
 			if (!deltas[nextYear].removed.has(op) && fs.existsSync(thisFile) && !fs.existsSync(nextFile)) {
-				console.log(`writing: ${nextYear}/${op} -> ${year}/${op}`);
-				const thisSpecifier = `../${year}/${op}`;
+				console.log(`writing: ${nextYear}/${opPath} -> ${year}/${opPath}`);
+				const thisSpecifier = `../${year}/${opPath}`;
 				const reexport = `'use strict';
 
 module.exports = require('${thisSpecifier}');
