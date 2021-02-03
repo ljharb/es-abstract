@@ -23,6 +23,8 @@ var assertRecordTests = require('./helpers/assertRecord');
 var v = require('es-value-fixtures');
 var diffOps = require('./diffOps');
 
+var $BigInt = typeof BigInt === 'function' ? BigInt : null;
+
 var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1;
 
 var canDistinguishSparseFromUndefined = 0 in [undefined]; // IE 6 - 8 have a bug where this returns false
@@ -5636,6 +5638,450 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			forEach([1, 3, 5, 31, 32, 33], function (bits) {
 				t.equal(ES.Number.unsignedRightShift(int32, bits), int32 >>> bits, debug(int32) + ' >>> ' + bits + ' is ' + debug(int32 >>> bits));
 			});
+		});
+
+		t.end();
+	});
+
+	test('BigInt::add', function (t) {
+		forEach(v.nonBigInts, function (nonBigInt) {
+			t['throws'](
+				function () { ES.BigInt.add(nonBigInt, 0); },
+				TypeError,
+				'x: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+			t['throws'](
+				function () { ES.BigInt.add(0, nonBigInt); },
+				TypeError,
+				'y: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+		});
+
+		t.ok(is(ES.BigInt.add($BigInt(0), $BigInt(0)), $BigInt(0)), '0n + 0n is 0n');
+
+		forEach(v.bigints, function (bigint) {
+			if (bigint !== $BigInt(0)) {
+				t.equal(ES.BigInt.add(bigint, $BigInt(0)), bigint, debug(bigint) + ' + 0n adds to ' + bigint);
+			}
+			t.equal(ES.BigInt.add(bigint, $BigInt(1)), bigint + $BigInt(1), debug(bigint) + ' + 1n adds to ' + (bigint + $BigInt(1)));
+			t.equal(ES.BigInt.add(bigint, -$BigInt(42)), bigint - $BigInt(42), debug(bigint) + ' + -42n adds to ' + (bigint - $BigInt(42)));
+		});
+
+		t.end();
+	});
+
+	test('BigInt::bitwiseAND', function (t) {
+		forEach(v.nonBigInts, function (nonBigInt) {
+			t['throws'](
+				function () { ES.BigInt.bitwiseAND(nonBigInt, $BigInt(0)); },
+				TypeError,
+				'x: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+			t['throws'](
+				function () { ES.BigInt.bitwiseAND($BigInt(0), nonBigInt); },
+				TypeError,
+				'y: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+		});
+
+		t.equal(ES.BigInt.bitwiseAND($BigInt(1), $BigInt(2)), $BigInt(1) & $BigInt(2));
+
+		t.end();
+	});
+
+	test('BigInt::bitwiseNOT', function (t) {
+		forEach(v.nonBigInts, function (nonBigInt) {
+			t['throws'](
+				function () { ES.BigInt.bitwiseNOT(nonBigInt); },
+				TypeError,
+				debug(nonBigInt) + ' is not a BigInt'
+			);
+		});
+
+		forEach(v.int32s, function (int32) {
+			var bigInt32 = $BigInt(int32);
+			t.equal(ES.BigInt.bitwiseNOT(bigInt32), ~bigInt32, debug(bigInt32) + ' becomes ~' + debug(bigInt32));
+		});
+
+		t.end();
+	});
+
+	test('BigInt::bitwiseOR', function (t) {
+		forEach(v.nonBigInts, function (nonBigInt) {
+			t['throws'](
+				function () { ES.BigInt.bitwiseOR(nonBigInt, $BigInt(0)); },
+				TypeError,
+				'x: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+			t['throws'](
+				function () { ES.BigInt.bitwiseOR($BigInt(0), nonBigInt); },
+				TypeError,
+				'y: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+		});
+
+		t.equal(ES.BigInt.bitwiseOR($BigInt(1), $BigInt(2)), $BigInt(1) | $BigInt(2));
+
+		t.end();
+	});
+
+	test('BigInt::bitwiseXOR', function (t) {
+		forEach(v.nonBigInts, function (nonBigInt) {
+			t['throws'](
+				function () { ES.BigInt.bitwiseXOR(nonBigInt, $BigInt(0)); },
+				TypeError,
+				'x: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+			t['throws'](
+				function () { ES.BigInt.bitwiseXOR($BigInt(0), nonBigInt); },
+				TypeError,
+				'y: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+		});
+
+		t.equal(ES.BigInt.bitwiseXOR($BigInt(1), $BigInt(2)), $BigInt(1) ^ $BigInt(2));
+
+		t.end();
+	});
+
+	test('BigInt::divide', function (t) {
+		forEach(v.nonBigInts, function (nonBigInt) {
+			t['throws'](
+				function () { ES.BigInt.divide(nonBigInt, $BigInt(0)); },
+				TypeError,
+				'x: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+			t['throws'](
+				function () { ES.BigInt.divide($BigInt(0), nonBigInt); },
+				TypeError,
+				'y: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+		});
+
+		forEach(v.bigints, function (bigint) {
+			if (bigint !== $BigInt(0)) {
+				t.equal(ES.BigInt.divide(bigint, bigint), $BigInt(1), debug(bigint) + ' divided by itself is 1n');
+				t.equal(ES.BigInt.divide(bigint, $BigInt(2)), bigint / $BigInt(2), debug(bigint) + ' divided by 2n is half itself');
+			}
+		});
+
+		t.end();
+	});
+
+	test('BigInt::equal', function (t) {
+		forEach(v.nonBigInts, function (nonBigInt) {
+			t['throws'](
+				function () { ES.BigInt.equal(nonBigInt, $BigInt(0)); },
+				TypeError,
+				'x: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+			t['throws'](
+				function () { ES.Number.equal($BigInt(0), nonBigInt); },
+				TypeError,
+				'y: ' + debug(nonBigInt) + ' is not a Number'
+			);
+		});
+
+		forEach(v.bigints, function (bigint) {
+			if (BigInt !== $BigInt(0)) {
+				t.equal(ES.BigInt.equal(bigint, bigint), true, debug(bigint) + ' is equal to itself');
+				t.equal(ES.BigInt.equal(bigint, bigint + $BigInt(1)), false, debug(bigint) + ' is not equal to itself plus 1n');
+			}
+		});
+
+		t.end();
+	});
+
+	test('BigInt::exponentiate', function (t) {
+		forEach(v.nonBigInts, function (nonBigInt) {
+			t['throws'](
+				function () { ES.BigInt.exponentiate(nonBigInt, $BigInt(0)); },
+				TypeError,
+				'base: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+			t['throws'](
+				function () { ES.BigInt.exponentiate($BigInt(0), nonBigInt); },
+				TypeError,
+				'exponent: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+		});
+
+		forEach(v.bigints, function (bigint) {
+			if (bigint !== $BigInt(0)) {
+				t.equal(ES.BigInt.exponentiate(bigint, $BigInt(0)), $BigInt(1), debug(bigint) + ' ** 0n is 1n');
+
+				var square = bigint;
+				for (var i = 0; i < Number(bigint); i += 1) {
+					square += bigint;
+				}
+				t.equal(ES.BigInt.exponentiate(bigint, bigint), square, debug(bigint) + ' ** ' + debug(bigint) + ' is equal to ' + debug(square));
+			}
+		});
+
+		t.end();
+	});
+
+	test('BigInt::leftShift', function (t) {
+		forEach(v.nonBigInts, function (nonBigInt) {
+			t['throws'](
+				function () { ES.BigInt.leftShift(nonBigInt, $BigInt(0)); },
+				TypeError,
+				'x: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+			t['throws'](
+				function () { ES.BigInt.leftShift($BigInt(0), nonBigInt); },
+				TypeError,
+				'y: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+		});
+
+		forEach([0].concat(v.int32s), function (int32) {
+			var bigInt32 = $BigInt(int32);
+			forEach([1, 3, 5, 31, 32, 33], function (bits) {
+				var bitsN = $BigInt(bits);
+				t.equal(
+					ES.BigInt.leftShift(bigInt32, bitsN),
+					bigInt32 << bitsN,
+					debug(bigInt32) + ' << ' + debug(bitsN) + ' is ' + debug(bigInt32 << bitsN)
+				);
+			});
+		});
+
+		t.end();
+	});
+
+	test('BigInt::lessThan', function (t) {
+		forEach(v.nonBigInts, function (nonBigInt) {
+			t['throws'](
+				function () { ES.BigInt.lessThan(nonBigInt, $BigInt(0)); },
+				TypeError,
+				'x: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+			t['throws'](
+				function () { ES.BigInt.lessThan($BigInt(0), nonBigInt); },
+				TypeError,
+				'y: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+		});
+
+		t.equal(ES.BigInt.lessThan($BigInt(0), $BigInt(0)), false, '0n < 0n is false');
+
+		forEach(v.bigints, function (bigint) {
+			t.equal(ES.BigInt.lessThan(bigint, bigint), false, debug(bigint) + ' is not less than itself');
+
+			t.equal(ES.BigInt.lessThan(bigint, bigint + $BigInt(1)), true, debug(bigint) + ' < ' + debug(bigint + $BigInt(1)) + ' is true');
+			t.equal(ES.BigInt.lessThan(bigint + $BigInt(1), bigint), false, debug(bigint + $BigInt(1)) + ' < ' + debug(bigint) + ' is false');
+		});
+
+		t.end();
+	});
+
+	test('BigInt::multiply', function (t) {
+		forEach(v.nonBigInts, function (nonBigInt) {
+			t['throws'](
+				function () { ES.BigInt.multiply(nonBigInt, $BigInt(0)); },
+				TypeError,
+				'x: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+			t['throws'](
+				function () { ES.BigInt.multiply($BigInt(0), nonBigInt); },
+				TypeError,
+				'y: ' + debug(nonBigInt) + ' is not a Number'
+			);
+		});
+
+		t.ok(is(ES.BigInt.multiply($BigInt(0), $BigInt(0)), $BigInt(0)), '0n * 0n is 0n');
+
+		forEach(v.bigints, function (bigint) {
+			if (bigint !== $BigInt(0)) {
+				t.ok(is(ES.BigInt.multiply(bigint, $BigInt(0)), $BigInt(0)), debug(bigint) + ' * 0n produces 0n');
+				t.equal(ES.BigInt.multiply(bigint, $BigInt(1)), bigint, debug(bigint) + ' * 1n produces itself');
+				t.equal(ES.BigInt.multiply(bigint, -$BigInt(42)), bigint * -$BigInt(42), debug(bigint) + ' * -42n produces ' + (bigint - $BigInt(42)));
+			}
+		});
+
+		t.end();
+	});
+
+	test('BigInt::remainder', function (t) {
+		forEach(v.nonBigInts, function (nonBigInt) {
+			t['throws'](
+				function () { ES.BigInt.remainder(nonBigInt, $BigInt(0)); },
+				TypeError,
+				'x: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+			t['throws'](
+				function () { ES.BigInt.remainder($BigInt(0), nonBigInt); },
+				TypeError,
+				'y: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+		});
+
+		forEach(v.bigints, function (bigint) {
+			if (bigint !== $BigInt(0)) {
+				t.ok(is(ES.BigInt.remainder($BigInt(0), bigint), $BigInt(0)), '0n % ' + debug(bigint) + ' is ' + debug(bigint));
+			}
+		});
+
+		t.end();
+	});
+
+	test('BigInt::sameValue', function (t) {
+		forEach(v.nonBigInts, function (nonBigInt) {
+			t['throws'](
+				function () { ES.BigInt.sameValue(nonBigInt, $BigInt(0)); },
+				TypeError,
+				'x: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+			t['throws'](
+				function () { ES.BigInt.sameValue($BigInt(0), nonBigInt); },
+				TypeError,
+				'y: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+		});
+
+		t.equal(ES.BigInt.sameValue($BigInt(0), $BigInt(0)), true, '0n is sameValue as 0n');
+
+		forEach(v.bigints, function (bigint) {
+			t.ok(ES.BigInt.sameValue(bigint, bigint), debug(bigint) + ' is the sameValue as itself');
+		});
+
+		t.end();
+	});
+
+	test('BigInt::sameValueZero', function (t) {
+		forEach(v.nonBigInts, function (nonBigInt) {
+			t['throws'](
+				function () { ES.BigInt.sameValueZero(nonBigInt, $BigInt(0)); },
+				TypeError,
+				'x: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+			t['throws'](
+				function () { ES.BigInt.sameValueZero($BigInt(0), nonBigInt); },
+				TypeError,
+				'y: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+		});
+
+		forEach(v.bigints, function (bigint) {
+			t.ok(ES.BigInt.sameValueZero(bigint, bigint), debug(bigint) + ' is the sameValueZero as itself');
+		});
+
+		t.end();
+	});
+
+	test('BigInt::signedRightShift', function (t) {
+		forEach(v.nonBigInts, function (nonBigInt) {
+			t['throws'](
+				function () { ES.BigInt.signedRightShift(nonBigInt, $BigInt(0)); },
+				TypeError,
+				'x: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+			t['throws'](
+				function () { ES.BigInt.signedRightShift($BigInt(0), nonBigInt); },
+				TypeError,
+				'y: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+		});
+
+		forEach([0].concat(v.int32s), function (int32) {
+			var bigInt32 = $BigInt(int32);
+			forEach([1, 3, 5, 31, 32, 33], function (bits) {
+				var bitsN = $BigInt(bits);
+				t.equal(
+					ES.BigInt.signedRightShift(bigInt32, bitsN),
+					bigInt32 >> bitsN,
+					debug(bigInt32) + ' >> ' + debug(bitsN) + ' is ' + debug(bigInt32 >> bitsN)
+				);
+			});
+		});
+
+		t.end();
+	});
+
+	test('BigInt::unsignedRightShift', function (t) {
+		forEach(v.nonBigInts, function (nonBigInt) {
+			t['throws'](
+				function () { ES.BigInt.unsignedRightShift(nonBigInt, $BigInt(0)); },
+				TypeError,
+				'x: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+			t['throws'](
+				function () { ES.BigInt.unsignedRightShift($BigInt(0), nonBigInt); },
+				TypeError,
+				'y: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+		});
+
+		forEach([0].concat(v.int32s), function (int32) {
+			var bigInt32 = $BigInt(int32);
+			forEach([1, 3, 5, 31, 32, 33], function (bits) {
+				var bitsN = $BigInt(bits);
+				t['throws'](
+					function () { ES.BigInt.unsignedRightShift(bigInt32, bitsN); },
+					TypeError,
+					debug(bigInt32) + ' >>> ' + debug(bitsN) + ' throws'
+				);
+			});
+		});
+
+		t.end();
+	});
+
+	test('BigInt::subtract', function (t) {
+		forEach(v.nonBigInts, function (nonBigInt) {
+			t['throws'](
+				function () { ES.BigInt.subtract(nonBigInt, $BigInt(0)); },
+				TypeError,
+				'x: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+			t['throws'](
+				function () { ES.BigInt.subtract($BigInt(0), nonBigInt); },
+				TypeError,
+				'y: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+		});
+
+		t.ok(is(ES.BigInt.subtract($BigInt(0), $BigInt(0)), $BigInt(0)), '0n - 0n is 0n');
+
+		forEach(v.bigints, function (bigint) {
+			t.equal(ES.BigInt.subtract(bigint, $BigInt(0)), bigint, debug(bigint) + ' - 0n produces ' + bigint);
+			t.equal(ES.BigInt.subtract(bigint, $BigInt(1)), bigint - $BigInt(1), debug(bigint) + ' - 1n produces ' + (bigint + $BigInt(1)));
+			t.equal(ES.BigInt.subtract(bigint, $BigInt(42)), bigint - $BigInt(42), debug(bigint) + ' - 42n produces ' + (bigint - $BigInt(42)));
+		});
+
+		t.end();
+	});
+
+	test('BigInt::toString', function (t) {
+		forEach(v.nonBigInts, function (nonBigInt) {
+			t['throws'](
+				function () { ES.BigInt.toString(nonBigInt); },
+				TypeError,
+				debug(nonBigInt) + ' is not a BigInt'
+			);
+		});
+
+		forEach(v.bigints, function (bigint) {
+			t.equal(ES.BigInt.toString(bigint), String(bigint), debug(bigint) + ' stringifies to ' + bigint);
+		});
+
+		t.end();
+	});
+
+	test('Number::unaryMinus', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.Number.unaryMinus(nonNumber); },
+				TypeError,
+				debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		t.ok(is(ES.Number.unaryMinus(NaN), NaN), 'NaN produces NaN');
+
+		forEach(v.numbers, function (number) {
+			t.ok(is(ES.Number.unaryMinus(number), -number), debug(number) + ' produces -' + debug(number));
 		});
 
 		t.end();

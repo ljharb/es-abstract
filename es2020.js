@@ -12,6 +12,7 @@ var ES2020 = {
 	ArrayCreate: require('./2020/ArrayCreate'),
 	ArraySetLength: require('./2020/ArraySetLength'),
 	ArraySpeciesCreate: require('./2020/ArraySpeciesCreate'),
+	BigInt: require('./2020/BigInt'),
 	BigIntBitwiseOp: require('./2020/BigIntBitwiseOp'),
 	BinaryAnd: require('./2020/BinaryAnd'),
 	BinaryOr: require('./2020/BinaryOr'),
