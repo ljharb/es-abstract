@@ -8,7 +8,7 @@ var ToInt32 = require('./ToInt32');
 var ToUint32 = require('./ToUint32');
 var Type = require('./Type');
 
-// https://ecma-international.org/ecma-262/11.0/#sec-numberbitwiseop
+// https://262.ecma-international.org/11.0/#sec-numberbitwiseop
 
 module.exports = function NumberBitwiseOp(op, x, y) {
 	if (op !== '&' && op !== '|' && op !== '^') {

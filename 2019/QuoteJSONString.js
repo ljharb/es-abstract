@@ -19,7 +19,7 @@ var UTF16Encoding = require('./UTF16Encoding');
 
 var has = require('has');
 
-// https://ecma-international.org/ecma-262/10.0/#sec-quotejsonstring
+// https://262.ecma-international.org/10.0/#sec-quotejsonstring
 
 var escapes = {
 	'\u0008': '\\b',

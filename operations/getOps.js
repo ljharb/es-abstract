@@ -84,7 +84,7 @@ async function getOps(year) {
 
 		return [
 			aoid,
-			`https://ecma-international.org/ecma-262/${edition}.0/#${id}`,
+			`https://262.ecma-international.org/${edition}.0/#${id}`,
 		];
 	}).filter((x) => x && x[0]);
 
@@ -94,50 +94,50 @@ async function getOps(year) {
 
 	if (year === 2015) {
 		entries.push(
-			['abs', 'https://ecma-international.org/ecma-262/6.0/#sec-algorithm-conventions'],
-			['Abstract Equality Comparison', 'https://ecma-international.org/ecma-262/6.0/#sec-abstract-equality-comparison'],
-			['Abstract Relational Comparison', 'https://ecma-international.org/ecma-262/6.0/#sec-abstract-relational-comparison'],
-			['DateFromTime', 'https://ecma-international.org/ecma-262/6.0/#sec-date-number'],
-			['Day', 'https://ecma-international.org/ecma-262/6.0/#sec-day-number-and-time-within-day'],
-			['DayFromYear', 'https://ecma-international.org/ecma-262/6.0/#sec-year-number'],
-			['DaysInYear', 'https://ecma-international.org/ecma-262/6.0/#sec-year-number'],
-			['DayWithinYear', 'https://ecma-international.org/ecma-262/6.0/#sec-month-number'],
-			['floor', 'https://ecma-international.org/ecma-262/6.0/#sec-algorithm-conventions'],
-			['GetBase', 'https://ecma-international.org/ecma-262/6.0/#sec-jobs-and-job-queues'],
-			['GetReferencedName', 'https://ecma-international.org/ecma-262/6.0/#sec-jobs-and-job-queues'],
-			['HasPrimitiveBase', 'https://ecma-international.org/ecma-262/6.0/#sec-jobs-and-job-queues'],
+			['abs', 'https://262.ecma-international.org/6.0/#sec-algorithm-conventions'],
+			['Abstract Equality Comparison', 'https://262.ecma-international.org/6.0/#sec-abstract-equality-comparison'],
+			['Abstract Relational Comparison', 'https://262.ecma-international.org/6.0/#sec-abstract-relational-comparison'],
+			['DateFromTime', 'https://262.ecma-international.org/6.0/#sec-date-number'],
+			['Day', 'https://262.ecma-international.org/6.0/#sec-day-number-and-time-within-day'],
+			['DayFromYear', 'https://262.ecma-international.org/6.0/#sec-year-number'],
+			['DaysInYear', 'https://262.ecma-international.org/6.0/#sec-year-number'],
+			['DayWithinYear', 'https://262.ecma-international.org/6.0/#sec-month-number'],
+			['floor', 'https://262.ecma-international.org/6.0/#sec-algorithm-conventions'],
+			['GetBase', 'https://262.ecma-international.org/6.0/#sec-jobs-and-job-queues'],
+			['GetReferencedName', 'https://262.ecma-international.org/6.0/#sec-jobs-and-job-queues'],
+			['HasPrimitiveBase', 'https://262.ecma-international.org/6.0/#sec-jobs-and-job-queues'],
 			['HostResolveImportedModule', 'sec-hostresolveimportedmodule'],
-			['HourFromTime', 'https://ecma-international.org/ecma-262/6.0/#sec-hours-minutes-second-and-milliseconds'],
-			['InLeapYear', 'https://ecma-international.org/ecma-262/6.0/#sec-year-number'],
-			['IsPropertyReference', 'https://ecma-international.org/ecma-262/6.0/#sec-jobs-and-job-queues'],
-			['IsStrictReference', 'https://ecma-international.org/ecma-262/6.0/#sec-jobs-and-job-queues'],
-			['IsSuperReference', 'https://ecma-international.org/ecma-262/6.0/#sec-jobs-and-job-queues'],
-			['IsUnresolvableReference', 'https://ecma-international.org/ecma-262/6.0/#sec-jobs-and-job-queues'],
-			['max', 'https://ecma-international.org/ecma-262/6.0/#sec-algorithm-conventions'],
-			['min', 'https://ecma-international.org/ecma-262/6.0/#sec-algorithm-conventions'],
-			['MinFromTime', 'https://ecma-international.org/ecma-262/6.0/#sec-hours-minutes-second-and-milliseconds'],
-			['modulo', 'https://ecma-international.org/ecma-262/6.0/#sec-algorithm-conventions'],
-			['MonthFromTime', 'https://ecma-international.org/ecma-262/6.0/#sec-month-number'],
-			['msFromTime', 'https://ecma-international.org/ecma-262/6.0/#sec-hours-minutes-second-and-milliseconds'],
-			['msPerDay', 'https://ecma-international.org/ecma-262/6.0/#sec-day-number-and-time-within-day'],
-			['SecFromTime', 'https://ecma-international.org/ecma-262/6.0/#sec-hours-minutes-second-and-milliseconds'],
-			['sign', 'https://ecma-international.org/ecma-262/6.0/#sec-algorithm-conventions'],
-			['Strict Equality Comparison', 'https://ecma-international.org/ecma-262/6.0/#sec-strict-equality-comparison'],
-			['thisBooleanValue', 'https://ecma-international.org/ecma-262/6.0/#sec-properties-of-the-boolean-prototype-object'],
-			['thisNumberValue', 'https://ecma-international.org/ecma-262/6.0/#sec-properties-of-the-number-prototype-object'],
-			['thisStringValue', 'https://ecma-international.org/ecma-262/6.0/#sec-properties-of-the-string-prototype-object'],
-			['thisTimeValue', 'https://ecma-international.org/ecma-262/6.0/#sec-properties-of-the-date-prototype-object'],
-			['TimeFromYear', 'https://ecma-international.org/ecma-262/6.0/#sec-year-number'],
-			['TimeWithinDay', 'https://ecma-international.org/ecma-262/6.0/#sec-day-number-and-time-within-day'],
-			['ToDateString', 'https://ecma-international.org/ecma-262/6.0/#sec-todatestring'],
-			['Type', 'https://ecma-international.org/ecma-262/6.0/#sec-ecmascript-data-types-and-values'],
-			['WeekDay', 'https://ecma-international.org/ecma-262/6.0/#sec-week-day'],
-			['YearFromTime', 'https://ecma-international.org/ecma-262/6.0/#sec-year-number'],
+			['HourFromTime', 'https://262.ecma-international.org/6.0/#sec-hours-minutes-second-and-milliseconds'],
+			['InLeapYear', 'https://262.ecma-international.org/6.0/#sec-year-number'],
+			['IsPropertyReference', 'https://262.ecma-international.org/6.0/#sec-jobs-and-job-queues'],
+			['IsStrictReference', 'https://262.ecma-international.org/6.0/#sec-jobs-and-job-queues'],
+			['IsSuperReference', 'https://262.ecma-international.org/6.0/#sec-jobs-and-job-queues'],
+			['IsUnresolvableReference', 'https://262.ecma-international.org/6.0/#sec-jobs-and-job-queues'],
+			['max', 'https://262.ecma-international.org/6.0/#sec-algorithm-conventions'],
+			['min', 'https://262.ecma-international.org/6.0/#sec-algorithm-conventions'],
+			['MinFromTime', 'https://262.ecma-international.org/6.0/#sec-hours-minutes-second-and-milliseconds'],
+			['modulo', 'https://262.ecma-international.org/6.0/#sec-algorithm-conventions'],
+			['MonthFromTime', 'https://262.ecma-international.org/6.0/#sec-month-number'],
+			['msFromTime', 'https://262.ecma-international.org/6.0/#sec-hours-minutes-second-and-milliseconds'],
+			['msPerDay', 'https://262.ecma-international.org/6.0/#sec-day-number-and-time-within-day'],
+			['SecFromTime', 'https://262.ecma-international.org/6.0/#sec-hours-minutes-second-and-milliseconds'],
+			['sign', 'https://262.ecma-international.org/6.0/#sec-algorithm-conventions'],
+			['Strict Equality Comparison', 'https://262.ecma-international.org/6.0/#sec-strict-equality-comparison'],
+			['thisBooleanValue', 'https://262.ecma-international.org/6.0/#sec-properties-of-the-boolean-prototype-object'],
+			['thisNumberValue', 'https://262.ecma-international.org/6.0/#sec-properties-of-the-number-prototype-object'],
+			['thisStringValue', 'https://262.ecma-international.org/6.0/#sec-properties-of-the-string-prototype-object'],
+			['thisTimeValue', 'https://262.ecma-international.org/6.0/#sec-properties-of-the-date-prototype-object'],
+			['TimeFromYear', 'https://262.ecma-international.org/6.0/#sec-year-number'],
+			['TimeWithinDay', 'https://262.ecma-international.org/6.0/#sec-day-number-and-time-within-day'],
+			['ToDateString', 'https://262.ecma-international.org/6.0/#sec-todatestring'],
+			['Type', 'https://262.ecma-international.org/6.0/#sec-ecmascript-data-types-and-values'],
+			['WeekDay', 'https://262.ecma-international.org/6.0/#sec-week-day'],
+			['YearFromTime', 'https://262.ecma-international.org/6.0/#sec-year-number'],
 		);
 	} else if (year === 2016) {
 		entries.push(
-			['thisNumberValue', 'https://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-number-prototype-object'],
-			['thisStringValue', 'https://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-string-prototype-object'],
+			['thisNumberValue', 'https://262.ecma-international.org/7.0/#sec-properties-of-the-number-prototype-object'],
+			['thisStringValue', 'https://262.ecma-international.org/7.0/#sec-properties-of-the-string-prototype-object'],
 		);
 	}
 	entries.sort(function (a, b) { return a[0].localeCompare(b[0]); });
@@ -147,7 +147,7 @@ async function getOps(year) {
 	const outputPath = path.join('operations', `${year}.js`);
 	let output = `'use strict';\n\nmodule.exports = ${JSON.stringify(obj, null, '\t')};\n`;
 	if ((year === 5 || year >= 2015) && year < 2018) {
-		output = output.replace(/= \{\n/m, "= {\n\tIsPropertyDescriptor: 'https://ecma-international.org/ecma-262/6.0/#sec-property-descriptor-specification-type', // not actually an abstract op\n\n");
+		output = output.replace(/= \{\n/m, "= {\n\tIsPropertyDescriptor: 'https://262.ecma-international.org/6.0/#sec-property-descriptor-specification-type', // not actually an abstract op\n\n");
 	}
 	await fs.writeFile(outputPath, output);
 

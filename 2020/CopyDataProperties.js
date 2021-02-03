@@ -21,7 +21,7 @@ var ToNumber = require('./ToNumber');
 var ToObject = require('./ToObject');
 var Type = require('./Type');
 
-// https://ecma-international.org/ecma-262/11.0/#sec-copydataproperties
+// https://262.ecma-international.org/11.0/#sec-copydataproperties
 
 module.exports = function CopyDataProperties(target, source, excludedItems) {
 	if (Type(target) !== 'Object') {

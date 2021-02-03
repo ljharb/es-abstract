@@ -10,7 +10,7 @@ var modulo = require('./modulo');
 
 var isCodePoint = require('../helpers/isCodePoint');
 
-// https://ecma-international.org/ecma-262/7.0/#sec-utf16encoding
+// https://262.ecma-international.org/7.0/#sec-utf16encoding
 
 module.exports = function UTF16Encoding(cp) {
 	if (!isCodePoint(cp)) {

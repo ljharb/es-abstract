@@ -9,7 +9,7 @@ var IsCallable = require('./IsCallable');
 var IsPropertyKey = require('./IsPropertyKey');
 
 /**
- * 7.3.9 - https://ecma-international.org/ecma-262/6.0/#sec-getmethod
+ * 7.3.9 - https://262.ecma-international.org/6.0/#sec-getmethod
  * 1. Assert: IsPropertyKey(P) is true.
  * 2. Let func be GetV(O, P).
  * 3. ReturnIfAbrupt(func).

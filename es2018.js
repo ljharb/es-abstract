@@ -1,7 +1,7 @@
 'use strict';
 
 /* eslint global-require: 0 */
-// https://ecma-international.org/ecma-262/9.0/#sec-abstract-operations
+// https://262.ecma-international.org/9.0/#sec-abstract-operations
 var ES2018 = {
 	'Abstract Equality Comparison': require('./2018/AbstractEqualityComparison'),
 	'Abstract Relational Comparison': require('./2018/AbstractRelationalComparison'),

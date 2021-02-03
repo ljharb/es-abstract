@@ -7,7 +7,7 @@ var $TypeError = GetIntrinsic('%TypeError%');
 var SameValue = require('./SameValue');
 var Type = require('./Type');
 
-// https://ecma-international.org/ecma-262/11.0/#sec-samevaluenonnumeric
+// https://262.ecma-international.org/11.0/#sec-samevaluenonnumeric
 
 module.exports = function SameValueNonNumeric(x, y) {
 	var xType = Type(x);

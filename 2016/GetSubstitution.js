@@ -27,7 +27,7 @@ var isStringOrHole = function (capture, index, arr) {
 	return Type(capture) === 'String' || (canDistinguishSparseFromUndefined ? !(index in arr) : Type(capture) === 'Undefined');
 };
 
-// https://ecma-international.org/ecma-262/6.0/#sec-getsubstitution
+// https://262.ecma-international.org/6.0/#sec-getsubstitution
 
 // eslint-disable-next-line max-statements, max-params, max-lines-per-function
 module.exports = function GetSubstitution(matched, str, position, captures, replacement) {

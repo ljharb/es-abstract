@@ -4,7 +4,7 @@ var assertRecord = require('../helpers/assertRecord');
 
 var Type = require('./Type');
 
-// https://ecma-international.org/ecma-262/6.0/#sec-frompropertydescriptor
+// https://262.ecma-international.org/6.0/#sec-frompropertydescriptor
 
 module.exports = function FromPropertyDescriptor(Desc) {
 	if (typeof Desc === 'undefined') {

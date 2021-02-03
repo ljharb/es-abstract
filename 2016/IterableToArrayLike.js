@@ -19,7 +19,7 @@ var ES = {
 	Type: Type
 };
 
-// https://ecma-international.org/ecma-262/7.0/#sec-iterabletoarraylike
+// https://262.ecma-international.org/7.0/#sec-iterabletoarraylike
 /**
  * 1. Let usingIterator be ? GetMethod(items, @@iterator).
  * 2. If usingIterator is not undefined, then
