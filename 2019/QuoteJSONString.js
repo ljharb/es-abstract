@@ -2,7 +2,6 @@
 
 var GetIntrinsic = require('get-intrinsic');
 
-var $fromCharCode = GetIntrinsic('%String.fromCharCode%');
 var $TypeError = GetIntrinsic('%TypeError%');
 
 var callBound = require('call-bind/callBound');
@@ -45,7 +44,7 @@ module.exports = function QuoteJSONString(value) {
 				if (cCharCode < 0x20 || isLeadingSurrogate(C) || isTrailingSurrogate(C)) {
 					product += UnicodeEscape(C);
 				} else {
-					product += $fromCharCode(UTF16Encoding(cCharCode));
+					product += UTF16Encoding(cCharCode);
 				}
 			}
 		});

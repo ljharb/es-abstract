@@ -17,7 +17,7 @@ module.exports = function UTF16Encoding(cp) {
 		throw new $TypeError('Assertion failed: `cp` must be >= 0 and <= 0x10FFFF');
 	}
 	if (cp <= 65535) {
-		return cp;
+		return $fromCharCode(cp);
 	}
 	var cu1 = floor((cp - 65536) / 1024) + 0xD800;
 	var cu2 = modulo(cp - 65536, 1024) + 0xDC00;
