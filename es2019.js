@@ -128,6 +128,7 @@ var ES2019 = {
 	TrimString: require('./2019/TrimString'),
 	Type: require('./2019/Type'),
 	UnicodeEscape: require('./2019/UnicodeEscape'),
+	UTF16Decode: require('./2019/UTF16Decode'),
 	UTF16Encoding: require('./2019/UTF16Encoding'),
 	ValidateAndApplyPropertyDescriptor: require('./2019/ValidateAndApplyPropertyDescriptor'),
 	WeekDay: require('./2019/WeekDay'),
