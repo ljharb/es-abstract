@@ -9,7 +9,7 @@ var $isNaN = require('../helpers/isNaN');
 
 var Type = require('./Type');
 
-// https://262.ecma-international.org/6.0/#sec-todatestring
+// https://ecma-international.org/ecma-262/6.0/#sec-todatestring
 
 module.exports = function ToDateString(tv) {
 	if (Type(tv) !== 'Number') {

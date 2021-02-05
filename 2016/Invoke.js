@@ -10,7 +10,7 @@ var Call = require('./Call');
 var GetV = require('./GetV');
 var IsPropertyKey = require('./IsPropertyKey');
 
-// https://262.ecma-international.org/6.0/#sec-invoke
+// https://ecma-international.org/ecma-262/6.0/#sec-invoke
 
 module.exports = function Invoke(O, P) {
 	if (!IsPropertyKey(P)) {

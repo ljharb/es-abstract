@@ -9,7 +9,7 @@ var isPrimitive = require('../helpers/isPrimitive');
 var $preventExtensions = $Object.preventExtensions;
 var $isExtensible = $Object.isExtensible;
 
-// https://262.ecma-international.org/6.0/#sec-isextensible-o
+// https://ecma-international.org/ecma-262/6.0/#sec-isextensible-o
 
 module.exports = $preventExtensions
 	? function IsExtensible(obj) {

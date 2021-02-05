@@ -12,7 +12,7 @@ var IsConstructor = require('./IsConstructor');
 var IsInteger = require('./IsInteger');
 var Type = require('./Type');
 
-// https://262.ecma-international.org/6.0/#sec-arrayspeciescreate
+// https://ecma-international.org/ecma-262/6.0/#sec-arrayspeciescreate
 
 module.exports = function ArraySpeciesCreate(originalArray, length) {
 	if (!IsInteger(length) || length < 0) {
