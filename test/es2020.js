@@ -174,7 +174,6 @@ var expectedMissing = [
 	'NewPromiseResolveThenableJob',
 	'NormalCompletion',
 	'NotifyWaiter',
-	'NumberToBigInt',
 	'NumberToRawBytes',
 	'NumericToRawBytes',
 	'ObjectDefineProperties',
