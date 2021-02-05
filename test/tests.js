@@ -6157,6 +6157,34 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('UTF16Encode', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.UTF16Encode([nonNumber]); },
+				TypeError,
+				debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		t['throws'](
+			function () { ES.UTF16Encode([-1]); },
+			TypeError,
+			'-1 is < 0'
+		);
+
+		t['throws'](
+			function () { ES.UTF16Encode([0x10FFFF + 1]); },
+			TypeError,
+			'0x10FFFF + 1 is > 0x10FFFF'
+		);
+
+		t.equal(ES.UTF16Encode([0xd83d]), leadingPoo.charAt(0), '0xD83D is the first half of ' + wholePoo);
+		t.equal(ES.UTF16Encode([0xdca9]), trailingPoo.charAt(0), '0xDCA9 is the last half of ' + wholePoo);
+		t.equal(ES.UTF16Encode([0xdca9, 0xdca9]), wholePoo, '0xD83D + 0xDCA9 is ' + wholePoo);
+
+		t.end();
+	});
 };
 
 module.exports = {

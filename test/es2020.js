@@ -230,7 +230,6 @@ var expectedMissing = [
 	'UnicodeMatchPropertyValue',
 	'UpdateEmpty',
 	'UTC', // depends on LocalTZA
-	'UTF16Encode',
 	'ValidateAtomicAccess',
 	'ValidateSharedIntegerTypedArray',
 	'ValidateTypedArray',

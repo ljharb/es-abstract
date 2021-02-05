@@ -147,6 +147,7 @@ var ES2020 = {
 	UnicodeEscape: require('./2020/UnicodeEscape'),
 	UTF16DecodeString: require('./2020/UTF16DecodeString'),
 	UTF16DecodeSurrogatePair: require('./2020/UTF16DecodeSurrogatePair'),
+	UTF16Encode: require('./2020/UTF16Encode'),
 	UTF16Encoding: require('./2020/UTF16Encoding'),
 	ValidateAndApplyPropertyDescriptor: require('./2020/ValidateAndApplyPropertyDescriptor'),
 	WeekDay: require('./2020/WeekDay'),
