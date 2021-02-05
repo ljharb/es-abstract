@@ -15,7 +15,7 @@ var $strSplit = callBound('String.prototype.split');
 
 var Type = require('./Type');
 
-// https://262.ecma-international.org/7.0/#sec-quotejsonstring
+// https://ecma-international.org/ecma-262/7.0/#sec-quotejsonstring
 
 var escapes = {
 	'\u0008': 'b',

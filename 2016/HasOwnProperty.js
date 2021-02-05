@@ -9,7 +9,7 @@ var has = require('has');
 var IsPropertyKey = require('./IsPropertyKey');
 var Type = require('./Type');
 
-// https://262.ecma-international.org/6.0/#sec-hasownproperty
+// https://ecma-international.org/ecma-262/6.0/#sec-hasownproperty
 
 module.exports = function HasOwnProperty(O, P) {
 	if (Type(O) !== 'Object') {

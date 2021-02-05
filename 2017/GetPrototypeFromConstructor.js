@@ -9,7 +9,7 @@ var Get = require('./Get');
 var IsConstructor = require('./IsConstructor');
 var Type = require('./Type');
 
-// https://262.ecma-international.org/6.0/#sec-getprototypefromconstructor
+// https://ecma-international.org/ecma-262/6.0/#sec-getprototypefromconstructor
 
 module.exports = function GetPrototypeFromConstructor(constructor, intrinsicDefaultProto) {
 	var intrinsic = GetIntrinsic(intrinsicDefaultProto); // throws if not a valid intrinsic

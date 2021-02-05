@@ -13,7 +13,7 @@ var $TypeError = GetIntrinsic('%TypeError%');
 
 var $charCodeAt = require('call-bind/callBound')('String.prototype.charCodeAt');
 
-// https://262.ecma-international.org/6.0/#sec-advancestringindex
+// https://ecma-international.org/ecma-262/6.0/#sec-advancestringindex
 
 module.exports = function AdvanceStringIndex(S, index, unicode) {
 	if (Type(S) !== 'String') {

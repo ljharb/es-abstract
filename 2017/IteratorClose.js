@@ -9,7 +9,7 @@ var GetMethod = require('./GetMethod');
 var IsCallable = require('./IsCallable');
 var Type = require('./Type');
 
-// https://262.ecma-international.org/6.0/#sec-iteratorclose
+// https://ecma-international.org/ecma-262/6.0/#sec-iteratorclose
 
 module.exports = function IteratorClose(iterator, completion) {
 	if (Type(iterator) !== 'Object') {

@@ -10,7 +10,7 @@ var IsPropertyKey = require('./IsPropertyKey');
 var Type = require('./Type');
 
 /**
- * 7.3.1 Get (O, P) - https://262.ecma-international.org/6.0/#sec-get-o-p
+ * 7.3.1 Get (O, P) - https://ecma-international.org/ecma-262/6.0/#sec-get-o-p
  * 1. Assert: Type(O) is Object.
  * 2. Assert: IsPropertyKey(P) is true.
  * 3. Return O.[[Get]](P, O).

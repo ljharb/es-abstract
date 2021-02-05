@@ -34,7 +34,7 @@ var $trim = function (value) {
 
 var ToPrimitive = require('./ToPrimitive');
 
-// https://262.ecma-international.org/6.0/#sec-tonumber
+// https://ecma-international.org/ecma-262/6.0/#sec-tonumber
 
 module.exports = function ToNumber(argument) {
 	var value = isPrimitive(argument) ? argument : ToPrimitive(argument, $Number);
