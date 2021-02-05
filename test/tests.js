@@ -3689,8 +3689,9 @@ var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 			'0x10FFFF + 1 is > 0x10FFFF'
 		);
 
-		t.equal(ES.UTF16Encoding(0xd83d), leadingPoo.charCodeAt(0), '0xD83D is the first half of ' + wholePoo);
-		t.equal(ES.UTF16Encoding(0xdca9), trailingPoo.charCodeAt(0), '0xD83D is the last half of ' + wholePoo);
+		t.equal(ES.UTF16Encoding(0xD83D), leadingPoo, '0xD83D is the first half of ' + wholePoo);
+		t.equal(ES.UTF16Encoding(0xDCA9), trailingPoo, '0xDCA9 is the last half of ' + wholePoo);
+		t.equal(ES.UTF16Encoding(0x1F4A9), wholePoo, '0xDCA9 is the last half of ' + wholePoo);
 
 		t.end();
 	});
