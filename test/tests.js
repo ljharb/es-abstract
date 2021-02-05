@@ -6109,6 +6109,33 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('NumberToBigInt', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.NumberToBigInt(nonNumber); },
+				TypeError,
+				debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		forEach(v.nonIntegerNumbers, function (nonIntegerNumber) {
+			t['throws'](
+				function () { ES.NumberToBigInt(nonIntegerNumber); },
+				RangeError,
+				debug(nonIntegerNumber) + ' is not an integer'
+			);
+		});
+
+		t.test('actual BigInts', { skip: !hasBigInts }, function (st) {
+			forEach(v.integerNumbers, function (int) {
+				st.equal(ES.NumberToBigInt(int), $BigInt(int), debug(int) + ' becomes ' + debug($BigInt(int)));
+			});
+			st.end();
+		});
+
+		t.end();
+	});
 };
 
 module.exports = {

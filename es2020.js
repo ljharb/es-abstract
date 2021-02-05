@@ -87,6 +87,7 @@ var ES2020 = {
 	msFromTime: require('./2020/msFromTime'),
 	Number: require('./2020/Number'),
 	NumberBitwiseOp: require('./2020/NumberBitwiseOp'),
+	NumberToBigInt: require('./2020/NumberToBigInt'),
 	OrdinaryCreateFromConstructor: require('./2020/OrdinaryCreateFromConstructor'),
 	OrdinaryDefineOwnProperty: require('./2020/OrdinaryDefineOwnProperty'),
 	OrdinaryGetOwnProperty: require('./2020/OrdinaryGetOwnProperty'),
