@@ -147,8 +147,6 @@ var expectedMissing = [
 	'max',
 	'memory-order',
 	'min',
-	'ModuleDeclarationEnvironmentSetup',
-	'ModuleExecution',
 	'ModuleNamespaceCreate',
 	'NewDeclarativeEnvironment',
 	'NewFunctionEnvironment',
@@ -229,7 +227,6 @@ var expectedMissing = [
 	'ValidateSharedIntegerTypedArray',
 	'ValidateTypedArray',
 	'ValueOfReadEvent',
-	'WakeWaiter',
 	'WordCharacters' // depends on Canonicalize
 ];
 

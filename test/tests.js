@@ -228,6 +228,8 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.deepEqual(diff.missing, [], 'no unexpected missing ops');
 
+		t.deepEqual(diff.extraMissing, [], 'no unexpected "expected missing" ops');
+
 		t.end();
 	});
 
