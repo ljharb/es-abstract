@@ -3,6 +3,7 @@
 var keys = require('object-keys');
 var forEach = require('foreach');
 var indexOf = require('array.prototype.indexof');
+var has = require('has');
 
 module.exports = function diffOperations(actual, expected, expectedMissing) {
 	var actualKeys = keys(actual);
@@ -10,6 +11,7 @@ module.exports = function diffOperations(actual, expected, expectedMissing) {
 
 	var extra = [];
 	var missing = [];
+	var extraMissing = [];
 
 	forEach(actualKeys, function (op) {
 		if (!(op in expected)) {
@@ -31,7 +33,6 @@ module.exports = function diffOperations(actual, expected, expectedMissing) {
 	});
 	var checkMissing = function checkMissing(op, actualValue) {
 		if (typeof actualValue !== 'function' && indexOf(expectedMissing, op) === -1) {
-			console.log('m', op);
 			missing.push(op);
 		}
 	};
@@ -47,5 +48,11 @@ module.exports = function diffOperations(actual, expected, expectedMissing) {
 		}
 	});
 
-	return { missing: missing, extra: extra };
+	forEach(expectedMissing, function (expectedOp) {
+		if (!has(expected, expectedOp)) {
+			extraMissing.push(expectedOp);
+		}
+	});
+
+	return { missing: missing, extra: extra, extraMissing: extraMissing };
 };
