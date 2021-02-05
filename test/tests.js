@@ -5643,7 +5643,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::add', function (t) {
+	test('BigInt::add', { skip: !$BigInt }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.add(nonBigInt, 0); },
@@ -5670,7 +5670,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::bitwiseAND', function (t) {
+	test('BigInt::bitwiseAND', { skip: !$BigInt }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.bitwiseAND(nonBigInt, $BigInt(0)); },
@@ -5698,15 +5698,18 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(v.int32s, function (int32) {
-			var bigInt32 = $BigInt(int32);
-			t.equal(ES.BigInt.bitwiseNOT(bigInt32), ~bigInt32, debug(bigInt32) + ' becomes ~' + debug(bigInt32));
+		t.test('actual BigInts', { skip: !$BigInt }, function (st) {
+			forEach(v.int32s, function (int32) {
+				var bigInt32 = $BigInt(int32);
+				st.equal(ES.BigInt.bitwiseNOT(bigInt32), ~bigInt32, debug(bigInt32) + ' becomes ~' + debug(bigInt32));
+			});
+			st.end();
 		});
 
 		t.end();
 	});
 
-	test('BigInt::bitwiseOR', function (t) {
+	test('BigInt::bitwiseOR', { skip: !$BigInt }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.bitwiseOR(nonBigInt, $BigInt(0)); },
@@ -5725,7 +5728,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::bitwiseXOR', function (t) {
+	test('BigInt::bitwiseXOR', { skip: !$BigInt }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.bitwiseXOR(nonBigInt, $BigInt(0)); },
@@ -5744,7 +5747,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::divide', function (t) {
+	test('BigInt::divide', { skip: !$BigInt }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.divide(nonBigInt, $BigInt(0)); },
@@ -5768,7 +5771,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::equal', function (t) {
+	test('BigInt::equal', { skip: !$BigInt }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.equal(nonBigInt, $BigInt(0)); },
@@ -5792,7 +5795,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::exponentiate', function (t) {
+	test('BigInt::exponentiate', { skip: !$BigInt }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.exponentiate(nonBigInt, $BigInt(0)); },
@@ -5821,7 +5824,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::leftShift', function (t) {
+	test('BigInt::leftShift', { skip: !$BigInt }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.leftShift(nonBigInt, $BigInt(0)); },
@@ -5850,7 +5853,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::lessThan', function (t) {
+	test('BigInt::lessThan', { skip: !$BigInt }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.lessThan(nonBigInt, $BigInt(0)); },
@@ -5876,7 +5879,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::multiply', function (t) {
+	test('BigInt::multiply', { skip: !$BigInt }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.multiply(nonBigInt, $BigInt(0)); },
@@ -5903,7 +5906,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::remainder', function (t) {
+	test('BigInt::remainder', { skip: !$BigInt }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.remainder(nonBigInt, $BigInt(0)); },
@@ -5926,7 +5929,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::sameValue', function (t) {
+	test('BigInt::sameValue', { skip: !$BigInt }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.sameValue(nonBigInt, $BigInt(0)); },
@@ -5949,7 +5952,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::sameValueZero', function (t) {
+	test('BigInt::sameValueZero', { skip: !$BigInt }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.sameValueZero(nonBigInt, $BigInt(0)); },
@@ -5970,7 +5973,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::signedRightShift', function (t) {
+	test('BigInt::signedRightShift', { skip: !$BigInt }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.signedRightShift(nonBigInt, $BigInt(0)); },
@@ -5999,36 +6002,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::unsignedRightShift', function (t) {
-		forEach(v.nonBigInts, function (nonBigInt) {
-			t['throws'](
-				function () { ES.BigInt.unsignedRightShift(nonBigInt, $BigInt(0)); },
-				TypeError,
-				'x: ' + debug(nonBigInt) + ' is not a BigInt'
-			);
-			t['throws'](
-				function () { ES.BigInt.unsignedRightShift($BigInt(0), nonBigInt); },
-				TypeError,
-				'y: ' + debug(nonBigInt) + ' is not a BigInt'
-			);
-		});
-
-		forEach([0].concat(v.int32s), function (int32) {
-			var bigInt32 = $BigInt(int32);
-			forEach([1, 3, 5, 31, 32, 33], function (bits) {
-				var bitsN = $BigInt(bits);
-				t['throws'](
-					function () { ES.BigInt.unsignedRightShift(bigInt32, bitsN); },
-					TypeError,
-					debug(bigInt32) + ' >>> ' + debug(bitsN) + ' throws'
-				);
-			});
-		});
-
-		t.end();
-	});
-
-	test('BigInt::subtract', function (t) {
+	test('BigInt::subtract', { skip: !$BigInt }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.subtract(nonBigInt, $BigInt(0)); },
@@ -6069,7 +6043,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('Number::unaryMinus', function (t) {
+	test('Number::unaryMinus', { skip: !$BigInt }, function (t) {
 		forEach(v.nonNumbers, function (nonNumber) {
 			t['throws'](
 				function () { ES.Number.unaryMinus(nonNumber); },
@@ -6082,6 +6056,35 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 		forEach(v.numbers, function (number) {
 			t.ok(is(ES.Number.unaryMinus(number), -number), debug(number) + ' produces -' + debug(number));
+		});
+
+		t.end();
+	});
+
+	test('BigInt::unsignedRightShift', { skip: !$BigInt }, function (t) {
+		forEach(v.nonBigInts, function (nonBigInt) {
+			t['throws'](
+				function () { ES.BigInt.unsignedRightShift(nonBigInt, $BigInt(0)); },
+				TypeError,
+				'x: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+			t['throws'](
+				function () { ES.BigInt.unsignedRightShift($BigInt(0), nonBigInt); },
+				TypeError,
+				'y: ' + debug(nonBigInt) + ' is not a BigInt'
+			);
+		});
+
+		forEach([0].concat(v.int32s), function (int32) {
+			var bigInt32 = $BigInt(int32);
+			forEach([1, 3, 5, 31, 32, 33], function (bits) {
+				var bitsN = $BigInt(bits);
+				t['throws'](
+					function () { ES.BigInt.unsignedRightShift(bigInt32, bitsN); },
+					TypeError,
+					debug(bigInt32) + ' >>> ' + debug(bitsN) + ' throws'
+				);
+			});
 		});
 
 		t.end();
