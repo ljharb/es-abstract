@@ -3717,6 +3717,23 @@ var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('UTF16Decode', function (t) {
+		t['throws'](
+			function () { ES.UTF16Decode('a'.charCodeAt(0), trailingPoo.charCodeAt(0)); },
+			TypeError,
+			'"a" is not a leading surrogate'
+		);
+		t['throws'](
+			function () { ES.UTF16Decode(leadingPoo.charCodeAt(0), 'b'.charCodeAt(0)); },
+			TypeError,
+			'"b" is not a trailing surrogate'
+		);
+
+		t.equal(ES.UTF16Decode(leadingPoo.charCodeAt(0), trailingPoo.charCodeAt(0)), wholePoo);
+
+		t.end();
+	});
 };
 
 var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
@@ -4467,7 +4484,8 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		NumberToString: true,
 		ObjectCreate: true,
 		SameValueNonNumber: true,
-		ToInteger: true
+		ToInteger: true,
+		UTF16Decode: true
 	}));
 	var test = makeTest(skips);
 

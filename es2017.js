@@ -117,6 +117,7 @@ var ES2017 = {
 	ToUint8: require('./2017/ToUint8'),
 	ToUint8Clamp: require('./2017/ToUint8Clamp'),
 	Type: require('./2017/Type'),
+	UTF16Decode: require('./2017/UTF16Decode'),
 	UTF16Encoding: require('./2017/UTF16Encoding'),
 	ValidateAndApplyPropertyDescriptor: require('./2017/ValidateAndApplyPropertyDescriptor'),
 	WeekDay: require('./2017/WeekDay'),
