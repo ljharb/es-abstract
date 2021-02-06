@@ -3637,10 +3637,72 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('StringGetIndexProperty', function (t) {
+		forEach(v.nonStrings.concat(v.strings), function (nonStringObjects) {
+			t['throws'](
+				function () { ES.StringGetIndexProperty(nonStringObjects); },
+				TypeError,
+				debug(nonStringObjects) + ' is not a boxed String Object'
+			);
+		});
+
+		forEach(v.nonPropertyKeys, function (nonPropertyKey) {
+			t['throws'](
+				function () { ES.StringGetIndexProperty('', nonPropertyKey); },
+				TypeError,
+				debug(nonPropertyKey) + ' is not a Property Key'
+			);
+		});
+
+		forEach(v.symbols, function (symbol) {
+			t.equal(
+				ES.StringGetIndexProperty(Object('a'), symbol),
+				undefined,
+				debug(symbol) + ' is a Property Key, but not a String'
+			);
+		});
+
+		// a string where CanonicalNumericIndexString returns undefined, a non-integer, or -0
+		forEach(['-1', '-0', 'undefined'].concat(v.nonIntegerNumbers), function (nonIndex) {
+			var S = Object('abc');
+			t.equal(
+				ES.StringGetIndexProperty(S, String(nonIndex)),
+				undefined,
+				debug(nonIndex) + ' is not an index inside ' + debug(S)
+			);
+		});
+
+		forEach(v.strings, function (str) {
+			var S = Object(str);
+			for (var i = 0; i < str.length; i += 1) {
+				var desc = {
+					'[[Configurable]]': false,
+					'[[Enumerable]]': true,
+					'[[Value]]': str.charAt(i),
+					'[[Writable]]': false
+				};
+				t.deepEqual(
+					ES.StringGetIndexProperty(S, String(i)),
+					desc,
+					'boxed String ' + debug(S) + ' at index ' + debug(i) + ' is ' + debug(desc)
+				);
+			}
+			t.equal(
+				ES.StringGetIndexProperty(S, String(str.length)),
+				undefined,
+				'boxed String ' + debug(S) + ' at OOB index ' + debug(str.length) + ' is `undefined'
+			);
+		});
+
+		t.end();
+	});
 };
 
 var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
-	es2015(ES, ops, expectedMissing, skips);
+	es2015(ES, ops, expectedMissing, assign(assign({}, skips), {
+		StringGetIndexProperty: true
+	}));
 	var test = makeTest(skips);
 
 	test('SameValueNonNumber', function (t) {

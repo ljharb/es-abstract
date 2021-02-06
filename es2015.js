@@ -87,6 +87,7 @@ var ES6 = {
 	SpeciesConstructor: require('./2015/SpeciesConstructor'),
 	SplitMatch: require('./2015/SplitMatch'),
 	StringCreate: require('./2015/StringCreate'),
+	StringGetIndexProperty: require('./2015/StringGetIndexProperty'),
 	SymbolDescriptiveString: require('./2015/SymbolDescriptiveString'),
 	TestIntegrityLevel: require('./2015/TestIntegrityLevel'),
 	thisBooleanValue: require('./2015/thisBooleanValue'),

@@ -131,7 +131,6 @@ var expectedMissing = [
 	'SetViewValue',
 	'sign',
 	'SortCompare', // mystery access to `comparefn` arg
-	'StringGetIndexProperty',
 	'TriggerPromiseReactions',
 	'TypedArrayFrom',
 	'UpdateEmpty', // completion records
