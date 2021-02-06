@@ -5275,17 +5275,24 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.ok(is(ES.Number.add(+0, +0), +0), '0 + 0 is +0');
-		t.ok(is(ES.Number.add(+0, -0), +0), '0 + -0 is +0');
-		t.ok(is(ES.Number.add(-0, +0), +0), '-0 + 0 is +0');
-		t.ok(is(ES.Number.add(-0, -0), -0), '-0 + -0 is -0');
+		t.equal(ES.Number.add(+Infinity, +Infinity), +Infinity, '+∞ + +∞ is +∞');
+		t.equal(ES.Number.add(-Infinity, -Infinity), -Infinity, '-∞ + -∞ is -∞');
+		t.equal(ES.Number.add(+Infinity, -Infinity), NaN, '+∞ + -∞ is NaN');
+		t.equal(ES.Number.add(-Infinity, +Infinity), NaN, '-∞ + +∞ is NaN');
+
+		t.equal(ES.Number.add(+0, +0), +0, '0 + 0 is +0');
+		t.equal(ES.Number.add(+0, -0), +0, '0 + -0 is +0');
+		t.equal(ES.Number.add(-0, +0), +0, '-0 + 0 is +0');
+		t.equal(ES.Number.add(-0, -0), -0, '-0 + -0 is -0');
 
 		forEach(v.numbers, function (number) {
 			if (number !== 0) {
 				t.equal(ES.Number.add(number, 0), number, debug(number) + ' + 0 adds to ' + number);
 			}
 			t.equal(ES.Number.add(number, 1), number + 1, debug(number) + ' + 1 adds to ' + (number + 1));
+			t.equal(ES.Number.add(1, number), number + 1, '1 + ' + debug(number) + ' adds to ' + (number + 1));
 			t.equal(ES.Number.add(number, -42), number - 42, debug(number) + ' + -42 adds to ' + (number - 42));
+			t.equal(ES.Number.add(-42, number), number - 42, '-42 + ' + debug(number) + ' adds to ' + (number - 42));
 		});
 
 		t.end();
@@ -5574,10 +5581,13 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.ok(is(ES.Number.multiply(Infinity, +0), NaN), '+∞ * +0 is NaN');
-		t.ok(is(ES.Number.multiply(Infinity, -0), NaN), '+∞ * -0 is NaN');
-		t.ok(is(ES.Number.multiply(-Infinity, +0), NaN), '-∞ * +0 is NaN');
-		t.ok(is(ES.Number.multiply(-Infinity, -0), NaN), '-∞ * -0 is NaN');
+		forEach([+0, -0, 1, -1], function (x) {
+			var expected = x === 0 ? NaN : Infinity;
+			t.equal(ES.Number.multiply(Infinity, x), expected, '+∞ * ' + debug(x) + ' is ' + debug(expected));
+			t.equal(ES.Number.multiply(x, Infinity), expected, debug(x) + ' * +∞ is ' + debug(expected));
+			t.equal(ES.Number.multiply(-Infinity, x), -expected, '-∞ * ' + debug(x) + ' is ' + debug(expected));
+			t.equal(ES.Number.multiply(x, -Infinity), -expected, debug(x) + ' * -∞ is ' + debug(expected));
+		});
 
 		t.equal(ES.Number.multiply(Infinity, Infinity), Infinity, '+∞ * +∞ is +∞');
 		t.equal(ES.Number.multiply(Infinity, -Infinity), -Infinity, '+∞ * -∞ is -∞');
@@ -5595,7 +5605,9 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 			if (number !== 0 && isFinite(number)) {
 				t.ok(is(ES.Number.multiply(number, 0), number > 0 ? 0 : -0), debug(number) + ' * +0 produces ' + (number > 0 ? '+0' : '-0'));
+				t.ok(is(ES.Number.multiply(0, number), number > 0 ? 0 : -0), '+0 * ' + debug(number) + ' produces ' + (number > 0 ? '+0' : '-0'));
 				t.ok(is(ES.Number.multiply(number, -0), number > 0 ? -0 : 0), debug(number) + ' * -0 produces ' + (number > 0 ? '-0' : '+0'));
+				t.ok(is(ES.Number.multiply(-0, number), number > 0 ? -0 : 0), '-0 * ' + debug(number) + ' produces ' + (number > 0 ? '-0' : '+0'));
 				t.equal(ES.Number.multiply(number, 1), number, debug(number) + ' * 1 produces itself');
 				t.equal(ES.Number.multiply(number, -42), number * -42, debug(number) + ' * -42 produces ' + (number - 42));
 			}
@@ -5640,6 +5652,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				if (number !== 0) {
 					t.ok(is(ES.Number.remainder(0, number), 0), '+0 % ' + debug(number) + ' is ' + debug(number));
 					t.ok(is(ES.Number.remainder(-0, number), -0), '-0 % ' + debug(number) + ' is ' + debug(number));
+					t.looseEqual(ES.Number.remainder(number * 2, number), 0, debug(number) + ' % ' + debug(number * 2) + ' is 0');
 				}
 			}
 		});
@@ -5931,6 +5944,12 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
+		t['throws'](
+			function () { ES.BigInt.divide($BigInt(1), $BigInt(0)); },
+			RangeError,
+			'dividing by zero throws'
+		);
+
 		forEach(v.bigints, function (bigint) {
 			if (bigint !== $BigInt(0)) {
 				t.equal(ES.BigInt.divide(bigint, bigint), $BigInt(1), debug(bigint) + ' divided by itself is 1n');
@@ -5978,6 +5997,12 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				'exponent: ' + debug(nonBigInt) + ' is not a BigInt'
 			);
 		});
+
+		t['throws'](
+			function () { ES.BigInt.exponentiate($BigInt(1), -$BigInt(1)); },
+			RangeError,
+			'negative exponent throws'
+		);
 
 		forEach(v.bigints, function (bigint) {
 			if (bigint !== $BigInt(0)) {
@@ -6090,9 +6115,19 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
+		t['throws'](
+			function () { ES.BigInt.remainder($BigInt(1), $BigInt(0)); },
+			RangeError,
+			'dividing by zero throws'
+		);
+
 		forEach(v.bigints, function (bigint) {
 			if (bigint !== $BigInt(0)) {
-				t.ok(is(ES.BigInt.remainder($BigInt(0), bigint), $BigInt(0)), '0n % ' + debug(bigint) + ' is ' + debug(bigint));
+				t.ok(is(ES.BigInt.remainder($BigInt(0), bigint), $BigInt(0)), '0n % ' + debug(bigint) + ' is 0n');
+				t.ok(
+					is(ES.BigInt.remainder(bigint + $BigInt(1), bigint), $BigInt(1)),
+					debug(bigint) + ' % ' + debug(bigint + $BigInt(1)) + ' is 1n'
+				);
 			}
 		});
 
@@ -6213,19 +6248,20 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::unaryMinus', { skip: !hasBigInts }, function (t) {
-		forEach(v.nonNumbers, function (nonNumber) {
+	test('BigInt::unaryMinus', function (t) {
+		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
-				function () { ES.Number.unaryMinus(nonNumber); },
+				function () { ES.BigInt.unaryMinus(nonBigInt); },
 				TypeError,
-				debug(nonNumber) + ' is not a Number'
+				debug(nonBigInt) + ' is not a BigInt'
 			);
 		});
 
-		t.ok(is(ES.Number.unaryMinus(NaN), NaN), 'NaN produces NaN');
-
-		forEach(v.numbers, function (number) {
-			t.ok(is(ES.Number.unaryMinus(number), -number), debug(number) + ' produces -' + debug(number));
+		t.test('actual BigInts', { skip: !hasBigInts }, function (st) {
+			forEach(v.bigints, function (bigint) {
+				st.ok(is(ES.BigInt.unaryMinus(bigint), -bigint), debug(bigint) + ' produces -' + debug(bigint));
+			});
+			st.end();
 		});
 
 		t.end();
