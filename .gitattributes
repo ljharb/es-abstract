@@ -805,6 +805,7 @@
 /2021/OrdinarySetPrototypeOf.js	spackled linguist-generated=true
 /2021/OrdinaryToPrimitive.js	spackled linguist-generated=true
 /2021/PromiseResolve.js	spackled linguist-generated=true
+/2021/RawBytesToNumeric.js	spackled linguist-generated=true
 /2021/RegExpCreate.js	spackled linguist-generated=true
 /2021/RegExpExec.js	spackled linguist-generated=true
 /2021/RequireObjectCoercible.js	spackled linguist-generated=true
@@ -1006,6 +1007,7 @@
 /2022/OrdinaryToPrimitive.js	spackled linguist-generated=true
 /2022/PromiseResolve.js	spackled linguist-generated=true
 /2022/QuoteJSONString.js	spackled linguist-generated=true
+/2022/RawBytesToNumeric.js	spackled linguist-generated=true
 /2022/RegExpCreate.js	spackled linguist-generated=true
 /2022/RegExpExec.js	spackled linguist-generated=true
 /2022/RequireObjectCoercible.js	spackled linguist-generated=true

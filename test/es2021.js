@@ -173,7 +173,6 @@ var expectedMissing = [
 	'PrepareForTailCall',
 	'ProxyCreate',
 	'PutValue', // takes a Reference
-	'RawBytesToNumeric',
 	'reads-bytes-from',
 	'reads-from',
 	'RegExpAlloc', // creates a regex with uninitialized internal slots

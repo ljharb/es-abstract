@@ -112,6 +112,7 @@ var ES2020 = {
 	OrdinaryToPrimitive: require('./2020/OrdinaryToPrimitive'),
 	PromiseResolve: require('./2020/PromiseResolve'),
 	QuoteJSONString: require('./2020/QuoteJSONString'),
+	RawBytesToNumeric: require('./2020/RawBytesToNumeric'),
 	RegExpCreate: require('./2020/RegExpCreate'),
 	RegExpExec: require('./2020/RegExpExec'),
 	RequireObjectCoercible: require('./2020/RequireObjectCoercible'),

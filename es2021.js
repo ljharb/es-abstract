@@ -119,6 +119,7 @@ var ES2021 = {
 	OrdinaryToPrimitive: require('./2021/OrdinaryToPrimitive'),
 	PromiseResolve: require('./2021/PromiseResolve'),
 	QuoteJSONString: require('./2021/QuoteJSONString'),
+	RawBytesToNumeric: require('./2021/RawBytesToNumeric'),
 	RegExpCreate: require('./2021/RegExpCreate'),
 	RegExpExec: require('./2021/RegExpExec'),
 	RequireObjectCoercible: require('./2021/RequireObjectCoercible'),

@@ -126,6 +126,7 @@ var ES2022 = {
 	OrdinaryToPrimitive: require('./2022/OrdinaryToPrimitive'),
 	PromiseResolve: require('./2022/PromiseResolve'),
 	QuoteJSONString: require('./2022/QuoteJSONString'),
+	RawBytesToNumeric: require('./2022/RawBytesToNumeric'),
 	RegExpCreate: require('./2022/RegExpCreate'),
 	RegExpExec: require('./2022/RegExpExec'),
 	RegExpHasFlag: require('./2022/RegExpHasFlag'),
