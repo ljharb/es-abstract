@@ -101,6 +101,7 @@ async function getOps(year) {
 			['abs', 'https://262.ecma-international.org/6.0/#sec-algorithm-conventions'],
 			['Abstract Equality Comparison', 'https://262.ecma-international.org/6.0/#sec-abstract-equality-comparison'],
 			['Abstract Relational Comparison', 'https://262.ecma-international.org/6.0/#sec-abstract-relational-comparison'],
+			['CreateArrayIterator', 'https://262.ecma-international.org/6.0/#sec-createarrayiterator'],
 			['DateFromTime', 'https://262.ecma-international.org/6.0/#sec-date-number'],
 			['Day', 'https://262.ecma-international.org/6.0/#sec-day-number-and-time-within-day'],
 			['DayFromYear', 'https://262.ecma-international.org/6.0/#sec-year-number'],

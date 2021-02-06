@@ -25,6 +25,7 @@ module.exports = {
 	Construct: 'https://262.ecma-international.org/6.0/#sec-construct',
 	CopyDataBlockBytes: 'https://262.ecma-international.org/6.0/#sec-copydatablockbytes',
 	CreateArrayFromList: 'https://262.ecma-international.org/6.0/#sec-createarrayfromlist',
+	CreateArrayIterator: 'https://262.ecma-international.org/6.0/#sec-createarrayiterator',
 	CreateBuiltinFunction: 'https://262.ecma-international.org/6.0/#sec-createbuiltinfunction',
 	CreateByteDataBlock: 'https://262.ecma-international.org/6.0/#sec-createbytedatablock',
 	CreateDataProperty: 'https://262.ecma-international.org/6.0/#sec-createdataproperty',
