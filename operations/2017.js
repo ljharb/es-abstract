@@ -63,6 +63,7 @@ module.exports = {
 	DateFromTime: 'https://262.ecma-international.org/8.0/#sec-date-number',
 	Day: 'https://262.ecma-international.org/8.0/#eqn-Day',
 	DayFromYear: 'https://262.ecma-international.org/8.0/#eqn-DaysFromYear',
+	DaylightSavingTA: 'https://262.ecma-international.org/8.0/#sec-daylight-saving-time-adjustment',
 	DaysInYear: 'https://262.ecma-international.org/8.0/#eqn-DaysInYear',
 	DayWithinYear: 'https://262.ecma-international.org/8.0/#eqn-DayWithinYear',
 	Decode: 'https://262.ecma-international.org/8.0/#sec-decode',

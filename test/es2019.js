@@ -218,7 +218,7 @@ var expectedMissing = [
 	'UnicodeMatchProperty',
 	'UnicodeMatchPropertyValue',
 	'UpdateEmpty', // completion records
-	'UTC', // depends on LocalTZA'UTC',
+	'UTC', // depends on LocalTZA
 	'ValidateAtomicAccess',
 	'ValidateSharedIntegerTypedArray',
 	'ValidateTypedArray',

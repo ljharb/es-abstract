@@ -144,7 +144,10 @@ async function getOps(year) {
 			['thisStringValue', 'https://262.ecma-international.org/7.0/#sec-properties-of-the-string-prototype-object'],
 		);
 	}
-	entries.sort(function (a, b) { return a[0].localeCompare(b[0]); });
+	if (year >= 2015 && year <= 2017) {
+		entries.push(['DaylightSavingTA', `https://262.ecma-international.org/${edition}.0/#sec-daylight-saving-time-adjustment`]);
+	}
+	entries.sort(([a], [b]) => a.localeCompare(b));
 
 	const obj = fromEntries(entries);
 

@@ -46,6 +46,7 @@ var expectedMissing = [
 	'CreateSharedByteDataBlock',
 	'CreateStringIterator',
 	'CreateUnmappedArgumentsObject',
+	'DaylightSavingTA',
 	'Decode',
 	'DetachArrayBuffer',
 	'Encode',
@@ -194,7 +195,7 @@ var expectedMissing = [
 	'TypedArrayCreate',
 	'TypedArraySpeciesCreate',
 	'UpdateEmpty', // completion records
-	'UTC', // depends on LocalTZA'UTC',
+	'UTC', // depends on LocalTZA, DaylightSavingTA
 	'ValidateAtomicAccess',
 	'ValidateSharedIntegerTypedArray',
 	'ValidateTypedArray',

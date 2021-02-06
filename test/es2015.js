@@ -29,6 +29,7 @@ var expectedMissing = [
 	'CreateRealm',
 	'CreateSetIterator',
 	'CreateUnmappedArgumentsObject',
+	'DaylightSavingTA',
 	'Decode',
 	'DetachArrayBuffer',
 	'Encode',
@@ -134,7 +135,7 @@ var expectedMissing = [
 	'TriggerPromiseReactions',
 	'TypedArrayFrom',
 	'UpdateEmpty', // completion records
-	'UTC'
+	'UTC' // depends on LocalTZA, DaylightSavingTA
 ];
 
 require('./tests').es2015(boundES, ops, expectedMissing);

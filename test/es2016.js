@@ -35,6 +35,7 @@ var expectedMissing = [
 	'CreateSetIterator',
 	'CreateStringIterator',
 	'CreateUnmappedArgumentsObject',
+	'DaylightSavingTA',
 	'Decode',
 	'DetachArrayBuffer',
 	'Encode',
@@ -155,7 +156,7 @@ var expectedMissing = [
 	'TypedArrayCreate',
 	'TypedArraySpeciesCreate',
 	'UpdateEmpty', // completion records
-	'UTC', // depends on LocalTZA
+	'UTC', // depends on LocalTZA, DaylightSavingTA
 	'ValidateTypedArray'
 ];
 
