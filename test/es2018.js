@@ -163,7 +163,6 @@ var expectedMissing = [
 	'PromiseResolveThenableJob',
 	'ProxyCreate',
 	'PutValue', // takes a Reference
-	'RawBytesToNumber',
 	'reads-bytes-from',
 	'reads-from',
 	'RegExpAlloc', // creates a regex with uninitialized internal slots
