@@ -4,7 +4,6 @@ var ES = require('../').ES5;
 var test = require('tape');
 
 var forEach = require('foreach');
-var is = require('object-is');
 var debug = require('object-inspect');
 
 var v = require('es-value-fixtures');
@@ -16,7 +15,7 @@ ES = require('./helpers/createBoundESNamespace')(ES);
 test('ToPrimitive', function (t) {
 	t.test('primitives', function (st) {
 		var testPrimitive = function (primitive) {
-			st.ok(is(ES.ToPrimitive(primitive), primitive), debug(primitive) + ' is returned correctly');
+			st.equal(ES.ToPrimitive(primitive), primitive, debug(primitive) + ' is returned correctly');
 		};
 		forEach(v.primitives, testPrimitive);
 		st.end();
@@ -61,29 +60,29 @@ test('ToBoolean', function (t) {
 });
 
 test('ToNumber', function (t) {
-	t.ok(is(NaN, ES.ToNumber(undefined)), 'undefined coerces to NaN');
-	t.ok(is(ES.ToNumber(null), 0), 'null coerces to +0');
-	t.ok(is(ES.ToNumber(false), 0), 'false coerces to +0');
+	t.equal(NaN, ES.ToNumber(undefined), 'undefined coerces to NaN');
+	t.equal(ES.ToNumber(null), 0, 'null coerces to +0');
+	t.equal(ES.ToNumber(false), 0, 'false coerces to +0');
 	t.equal(1, ES.ToNumber(true), 'true coerces to 1');
-	t.ok(is(NaN, ES.ToNumber(NaN)), 'NaN returns itself');
+	t.equal(NaN, ES.ToNumber(NaN), 'NaN returns itself');
 	forEach([0, -0, 42, Infinity, -Infinity], function (num) {
 		t.equal(num, ES.ToNumber(num), num + ' returns itself');
 	});
 	forEach(['foo', '0', '4a', '2.0', 'Infinity', '-Infinity'], function (numString) {
-		t.ok(is(+numString, ES.ToNumber(numString)), '"' + numString + '" coerces to ' + Number(numString));
+		t.equal(+numString, ES.ToNumber(numString), '"' + numString + '" coerces to ' + Number(numString));
 	});
 	forEach(v.objects, function (object) {
-		t.ok(is(ES.ToNumber(object), ES.ToNumber(ES.ToPrimitive(object))), 'object ' + object + ' coerces to same as ToPrimitive of object does');
+		t.equal(ES.ToNumber(object), ES.ToNumber(ES.ToPrimitive(object)), 'object ' + object + ' coerces to same as ToPrimitive of object does');
 	});
 	t['throws'](function () { return ES.ToNumber(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 	t.end();
 });
 
 test('ToInteger', function (t) {
-	t.ok(is(0, ES.ToInteger(NaN)), 'NaN coerces to +0');
+	t.equal(0, ES.ToInteger(NaN), 'NaN coerces to +0');
 	forEach([0, Infinity, 42], function (num) {
-		t.ok(is(num, ES.ToInteger(num)), num + ' returns itself');
-		t.ok(is(-num, ES.ToInteger(-num)), '-' + num + ' returns itself');
+		t.equal(num, ES.ToInteger(num), num + ' returns itself');
+		t.equal(-num, ES.ToInteger(-num), '-' + num + ' returns itself');
 	});
 	t.equal(3, ES.ToInteger(Math.PI), 'pi returns 3');
 	t['throws'](function () { return ES.ToInteger(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
@@ -91,54 +90,54 @@ test('ToInteger', function (t) {
 });
 
 test('ToInt32', function (t) {
-	t.ok(is(0, ES.ToInt32(NaN)), 'NaN coerces to +0');
+	t.equal(0, ES.ToInt32(NaN), 'NaN coerces to +0');
 	forEach([0, Infinity], function (num) {
-		t.ok(is(0, ES.ToInt32(num)), num + ' returns +0');
-		t.ok(is(0, ES.ToInt32(-num)), '-' + num + ' returns +0');
+		t.equal(0, ES.ToInt32(num), num + ' returns +0');
+		t.equal(0, ES.ToInt32(-num), '-' + num + ' returns +0');
 	});
 	t['throws'](function () { return ES.ToInt32(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
-	t.ok(is(ES.ToInt32(0x100000000), 0), '2^32 returns +0');
-	t.ok(is(ES.ToInt32(0x100000000 - 1), -1), '2^32 - 1 returns -1');
-	t.ok(is(ES.ToInt32(0x80000000), -0x80000000), '2^31 returns -2^31');
-	t.ok(is(ES.ToInt32(0x80000000 - 1), 0x80000000 - 1), '2^31 - 1 returns 2^31 - 1');
+	t.equal(ES.ToInt32(0x100000000), 0, '2^32 returns +0');
+	t.equal(ES.ToInt32(0x100000000 - 1), -1, '2^32 - 1 returns -1');
+	t.equal(ES.ToInt32(0x80000000), -0x80000000, '2^31 returns -2^31');
+	t.equal(ES.ToInt32(0x80000000 - 1), 0x80000000 - 1, '2^31 - 1 returns 2^31 - 1');
 	forEach([0, Infinity, NaN, 0x100000000, 0x80000000, 0x10000, 0x42], function (num) {
-		t.ok(is(ES.ToInt32(num), ES.ToInt32(ES.ToUint32(num))), 'ToInt32(x) === ToInt32(ToUint32(x)) for 0x' + num.toString(16));
-		t.ok(is(ES.ToInt32(-num), ES.ToInt32(ES.ToUint32(-num))), 'ToInt32(x) === ToInt32(ToUint32(x)) for -0x' + num.toString(16));
+		t.equal(ES.ToInt32(num), ES.ToInt32(ES.ToUint32(num)), 'ToInt32(x) === ToInt32(ToUint32(x)) for 0x' + num.toString(16));
+		t.equal(ES.ToInt32(-num), ES.ToInt32(ES.ToUint32(-num)), 'ToInt32(x) === ToInt32(ToUint32(x)) for -0x' + num.toString(16));
 	});
 	t.end();
 });
 
 test('ToUint32', function (t) {
-	t.ok(is(0, ES.ToUint32(NaN)), 'NaN coerces to +0');
+	t.equal(0, ES.ToUint32(NaN), 'NaN coerces to +0');
 	forEach([0, Infinity], function (num) {
-		t.ok(is(0, ES.ToUint32(num)), num + ' returns +0');
-		t.ok(is(0, ES.ToUint32(-num)), '-' + num + ' returns +0');
+		t.equal(0, ES.ToUint32(num), num + ' returns +0');
+		t.equal(0, ES.ToUint32(-num), '-' + num + ' returns +0');
 	});
 	t['throws'](function () { return ES.ToUint32(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
-	t.ok(is(ES.ToUint32(0x100000000), 0), '2^32 returns +0');
-	t.ok(is(ES.ToUint32(0x100000000 - 1), 0x100000000 - 1), '2^32 - 1 returns 2^32 - 1');
-	t.ok(is(ES.ToUint32(0x80000000), 0x80000000), '2^31 returns 2^31');
-	t.ok(is(ES.ToUint32(0x80000000 - 1), 0x80000000 - 1), '2^31 - 1 returns 2^31 - 1');
+	t.equal(ES.ToUint32(0x100000000), 0, '2^32 returns +0');
+	t.equal(ES.ToUint32(0x100000000 - 1), 0x100000000 - 1, '2^32 - 1 returns 2^32 - 1');
+	t.equal(ES.ToUint32(0x80000000), 0x80000000, '2^31 returns 2^31');
+	t.equal(ES.ToUint32(0x80000000 - 1), 0x80000000 - 1, '2^31 - 1 returns 2^31 - 1');
 	forEach([0, Infinity, NaN, 0x100000000, 0x80000000, 0x10000, 0x42], function (num) {
-		t.ok(is(ES.ToUint32(num), ES.ToUint32(ES.ToInt32(num))), 'ToUint32(x) === ToUint32(ToInt32(x)) for 0x' + num.toString(16));
-		t.ok(is(ES.ToUint32(-num), ES.ToUint32(ES.ToInt32(-num))), 'ToUint32(x) === ToUint32(ToInt32(x)) for -0x' + num.toString(16));
+		t.equal(ES.ToUint32(num), ES.ToUint32(ES.ToInt32(num)), 'ToUint32(x) === ToUint32(ToInt32(x)) for 0x' + num.toString(16));
+		t.equal(ES.ToUint32(-num), ES.ToUint32(ES.ToInt32(-num)), 'ToUint32(x) === ToUint32(ToInt32(x)) for -0x' + num.toString(16));
 	});
 	t.end();
 });
 
 test('ToUint16', function (t) {
-	t.ok(is(0, ES.ToUint16(NaN)), 'NaN coerces to +0');
+	t.equal(0, ES.ToUint16(NaN), 'NaN coerces to +0');
 	forEach([0, Infinity], function (num) {
-		t.ok(is(0, ES.ToUint16(num)), num + ' returns +0');
-		t.ok(is(0, ES.ToUint16(-num)), '-' + num + ' returns +0');
+		t.equal(0, ES.ToUint16(num), num + ' returns +0');
+		t.equal(0, ES.ToUint16(-num), '-' + num + ' returns +0');
 	});
 	t['throws'](function () { return ES.ToUint16(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
-	t.ok(is(ES.ToUint16(0x100000000), 0), '2^32 returns +0');
-	t.ok(is(ES.ToUint16(0x100000000 - 1), 0x10000 - 1), '2^32 - 1 returns 2^16 - 1');
-	t.ok(is(ES.ToUint16(0x80000000), 0), '2^31 returns +0');
-	t.ok(is(ES.ToUint16(0x80000000 - 1), 0x10000 - 1), '2^31 - 1 returns 2^16 - 1');
-	t.ok(is(ES.ToUint16(0x10000), 0), '2^16 returns +0');
-	t.ok(is(ES.ToUint16(0x10000 - 1), 0x10000 - 1), '2^16 - 1 returns 2^16 - 1');
+	t.equal(ES.ToUint16(0x100000000), 0, '2^32 returns +0');
+	t.equal(ES.ToUint16(0x100000000 - 1), 0x10000 - 1, '2^32 - 1 returns 2^16 - 1');
+	t.equal(ES.ToUint16(0x80000000), 0, '2^31 returns +0');
+	t.equal(ES.ToUint16(0x80000000 - 1), 0x10000 - 1, '2^31 - 1 returns 2^16 - 1');
+	t.equal(ES.ToUint16(0x10000), 0, '2^16 returns +0');
+	t.equal(ES.ToUint16(0x10000 - 1), 0x10000 - 1, '2^16 - 1 returns 2^16 - 1');
 	t.end();
 });
 
@@ -154,7 +153,7 @@ test('ToObject', function (t) {
 		var obj = ES.ToObject(number);
 		t.equal(typeof obj, 'object', 'number ' + number + ' coerces to object');
 		t.equal(true, obj instanceof Number, 'object of ' + number + ' is Number object');
-		t.ok(is(obj.valueOf(), number), 'object of ' + number + ' coerces to ' + number);
+		t.equal(obj.valueOf(), number, 'object of ' + number + ' coerces to ' + number);
 	});
 	t.end();
 });
@@ -733,8 +732,8 @@ test('MakeDay', function (t) {
 
 test('MakeDate', function (t) {
 	forEach(v.infinities.concat(NaN), function (nonFiniteNumber) {
-		t.ok(is(ES.MakeDate(nonFiniteNumber, 0), NaN), debug(nonFiniteNumber) + ' is not a finite `day`');
-		t.ok(is(ES.MakeDate(0, nonFiniteNumber), NaN), debug(nonFiniteNumber) + ' is not a finite `time`');
+		t.equal(ES.MakeDate(nonFiniteNumber, 0), NaN, debug(nonFiniteNumber) + ' is not a finite `day`');
+		t.equal(ES.MakeDate(0, nonFiniteNumber), NaN, debug(nonFiniteNumber) + ' is not a finite `time`');
 	});
 	t.equal(ES.MakeDate(0, 0), 0, 'zero day and zero time is zero date');
 	t.equal(ES.MakeDate(0, 123), 123, 'zero day and nonzero time is a date of the "time"');
@@ -748,10 +747,10 @@ test('MakeDate', function (t) {
 
 test('MakeTime', function (t) {
 	forEach(v.infinities.concat(NaN), function (nonFiniteNumber) {
-		t.ok(is(ES.MakeTime(nonFiniteNumber, 0, 0, 0), NaN), debug(nonFiniteNumber) + ' is not a finite `hour`');
-		t.ok(is(ES.MakeTime(0, nonFiniteNumber, 0, 0), NaN), debug(nonFiniteNumber) + ' is not a finite `min`');
-		t.ok(is(ES.MakeTime(0, 0, nonFiniteNumber, 0), NaN), debug(nonFiniteNumber) + ' is not a finite `sec`');
-		t.ok(is(ES.MakeTime(0, 0, 0, nonFiniteNumber), NaN), debug(nonFiniteNumber) + ' is not a finite `ms`');
+		t.equal(ES.MakeTime(nonFiniteNumber, 0, 0, 0), NaN, debug(nonFiniteNumber) + ' is not a finite `hour`');
+		t.equal(ES.MakeTime(0, nonFiniteNumber, 0, 0), NaN, debug(nonFiniteNumber) + ' is not a finite `min`');
+		t.equal(ES.MakeTime(0, 0, nonFiniteNumber, 0), NaN, debug(nonFiniteNumber) + ' is not a finite `sec`');
+		t.equal(ES.MakeTime(0, 0, 0, nonFiniteNumber), NaN, debug(nonFiniteNumber) + ' is not a finite `ms`');
 	});
 
 	t.equal(
@@ -764,10 +763,10 @@ test('MakeTime', function (t) {
 
 test('TimeClip', function (t) {
 	forEach(v.infinities.concat(NaN), function (nonFiniteNumber) {
-		t.ok(is(ES.TimeClip(nonFiniteNumber), NaN), debug(nonFiniteNumber) + ' is not a finite `time`');
+		t.equal(ES.TimeClip(nonFiniteNumber), NaN, debug(nonFiniteNumber) + ' is not a finite `time`');
 	});
-	t.ok(is(ES.TimeClip(8.64e15 + 1), NaN), '8.64e15 is the largest magnitude considered "finite"');
-	t.ok(is(ES.TimeClip(-8.64e15 - 1), NaN), '-8.64e15 is the largest magnitude considered "finite"');
+	t.equal(ES.TimeClip(8.64e15 + 1), NaN, '8.64e15 is the largest magnitude considered "finite"');
+	t.equal(ES.TimeClip(-8.64e15 - 1), NaN, '-8.64e15 is the largest magnitude considered "finite"');
 
 	forEach(v.zeroes.concat([-10, 10, +new Date()]), function (time) {
 		t.looseEqual(ES.TimeClip(time), time, debug(time) + ' is a time of ' + debug(time));

@@ -3,7 +3,6 @@
 var tape = require('tape');
 
 var forEach = require('foreach');
-var is = require('object-is');
 var debug = require('object-inspect');
 var assign = require('object.assign');
 var keys = require('object-keys');
@@ -132,25 +131,25 @@ var testEnumerableOwnNames = function (t, enumerableOwnNames) {
 };
 
 var testToNumber = function (t, ES, ToNumber) {
-	t.ok(is(NaN, ToNumber(undefined)), 'undefined coerces to NaN');
-	t.ok(is(ToNumber(null), 0), 'null coerces to +0');
-	t.ok(is(ToNumber(false), 0), 'false coerces to +0');
+	t.equal(NaN, ToNumber(undefined), 'undefined coerces to NaN');
+	t.equal(ToNumber(null), 0, 'null coerces to +0');
+	t.equal(ToNumber(false), 0, 'false coerces to +0');
 	t.equal(1, ToNumber(true), 'true coerces to 1');
 
 	t.test('numbers', function (st) {
-		st.ok(is(NaN, ToNumber(NaN)), 'NaN returns itself');
+		st.equal(NaN, ToNumber(NaN), 'NaN returns itself');
 		forEach(v.zeroes.concat(v.infinities, 42), function (num) {
 			st.equal(num, ToNumber(num), num + ' returns itself');
 		});
 		forEach(['foo', '0', '4a', '2.0', 'Infinity', '-Infinity'], function (numString) {
-			st.ok(is(+numString, ToNumber(numString)), '"' + numString + '" coerces to ' + Number(numString));
+			st.equal(+numString, ToNumber(numString), '"' + numString + '" coerces to ' + Number(numString));
 		});
 		st.end();
 	});
 
 	t.test('objects', function (st) {
 		forEach(v.objects, function (object) {
-			st.ok(is(ToNumber(object), ToNumber(ES.ToPrimitive(object))), 'object ' + object + ' coerces to same as ToPrimitive of object does');
+			st.equal(ToNumber(object), ToNumber(ES.ToPrimitive(object)), 'object ' + object + ' coerces to same as ToPrimitive of object does');
 		});
 		st['throws'](function () { return ToNumber(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 		st.end();
@@ -160,8 +159,8 @@ var testToNumber = function (t, ES, ToNumber) {
 		st.equal(ToNumber('0b10'), 2, '0b10 is 2');
 		st.equal(ToNumber({ toString: function () { return '0b11'; } }), 3, 'Object that toStrings to 0b11 is 3');
 
-		st.equal(true, is(ToNumber('0b12'), NaN), '0b12 is NaN');
-		st.equal(true, is(ToNumber({ toString: function () { return '0b112'; } }), NaN), 'Object that toStrings to 0b112 is NaN');
+		st.equal(ToNumber('0b12'), NaN, '0b12 is NaN');
+		st.equal(ToNumber({ toString: function () { return '0b112'; } }), NaN, 'Object that toStrings to 0b112 is NaN');
 		st.end();
 	});
 
@@ -169,16 +168,16 @@ var testToNumber = function (t, ES, ToNumber) {
 		st.equal(ToNumber('0o10'), 8, '0o10 is 8');
 		st.equal(ToNumber({ toString: function () { return '0o11'; } }), 9, 'Object that toStrings to 0o11 is 9');
 
-		st.equal(true, is(ToNumber('0o18'), NaN), '0o18 is NaN');
-		st.equal(true, is(ToNumber({ toString: function () { return '0o118'; } }), NaN), 'Object that toStrings to 0o118 is NaN');
+		st.equal(ToNumber('0o18'), NaN, '0o18 is NaN');
+		st.equal(ToNumber({ toString: function () { return '0o118'; } }), NaN, 'Object that toStrings to 0o118 is NaN');
 		st.end();
 	});
 
 	t.test('signed hex numbers', function (st) {
-		st.equal(true, is(ToNumber('-0xF'), NaN), '-0xF is NaN');
-		st.equal(true, is(ToNumber(' -0xF '), NaN), 'space-padded -0xF is NaN');
-		st.equal(true, is(ToNumber('+0xF'), NaN), '+0xF is NaN');
-		st.equal(true, is(ToNumber(' +0xF '), NaN), 'space-padded +0xF is NaN');
+		st.equal(ToNumber('-0xF'), NaN, '-0xF is NaN');
+		st.equal(ToNumber(' -0xF '), NaN, 'space-padded -0xF is NaN');
+		st.equal(ToNumber('+0xF'), NaN, '+0xF is NaN');
+		st.equal(ToNumber(' +0xF '), NaN, 'space-padded +0xF is NaN');
 
 		st.end();
 	});
@@ -195,7 +194,7 @@ var testToNumber = function (t, ES, ToNumber) {
 		};
 
 		forEach(nonWhitespaces, function (desc, nonWS) {
-			st.equal(true, is(ToNumber(nonWS + 0 + nonWS), NaN), 'non-whitespace ' + desc + ' not trimmed');
+			st.equal(ToNumber(nonWS + 0 + nonWS), NaN, 'non-whitespace ' + desc + ' not trimmed');
 		});
 
 		st.end();
@@ -211,7 +210,7 @@ var testToNumber = function (t, ES, ToNumber) {
 
 	t.test('dates', function (st) {
 		var invalid = new Date(NaN);
-		st.ok(is(ToNumber(invalid), NaN), 'invalid Date coerces to NaN');
+		st.equal(ToNumber(invalid), NaN, 'invalid Date coerces to NaN');
 		var now = +new Date();
 		st.equal(ToNumber(new Date(now)), now, 'Date coerces to timestamp');
 		st.end();
@@ -236,7 +235,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	test('ToPrimitive', function (t) {
 		t.test('primitives', function (st) {
 			var testPrimitive = function (primitive) {
-				st.ok(is(ES.ToPrimitive(primitive), primitive), debug(primitive) + ' is returned correctly');
+				st.equal(ES.ToPrimitive(primitive), primitive, debug(primitive) + ' is returned correctly');
 			};
 			forEach(v.primitives, testPrimitive);
 			st.end();
@@ -244,9 +243,9 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.test('objects', function (st) {
 			st.equal(ES.ToPrimitive(v.coercibleObject), 3, 'coercibleObject with no hint coerces to valueOf');
-			st.ok(is(ES.ToPrimitive({}), '[object Object]'), '{} with no hint coerces to Object#toString');
+			st.equal(ES.ToPrimitive({}), '[object Object]', '{} with no hint coerces to Object#toString');
 			st.equal(ES.ToPrimitive(v.coercibleObject, Number), 3, 'coercibleObject with hint Number coerces to valueOf');
-			st.ok(is(ES.ToPrimitive({}, Number), '[object Object]'), '{} with hint Number coerces to NaN');
+			st.equal(ES.ToPrimitive({}, Number), '[object Object]', '{} with hint Number coerces to NaN');
 			st.equal(ES.ToPrimitive(v.coercibleObject, String), 42, 'coercibleObject with hint String coerces to nonstringified toString');
 			st.equal(ES.ToPrimitive({}, String), '[object Object]', '{} with hint String coerces to Object#toString');
 			st.equal(ES.ToPrimitive(v.toStringOnlyObject), 7, 'toStringOnlyObject returns non-stringified toString');
@@ -306,11 +305,11 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 	test('ToInteger', function (t) {
 		forEach([NaN], function (num) {
-			t.ok(is(0, ES.ToInteger(num)), debug(num) + ' returns +0');
+			t.equal(0, ES.ToInteger(num), debug(num) + ' returns +0');
 		});
 		forEach([0, -0, Infinity, 42], function (num) {
-			t.ok(is(num, ES.ToInteger(num)), debug(num) + ' returns itself');
-			t.ok(is(-num, ES.ToInteger(-num)), '-' + debug(num) + ' returns itself');
+			t.equal(num, ES.ToInteger(num), debug(num) + ' returns itself');
+			t.equal(-num, ES.ToInteger(-num), '-' + debug(num) + ' returns itself');
 		});
 		t.equal(3, ES.ToInteger(Math.PI), 'pi returns 3');
 		t['throws'](function () { return ES.ToInteger(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
@@ -318,120 +317,120 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ToInt32', function (t) {
-		t.ok(is(0, ES.ToInt32(NaN)), 'NaN coerces to +0');
+		t.equal(0, ES.ToInt32(NaN), 'NaN coerces to +0');
 		forEach([0, Infinity], function (num) {
-			t.ok(is(0, ES.ToInt32(num)), num + ' returns +0');
-			t.ok(is(0, ES.ToInt32(-num)), '-' + num + ' returns +0');
+			t.equal(0, ES.ToInt32(num), num + ' returns +0');
+			t.equal(0, ES.ToInt32(-num), '-' + num + ' returns +0');
 		});
 		t['throws'](function () { return ES.ToInt32(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
-		t.ok(is(ES.ToInt32(0x100000000), 0), '2^32 returns +0');
-		t.ok(is(ES.ToInt32(0x100000000 - 1), -1), '2^32 - 1 returns -1');
-		t.ok(is(ES.ToInt32(0x80000000), -0x80000000), '2^31 returns -2^31');
-		t.ok(is(ES.ToInt32(0x80000000 - 1), 0x80000000 - 1), '2^31 - 1 returns 2^31 - 1');
+		t.equal(ES.ToInt32(0x100000000), 0, '2^32 returns +0');
+		t.equal(ES.ToInt32(0x100000000 - 1), -1, '2^32 - 1 returns -1');
+		t.equal(ES.ToInt32(0x80000000), -0x80000000, '2^31 returns -2^31');
+		t.equal(ES.ToInt32(0x80000000 - 1), 0x80000000 - 1, '2^31 - 1 returns 2^31 - 1');
 		forEach([0, Infinity, NaN, 0x100000000, 0x80000000, 0x10000, 0x42], function (num) {
-			t.ok(is(ES.ToInt32(num), ES.ToInt32(ES.ToUint32(num))), 'ToInt32(x) === ToInt32(ToUint32(x)) for 0x' + num.toString(16));
-			t.ok(is(ES.ToInt32(-num), ES.ToInt32(ES.ToUint32(-num))), 'ToInt32(x) === ToInt32(ToUint32(x)) for -0x' + num.toString(16));
+			t.equal(ES.ToInt32(num), ES.ToInt32(ES.ToUint32(num)), 'ToInt32(x) === ToInt32(ToUint32(x)) for 0x' + num.toString(16));
+			t.equal(ES.ToInt32(-num), ES.ToInt32(ES.ToUint32(-num)), 'ToInt32(x) === ToInt32(ToUint32(x)) for -0x' + num.toString(16));
 		});
 		t.end();
 	});
 
 	test('ToUint32', function (t) {
-		t.ok(is(0, ES.ToUint32(NaN)), 'NaN coerces to +0');
+		t.equal(0, ES.ToUint32(NaN), 'NaN coerces to +0');
 		forEach([0, Infinity], function (num) {
-			t.ok(is(0, ES.ToUint32(num)), num + ' returns +0');
-			t.ok(is(0, ES.ToUint32(-num)), '-' + num + ' returns +0');
+			t.equal(0, ES.ToUint32(num), num + ' returns +0');
+			t.equal(0, ES.ToUint32(-num), '-' + num + ' returns +0');
 		});
 		t['throws'](function () { return ES.ToUint32(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
-		t.ok(is(ES.ToUint32(0x100000000), 0), '2^32 returns +0');
-		t.ok(is(ES.ToUint32(0x100000000 - 1), 0x100000000 - 1), '2^32 - 1 returns 2^32 - 1');
-		t.ok(is(ES.ToUint32(0x80000000), 0x80000000), '2^31 returns 2^31');
-		t.ok(is(ES.ToUint32(0x80000000 - 1), 0x80000000 - 1), '2^31 - 1 returns 2^31 - 1');
+		t.equal(ES.ToUint32(0x100000000), 0, '2^32 returns +0');
+		t.equal(ES.ToUint32(0x100000000 - 1), 0x100000000 - 1, '2^32 - 1 returns 2^32 - 1');
+		t.equal(ES.ToUint32(0x80000000), 0x80000000, '2^31 returns 2^31');
+		t.equal(ES.ToUint32(0x80000000 - 1), 0x80000000 - 1, '2^31 - 1 returns 2^31 - 1');
 		forEach([0, Infinity, NaN, 0x100000000, 0x80000000, 0x10000, 0x42], function (num) {
-			t.ok(is(ES.ToUint32(num), ES.ToUint32(ES.ToInt32(num))), 'ToUint32(x) === ToUint32(ToInt32(x)) for 0x' + num.toString(16));
-			t.ok(is(ES.ToUint32(-num), ES.ToUint32(ES.ToInt32(-num))), 'ToUint32(x) === ToUint32(ToInt32(x)) for -0x' + num.toString(16));
+			t.equal(ES.ToUint32(num), ES.ToUint32(ES.ToInt32(num)), 'ToUint32(x) === ToUint32(ToInt32(x)) for 0x' + num.toString(16));
+			t.equal(ES.ToUint32(-num), ES.ToUint32(ES.ToInt32(-num)), 'ToUint32(x) === ToUint32(ToInt32(x)) for -0x' + num.toString(16));
 		});
 		t.end();
 	});
 
 	test('ToInt16', function (t) {
-		t.ok(is(0, ES.ToInt16(NaN)), 'NaN coerces to +0');
+		t.equal(0, ES.ToInt16(NaN), 'NaN coerces to +0');
 		forEach([0, Infinity], function (num) {
-			t.ok(is(0, ES.ToInt16(num)), num + ' returns +0');
-			t.ok(is(0, ES.ToInt16(-num)), '-' + num + ' returns +0');
+			t.equal(0, ES.ToInt16(num), num + ' returns +0');
+			t.equal(0, ES.ToInt16(-num), '-' + num + ' returns +0');
 		});
 		t['throws'](function () { return ES.ToInt16(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
-		t.ok(is(ES.ToInt16(0x100000000), 0), '2^32 returns +0');
-		t.ok(is(ES.ToInt16(0x100000000 - 1), -1), '2^32 - 1 returns -1');
-		t.ok(is(ES.ToInt16(0x80000000), 0), '2^31 returns +0');
-		t.ok(is(ES.ToInt16(0x80000000 - 1), -1), '2^31 - 1 returns -1');
-		t.ok(is(ES.ToInt16(0x10000), 0), '2^16 returns +0');
-		t.ok(is(ES.ToInt16(0x10000 - 1), -1), '2^16 - 1 returns -1');
+		t.equal(ES.ToInt16(0x100000000), 0, '2^32 returns +0');
+		t.equal(ES.ToInt16(0x100000000 - 1), -1, '2^32 - 1 returns -1');
+		t.equal(ES.ToInt16(0x80000000), 0, '2^31 returns +0');
+		t.equal(ES.ToInt16(0x80000000 - 1), -1, '2^31 - 1 returns -1');
+		t.equal(ES.ToInt16(0x10000), 0, '2^16 returns +0');
+		t.equal(ES.ToInt16(0x10000 - 1), -1, '2^16 - 1 returns -1');
 		t.end();
 	});
 
 	test('ToUint16', function (t) {
-		t.ok(is(0, ES.ToUint16(NaN)), 'NaN coerces to +0');
+		t.equal(0, ES.ToUint16(NaN), 'NaN coerces to +0');
 		forEach([0, Infinity], function (num) {
-			t.ok(is(0, ES.ToUint16(num)), num + ' returns +0');
-			t.ok(is(0, ES.ToUint16(-num)), '-' + num + ' returns +0');
+			t.equal(0, ES.ToUint16(num), num + ' returns +0');
+			t.equal(0, ES.ToUint16(-num), '-' + num + ' returns +0');
 		});
 		t['throws'](function () { return ES.ToUint16(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
-		t.ok(is(ES.ToUint16(0x100000000), 0), '2^32 returns +0');
-		t.ok(is(ES.ToUint16(0x100000000 - 1), 0x10000 - 1), '2^32 - 1 returns 2^16 - 1');
-		t.ok(is(ES.ToUint16(0x80000000), 0), '2^31 returns +0');
-		t.ok(is(ES.ToUint16(0x80000000 - 1), 0x10000 - 1), '2^31 - 1 returns 2^16 - 1');
-		t.ok(is(ES.ToUint16(0x10000), 0), '2^16 returns +0');
-		t.ok(is(ES.ToUint16(0x10000 - 1), 0x10000 - 1), '2^16 - 1 returns 2^16 - 1');
+		t.equal(ES.ToUint16(0x100000000), 0, '2^32 returns +0');
+		t.equal(ES.ToUint16(0x100000000 - 1), 0x10000 - 1, '2^32 - 1 returns 2^16 - 1');
+		t.equal(ES.ToUint16(0x80000000), 0, '2^31 returns +0');
+		t.equal(ES.ToUint16(0x80000000 - 1), 0x10000 - 1, '2^31 - 1 returns 2^16 - 1');
+		t.equal(ES.ToUint16(0x10000), 0, '2^16 returns +0');
+		t.equal(ES.ToUint16(0x10000 - 1), 0x10000 - 1, '2^16 - 1 returns 2^16 - 1');
 		t.end();
 	});
 
 	test('ToInt8', function (t) {
-		t.ok(is(0, ES.ToInt8(NaN)), 'NaN coerces to +0');
+		t.equal(0, ES.ToInt8(NaN), 'NaN coerces to +0');
 		forEach([0, Infinity], function (num) {
-			t.ok(is(0, ES.ToInt8(num)), num + ' returns +0');
-			t.ok(is(0, ES.ToInt8(-num)), '-' + num + ' returns +0');
+			t.equal(0, ES.ToInt8(num), num + ' returns +0');
+			t.equal(0, ES.ToInt8(-num), '-' + num + ' returns +0');
 		});
 		t['throws'](function () { return ES.ToInt8(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
-		t.ok(is(ES.ToInt8(0x100000000), 0), '2^32 returns +0');
-		t.ok(is(ES.ToInt8(0x100000000 - 1), -1), '2^32 - 1 returns -1');
-		t.ok(is(ES.ToInt8(0x80000000), 0), '2^31 returns +0');
-		t.ok(is(ES.ToInt8(0x80000000 - 1), -1), '2^31 - 1 returns -1');
-		t.ok(is(ES.ToInt8(0x10000), 0), '2^16 returns +0');
-		t.ok(is(ES.ToInt8(0x10000 - 1), -1), '2^16 - 1 returns -1');
-		t.ok(is(ES.ToInt8(0x100), 0), '2^8 returns +0');
-		t.ok(is(ES.ToInt8(0x100 - 1), -1), '2^8 - 1 returns -1');
-		t.ok(is(ES.ToInt8(0x10), 0x10), '2^4 returns 2^4');
+		t.equal(ES.ToInt8(0x100000000), 0, '2^32 returns +0');
+		t.equal(ES.ToInt8(0x100000000 - 1), -1, '2^32 - 1 returns -1');
+		t.equal(ES.ToInt8(0x80000000), 0, '2^31 returns +0');
+		t.equal(ES.ToInt8(0x80000000 - 1), -1, '2^31 - 1 returns -1');
+		t.equal(ES.ToInt8(0x10000), 0, '2^16 returns +0');
+		t.equal(ES.ToInt8(0x10000 - 1), -1, '2^16 - 1 returns -1');
+		t.equal(ES.ToInt8(0x100), 0, '2^8 returns +0');
+		t.equal(ES.ToInt8(0x100 - 1), -1, '2^8 - 1 returns -1');
+		t.equal(ES.ToInt8(0x10), 0x10, '2^4 returns 2^4');
 		t.end();
 	});
 
 	test('ToUint8', function (t) {
-		t.ok(is(0, ES.ToUint8(NaN)), 'NaN coerces to +0');
+		t.equal(0, ES.ToUint8(NaN), 'NaN coerces to +0');
 		forEach([0, Infinity], function (num) {
-			t.ok(is(0, ES.ToUint8(num)), num + ' returns +0');
-			t.ok(is(0, ES.ToUint8(-num)), '-' + num + ' returns +0');
+			t.equal(0, ES.ToUint8(num), num + ' returns +0');
+			t.equal(0, ES.ToUint8(-num), '-' + num + ' returns +0');
 		});
 		t['throws'](function () { return ES.ToUint8(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
-		t.ok(is(ES.ToUint8(0x100000000), 0), '2^32 returns +0');
-		t.ok(is(ES.ToUint8(0x100000000 - 1), 0x100 - 1), '2^32 - 1 returns 2^8 - 1');
-		t.ok(is(ES.ToUint8(0x80000000), 0), '2^31 returns +0');
-		t.ok(is(ES.ToUint8(0x80000000 - 1), 0x100 - 1), '2^31 - 1 returns 2^8 - 1');
-		t.ok(is(ES.ToUint8(0x10000), 0), '2^16 returns +0');
-		t.ok(is(ES.ToUint8(0x10000 - 1), 0x100 - 1), '2^16 - 1 returns 2^8 - 1');
-		t.ok(is(ES.ToUint8(0x100), 0), '2^8 returns +0');
-		t.ok(is(ES.ToUint8(0x100 - 1), 0x100 - 1), '2^8 - 1 returns 2^16 - 1');
-		t.ok(is(ES.ToUint8(0x10), 0x10), '2^4 returns 2^4');
-		t.ok(is(ES.ToUint8(0x10 - 1), 0x10 - 1), '2^4 - 1 returns 2^4 - 1');
+		t.equal(ES.ToUint8(0x100000000), 0, '2^32 returns +0');
+		t.equal(ES.ToUint8(0x100000000 - 1), 0x100 - 1, '2^32 - 1 returns 2^8 - 1');
+		t.equal(ES.ToUint8(0x80000000), 0, '2^31 returns +0');
+		t.equal(ES.ToUint8(0x80000000 - 1), 0x100 - 1, '2^31 - 1 returns 2^8 - 1');
+		t.equal(ES.ToUint8(0x10000), 0, '2^16 returns +0');
+		t.equal(ES.ToUint8(0x10000 - 1), 0x100 - 1, '2^16 - 1 returns 2^8 - 1');
+		t.equal(ES.ToUint8(0x100), 0, '2^8 returns +0');
+		t.equal(ES.ToUint8(0x100 - 1), 0x100 - 1, '2^8 - 1 returns 2^16 - 1');
+		t.equal(ES.ToUint8(0x10), 0x10, '2^4 returns 2^4');
+		t.equal(ES.ToUint8(0x10 - 1), 0x10 - 1, '2^4 - 1 returns 2^4 - 1');
 		t.end();
 	});
 
 	test('ToUint8Clamp', function (t) {
-		t.ok(is(0, ES.ToUint8Clamp(NaN)), 'NaN coerces to +0');
-		t.ok(is(0, ES.ToUint8Clamp(0)), '+0 returns +0');
-		t.ok(is(0, ES.ToUint8Clamp(-0)), '-0 returns +0');
-		t.ok(is(0, ES.ToUint8Clamp(-Infinity)), '-Infinity returns +0');
+		t.equal(0, ES.ToUint8Clamp(NaN), 'NaN coerces to +0');
+		t.equal(0, ES.ToUint8Clamp(0), '+0 returns +0');
+		t.equal(0, ES.ToUint8Clamp(-0), '-0 returns +0');
+		t.equal(0, ES.ToUint8Clamp(-Infinity), '-Infinity returns +0');
 		t['throws'](function () { return ES.ToUint8Clamp(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 		forEach([255, 256, 0x100000, Infinity], function (number) {
-			t.ok(is(255, ES.ToUint8Clamp(number)), number + ' coerces to 255');
+			t.equal(255, ES.ToUint8Clamp(number), number + ' coerces to 255');
 		});
 		t.equal(1, ES.ToUint8Clamp(1.49), '1.49 coerces to 1');
 		t.equal(2, ES.ToUint8Clamp(1.5), '1.5 coerces to 2, because 2 is even');
@@ -463,7 +462,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			var obj = ES.ToObject(number);
 			t.equal(typeof obj, 'object', 'number ' + number + ' coerces to object');
 			t.equal(true, obj instanceof Number, 'object of ' + number + ' is Number object');
-			t.ok(is(obj.valueOf(), number), 'object of ' + number + ' coerces to ' + number);
+			t.equal(obj.valueOf(), number, 'object of ' + number + ' coerces to ' + number);
 		});
 		t.end();
 	});
@@ -533,7 +532,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.equal(42, ES.ToLength('42.5'), '"42.5" coerces to 42');
 		t.equal(7, ES.ToLength(7.3), '7.3 coerces to 7');
 		forEach([-0, -1, -42, -Infinity], function (negative) {
-			t.ok(is(0, ES.ToLength(negative)), negative + ' coerces to +0');
+			t.equal(0, ES.ToLength(negative), negative + ' coerces to +0');
 		});
 		t.equal(MAX_SAFE_INTEGER, ES.ToLength(MAX_SAFE_INTEGER + 1), '2^53 coerces to 2^53 - 1');
 		t.equal(MAX_SAFE_INTEGER, ES.ToLength(MAX_SAFE_INTEGER + 3), '2^53 + 2 coerces to 2^53 - 1');
@@ -623,7 +622,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			);
 		};
 		forEach(v.objects.concat(v.numbers), throwsOnNonString);
-		t.ok(is(-0, ES.CanonicalNumericIndexString('-0')), '"-0" returns -0');
+		t.equal(ES.CanonicalNumericIndexString('-0'), -0, '"-0" returns -0');
 		for (var i = -50; i < 50; i += 10) {
 			t.equal(i, ES.CanonicalNumericIndexString(String(i)), '"' + i + '" returns ' + i);
 			t.equal(undefined, ES.CanonicalNumericIndexString(String(i) + 'a'), '"' + i + 'a" returns undefined');
@@ -1432,14 +1431,14 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.test('-0 length produces +0 length', function (st) {
 			var len = -0;
-			st.ok(is(len, -0), '-0 is negative zero');
-			st.notOk(is(len, 0), '-0 is not positive zero');
+			st.equal(len, -0, '-0 is negative zero');
+			st.notEqual(len, 0, '-0 is not positive zero');
 
 			var orig = [1, 2, 3];
 			var arr = ES.ArraySpeciesCreate(orig, len);
 
 			st.equal(ES.IsArray(arr), true);
-			st.ok(is(arr.length, 0));
+			st.equal(arr.length, 0);
 			st.equal(arr.constructor, orig.constructor);
 
 			st.end();
@@ -3321,8 +3320,8 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 	test('MakeDate', function (t) {
 		forEach(v.infinities.concat(NaN), function (nonFiniteNumber) {
-			t.ok(is(ES.MakeDate(nonFiniteNumber, 0), NaN), debug(nonFiniteNumber) + ' is not a finite `day`');
-			t.ok(is(ES.MakeDate(0, nonFiniteNumber), NaN), debug(nonFiniteNumber) + ' is not a finite `time`');
+			t.equal(ES.MakeDate(nonFiniteNumber, 0), NaN, debug(nonFiniteNumber) + ' is not a finite `day`');
+			t.equal(ES.MakeDate(0, nonFiniteNumber), NaN, debug(nonFiniteNumber) + ' is not a finite `time`');
 		});
 		t.equal(ES.MakeDate(0, 0), 0, 'zero day and zero time is zero date');
 		t.equal(ES.MakeDate(0, 123), 123, 'zero day and nonzero time is a date of the "time"');
@@ -3336,10 +3335,10 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 	test('MakeTime', function (t) {
 		forEach(v.infinities.concat(NaN), function (nonFiniteNumber) {
-			t.ok(is(ES.MakeTime(nonFiniteNumber, 0, 0, 0), NaN), debug(nonFiniteNumber) + ' is not a finite `hour`');
-			t.ok(is(ES.MakeTime(0, nonFiniteNumber, 0, 0), NaN), debug(nonFiniteNumber) + ' is not a finite `min`');
-			t.ok(is(ES.MakeTime(0, 0, nonFiniteNumber, 0), NaN), debug(nonFiniteNumber) + ' is not a finite `sec`');
-			t.ok(is(ES.MakeTime(0, 0, 0, nonFiniteNumber), NaN), debug(nonFiniteNumber) + ' is not a finite `ms`');
+			t.equal(ES.MakeTime(nonFiniteNumber, 0, 0, 0), NaN, debug(nonFiniteNumber) + ' is not a finite `hour`');
+			t.equal(ES.MakeTime(0, nonFiniteNumber, 0, 0), NaN, debug(nonFiniteNumber) + ' is not a finite `min`');
+			t.equal(ES.MakeTime(0, 0, nonFiniteNumber, 0), NaN, debug(nonFiniteNumber) + ' is not a finite `sec`');
+			t.equal(ES.MakeTime(0, 0, 0, nonFiniteNumber), NaN, debug(nonFiniteNumber) + ' is not a finite `ms`');
 		});
 
 		t.equal(
@@ -3353,10 +3352,10 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 	test('TimeClip', function (t) {
 		forEach(v.infinities.concat(NaN), function (nonFiniteNumber) {
-			t.ok(is(ES.TimeClip(nonFiniteNumber), NaN), debug(nonFiniteNumber) + ' is not a finite `time`');
+			t.equal(ES.TimeClip(nonFiniteNumber), NaN, debug(nonFiniteNumber) + ' is not a finite `time`');
 		});
-		t.ok(is(ES.TimeClip(8.64e15 + 1), NaN), '8.64e15 is the largest magnitude considered "finite"');
-		t.ok(is(ES.TimeClip(-8.64e15 - 1), NaN), '-8.64e15 is the largest magnitude considered "finite"');
+		t.equal(ES.TimeClip(8.64e15 + 1), NaN, '8.64e15 is the largest magnitude considered "finite"');
+		t.equal(ES.TimeClip(-8.64e15 - 1), NaN, '-8.64e15 is the largest magnitude considered "finite"');
 
 		forEach(v.zeroes.concat([-10, 10, +new Date()]), function (time) {
 			t.looseEqual(ES.TimeClip(time), time, debug(time) + ' is a time of ' + debug(time));
@@ -3874,9 +3873,9 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 	var test = makeTest(skips);
 
 	test('ToIndex', function (t) {
-		t.ok(is(ES.ToIndex(), 0), 'no value gives +0');
-		t.ok(is(ES.ToIndex(undefined), 0), 'undefined value gives +0');
-		t.ok(is(ES.ToIndex(-0), 0), '-0 gives +0');
+		t.equal(ES.ToIndex(), 0, 'no value gives +0');
+		t.equal(ES.ToIndex(undefined), 0, 'undefined value gives +0');
+		t.equal(ES.ToIndex(-0), 0, '-0 gives +0');
 
 		t['throws'](function () { ES.ToIndex(-1); }, RangeError, 'negative numbers throw');
 
@@ -4764,11 +4763,11 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 	test('ToInteger', function (t) {
 		forEach([0, -0, NaN], function (num) {
-			t.ok(is(0, ES.ToInteger(num)), debug(num) + ' returns +0');
+			t.equal(0, ES.ToInteger(num), debug(num) + ' returns +0');
 		});
 		forEach([Infinity, 42], function (num) {
-			t.ok(is(num, ES.ToInteger(num)), debug(num) + ' returns itself');
-			t.ok(is(-num, ES.ToInteger(-num)), '-' + debug(num) + ' returns itself');
+			t.equal(num, ES.ToInteger(num), debug(num) + ' returns itself');
+			t.equal(-num, ES.ToInteger(-num), '-' + debug(num) + ' returns itself');
 		});
 		t.equal(3, ES.ToInteger(Math.PI), 'pi returns 3');
 		t['throws'](function () { return ES.ToInteger(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
@@ -5385,12 +5384,12 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.ok(is(ES.Number.divide(Infinity, Infinity), NaN), '∞ / ∞ is NaN');
-		t.ok(is(ES.Number.divide(-Infinity, Infinity), NaN), '-∞ / ∞ is NaN');
-		t.ok(is(ES.Number.divide(Infinity, -Infinity), NaN), '∞ / -∞ is NaN');
-		t.ok(is(ES.Number.divide(-Infinity, -Infinity), NaN), '-∞ / -∞ is NaN');
+		t.equal(ES.Number.divide(Infinity, Infinity), NaN, '∞ / ∞ is NaN');
+		t.equal(ES.Number.divide(-Infinity, Infinity), NaN, '-∞ / ∞ is NaN');
+		t.equal(ES.Number.divide(Infinity, -Infinity), NaN, '∞ / -∞ is NaN');
+		t.equal(ES.Number.divide(-Infinity, -Infinity), NaN, '-∞ / -∞ is NaN');
 
-		t.ok(is(ES.Number.divide(NaN, NaN), NaN), 'NaN / NaN is NaN');
+		t.equal(ES.Number.divide(NaN, NaN), NaN, 'NaN / NaN is NaN');
 
 		t.equal(ES.Number.divide(Infinity, 0), Infinity, '∞ / 0 is ∞');
 		t.equal(ES.Number.divide(-Infinity, -0), Infinity, '-∞ / -0 is ∞');
@@ -5464,36 +5463,36 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 		t.equal(ES.Number.exponentiate(Infinity, 1), Infinity, '+∞ ** 1 is +∞');
 		t.equal(ES.Number.exponentiate(Infinity, 2), Infinity, '+∞ ** 2 is +∞');
-		t.ok(is(ES.Number.exponentiate(Infinity, -1), +0), '+∞ ** -1 is +0');
-		t.ok(is(ES.Number.exponentiate(Infinity, -2), +0), '+∞ ** -2 is +0');
+		t.equal(ES.Number.exponentiate(Infinity, -1), +0, '+∞ ** -1 is +0');
+		t.equal(ES.Number.exponentiate(Infinity, -2), +0, '+∞ ** -2 is +0');
 
 		t.equal(ES.Number.exponentiate(-Infinity, 1), -Infinity, '-∞ ** 1 is -∞');
 		t.equal(ES.Number.exponentiate(-Infinity, 2), Infinity, '-∞ ** 2 is +∞');
-		t.ok(is(ES.Number.exponentiate(-Infinity, -1), -0), '-∞ ** --1 is -0');
-		t.ok(is(ES.Number.exponentiate(-Infinity, -2), +0), '-∞ ** --2 is +0');
+		t.equal(ES.Number.exponentiate(-Infinity, -1), -0, '-∞ ** --1 is -0');
+		t.equal(ES.Number.exponentiate(-Infinity, -2), +0, '-∞ ** --2 is +0');
 
-		t.ok(is(ES.Number.exponentiate(1.1, Infinity), Infinity), '1.1 ** +∞ is +∞');
-		t.ok(is(ES.Number.exponentiate(1.1, -Infinity), 0), '1.1 ** -∞ is +0');
-		t.ok(is(ES.Number.exponentiate(-1.1, Infinity), Infinity), '-1.1 ** +∞ is +∞');
-		t.ok(is(ES.Number.exponentiate(-1.1, -Infinity), 0), '-1.1 ** -∞ is +0');
+		t.equal(ES.Number.exponentiate(1.1, Infinity), Infinity, '1.1 ** +∞ is +∞');
+		t.equal(ES.Number.exponentiate(1.1, -Infinity), 0, '1.1 ** -∞ is +0');
+		t.equal(ES.Number.exponentiate(-1.1, Infinity), Infinity, '-1.1 ** +∞ is +∞');
+		t.equal(ES.Number.exponentiate(-1.1, -Infinity), 0, '-1.1 ** -∞ is +0');
 
-		t.ok(is(ES.Number.exponentiate(1, Infinity), NaN), '1 ** +∞ is NaN');
-		t.ok(is(ES.Number.exponentiate(1, -Infinity), NaN), '1 ** -∞ is NaN');
-		t.ok(is(ES.Number.exponentiate(-1, Infinity), NaN), '-1 ** +∞ is NaN');
-		t.ok(is(ES.Number.exponentiate(-1, -Infinity), NaN), '-1 ** -∞ is NaN');
+		t.equal(ES.Number.exponentiate(1, Infinity), NaN, '1 ** +∞ is NaN');
+		t.equal(ES.Number.exponentiate(1, -Infinity), NaN, '1 ** -∞ is NaN');
+		t.equal(ES.Number.exponentiate(-1, Infinity), NaN, '-1 ** +∞ is NaN');
+		t.equal(ES.Number.exponentiate(-1, -Infinity), NaN, '-1 ** -∞ is NaN');
 
-		t.ok(is(ES.Number.exponentiate(0.9, Infinity), 0), '0.9 ** +∞ is +0');
-		t.ok(is(ES.Number.exponentiate(0.9, -Infinity), Infinity), '0.9 ** -∞ is ∞');
-		t.ok(is(ES.Number.exponentiate(-0.9, Infinity), 0), '-0.9 ** +∞ is +0');
-		t.ok(is(ES.Number.exponentiate(-0.9, -Infinity), Infinity), '-0.9 ** -∞ is +∞');
+		t.equal(ES.Number.exponentiate(0.9, Infinity), 0, '0.9 ** +∞ is +0');
+		t.equal(ES.Number.exponentiate(0.9, -Infinity), Infinity, '0.9 ** -∞ is ∞');
+		t.equal(ES.Number.exponentiate(-0.9, Infinity), 0, '-0.9 ** +∞ is +0');
+		t.equal(ES.Number.exponentiate(-0.9, -Infinity), Infinity, '-0.9 ** -∞ is +∞');
 
 		forEach(v.numbers.concat(NaN), function (number) {
-			t.ok(is(ES.Number.exponentiate(number, NaN), NaN), debug(number) + ' ** NaN is NaN');
+			t.equal(ES.Number.exponentiate(number, NaN), NaN, debug(number) + ' ** NaN is NaN');
 
 			if (number !== 0) {
 				t.equal(ES.Number.exponentiate(number, 0), 1, debug(number) + ' ** +0 is 1');
 				t.equal(ES.Number.exponentiate(number, -0), 1, debug(number) + ' ** -0 is 1');
-				t.ok(is(ES.Number.exponentiate(NaN, number), NaN), 'NaN ** ' + debug(number) + ' is NaN');
+				t.equal(ES.Number.exponentiate(NaN, number), NaN, 'NaN ** ' + debug(number) + ' is NaN');
 			}
 
 			if (number !== 0 && isFinite(number)) {
@@ -5594,20 +5593,20 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.equal(ES.Number.multiply(-Infinity, Infinity), -Infinity, '-∞ * +∞ is -∞');
 		t.equal(ES.Number.multiply(-Infinity, -Infinity), Infinity, '-∞ * -∞ is +∞');
 
-		t.ok(is(ES.Number.multiply(+0, +0), +0), '0 * 0 is +0');
-		t.ok(is(ES.Number.multiply(+0, -0), -0), '0 * -0 is -0');
-		t.ok(is(ES.Number.multiply(-0, +0), -0), '-0 * 0 is -0');
-		t.ok(is(ES.Number.multiply(-0, -0), +0), '-0 * -0 is +0');
+		t.equal(ES.Number.multiply(+0, +0), +0, '0 * 0 is +0');
+		t.equal(ES.Number.multiply(+0, -0), -0, '0 * -0 is -0');
+		t.equal(ES.Number.multiply(-0, +0), -0, '-0 * 0 is -0');
+		t.equal(ES.Number.multiply(-0, -0), +0, '-0 * -0 is +0');
 
 		forEach(v.numbers, function (number) {
-			t.ok(is(ES.Number.multiply(NaN, number), NaN), 'NaN * ' + debug(number) + ' is NaN');
-			t.ok(is(ES.Number.multiply(number, NaN), NaN), debug(number) + ' * NaN is NaN');
+			t.equal(ES.Number.multiply(NaN, number), NaN, 'NaN * ' + debug(number) + ' is NaN');
+			t.equal(ES.Number.multiply(number, NaN), NaN, debug(number) + ' * NaN is NaN');
 
 			if (number !== 0 && isFinite(number)) {
-				t.ok(is(ES.Number.multiply(number, 0), number > 0 ? 0 : -0), debug(number) + ' * +0 produces ' + (number > 0 ? '+0' : '-0'));
-				t.ok(is(ES.Number.multiply(0, number), number > 0 ? 0 : -0), '+0 * ' + debug(number) + ' produces ' + (number > 0 ? '+0' : '-0'));
-				t.ok(is(ES.Number.multiply(number, -0), number > 0 ? -0 : 0), debug(number) + ' * -0 produces ' + (number > 0 ? '-0' : '+0'));
-				t.ok(is(ES.Number.multiply(-0, number), number > 0 ? -0 : 0), '-0 * ' + debug(number) + ' produces ' + (number > 0 ? '-0' : '+0'));
+				t.equal(ES.Number.multiply(number, 0), number > 0 ? 0 : -0, debug(number) + ' * +0 produces ' + (number > 0 ? '+0' : '-0'));
+				t.equal(ES.Number.multiply(0, number), number > 0 ? 0 : -0, '+0 * ' + debug(number) + ' produces ' + (number > 0 ? '+0' : '-0'));
+				t.equal(ES.Number.multiply(number, -0), number > 0 ? -0 : 0, debug(number) + ' * -0 produces ' + (number > 0 ? '-0' : '+0'));
+				t.equal(ES.Number.multiply(-0, number), number > 0 ? -0 : 0, '-0 * ' + debug(number) + ' produces ' + (number > 0 ? '-0' : '+0'));
 				t.equal(ES.Number.multiply(number, 1), number, debug(number) + ' * 1 produces itself');
 				t.equal(ES.Number.multiply(number, -42), number * -42, debug(number) + ' * -42 produces ' + (number - 42));
 			}
@@ -5630,28 +5629,28 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.ok(is(ES.Number.remainder(NaN, NaN), NaN), 'NaN % NaN is NaN');
+		t.equal(ES.Number.remainder(NaN, NaN), NaN, 'NaN % NaN is NaN');
 
-		t.ok(is(ES.Number.remainder(+0, +0), NaN), '+0 % +0 is NaN');
-		t.ok(is(ES.Number.remainder(+0, -0), NaN), '+0 % -0 is NaN');
-		t.ok(is(ES.Number.remainder(-0, +0), NaN), '-0 % +0 is NaN');
-		t.ok(is(ES.Number.remainder(-0, -0), NaN), '-0 % -0 is NaN');
+		t.equal(ES.Number.remainder(+0, +0), NaN, '+0 % +0 is NaN');
+		t.equal(ES.Number.remainder(+0, -0), NaN, '+0 % -0 is NaN');
+		t.equal(ES.Number.remainder(-0, +0), NaN, '-0 % +0 is NaN');
+		t.equal(ES.Number.remainder(-0, -0), NaN, '-0 % -0 is NaN');
 
 		forEach(v.numbers, function (number) {
-			t.ok(is(ES.Number.remainder(number, NaN), NaN), debug(number) + ' % NaN is NaN');
-			t.ok(is(ES.Number.remainder(NaN, number), NaN), 'NaN % ' + debug(number) + ' is NaN');
+			t.equal(ES.Number.remainder(number, NaN), NaN, debug(number) + ' % NaN is NaN');
+			t.equal(ES.Number.remainder(NaN, number), NaN, 'NaN % ' + debug(number) + ' is NaN');
 
-			t.ok(is(ES.Number.remainder(Infinity, number), NaN), '+∞ % ' + debug(number) + ' is NaN');
-			t.ok(is(ES.Number.remainder(-Infinity, number), NaN), '-∞ % ' + debug(number) + ' is NaN');
-			t.ok(is(ES.Number.remainder(number, 0), NaN), debug(number) + ' % +0 is NaN');
-			t.ok(is(ES.Number.remainder(number, -0), NaN), debug(number) + ' % -0 is NaN');
+			t.equal(ES.Number.remainder(Infinity, number), NaN, '+∞ % ' + debug(number) + ' is NaN');
+			t.equal(ES.Number.remainder(-Infinity, number), NaN, '-∞ % ' + debug(number) + ' is NaN');
+			t.equal(ES.Number.remainder(number, 0), NaN, debug(number) + ' % +0 is NaN');
+			t.equal(ES.Number.remainder(number, -0), NaN, debug(number) + ' % -0 is NaN');
 
 			if (isFinite(number)) {
 				t.equal(ES.Number.remainder(number, Infinity), number, debug(number) + ' % +∞ is ' + debug(number));
 				t.equal(ES.Number.remainder(number, -Infinity), number, debug(number) + ' % -∞ is ' + debug(number));
 				if (number !== 0) {
-					t.ok(is(ES.Number.remainder(0, number), 0), '+0 % ' + debug(number) + ' is ' + debug(number));
-					t.ok(is(ES.Number.remainder(-0, number), -0), '-0 % ' + debug(number) + ' is ' + debug(number));
+					t.equal(ES.Number.remainder(0, number), 0, '+0 % ' + debug(number) + ' is ' + debug(number));
+					t.equal(ES.Number.remainder(-0, number), -0, '-0 % ' + debug(number) + ' is ' + debug(number));
 					t.looseEqual(ES.Number.remainder(number * 2, number), 0, debug(number) + ' % ' + debug(number * 2) + ' is 0');
 				}
 			}
@@ -5753,10 +5752,10 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.ok(is(ES.Number.subtract(+0, +0), +0), '0 - 0 is +0');
-		t.ok(is(ES.Number.subtract(+0, -0), +0), '0 - -0 is +0');
-		t.ok(is(ES.Number.subtract(-0, +0), -0), '-0 - 0 is -0');
-		t.ok(is(ES.Number.subtract(-0, -0), +0), '-0 - -0 is +0');
+		t.equal(ES.Number.subtract(+0, +0), +0, '0 - 0 is +0');
+		t.equal(ES.Number.subtract(+0, -0), +0, '0 - -0 is +0');
+		t.equal(ES.Number.subtract(-0, +0), -0, '-0 - 0 is -0');
+		t.equal(ES.Number.subtract(-0, -0), +0, '-0 - -0 is +0');
 
 		forEach(v.numbers, function (number) {
 			if (number !== 0) {
@@ -5794,10 +5793,10 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.ok(is(ES.Number.unaryMinus(NaN), NaN), 'NaN produces NaN');
+		t.equal(ES.Number.unaryMinus(NaN), NaN, 'NaN produces NaN');
 
 		forEach(v.numbers, function (number) {
-			t.ok(is(ES.Number.unaryMinus(number), -number), debug(number) + ' produces -' + debug(number));
+			t.equal(ES.Number.unaryMinus(number), -number, debug(number) + ' produces -' + debug(number));
 		});
 
 		t.end();
@@ -5840,7 +5839,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.ok(is(ES.BigInt.add($BigInt(0), $BigInt(0)), $BigInt(0)), '0n + 0n is 0n');
+		t.equal(ES.BigInt.add($BigInt(0), $BigInt(0)), $BigInt(0), '0n + 0n is 0n');
 
 		forEach(v.bigints, function (bigint) {
 			if (bigint !== $BigInt(0)) {
@@ -6088,11 +6087,11 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.ok(is(ES.BigInt.multiply($BigInt(0), $BigInt(0)), $BigInt(0)), '0n * 0n is 0n');
+		t.equal(ES.BigInt.multiply($BigInt(0), $BigInt(0)), $BigInt(0), '0n * 0n is 0n');
 
 		forEach(v.bigints, function (bigint) {
 			if (bigint !== $BigInt(0)) {
-				t.ok(is(ES.BigInt.multiply(bigint, $BigInt(0)), $BigInt(0)), debug(bigint) + ' * 0n produces 0n');
+				t.equal(ES.BigInt.multiply(bigint, $BigInt(0)), $BigInt(0), debug(bigint) + ' * 0n produces 0n');
 				t.equal(ES.BigInt.multiply(bigint, $BigInt(1)), bigint, debug(bigint) + ' * 1n produces itself');
 				t.equal(ES.BigInt.multiply(bigint, -$BigInt(42)), bigint * -$BigInt(42), debug(bigint) + ' * -42n produces ' + (bigint - $BigInt(42)));
 			}
@@ -6123,9 +6122,14 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 		forEach(v.bigints, function (bigint) {
 			if (bigint !== $BigInt(0)) {
-				t.ok(is(ES.BigInt.remainder($BigInt(0), bigint), $BigInt(0)), '0n % ' + debug(bigint) + ' is 0n');
-				t.ok(
-					is(ES.BigInt.remainder(bigint + $BigInt(1), bigint), $BigInt(1)),
+				t.equal(
+					ES.BigInt.remainder($BigInt(0), bigint),
+					$BigInt(0),
+					'0n % ' + debug(bigint) + ' is 0n'
+				);
+				t.equal(
+					ES.BigInt.remainder(bigint + $BigInt(1), bigint),
+					$BigInt(1),
 					debug(bigint) + ' % ' + debug(bigint + $BigInt(1)) + ' is 1n'
 				);
 			}
@@ -6221,7 +6225,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.ok(is(ES.BigInt.subtract($BigInt(0), $BigInt(0)), $BigInt(0)), '0n - 0n is 0n');
+		t.equal(ES.BigInt.subtract($BigInt(0), $BigInt(0)), $BigInt(0), '0n - 0n is 0n');
 
 		forEach(v.bigints, function (bigint) {
 			t.equal(ES.BigInt.subtract(bigint, $BigInt(0)), bigint, debug(bigint) + ' - 0n produces ' + bigint);
@@ -6259,7 +6263,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 		t.test('actual BigInts', { skip: !hasBigInts }, function (st) {
 			forEach(v.bigints, function (bigint) {
-				st.ok(is(ES.BigInt.unaryMinus(bigint), -bigint), debug(bigint) + ' produces -' + debug(bigint));
+				st.equal(ES.BigInt.unaryMinus(bigint), -bigint, debug(bigint) + ' produces -' + debug(bigint));
 			});
 			st.end();
 		});
