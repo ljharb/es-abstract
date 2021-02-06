@@ -5391,10 +5391,15 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 		t.equal(ES.Number.divide(NaN, NaN), NaN, 'NaN / NaN is NaN');
 
-		t.equal(ES.Number.divide(Infinity, 0), Infinity, '∞ / 0 is ∞');
-		t.equal(ES.Number.divide(-Infinity, -0), Infinity, '-∞ / -0 is ∞');
-		t.equal(ES.Number.divide(Infinity, -0), -Infinity, '∞ / -0 is -∞');
-		t.equal(ES.Number.divide(-Infinity, 0), -Infinity, '-∞ / 0 is -∞');
+		t.equal(ES.Number.divide(+Infinity, +0), +Infinity, '+∞ / +0 is +∞');
+		t.equal(ES.Number.divide(-Infinity, -0), +Infinity, '-∞ / -0 is +∞');
+		t.equal(ES.Number.divide(+Infinity, -0), -Infinity, '+∞ / -0 is -∞');
+		t.equal(ES.Number.divide(-Infinity, +0), -Infinity, '-∞ / +0 is -∞');
+
+		t.equal(ES.Number.divide(+0, +Infinity), +0, '+0 / +∞ is +0');
+		t.equal(ES.Number.divide(-0, -Infinity), +0, '-0 / -∞ is +0');
+		t.equal(ES.Number.divide(-0, +Infinity), -0, '-0 / +∞ is -0');
+		t.equal(ES.Number.divide(+0, -Infinity), -0, '+0 / -∞ is -0');
 
 		forEach(v.numbers, function (number) {
 			if (number !== 0 && isFinite(number)) {
@@ -5432,8 +5437,13 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.equal(ES.Number.equal(Infinity, -0), false, '∞ !== -0');
 		t.equal(ES.Number.equal(-Infinity, 0), false, '-∞ !== 0');
 
+		t.equal(ES.Number.equal(+0, +0), true, '+0 === +0');
+		t.equal(ES.Number.equal(+0, -0), true, '+0 === -0');
+		t.equal(ES.Number.equal(-0, +0), true, '-0 === +0');
+		t.equal(ES.Number.equal(-0, -0), true, '-0 === -0');
+
 		forEach(v.numbers, function (number) {
-			if (number !== 0 && isFinite(number)) {
+			if (isFinite(number)) {
 				t.equal(ES.Number.equal(number, number), true, debug(number) + ' is equal to itself');
 				t.equal(ES.Number.equal(number, number + 1), false, debug(number) + ' is not equal to itself plus 1');
 			}
@@ -5455,6 +5465,13 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				'exponent: ' + debug(nonNumber) + ' is not a Number'
 			);
 		});
+
+		t.equal(ES.Number.exponentiate(0, 42), 0, '+0 ** 42 is +0');
+		t.equal(ES.Number.exponentiate(0, -42), Infinity, '+0 ** 42 is +∞');
+		t.equal(ES.Number.exponentiate(-0, 42), 0, '-0 ** 42 is +0');
+		t.equal(ES.Number.exponentiate(-0, 41), -0, '-0 ** 41 is -0');
+		t.equal(ES.Number.exponentiate(-0, -42), Infinity, '-0 ** 42 is +∞');
+		t.equal(ES.Number.exponentiate(-0, -41), -Infinity, '-0 ** 41 is -∞');
 
 		t.equal(ES.Number.exponentiate(Infinity, 0), 1, '+∞ ** 0 is 1');
 		t.equal(ES.Number.exponentiate(Infinity, -0), 1, '+∞ ** -0 is 1');
@@ -5546,7 +5563,14 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.equal(ES.Number.lessThan(-0, +0), false, '-0 < +0 is false');
 		t.equal(ES.Number.lessThan(-0, -0), false, '-0 < -0 is false');
 
-		forEach(v.numbers, function (number) {
+		t.equal(ES.Number.lessThan(NaN, NaN), undefined, 'NaN < NaN is undefined');
+
+		t.equal(ES.Number.lessThan(+Infinity, +Infinity), false, '+∞ < +∞ is false');
+		t.equal(ES.Number.lessThan(+Infinity, -Infinity), false, '+∞ < -∞ is false');
+		t.equal(ES.Number.lessThan(-Infinity, +Infinity), true, '-∞ < +∞ is true');
+		t.equal(ES.Number.lessThan(-Infinity, -Infinity), false, '-∞ < -∞ is false');
+
+		forEach(v.numbers.concat(v.infinities), function (number) {
 			t.equal(ES.Number.lessThan(NaN, number), undefined, 'NaN < ' + debug(number) + ' is undefined');
 			t.equal(ES.Number.lessThan(number, NaN), undefined, debug(number) + ' < NaN is undefined');
 
@@ -5598,7 +5622,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.equal(ES.Number.multiply(-0, +0), -0, '-0 * 0 is -0');
 		t.equal(ES.Number.multiply(-0, -0), +0, '-0 * -0 is +0');
 
-		forEach(v.numbers, function (number) {
+		forEach(v.numbers.concat(NaN), function (number) {
 			t.equal(ES.Number.multiply(NaN, number), NaN, 'NaN * ' + debug(number) + ' is NaN');
 			t.equal(ES.Number.multiply(number, NaN), NaN, debug(number) + ' * NaN is NaN');
 
