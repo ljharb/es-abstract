@@ -97,6 +97,7 @@
 2016/OrdinaryHasInstance.js	spackled linguist-generated=true
 2016/OrdinaryHasProperty.js	spackled linguist-generated=true
 2016/QuoteJSONString.js	spackled linguist-generated=true
+2016/RegExpCreate.js	spackled linguist-generated=true
 2016/RegExpExec.js	spackled linguist-generated=true
 2016/RequireObjectCoercible.js	spackled linguist-generated=true
 2016/SameValue.js	spackled linguist-generated=true
@@ -106,7 +107,9 @@
 2016/SetFunctionName.js	spackled linguist-generated=true
 2016/SetIntegrityLevel.js	spackled linguist-generated=true
 2016/SpeciesConstructor.js	spackled linguist-generated=true
+2016/SplitMatch.js	spackled linguist-generated=true
 2016/StrictEqualityComparison.js	spackled linguist-generated=true
+2016/StringCreate.js	spackled linguist-generated=true
 2016/SymbolDescriptiveString.js	spackled linguist-generated=true
 2016/TestIntegrityLevel.js	spackled linguist-generated=true
 2016/TimeClip.js	spackled linguist-generated=true
@@ -209,6 +212,7 @@
 2017/OrdinaryHasProperty.js	spackled linguist-generated=true
 2017/OrdinarySetPrototypeOf.js	spackled linguist-generated=true
 2017/QuoteJSONString.js	spackled linguist-generated=true
+2017/RegExpCreate.js	spackled linguist-generated=true
 2017/RegExpExec.js	spackled linguist-generated=true
 2017/RequireObjectCoercible.js	spackled linguist-generated=true
 2017/SameValue.js	spackled linguist-generated=true
@@ -219,7 +223,9 @@
 2017/SetFunctionName.js	spackled linguist-generated=true
 2017/SetIntegrityLevel.js	spackled linguist-generated=true
 2017/SpeciesConstructor.js	spackled linguist-generated=true
+2017/SplitMatch.js	spackled linguist-generated=true
 2017/StrictEqualityComparison.js	spackled linguist-generated=true
+2017/StringCreate.js	spackled linguist-generated=true
 2017/SymbolDescriptiveString.js	spackled linguist-generated=true
 2017/TestIntegrityLevel.js	spackled linguist-generated=true
 2017/TimeClip.js	spackled linguist-generated=true
@@ -322,6 +328,7 @@
 2018/OrdinaryHasInstance.js	spackled linguist-generated=true
 2018/OrdinaryHasProperty.js	spackled linguist-generated=true
 2018/OrdinarySetPrototypeOf.js	spackled linguist-generated=true
+2018/RegExpCreate.js	spackled linguist-generated=true
 2018/RegExpExec.js	spackled linguist-generated=true
 2018/RequireObjectCoercible.js	spackled linguist-generated=true
 2018/SameValue.js	spackled linguist-generated=true
@@ -332,7 +339,9 @@
 2018/SetFunctionName.js	spackled linguist-generated=true
 2018/SetIntegrityLevel.js	spackled linguist-generated=true
 2018/SpeciesConstructor.js	spackled linguist-generated=true
+2018/SplitMatch.js	spackled linguist-generated=true
 2018/StrictEqualityComparison.js	spackled linguist-generated=true
+2018/StringCreate.js	spackled linguist-generated=true
 2018/StringGetOwnProperty.js	spackled linguist-generated=true
 2018/SymbolDescriptiveString.js	spackled linguist-generated=true
 2018/TestIntegrityLevel.js	spackled linguist-generated=true
@@ -444,6 +453,7 @@
 2019/OrdinaryHasProperty.js	spackled linguist-generated=true
 2019/OrdinarySetPrototypeOf.js	spackled linguist-generated=true
 2019/PromiseResolve.js	spackled linguist-generated=true
+2019/RegExpCreate.js	spackled linguist-generated=true
 2019/RegExpExec.js	spackled linguist-generated=true
 2019/RequireObjectCoercible.js	spackled linguist-generated=true
 2019/SameValue.js	spackled linguist-generated=true
@@ -455,7 +465,9 @@
 2019/SetFunctionName.js	spackled linguist-generated=true
 2019/SetIntegrityLevel.js	spackled linguist-generated=true
 2019/SpeciesConstructor.js	spackled linguist-generated=true
+2019/SplitMatch.js	spackled linguist-generated=true
 2019/StrictEqualityComparison.js	spackled linguist-generated=true
+2019/StringCreate.js	spackled linguist-generated=true
 2019/StringGetOwnProperty.js	spackled linguist-generated=true
 2019/SymbolDescriptiveString.js	spackled linguist-generated=true
 2019/TestIntegrityLevel.js	spackled linguist-generated=true
@@ -562,6 +574,7 @@
 2020/OrdinaryHasProperty.js	spackled linguist-generated=true
 2020/OrdinarySetPrototypeOf.js	spackled linguist-generated=true
 2020/PromiseResolve.js	spackled linguist-generated=true
+2020/RegExpCreate.js	spackled linguist-generated=true
 2020/RegExpExec.js	spackled linguist-generated=true
 2020/RequireObjectCoercible.js	spackled linguist-generated=true
 2020/SameValue.js	spackled linguist-generated=true
@@ -571,7 +584,9 @@
 2020/SetFunctionName.js	spackled linguist-generated=true
 2020/SetIntegrityLevel.js	spackled linguist-generated=true
 2020/SpeciesConstructor.js	spackled linguist-generated=true
+2020/SplitMatch.js	spackled linguist-generated=true
 2020/StrictEqualityComparison.js	spackled linguist-generated=true
+2020/StringCreate.js	spackled linguist-generated=true
 2020/StringGetOwnProperty.js	spackled linguist-generated=true
 2020/SymbolDescriptiveString.js	spackled linguist-generated=true
 2020/TestIntegrityLevel.js	spackled linguist-generated=true

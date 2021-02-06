@@ -130,11 +130,10 @@ var expectedMissing = [
 	'PromiseReactionJob',
 	'PromiseResolveThenableJob',
 	'ProxyCreate',
-	'PutValue',
-	'RegExpAlloc',
+	'PutValue', // takes a Reference
+	'RegExpAlloc', // creates a regex with uninitialized internal lots
 	'RegExpBuiltinExec',
-	'RegExpCreate',
-	'RegExpInitialize',
+	'RegExpInitialize', // initializes allocated regex's internal slots
 	'RejectPromise',
 	'RepeatMatcher',
 	'ResolveBinding',
@@ -149,15 +148,13 @@ var expectedMissing = [
 	'SetRealmGlobalObject',
 	'SetValueInBuffer',
 	'SetViewValue',
-	'SortCompare',
-	'SplitMatch',
-	'StringCreate',
+	'SortCompare', // mystery access to `comparefn` arg
 	'TopLevelModuleEvaluationJob',
 	'ToString Applied to the Number Type',
 	'TriggerPromiseReactions',
 	'TypedArrayCreate',
 	'TypedArraySpeciesCreate',
-	'UpdateEmpty',
+	'UpdateEmpty', // completion records
 	'UTC', // depends on LocalTZA
 	'ValidateTypedArray'
 ];

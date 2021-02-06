@@ -3570,6 +3570,73 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('RegExpCreate', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			if (typeof nonString !== 'symbol') {
+				var p = typeof nonString === 'undefined' ? '' : nonString;
+				t.equal(
+					String(new RegExp(p, 'g')),
+					'/' + (String(p) || '(?:)') + '/g',
+					debug(nonString) + ' becomes `/' + String(p) + '/g`'
+				);
+			}
+		});
+
+		t.end();
+	});
+
+	test('StringCreate', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.StringCreate(nonString); },
+				TypeError,
+				debug(nonString) + ' is not a String'
+			);
+		});
+
+		t.deepEqual(ES.StringCreate('foo', String.prototype), Object('foo'), '"foo" with `String.prototype` makes `Object("foo")');
+
+		if ($setProto) {
+			var proto = {};
+			t.equal($getProto(ES.StringCreate('', proto)), proto, '[[Prototype]] is set as expected');
+		} else {
+			t['throws'](
+				function () { ES.StringCreate('', proto); },
+				SyntaxError,
+				'setting [[Prototype]] is not supported in this env'
+			);
+		}
+
+		t.equal(ES.StringCreate('a', String.prototype).length, 'a'.length, 'length is preserved');
+
+		t.end();
+	});
+
+	test('SplitMatch', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.SplitMatch(nonString, 0, ''); },
+				TypeError,
+				'S: ' + debug(nonString) + ' is not a String'
+			);
+			t['throws'](
+				function () { ES.SplitMatch('', 0, nonString); },
+				TypeError,
+				'R: ' + debug(nonString) + ' is not a String'
+			);
+		});
+
+		forEach(v.nonNumbers.concat(v.nonIntegerNumbers), function (nonIntegerNumber) {
+			t['throws'](
+				function () { ES.SplitMatch('', nonIntegerNumber, ''); },
+				TypeError,
+				'q: ' + debug(nonIntegerNumber) + ' is not an integer'
+			);
+		});
+
+		t.end();
+	});
 };
 
 var es2016 = function ES2016(ES, ops, expectedMissing, skips) {

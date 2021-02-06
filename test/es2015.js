@@ -95,7 +95,7 @@ var expectedMissing = [
 	'max',
 	'min',
 	'ModuleNamespaceCreate',
-	'msPerDay',
+	'msPerDay', // constant
 	'NewDeclarativeEnvironment',
 	'NewFunctionEnvironment',
 	'NewGlobalEnvironment',
@@ -114,11 +114,10 @@ var expectedMissing = [
 	'PrepareForOrdinaryCall',
 	'PrepareForTailCall',
 	'ProxyCreate',
-	'PutValue',
-	'RegExpAlloc',
+	'PutValue', // takes a Reference
+	'RegExpAlloc', // creates a regex with uninitialized internal lots
 	'RegExpBuiltinExec',
-	'RegExpCreate',
-	'RegExpInitialize',
+	'RegExpInitialize', // initializes allocated regex's internal slots
 	'RejectPromise',
 	'RepeatMatcher',
 	'ResolveBinding',
@@ -131,13 +130,11 @@ var expectedMissing = [
 	'SetValueInBuffer',
 	'SetViewValue',
 	'sign',
-	'SortCompare',
-	'SplitMatch',
-	'StringCreate',
+	'SortCompare', // mystery access to `comparefn` arg
 	'StringGetIndexProperty',
 	'TriggerPromiseReactions',
 	'TypedArrayFrom',
-	'UpdateEmpty',
+	'UpdateEmpty', // completion records
 	'UTC'
 ];
 

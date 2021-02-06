@@ -186,14 +186,13 @@ var expectedMissing = [
 	'PrepareForOrdinaryCall',
 	'PrepareForTailCall',
 	'ProxyCreate',
-	'PutValue',
+	'PutValue', // takes a Reference
 	'RawBytesToNumeric',
 	'reads-bytes-from',
 	'reads-from',
-	'RegExpAlloc',
+	'RegExpAlloc', // creates a regex with uninitialized internal lots
 	'RegExpBuiltinExec',
-	'RegExpCreate',
-	'RegExpInitialize',
+	'RegExpInitialize', // initializes allocated regex's internal slots
 	'RejectPromise',
 	'RemoveWaiter',
 	'RemoveWaiters',
@@ -212,9 +211,7 @@ var expectedMissing = [
 	'SetValueInBuffer',
 	'SetViewValue',
 	'SharedDataBlockEventSet',
-	'SortCompare',
-	'SplitMatch',
-	'StringCreate',
+	'SortCompare', // mystery access to `comparefn` arg
 	'StringToBigInt',
 	'Suspend',
 	'synchronizes-with',
@@ -228,7 +225,7 @@ var expectedMissing = [
 	'TypedArraySpeciesCreate',
 	'UnicodeMatchProperty',
 	'UnicodeMatchPropertyValue',
-	'UpdateEmpty',
+	'UpdateEmpty', // completion records
 	'UTC', // depends on LocalTZA
 	'UTF16Encode',
 	'ValidateAtomicAccess',
