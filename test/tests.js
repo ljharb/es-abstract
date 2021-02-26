@@ -663,15 +663,24 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	test('Call', function (t) {
 		var receiver = {};
 		var notFuncs = v.nonFunctions.concat([/a/g, new RegExp('a', 'g')]);
-		t.plan(notFuncs.length + 5);
-		var throwsIfNotCallable = function (notFunc) {
+		t.plan(notFuncs.length + v.nonArrays.length + 5);
+
+		forEach(notFuncs, function (notFunc) {
 			t['throws'](
 				function () { return ES.Call(notFunc, receiver); },
 				TypeError,
 				debug(notFunc) + ' (' + typeof notFunc + ') is not callable'
 			);
-		};
-		forEach(notFuncs, throwsIfNotCallable);
+		});
+
+		forEach(v.nonArrays, function (nonArray) {
+			t['throws'](
+				function () { ES.Call(Function.prototype, null, nonArray); },
+				TypeError,
+				debug(nonArray) + ' is not an array'
+			);
+		});
+
 		ES.Call(
 			function (a, b) {
 				t.equal(this, receiver, 'context matches expected');
@@ -1224,7 +1233,19 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t['throws'](function () { ES.Invoke({ o: false }, 'o'); }, TypeError, 'fails on a non-function');
+		t['throws'](
+			function () { ES.Invoke({ o: false }, 'o'); },
+			TypeError,
+			'fails on a non-function'
+		);
+
+		forEach(v.nonArrays, function (nonArray) {
+			t['throws'](
+				function () { ES.Invoke({}, '', nonArray); },
+				TypeError,
+				debug(nonArray) + ' is not an Array'
+			);
+		});
 
 		t.test('invoked callback', function (st) {
 			var aValue = {};
@@ -1237,7 +1258,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				}
 			};
 			st.plan(3);
-			ES.Invoke(obj, 'f', aValue, bValue);
+			ES.Invoke(obj, 'f', [aValue, bValue]);
 		});
 
 		t.end();
