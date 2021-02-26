@@ -6343,7 +6343,20 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 		t.test('actual BigInts', { skip: !hasBigInts }, function (st) {
 			forEach(v.integerNumbers, function (int) {
-				st.equal(ES.NumberToBigInt(int), $BigInt(int), debug(int) + ' becomes ' + debug($BigInt(int)));
+				if (int >= 1e17) {
+					// BigInt(1e17) throws on node v10.4 - v10.8
+					try {
+						st.equal(ES.NumberToBigInt(int), $BigInt(int), debug(int) + ' becomes ' + debug($BigInt(int)));
+					} catch (e) {
+						st['throws'](
+							function () { $BigInt(int); },
+							RangeError,
+							debug(int) + ' is too large on this engine to convert into a BigInt'
+						);
+					}
+				} else {
+					st.equal(ES.NumberToBigInt(int), $BigInt(int), debug(int) + ' becomes ' + debug($BigInt(int)));
+				}
 			});
 			st.end();
 		});
