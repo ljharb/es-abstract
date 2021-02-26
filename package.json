@@ -61,8 +61,8 @@
 		"object-inspect": "^1.9.0",
 		"object-keys": "^1.1.1",
 		"object.assign": "^4.1.2",
-		"string.prototype.trimend": "^1.0.3",
-		"string.prototype.trimstart": "^1.0.3",
+		"string.prototype.trimend": "^1.0.4",
+		"string.prototype.trimstart": "^1.0.4",
 		"unbox-primitive": "^1.0.0"
 	},
 	"devDependencies": {
