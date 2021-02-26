@@ -930,6 +930,15 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			configurable: true
 		});
 
+		var both = v.bothDescriptor();
+		t['throws'](
+			function () {
+				ES.FromPropertyDescriptor({ get: both['[[Get]]'], value: both['[[Value]]'] });
+			},
+			TypeError,
+			'data and accessor descriptors are mutually exclusive'
+		);
+
 		t.end();
 	});
 
@@ -963,14 +972,34 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			configurable: !!data['[[Configurable]]']
 		}), assign(data, { '[[Configurable]]': false }));
 
-		var both = v.bothDescriptor();
-		t['throws'](
-			function () {
-				ES.FromPropertyDescriptor({ get: both['[[Get]]'], value: both['[[Value]]'] });
-			},
-			TypeError,
-			'data and accessor descriptors are mutually exclusive'
-		);
+		forEach(v.nonFunctions, function (nonFunction) {
+			if (typeof nonFunction !== 'undefined') {
+				t['throws'](
+					function () { ES.ToPropertyDescriptor({ get: nonFunction }); },
+					TypeError,
+					'`.get` has ' + debug(nonFunction) + ', which is not a Function'
+				);
+				t['throws'](
+					function () { ES.ToPropertyDescriptor({ set: nonFunction }); },
+					TypeError,
+					'`.set` has ' + debug(nonFunction) + ', which is not a Function'
+				);
+			}
+		});
+
+		forEach(['get', 'set'], function (accessorName) {
+			forEach(['value', 'writable'], function (dataName) {
+				var o = {};
+				o[accessorName] = undefined;
+				o[dataName] = undefined;
+
+				t['throws'](
+					function () { ES.ToPropertyDescriptor(o); },
+					TypeError,
+					accessorName + ' + ' + dataName + ' is invalid'
+				);
+			});
+		});
 
 		t.end();
 	});
@@ -1283,15 +1312,167 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('IteratorNext', { skip: true });
+	test('IteratorNext', function (t) {
+		forEach(v.primitives, function (nonObject) {
+			t['throws'](
+				function () { ES.IteratorNext(nonObject); },
+				TypeError,
+				debug(nonObject) + ' is not an Object'
+			);
 
-	test('IteratorComplete', { skip: true });
+			t['throws'](
+				function () { ES.IteratorNext({ next: function () { return nonObject; } }); },
+				TypeError,
+				'`next()` returns ' + debug(nonObject) + ', which is not an Object'
+			);
+		});
 
-	test('IteratorValue', { skip: true });
+		var iterator = {
+			next: function (value) {
+				return [arguments.length, value];
+			}
+		};
+		t.deepEqual(
+			ES.IteratorNext(iterator),
+			[0, undefined],
+			'returns expected value from `.next()`; `next` receives expected 0 arguments'
+		);
+		t.deepEqual(
+			ES.IteratorNext(iterator, iterator),
+			[1, iterator],
+			'returns expected value from `.next()`; `next` receives expected 1 argument'
+		);
 
-	test('IteratorStep', { skip: true });
+		t.end();
+	});
 
-	test('IteratorClose', { skip: true });
+	test('IteratorComplete', function (t) {
+		forEach(v.primitives, function (nonObject) {
+			t['throws'](
+				function () { ES.IteratorComplete(nonObject); },
+				TypeError,
+				debug(nonObject) + ' is not an Object'
+			);
+		});
+
+		forEach(v.truthies, function (truthy) {
+			t.equal(ES.IteratorComplete({ done: truthy }), true, '{ done: ' + debug(truthy) + ' } is true');
+		});
+
+		forEach(v.falsies, function (falsy) {
+			t.equal(ES.IteratorComplete({ done: falsy }), false, '{ done: ' + debug(falsy) + ' } is false');
+		});
+
+		t.end();
+	});
+
+	test('IteratorValue', function (t) {
+		forEach(v.primitives, function (nonObject) {
+			t['throws'](
+				function () { ES.IteratorValue(nonObject); },
+				TypeError,
+				debug(nonObject) + ' is not an Object'
+			);
+		});
+
+		var sentinel = {};
+		t.equal(ES.IteratorValue({ value: sentinel }), sentinel, 'Gets `.value` off the object');
+
+		t.end();
+	});
+
+	test('IteratorStep', function (t) {
+		t.deepEqual(
+			ES.IteratorStep({
+				next: function () {
+					return {
+						done: false,
+						value: [1, arguments.length]
+					};
+				}
+			}),
+			{ done: false, value: [1, 0] },
+			'not-done iterator result yields iterator result'
+		);
+		t.deepEqual(
+			ES.IteratorStep({
+				next: function () {
+					return {
+						done: true,
+						value: [2, arguments.length]
+					};
+				}
+			}),
+			false,
+			'done iterator result yields false'
+		);
+
+		t.end();
+	});
+
+	test('IteratorClose', function (t) {
+		forEach(v.primitives, function (nonObject) {
+			t['throws'](
+				function () { ES.IteratorClose(nonObject); },
+				TypeError,
+				debug(nonObject) + ' is not an Object'
+			);
+
+			t['throws'](
+				function () { ES.IteratorClose({ 'return': function () { return nonObject; } }, function () {}); },
+				TypeError,
+				'`.return` returns ' + debug(nonObject) + ', which is not an Object'
+			);
+		});
+
+		forEach(v.nonFunctions, function (nonFunction) {
+			t['throws'](
+				function () { ES.IteratorClose({}, nonFunction); },
+				TypeError,
+				debug(nonFunction) + ' is not a thunk for a Completion Record'
+			);
+
+			if (nonFunction != null) {
+				t['throws'](
+					function () { ES.IteratorClose({ 'return': nonFunction }, function () {}); },
+					TypeError,
+					'`.return` of ' + debug(nonFunction) + ' is not a Function'
+				);
+			}
+		});
+
+		var sentinel = {};
+		t.equal(
+			ES.IteratorClose({ 'return': undefined }, function () { return sentinel; }),
+			sentinel,
+			'when `.return` is `undefined`, invokes and returns the completion thunk'
+		);
+
+		/* eslint no-throw-literal: 0 */
+		t['throws'](
+			function () { ES.IteratorClose({ 'return': function () { throw sentinel; } }, function () {}); },
+			sentinel,
+			'`.return` that throws, when completionThunk does not, throws exception from `.return`'
+		);
+		t['throws'](
+			function () { ES.IteratorClose({ 'return': function () { throw sentinel; } }, function () { throw -1; }); },
+			-1,
+			'`.return` that throws, when completionThunk does too, throws exception from completionThunk'
+		);
+		t['throws'](
+			function () { ES.IteratorClose({ 'return': function () { } }, function () { throw -1; }); },
+			-1,
+			'`.return` that does not throw, when completionThunk does, throws exception from completionThunk'
+		);
+
+		t.equal(
+			ES.IteratorClose({ 'return': function () { return sentinel; } }, function () { return 42; }),
+			42,
+			'when `.return` and completionThunk do not throw, and `.return` returns an Object, returns completionThunk'
+		);
+
+		t.end();
+	});
 
 	test('CreateIterResultObject', function (t) {
 		forEach(v.nonBooleans, function (nonBoolean) {
@@ -2854,7 +3035,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	test('ArraySetLength', function (t) {
 		forEach(v.primitives.concat(v.objects), function (nonArray) {
 			t['throws'](
-				function () { ES.ArraySetLength(nonArray, 0); },
+				function () { ES.ArraySetLength(nonArray, { '[[Value]]': 0 }); },
 				TypeError,
 				'A: ' + debug(nonArray) + ' is not an Array'
 			);
@@ -2882,6 +3063,14 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				'without a value, length becomes nonwritable'
 			);
 			st.end();
+		});
+
+		forEach([-1, Math.pow(2, 32)].concat(v.nonIntegerNumbers), function (nonLength) {
+			t['throws'](
+				function () { ES.ArraySetLength([], { '[[Value]]': nonLength }); },
+				RangeError,
+				'a non-integer, negative, or > (2**31 - 1) is not a valid length: ' + debug(nonLength)
+			);
 		});
 
 		var arr = [];
@@ -3317,15 +3506,30 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			t.equal(ES.DateFromTime(Date.UTC(2016, 1, i)), i, '2016.02.' + i + ' is date ' + i);
 		}
 		for (i = 1; i <= 30; i += 1) {
+			t.equal(ES.DateFromTime(Date.UTC(2019, 2, i)), i, '2019.03.' + i + ' is date ' + i);
+			t.equal(ES.DateFromTime(Date.UTC(2019, 3, i)), i, '2019.04.' + i + ' is date ' + i);
+			t.equal(ES.DateFromTime(Date.UTC(2019, 5, i)), i, '2019.06.' + i + ' is date ' + i);
+			t.equal(ES.DateFromTime(Date.UTC(2019, 7, i)), i, '2019.08.' + i + ' is date ' + i);
 			t.equal(ES.DateFromTime(Date.UTC(2019, 8, i)), i, '2019.09.' + i + ' is date ' + i);
+			t.equal(ES.DateFromTime(Date.UTC(2019, 10, i)), i, '2019.11.' + i + ' is date ' + i);
 		}
 		for (i = 1; i <= 31; i += 1) {
+			t.equal(ES.DateFromTime(Date.UTC(2019, 0, i)), i, '2019.01.' + i + ' is date ' + i);
+			t.equal(ES.DateFromTime(Date.UTC(2019, 4, i)), i, '2019.05.' + i + ' is date ' + i);
+			t.equal(ES.DateFromTime(Date.UTC(2019, 6, i)), i, '2019.07.' + i + ' is date ' + i);
 			t.equal(ES.DateFromTime(Date.UTC(2019, 9, i)), i, '2019.10.' + i + ' is date ' + i);
+			t.equal(ES.DateFromTime(Date.UTC(2019, 11, i)), i, '2019.12.' + i + ' is date ' + i);
 		}
 		t.end();
 	});
 
 	test('MakeDay', function (t) {
+		forEach([NaN, Infinity, -Infinity], function (nonFiniteNumber) {
+			t.equal(ES.MakeDay(nonFiniteNumber, 0, 0), NaN, 'year: ' + debug(nonFiniteNumber) + ' is not finite');
+			t.equal(ES.MakeDay(0, nonFiniteNumber, 0), NaN, 'month: ' + debug(nonFiniteNumber) + ' is not finite');
+			t.equal(ES.MakeDay(0, 0, nonFiniteNumber), NaN, 'date: ' + debug(nonFiniteNumber) + ' is not finite');
+		});
+
 		var day2015 = 16687;
 		t.equal(ES.MakeDay(2015, 8, 9), day2015, '2015.09.09 is day 16687');
 		var day2016 = day2015 + 366; // 2016 is a leap year
@@ -3336,6 +3540,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.equal(ES.MakeDay(2018, 8, 9), day2018, '2018.09.09 is day 17783');
 		var day2019 = day2018 + 365;
 		t.equal(ES.MakeDay(2019, 8, 9), day2019, '2019.09.09 is day 18148');
+
 		t.end();
 	});
 
@@ -3478,6 +3683,14 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	};
 
 	test('SetFunctionName', function (t) {
+		forEach(v.nonFunctions, function (nonFunction) {
+			t['throws'](
+				function () { ES.SetFunctionName(nonFunction, ''); },
+				TypeError,
+				debug(nonFunction) + ' is not a Function'
+			);
+		});
+
 		t.test('non-extensible function', { skip: !Object.preventExtensions }, function (st) {
 			var f = getNamelessFunction();
 			Object.preventExtensions(f);
@@ -3596,12 +3809,14 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			if (typeof nonString !== 'symbol') {
 				var p = typeof nonString === 'undefined' ? '' : nonString;
 				t.equal(
-					String(new RegExp(p, 'g')),
+					String(ES.RegExpCreate(p, 'g')),
 					'/' + (String(p) || '(?:)') + '/g',
 					debug(nonString) + ' becomes `/' + String(p) + '/g`'
 				);
 			}
 		});
+
+		t.deepEqual(ES.RegExpCreate(), new RegExp(), 'undefined pattern and flags yields empty regex');
 
 		t.end();
 	});
@@ -3654,6 +3869,23 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				'q: ' + debug(nonIntegerNumber) + ' is not an integer'
 			);
 		});
+
+		t.equal(ES.SplitMatch('abc', 0, 'a'), 1, '"a" is found at index 0, before index 1, in "abc"');
+		t.equal(ES.SplitMatch('abc', 1, 'a'), false, '"a" is not found at index 1 in "abc"');
+		t.equal(ES.SplitMatch('abc', 2, 'a'), false, '"a" is not found at index 2 in "abc"');
+
+		t.equal(ES.SplitMatch('abc', 0, 'b'), false, '"a" is not found at index 0 in "abc"');
+		t.equal(ES.SplitMatch('abc', 1, 'b'), 2, '"b" is found at index 1, before index 2, in "abc"');
+		t.equal(ES.SplitMatch('abc', 2, 'b'), false, '"a" is not found at index 2 in "abc"');
+
+		t.equal(ES.SplitMatch('abc', 0, 'c'), false, '"a" is not found at index 0 in "abc"');
+		t.equal(ES.SplitMatch('abc', 1, 'c'), false, '"a" is not found at index 1 in "abc"');
+		t.equal(ES.SplitMatch('abc', 2, 'c'), 3, '"c" is found at index 2, before index 3, in "abc"');
+
+		t.equal(ES.SplitMatch('a', 0, 'ab'), false, 'R longer than S yields false');
+
+		var s = 'a' + wholePoo + 'c';
+		t.equal(ES.SplitMatch(s, 1, wholePoo), 3, debug(wholePoo) + ' is found at index 1, before index 3, in ' + debug(s));
 
 		t.end();
 	});
@@ -3714,6 +3946,43 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				'boxed String ' + debug(S) + ' at OOB index ' + debug(str.length) + ' is `undefined'
 			);
 		});
+
+		t.end();
+	});
+
+	test('IsPromise', { skip: typeof Promise !== 'function' }, function (t) {
+		forEach(v.objects.concat(v.primitives), function (nonPromise) {
+			t.equal(ES.IsPromise(nonPromise), false, debug(nonPromise) + ' is not a Promise');
+		});
+
+		var thenable = { then: Promise.prototype.then };
+		t.equal(ES.IsPromise(thenable), false, 'generic thenable is not a Promise');
+
+		t.equal(ES.IsPromise(Promise.resolve()), true, 'Promise is a Promise');
+
+		t.end();
+	});
+
+	test('QuoteJSONString', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.QuoteJSONString(nonString); },
+				TypeError,
+				debug(nonString) + ' is not a String'
+			);
+		});
+
+		t.equal(ES.QuoteJSONString(''), '""', '"" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('a'), '"a"', '"a" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('"'), '"\\""', '"\\"" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\b'), '"\\b"', '"\\b" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\t'), '"\\t"', '"\\t" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\n'), '"\\n"', '"\\n" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\f'), '"\\f"', '"\\f" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\r'), '"\\r"', '"\\r" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\\'), '"\\\\"', '"\\\\" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\\'), '"\\\\"', '"\\\\" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\u0019'), '"\\u0019"', '"\\u0019" gets properly JSON-quoted');
 
 		t.end();
 	});
@@ -3841,29 +4110,6 @@ var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 		t.equal(ES.UTF16Encoding(0xD83D), leadingPoo, '0xD83D is the first half of ' + wholePoo);
 		t.equal(ES.UTF16Encoding(0xDCA9), trailingPoo, '0xDCA9 is the last half of ' + wholePoo);
 		t.equal(ES.UTF16Encoding(0x1F4A9), wholePoo, '0xDCA9 is the last half of ' + wholePoo);
-
-		t.end();
-	});
-
-	test('QuoteJSONString', function (t) {
-		forEach(v.nonStrings, function (nonString) {
-			t['throws'](
-				function () { ES.QuoteJSONString(nonString); },
-				TypeError,
-				debug(nonString) + ' is not a String'
-			);
-		});
-
-		t.equal(ES.QuoteJSONString(''), '""', '"" gets properly JSON-quoted');
-		t.equal(ES.QuoteJSONString('a'), '"a"', '"a" gets properly JSON-quoted');
-		t.equal(ES.QuoteJSONString('"'), '"\\""', '"\\"" gets properly JSON-quoted');
-		t.equal(ES.QuoteJSONString('\b'), '"\\b"', '"\\b" gets properly JSON-quoted');
-		t.equal(ES.QuoteJSONString('\t'), '"\\t"', '"\\t" gets properly JSON-quoted');
-		t.equal(ES.QuoteJSONString('\n'), '"\\n"', '"\\n" gets properly JSON-quoted');
-		t.equal(ES.QuoteJSONString('\f'), '"\\f"', '"\\f" gets properly JSON-quoted');
-		t.equal(ES.QuoteJSONString('\r'), '"\\r"', '"\\r" gets properly JSON-quoted');
-		t.equal(ES.QuoteJSONString('\\'), '"\\\\"', '"\\\\" gets properly JSON-quoted');
-		t.equal(ES.QuoteJSONString('\\'), '"\\\\"', '"\\\\" gets properly JSON-quoted');
 
 		t.end();
 	});
@@ -4238,19 +4484,6 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 			[['own', obj.own]],
 			'returns enumerable own entries'
 		);
-
-		t.end();
-	});
-
-	test('IsPromise', { skip: typeof Promise !== 'function' }, function (t) {
-		forEach(v.objects.concat(v.primitives), function (nonPromise) {
-			t.equal(ES.IsPromise(nonPromise), false, debug(nonPromise) + ' is not a Promise');
-		});
-
-		var thenable = { then: Promise.prototype.then };
-		t.equal(ES.IsPromise(thenable), false, 'generic thenable is not a Promise');
-
-		t.equal(ES.IsPromise(Promise.resolve()), true, 'Promise is a Promise');
 
 		t.end();
 	});
