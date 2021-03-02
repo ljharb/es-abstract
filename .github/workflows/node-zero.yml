@@ -46,7 +46,7 @@ jobs:
       - uses: ljharb/actions/node/run@main
         with:
           node-version: ${{ matrix.node-version }}
-          command: 'tests-only'
+          shell-command: 'if [ "${{ matrix.node-version }}" = "0.6" ]; then node test; else npm run tests-only; fi'
           cache-node-modules-key: node_modules-${{ github.workflow }}-${{ github.action }}-${{ github.run_id }}
           skip-ls-check: true
 
