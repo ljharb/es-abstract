@@ -1,3 +1,39 @@
+1.18.0-next.3 / 2021-03-01
+=================
+  * [New] `ES2015`: add `StringGetIndexProperty`
+  * [New] `ES2015+`: add `RegExpCreate`, `SplitMatch`, `StringCreate`
+  * [New] `ES2016-ES2019`: add `UTF16Decode`
+  * [New] `ES2020+`: add `NumberToBigInt`
+  * [New] `ES2020+: add `BigInt::`/`Number::` methods:
+  * [Fix] `ES5`: `ToNumber`: properly refuse to parse ES6+ forms
+  * [Fix] `ES2015+`: `Invoke`: optional argumentsList must be a List of arguments, not a list of arguments
+  * [Fix] `ES2016+`: `UTF16Encoding`: properly return a string code point instead of a numeric code point
+  * [Fix] `ES2020`: `NumberBitwiseOp`: assert that x and y are Numbers
+  * [readme] remove travis/testling badge, fix repo URLs
+  * [meta] `ES2015`: add missing `CreateArrayIterator` AO
+  * [meta] `ES2015-ES2017`: add missing `DaylightSavingTA` AO
+  * [meta] rerun `npm run spackle` to update URLs left after 11d8c8df11c0d15d094a6035afed662e22b440ef
+  * [meta] update ecma URLs
+  * [meta] unignore 2020 operations list
+  * [meta] update operations scripts linting
+  * [meta] refactor getOps script to fetch all years at once
+  * [meta] refactor operations script to keep years in one place
+  * [meta] fix ES2015 spec URL
+  * [Deps] update `has-symbols`, `string.prototype.trimend`, `string.prototype.trimstart`, `get-intrinsic`, `is-callable`, `is-regex`
+  * [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `array.prototype.indexof`, `aud`, `es-value-fixtures`, `object.fromentries`, `tape`, `diff`
+  * [operations] detect ES2020+ style `T::` numeric operations
+  * [Tests] increase coverage
+  * [Tests] `BigInt(1e17)` throws on node v10.4-v10.6
+  * [Tests] improve coverage on `Number::` methods
+  * [Tests] `tape` v5 `.equal` now uses strict equality, so no more need for `is()`
+  * [Tests] improve BigInt:: and Number:: coverage
+  * [Tests] actually run all the helpers tests
+  * [Tests] ensure "expected missing" ops list is accurate
+  * [Tests] abstract away per-operation skips
+  * [Tests] skip BigInt:: tests on envs without BigInts
+  * [Tests] use `es-value-fixtures`
+  * [actions] update workflows
+
 1.18.0-next.2 / 2021-01-17
 =================
   * [New] `helpers`: add `isByteValue`, `isCodePoint`, `some`
