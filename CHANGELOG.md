@@ -1,3 +1,14 @@
+1.18.0 / 2021-03-03
+=================
+  * [New] add `ES2020`, and a number of additional AOs: See the changelog entries for the prereleases for more information:
+     - [next.3](./CHANGELOG.md#1180-next3--2021-03-01)
+     - [next.2](./CHANGELOG.md#1180-next2--2021-01-17)
+     - [next.1](./CHANGELOG.md#1180-next1--2020-09-30)
+     - [next.0](./CHANGELOG.md#1180-next0--2020-08-14)
+  * [Refactor] `ES5+`: `Abstract Relational Comparison`: increase coverage
+  * [Tests] increase coverage
+  * [Tests] do not run coverage on node 0.6
+
 1.18.0-next.3 / 2021-03-01
 =================
   * [New] `ES2015`: add `StringGetIndexProperty`
