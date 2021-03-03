@@ -935,6 +935,8 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 		t.equal(ES.DaysInYear(2018), 365, '2018 is not a leap year');
 		t.equal(ES.DaysInYear(2017), 365, '2017 is not a leap year');
 		t.equal(ES.DaysInYear(2016), 366, '2016 is a leap year');
+		t.equal(ES.DaysInYear(2000), 366, '2000 is a leap year');
+		t.equal(ES.DaysInYear(1900), 365, '1900 is not a leap year');
 
 		t.end();
 	});
@@ -2029,12 +2031,52 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		testIterator(t, ES.GetIterator('abc'), 'abc'.split(''));
 
+		var sentinel = {};
+		forEach(v.primitives, function (nonObject) {
+			var method = function () {
+				return nonObject;
+			};
+			t['throws'](
+				function () { ES.GetIterator(sentinel, method); },
+				TypeError,
+				debug(nonObject) + ' is not an Object; iterator method must return an Object'
+			);
+		});
+
+		var i = 0;
+		var manualMethod = function () {
+			t.equal(this, sentinel, 'receiver is expected object');
+			return {
+				next: function () {
+					var value = arr[i];
+					i += 1;
+					return {
+						done: i > arr.length,
+						value: value // eslint-disable-line no-plusplus
+					};
+				}
+			};
+		};
+		testIterator(t, ES.GetIterator(sentinel, manualMethod), arr);
+
 		t.test('Symbol.iterator', { skip: !v.hasSymbols }, function (st) {
 			var m = new Map();
 			m.set(1, 'a');
 			m.set(2, 'b');
 
 			testIterator(st, ES.GetIterator(m), [[1, 'a'], [2, 'b']]);
+
+			forEach(v.primitives, function (nonObject) {
+				var badIterable = {};
+				badIterable[Symbol.iterator] = function () {
+					return nonObject;
+				};
+				st['throws'](
+					function () { return ES.GetIterator(badIterable); },
+					TypeError,
+					debug(nonObject) + ' is not an Object; iterator method must return an Object'
+				);
+			});
 
 			st.end();
 		});
@@ -2371,13 +2413,14 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.equal(ES.InstanceofOperator({}, Object), true, 'plain object is an instance of Object');
 
 		t.test('Symbol.hasInstance', { skip: !v.hasSymbols || !Symbol.hasInstance }, function (st) {
-			st.plan(4);
+			st.plan(5);
 
 			var O = {};
 			var C2 = function () {};
 			st.equal(ES.InstanceofOperator(O, C2), false, 'O is not an instance of C2');
 
 			defineProperty(C2, Symbol.hasInstance, {
+				configurable: true,
 				value: function (obj) {
 					st.equal(this, C2, 'hasInstance receiver is C2');
 					st.equal(obj, O, 'hasInstance argument is O');
@@ -2387,6 +2430,13 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			});
 
 			st.equal(ES.InstanceofOperator(O, C2), true, 'O is now an instance of C2');
+
+			defineProperty(C2, Symbol.hasInstance, {
+				configurable: true,
+				value: undefined
+			});
+
+			st.equal(ES.InstanceofOperator(O, C2), false, 'O is no longer an instance of C2');
 
 			st.end();
 		});
