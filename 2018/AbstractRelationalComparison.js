@@ -39,9 +39,6 @@ module.exports = function AbstractRelationalComparison(x, y, LeftFirst) {
 		if ($isFinite(nx) && $isFinite(ny) && nx === ny) {
 			return false;
 		}
-		if (nx === 0 && ny === 0) {
-			return false;
-		}
 		if (nx === Infinity) {
 			return false;
 		}

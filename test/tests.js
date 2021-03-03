@@ -791,6 +791,33 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
+		forEach(v.nonBooleans, function (nonBoolean) {
+			t['throws'](
+				function () { ES['Abstract Relational Comparison'](3, 4, nonBoolean); },
+				TypeError,
+				debug(nonBoolean) + ' is not a Boolean'
+			);
+		});
+
+		forEach(v.zeroes, function (zero) {
+			t.equal(ES['Abstract Relational Comparison'](zero, 1, true), true, 'LeftFirst: ' + debug(zero) + ' is less than 1');
+			t.equal(ES['Abstract Relational Comparison'](zero, 1, false), true, '!LeftFirst: ' + debug(zero) + ' is less than 1');
+			t.equal(ES['Abstract Relational Comparison'](1, zero, true), false, 'LeftFirst: 1 is not less than ' + debug(zero));
+			t.equal(ES['Abstract Relational Comparison'](1, zero, false), false, '!LeftFirst: 1 is not less than ' + debug(zero));
+
+			t.equal(ES['Abstract Relational Comparison'](zero, zero, true), false, 'LeftFirst: ' + debug(zero) + ' is not less than ' + debug(zero));
+			t.equal(ES['Abstract Relational Comparison'](zero, zero, false), false, '!LeftFirst: ' + debug(zero) + ' is not less than ' + debug(zero));
+		});
+
+		t.equal(ES['Abstract Relational Comparison'](Infinity, -Infinity, true), false, 'LeftFirst: ∞ is not less than -∞');
+		t.equal(ES['Abstract Relational Comparison'](Infinity, -Infinity, false), false, '!LeftFirst: ∞ is not less than -∞');
+		t.equal(ES['Abstract Relational Comparison'](-Infinity, Infinity, true), true, 'LeftFirst: -∞ is less than ∞');
+		t.equal(ES['Abstract Relational Comparison'](-Infinity, Infinity, false), true, '!LeftFirst: -∞ is less than ∞');
+		t.equal(ES['Abstract Relational Comparison'](-Infinity, 0, true), true, 'LeftFirst: -∞ is less than +0');
+		t.equal(ES['Abstract Relational Comparison'](-Infinity, 0, false), true, '!LeftFirst: -∞ is less than +0');
+		t.equal(ES['Abstract Relational Comparison'](0, -Infinity, true), false, 'LeftFirst: +0 is not less than -∞');
+		t.equal(ES['Abstract Relational Comparison'](0, -Infinity, false), false, '!LeftFirst: +0 is not less than -∞');
+
 		t.equal(ES['Abstract Relational Comparison'](3, 4, true), true, 'LeftFirst: 3 is less than 4');
 		t.equal(ES['Abstract Relational Comparison'](4, 3, true), false, 'LeftFirst: 3 is not less than 4');
 		t.equal(ES['Abstract Relational Comparison'](3, 4, false), true, '!LeftFirst: 3 is less than 4');
@@ -800,6 +827,11 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 		t.equal(ES['Abstract Relational Comparison']('4', '3', true), false, 'LeftFirst: "3" is not less than "4"');
 		t.equal(ES['Abstract Relational Comparison']('3', '4', false), true, '!LeftFirst: "3" is less than "4"');
 		t.equal(ES['Abstract Relational Comparison']('4', '3', false), false, '!LeftFirst: "3" is not less than "4"');
+
+		t.equal(ES['Abstract Relational Comparison']('a', 'abc', true), true, 'LeftFirst: "a" is less than "abc"');
+		t.equal(ES['Abstract Relational Comparison']('abc', 'a', true), false, 'LeftFirst: "abc" is not less than "a"');
+		t.equal(ES['Abstract Relational Comparison']('a', 'abc', false), true, '!LeftFirst: "a" is less than "abc"');
+		t.equal(ES['Abstract Relational Comparison']('abc', 'a', false), false, '!LeftFirst: "abc" is not less than "a"');
 
 		t.equal(ES['Abstract Relational Comparison'](v.coercibleObject, 42, true), true, 'LeftFirst: coercible object is less than 42');
 		t.equal(ES['Abstract Relational Comparison'](42, v.coercibleObject, true), false, 'LeftFirst: 42 is not less than coercible object');
