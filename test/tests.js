@@ -2052,7 +2052,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 					i += 1;
 					return {
 						done: i > arr.length,
-						value: value // eslint-disable-line no-plusplus
+						value: value
 					};
 				}
 			};
