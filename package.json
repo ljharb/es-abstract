@@ -59,7 +59,7 @@
 		"is-negative-zero": "^2.0.1",
 		"is-regex": "^1.1.2",
 		"is-string": "^1.0.5",
-		"object-inspect": "^1.9.0",
+		"object-inspect": "^1.10.2",
 		"object-keys": "^1.1.1",
 		"object.assign": "^4.1.2",
 		"string.prototype.trimend": "^1.0.4",
