@@ -19,6 +19,19 @@
 	"description": "ECMAScript spec abstract operations.",
 	"license": "MIT",
 	"main": "index.js",
+	"type": "commonjs",
+	"exports": {
+		".": "./index.js",
+		"./package.json": "./package.json",
+		"./2020/*": "./2020/*.js",
+		"./2019/*": "./2019/*.js",
+		"./2018/*": "./2018/*.js",
+		"./2017/*": "./2017/*.js",
+		"./2016/*": "./2016/*.js",
+		"./2015/*": "./2015/*.js",
+		"./5/*": "./5/*.js",
+		"./": "./"
+	},
 	"sideEffects": false,
 	"scripts": {
 		"prespackle": "git ls-files | xargs git check-attr spackled | grep -v 'unspecified$' | cut -d: -f1 | xargs rm || true",
