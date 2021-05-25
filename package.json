@@ -67,14 +67,14 @@
 		"unbox-primitive": "^1.0.1"
 	},
 	"devDependencies": {
-		"@ljharb/eslint-config": "^17.5.1",
+		"@ljharb/eslint-config": "^17.6.0",
 		"array.prototype.indexof": "^1.0.2",
 		"aud": "^1.1.5",
 		"cheerio": "=1.0.0-rc.3",
 		"diff": "^5.0.0",
 		"eclint": "^2.8.1",
 		"es-value-fixtures": "^1.2.1",
-		"eslint": "^7.25.0",
+		"eslint": "^7.27.0",
 		"foreach": "^2.0.5",
 		"functions-have-names": "^1.2.2",
 		"has-bigints": "^1.0.1",
