@@ -19,6 +19,7 @@
 	"description": "ECMAScript spec abstract operations.",
 	"license": "MIT",
 	"main": "index.js",
+	"sideEffects": false,
 	"scripts": {
 		"prespackle": "git ls-files | xargs git check-attr spackled | grep -v 'unspecified$' | cut -d: -f1 | xargs rm || true",
 		"spackle": "node operations/spackle 1",
