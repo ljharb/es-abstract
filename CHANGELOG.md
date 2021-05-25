@@ -1,3 +1,7 @@
+1.18.2 / 2021-05-25
+=================
+  * [meta] add `helpers` to "exports" field, for back compat
+
 1.18.1 / 2021-05-25
 =================
   * [readme] update and clarify entry points
