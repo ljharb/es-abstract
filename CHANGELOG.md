@@ -1,3 +1,7 @@
+1.18.3 / 2021-05-27
+=================
+  * [Fix] `ES2020+`: `ToNumber`: ensure it throws on a BigInt (#130)
+
 1.18.2 / 2021-05-25
 =================
   * [meta] add `helpers` to "exports" field, for back compat
