@@ -10,7 +10,12 @@ var IteratorValue = require('./IteratorValue');
 // https://262.ecma-international.org/8.0/#sec-iterabletolist
 
 module.exports = function IterableToList(items, method) {
-	var iterator = GetIterator(items, method);
+	var iterator;
+	if (arguments.length < 2) {
+		iterator = this.GetIterator(items);
+	} else {
+		iterator = this.GetIterator(items, method);
+	}
 	var values = [];
 	var next = true;
 	while (next) {
