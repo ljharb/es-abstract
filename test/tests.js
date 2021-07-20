@@ -1619,6 +1619,38 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('CharacterRange', function (t) {
+		forEach(['', 'abc', [], ['a', 'b', 'c']], function (notOne) {
+			t['throws'](
+				function () { ES.CharacterRange(notOne, 'a'); },
+				TypeError,
+				debug(notOne) + ' as first arg does not have 1 item'
+			);
+			t['throws'](
+				function () { ES.CharacterRange('a', notOne); },
+				TypeError,
+				debug(notOne) + ' as second arg does not have 1 item'
+			);
+			t['throws'](
+				function () { ES.CharacterRange(notOne, notOne); },
+				TypeError,
+				debug(notOne) + ' as both args do not have 1 item'
+			);
+		});
+
+		t.deepEqual(
+			ES.CharacterRange('a', 'b'),
+			['a', 'b']
+		);
+
+		t.deepEqual(
+			ES.CharacterRange('Z', 'a'),
+			['Z', '[', '\\', ']', '^', '_', '`', 'a']
+		);
+
+		t.end();
+	});
+
 	test('CreateDataProperty', function (t) {
 		forEach(v.primitives, function (primitive) {
 			t['throws'](
@@ -2555,6 +2587,45 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		forEach(v.objects.concat(v.primitives), function (value) {
 			t.equal(false, ES.IsArray(value), debug(value) + ' is not array');
 		});
+		t.end();
+	});
+
+	test('IsCompatiblePropertyDescriptor', function (t) {
+		t.equal(
+			ES.IsCompatiblePropertyDescriptor(
+				true,
+				v.descriptors.configurable(),
+				v.descriptors.nonConfigurable()
+			),
+			false
+		);
+		t.equal(
+			ES.IsCompatiblePropertyDescriptor(
+				false,
+				v.descriptors.configurable(),
+				v.descriptors.nonConfigurable()
+			),
+			false
+		);
+
+		t.equal(
+			ES.IsCompatiblePropertyDescriptor(
+				true,
+				v.descriptors.nonConfigurable(),
+				v.descriptors.configurable()
+			),
+			true
+		);
+
+		t.equal(
+			ES.IsCompatiblePropertyDescriptor(
+				false,
+				v.descriptors.nonConfigurable(),
+				v.descriptors.configurable()
+			),
+			true
+		);
+
 		t.end();
 	});
 

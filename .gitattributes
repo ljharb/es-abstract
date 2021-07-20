@@ -38,6 +38,7 @@
 2016/ArraySpeciesCreate.js	spackled linguist-generated=true
 2016/Call.js	spackled linguist-generated=true
 2016/CanonicalNumericIndexString.js	spackled linguist-generated=true
+2016/CharacterRange.js	spackled linguist-generated=true
 2016/CompletePropertyDescriptor.js	spackled linguist-generated=true
 2016/CreateDataProperty.js	spackled linguist-generated=true
 2016/CreateDataPropertyOrThrow.js	spackled linguist-generated=true
@@ -70,6 +71,7 @@
 2016/IsAccessorDescriptor.js	spackled linguist-generated=true
 2016/IsArray.js	spackled linguist-generated=true
 2016/IsCallable.js	spackled linguist-generated=true
+2016/IsCompatiblePropertyDescriptor.js	spackled linguist-generated=true
 2016/IsConcatSpreadable.js	spackled linguist-generated=true
 2016/IsConstructor.js	spackled linguist-generated=true
 2016/IsDataDescriptor.js	spackled linguist-generated=true
@@ -152,6 +154,7 @@
 2017/ArraySpeciesCreate.js	spackled linguist-generated=true
 2017/Call.js	spackled linguist-generated=true
 2017/CanonicalNumericIndexString.js	spackled linguist-generated=true
+2017/CharacterRange.js	spackled linguist-generated=true
 2017/CompletePropertyDescriptor.js	spackled linguist-generated=true
 2017/CreateDataProperty.js	spackled linguist-generated=true
 2017/CreateDataPropertyOrThrow.js	spackled linguist-generated=true
@@ -183,6 +186,7 @@
 2017/IsAccessorDescriptor.js	spackled linguist-generated=true
 2017/IsArray.js	spackled linguist-generated=true
 2017/IsCallable.js	spackled linguist-generated=true
+2017/IsCompatiblePropertyDescriptor.js	spackled linguist-generated=true
 2017/IsConcatSpreadable.js	spackled linguist-generated=true
 2017/IsConstructor.js	spackled linguist-generated=true
 2017/IsDataDescriptor.js	spackled linguist-generated=true
@@ -269,6 +273,7 @@
 2018/ArraySpeciesCreate.js	spackled linguist-generated=true
 2018/Call.js	spackled linguist-generated=true
 2018/CanonicalNumericIndexString.js	spackled linguist-generated=true
+2018/CharacterRange.js	spackled linguist-generated=true
 2018/CompletePropertyDescriptor.js	spackled linguist-generated=true
 2018/CreateDataProperty.js	spackled linguist-generated=true
 2018/CreateDataPropertyOrThrow.js	spackled linguist-generated=true
@@ -299,6 +304,7 @@
 2018/IsAccessorDescriptor.js	spackled linguist-generated=true
 2018/IsArray.js	spackled linguist-generated=true
 2018/IsCallable.js	spackled linguist-generated=true
+2018/IsCompatiblePropertyDescriptor.js	spackled linguist-generated=true
 2018/IsConcatSpreadable.js	spackled linguist-generated=true
 2018/IsConstructor.js	spackled linguist-generated=true
 2018/IsDataDescriptor.js	spackled linguist-generated=true
@@ -387,6 +393,7 @@
 2019/ArraySpeciesCreate.js	spackled linguist-generated=true
 2019/Call.js	spackled linguist-generated=true
 2019/CanonicalNumericIndexString.js	spackled linguist-generated=true
+2019/CharacterRange.js	spackled linguist-generated=true
 2019/CompletePropertyDescriptor.js	spackled linguist-generated=true
 2019/CopyDataProperties.js	spackled linguist-generated=true
 2019/CreateDataProperty.js	spackled linguist-generated=true
@@ -421,6 +428,7 @@
 2019/IsAccessorDescriptor.js	spackled linguist-generated=true
 2019/IsArray.js	spackled linguist-generated=true
 2019/IsCallable.js	spackled linguist-generated=true
+2019/IsCompatiblePropertyDescriptor.js	spackled linguist-generated=true
 2019/IsConcatSpreadable.js	spackled linguist-generated=true
 2019/IsConstructor.js	spackled linguist-generated=true
 2019/IsDataDescriptor.js	spackled linguist-generated=true
@@ -515,6 +523,7 @@
 2020/ArraySpeciesCreate.js	spackled linguist-generated=true
 2020/Call.js	spackled linguist-generated=true
 2020/CanonicalNumericIndexString.js	spackled linguist-generated=true
+2020/CharacterRange.js	spackled linguist-generated=true
 2020/CompletePropertyDescriptor.js	spackled linguist-generated=true
 2020/CreateDataProperty.js	spackled linguist-generated=true
 2020/CreateDataPropertyOrThrow.js	spackled linguist-generated=true
@@ -546,6 +555,7 @@
 2020/IsAccessorDescriptor.js	spackled linguist-generated=true
 2020/IsArray.js	spackled linguist-generated=true
 2020/IsCallable.js	spackled linguist-generated=true
+2020/IsCompatiblePropertyDescriptor.js	spackled linguist-generated=true
 2020/IsConcatSpreadable.js	spackled linguist-generated=true
 2020/IsConstructor.js	spackled linguist-generated=true
 2020/IsDataDescriptor.js	spackled linguist-generated=true
