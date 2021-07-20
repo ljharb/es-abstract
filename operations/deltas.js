@@ -21,7 +21,7 @@ function parse(from, to, result) {
 				result.added.add(v);
 			}
 			if (x.removed) {
-				result.removed.add(v);
+				result.removed.add(v.replace(/ /g, ''));
 			}
 		});
 	});

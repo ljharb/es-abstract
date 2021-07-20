@@ -28,6 +28,8 @@ var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1;
 
 var $BigInt = hasBigInts ? BigInt : null;
 
+var supportedRegexFlags = require('available-regexp-flags');
+
 // node v10.4-v10.8 have a bug where you can't `BigInt(x)` anything larger than MAX_SAFE_INTEGER
 var needsBigIntHack = false;
 if (hasBigInts) {
@@ -204,6 +206,40 @@ var testEnumerableOwnNames = function (t, enumerableOwnNames) {
 	return obj;
 };
 
+var testStringToNumber = function (t, ES, StringToNumber) {
+	// TODO: check if this applies to ES5
+	t.test('trimming of whitespace and non-whitespace characters', function (st) {
+		var whitespace = ' \t\x0b\f\xa0\ufeff\n\r\u2028\u2029\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000';
+		st.equal(0, StringToNumber(whitespace + 0 + whitespace), 'whitespace is trimmed');
+
+		// Zero-width space (zws), next line character (nel), and non-character (bom) are not whitespace.
+		var nonWhitespaces = {
+			'\\u0085': '\u0085',
+			'\\u200b': '\u200b',
+			'\\ufffe': '\ufffe'
+		};
+
+		forEach(nonWhitespaces, function (desc, nonWS) {
+			st.equal(StringToNumber(nonWS + 0 + nonWS), NaN, 'non-whitespace ' + desc + ' not trimmed');
+		});
+
+		st.end();
+	});
+
+	t.test('stringified numbers', function (st) {
+		forEach(['foo', '0', '4a', '2.0', 'Infinity', '-Infinity'], function (numString) {
+			st.equal(+numString, StringToNumber(numString), '"' + numString + '" coerces to ' + Number(numString));
+		});
+
+		forEach(v.numbers, function (number) {
+			var str = number === 0 ? debug(number) : String(number);
+			st.equal(StringToNumber(str), number, debug(number) + ' stringified, coerces to itself');
+		});
+
+		st.end();
+	});
+};
+
 var testToNumber = function (t, ES, ToNumber) {
 	t.equal(NaN, ToNumber(undefined), 'undefined coerces to NaN');
 	t.equal(ToNumber(null), 0, 'null coerces to +0');
@@ -214,9 +250,6 @@ var testToNumber = function (t, ES, ToNumber) {
 		st.equal(NaN, ToNumber(NaN), 'NaN returns itself');
 		forEach(v.zeroes.concat(v.infinities, 42), function (num) {
 			st.equal(num, ToNumber(num), num + ' returns itself');
-		});
-		forEach(['foo', '0', '4a', '2.0', 'Infinity', '-Infinity'], function (numString) {
-			st.equal(+numString, ToNumber(numString), '"' + numString + '" coerces to ' + Number(numString));
 		});
 		st.end();
 	});
@@ -259,24 +292,7 @@ var testToNumber = function (t, ES, ToNumber) {
 		st.end();
 	});
 
-	// TODO: check if this applies to ES5
-	t.test('trimming of whitespace and non-whitespace characters', function (st) {
-		var whitespace = ' \t\x0b\f\xa0\ufeff\n\r\u2028\u2029\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000';
-		st.equal(0, ToNumber(whitespace + 0 + whitespace), 'whitespace is trimmed');
-
-		// Zero-width space (zws), next line character (nel), and non-character (bom) are not whitespace.
-		var nonWhitespaces = {
-			'\\u0085': '\u0085',
-			'\\u200b': '\u200b',
-			'\\ufffe': '\ufffe'
-		};
-
-		forEach(nonWhitespaces, function (desc, nonWS) {
-			st.equal(ToNumber(nonWS + 0 + nonWS), NaN, 'non-whitespace ' + desc + ' not trimmed');
-		});
-
-		st.end();
-	});
+	testStringToNumber(t, ES, ToNumber);
 
 	// TODO: skip for ES5
 	forEach(v.symbols, function (symbol) {
@@ -1295,7 +1311,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ArrayCreate', function (t) {
-		forEach(v.nonIntegerNumbers.concat([-1]), function (nonIntegerNumber) {
+		forEach(v.notNonNegativeIntegers, function (nonIntegerNumber) {
 			t['throws'](
 				function () { ES.ArrayCreate(nonIntegerNumber); },
 				TypeError,
@@ -1609,7 +1625,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				debug(notString) + ' is not a string'
 			);
 		};
-		forEach(v.objects.concat(v.numbers), throwsOnNonString);
+		forEach(v.nonStrings, throwsOnNonString);
 		t.equal(ES.CanonicalNumericIndexString('-0'), -0, '"-0" returns -0');
 		for (var i = -50; i < 50; i += 10) {
 			t.equal(i, ES.CanonicalNumericIndexString(String(i)), '"' + i + '" returns ' + i);
@@ -1895,7 +1911,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			t['throws'](
 				function () { ES.CreateMethodProperty(primitive, 'key'); },
 				TypeError,
-				'O must be an Object'
+				'O must be an Object; ' + debug(primitive) + ' is not one'
 			);
 		});
 
@@ -2660,7 +2676,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			ES.IsCompatiblePropertyDescriptor(
 				true,
 				v.descriptors.configurable(),
-				v.descriptors.nonConfigurable()
+				ES.CompletePropertyDescriptor(v.descriptors.nonConfigurable())
 			),
 			false
 		);
@@ -2668,7 +2684,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			ES.IsCompatiblePropertyDescriptor(
 				false,
 				v.descriptors.configurable(),
-				v.descriptors.nonConfigurable()
+				ES.CompletePropertyDescriptor(v.descriptors.nonConfigurable())
 			),
 			false
 		);
@@ -2677,7 +2693,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			ES.IsCompatiblePropertyDescriptor(
 				true,
 				v.descriptors.nonConfigurable(),
-				v.descriptors.configurable()
+				ES.CompletePropertyDescriptor(v.descriptors.configurable())
 			),
 			true
 		);
@@ -2686,7 +2702,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			ES.IsCompatiblePropertyDescriptor(
 				false,
 				v.descriptors.nonConfigurable(),
-				v.descriptors.configurable()
+				ES.CompletePropertyDescriptor(v.descriptors.configurable())
 			),
 			true
 		);
@@ -4363,7 +4379,13 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		forEach([v.dataDescriptor, v.accessorDescriptor, v.mutatorDescriptor], function (getDescriptor) {
 			t.equal(
-				ES.ValidateAndApplyPropertyDescriptor(undefined, 'property key', true, getDescriptor(), getDescriptor()),
+				ES.ValidateAndApplyPropertyDescriptor(
+					undefined,
+					'property key',
+					true,
+					getDescriptor(),
+					ES.CompletePropertyDescriptor(getDescriptor())
+				),
 				true,
 				'when Desc and current are the same, early return true'
 			);
@@ -4377,7 +4399,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 					'property key',
 					true,
 					v.descriptors.configurable(v.dataDescriptor()),
-					v.descriptors.nonConfigurable(v.dataDescriptor())
+					ES.CompletePropertyDescriptor(v.descriptors.nonConfigurable(v.dataDescriptor()))
 				),
 				false,
 				'false if Desc is configurable'
@@ -4389,7 +4411,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 					'property key',
 					true,
 					v.descriptors.enumerable(v.dataDescriptor()),
-					v.descriptors.nonEnumerable(v.dataDescriptor())
+					ES.CompletePropertyDescriptor(v.descriptors.nonEnumerable(v.dataDescriptor()))
 				),
 				false,
 				'false if Desc is Enumerable and current is not'
@@ -4401,7 +4423,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 					'property key',
 					true,
 					v.descriptors.nonEnumerable(v.dataDescriptor()),
-					v.descriptors.enumerable(v.dataDescriptor())
+					ES.CompletePropertyDescriptor(v.descriptors.enumerable(v.dataDescriptor()))
 				),
 				false,
 				'false if Desc is not Enumerable and current is'
@@ -4415,10 +4437,22 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 					'property key',
 					true,
 					descLackingEnumerable,
-					v.descriptors.enumerable(v.accessorDescriptor())
+					ES.CompletePropertyDescriptor(v.descriptors.enumerable(v.accessorDescriptor()))
 				),
 				true,
 				'not false if Desc lacks Enumerable'
+			);
+
+			st.equal(
+				ES.ValidateAndApplyPropertyDescriptor(
+					{},
+					'property key',
+					true,
+					v.descriptors.nonConfigurable(),
+					v.descriptors.nonConfigurable(v.descriptors.enumerable(v.accessorDescriptor()))
+				),
+				true,
+				'see https://github.com/tc39/ecma262/issues/2761'
 			);
 
 			st.end();
@@ -4432,7 +4466,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 					'property key',
 					true,
 					v.descriptors.configurable(v.accessorDescriptor()),
-					v.descriptors.nonConfigurable(v.dataDescriptor())
+					ES.CompletePropertyDescriptor(v.descriptors.nonConfigurable(v.dataDescriptor()))
 				),
 				false,
 				'false if current (data) is nonconfigurable'
@@ -4444,7 +4478,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 					'property key',
 					true,
 					v.descriptors.configurable(v.dataDescriptor()),
-					v.descriptors.nonConfigurable(v.accessorDescriptor())
+					ES.CompletePropertyDescriptor(v.descriptors.nonConfigurable(v.accessorDescriptor()))
 				),
 				false,
 				'false if current (not data) is nonconfigurable'
@@ -4463,7 +4497,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 					'property key',
 					true,
 					v.descriptors.enumerable(v.descriptors.configurable(v.accessorDescriptor())),
-					v.descriptors.enumerable(v.descriptors.configurable(v.dataDescriptor()))
+					ES.CompletePropertyDescriptor(v.descriptors.enumerable(v.descriptors.configurable(v.dataDescriptor())))
 				),
 				true,
 				'operation is successful: current is data, Desc is accessor'
@@ -4502,7 +4536,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 					'property key',
 					true,
 					v.descriptors.writable(v.dataDescriptor()),
-					v.descriptors.nonWritable(v.descriptors.nonConfigurable(v.dataDescriptor()))
+					ES.CompletePropertyDescriptor(v.descriptors.nonWritable(v.descriptors.nonConfigurable(v.dataDescriptor())))
 				),
 				false,
 				'false if frozen current and writable Desc'
@@ -4514,7 +4548,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 					'property key',
 					true,
 					v.descriptors.configurable({ '[[Value]]': 42 }),
-					v.descriptors.nonWritable({ '[[Value]]': 7 })
+					ES.CompletePropertyDescriptor(v.descriptors.nonWritable({ '[[Value]]': 7 }))
 				),
 				false,
 				'false if nonwritable current has a different value than Desc'
@@ -4530,7 +4564,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 					'property key',
 					true,
 					v.mutatorDescriptor(),
-					v.descriptors.nonConfigurable(v.mutatorDescriptor())
+					ES.CompletePropertyDescriptor(v.descriptors.nonConfigurable(v.mutatorDescriptor()))
 				),
 				false,
 				'false if both Sets are not equal'
@@ -4542,7 +4576,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 					'property key',
 					true,
 					v.accessorDescriptor(),
-					v.descriptors.nonConfigurable(v.accessorDescriptor())
+					ES.CompletePropertyDescriptor(v.descriptors.nonConfigurable(v.accessorDescriptor()))
 				),
 				false,
 				'false if both Gets are not equal'
@@ -8303,6 +8337,592 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 	});
 };
 
+var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
+	es2021(ES, ops, expectedMissing, assign({}, skips, {
+		'Abstract Equality Comparison': true,
+		'Abstract Relational Comparison': true,
+		'Strict Equality Comparison': true,
+		SplitMatch: true
+	}));
+
+	var test = makeTest(ES, skips);
+
+	test('CreateNonEnumerableDataPropertyOrThrow', function (t) {
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.CreateNonEnumerableDataPropertyOrThrow(primitive, 'key'); },
+				TypeError,
+				'O must be an Object; ' + debug(primitive) + ' is not one'
+			);
+		});
+
+		forEach(v.nonPropertyKeys, function (nonPropertyKey) {
+			t['throws'](
+				function () { ES.CreateNonEnumerableDataPropertyOrThrow({}, nonPropertyKey); },
+				TypeError,
+				debug(nonPropertyKey) + ' is not a Property Key'
+			);
+		});
+
+		t.test('defines correctly', function (st) {
+			var obj = {};
+			var key = 'the key';
+			var value = { foo: 'bar' };
+
+			st.equal(ES.CreateNonEnumerableDataPropertyOrThrow(obj, key, value), true, 'defines property successfully');
+			st.test('property descriptor', { skip: !getOwnPropertyDescriptor }, function (s2t) {
+				s2t.deepEqual(
+					getOwnPropertyDescriptor(obj, key),
+					{
+						configurable: true,
+						enumerable: false,
+						value: value,
+						writable: true
+					},
+					'sets the correct property descriptor'
+				);
+
+				s2t.end();
+			});
+			st.equal(obj[key], value, 'sets the correct value');
+
+			st.end();
+		});
+
+		t.test('fails as expected on a frozen object', { skip: !Object.freeze }, function (st) {
+			var obj = Object.freeze({ foo: 'bar' });
+			st['throws'](
+				function () { ES.CreateNonEnumerableDataPropertyOrThrow(obj, 'foo', { value: 'baz' }); },
+				TypeError,
+				'nonconfigurable key can not be defined'
+			);
+
+			st.end();
+		});
+
+		t.test('fails as expected on a function with a nonconfigurable name', { skip: !functionsHaveNames || functionsHaveConfigurableNames }, function (st) {
+			st['throws'](
+				function () { ES.CreateNonEnumerableDataPropertyOrThrow(function () {}, 'name', { value: 'baz' }); },
+				TypeError,
+				'nonconfigurable function name can not be defined'
+			);
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('GetMatchIndexPair', function (t) {
+		forEach(v.nonStrings, function (notString) {
+			t['throws'](
+				function () { return ES.GetMatchIndexPair(notString); },
+				TypeError,
+				debug(notString) + ' is not a string'
+			);
+		});
+
+		forEach(v.primitives.concat(
+			v.objects,
+			{ '[[StartIndex]]': -1 },
+			{ '[[StartIndex]]': 1.2, '[[EndIndex]]': 0 },
+			{ '[[StartIndex]]': 1, '[[EndIndex]]': 0 },
+			{ '[[StartIndex]]': 0, '[[EndIndex]]': 1 }
+		), function (notMatchRecord) {
+			t['throws'](
+				function () { return ES.GetMatchIndexPair('', notMatchRecord); },
+				TypeError,
+				debug(notMatchRecord) + ' is not a Match Record'
+			);
+		});
+
+		t.deepEqual(
+			ES.GetMatchIndexPair('', { '[[StartIndex]]': 0, '[[EndIndex]]': 0 }),
+			[0, 0]
+		);
+		t.deepEqual(
+			ES.GetMatchIndexPair('abc', { '[[StartIndex]]': 1, '[[EndIndex]]': 2 }),
+			[1, 2]
+		);
+
+		t.end();
+	});
+
+	test('GetMatchString', function (t) {
+		forEach(v.nonStrings, function (notString) {
+			t['throws'](
+				function () { return ES.GetMatchString(notString); },
+				TypeError,
+				debug(notString) + ' is not a string'
+			);
+		});
+
+		forEach(v.primitives.concat(
+			v.objects,
+			{ '[[StartIndex]]': -1 },
+			{ '[[StartIndex]]': 1.2, '[[EndIndex]]': 0 },
+			{ '[[StartIndex]]': 1, '[[EndIndex]]': 0 },
+			{ '[[StartIndex]]': 0, '[[EndIndex]]': 1 }
+		), function (notMatchRecord) {
+			t['throws'](
+				function () { return ES.GetMatchString('', notMatchRecord); },
+				TypeError,
+				debug(notMatchRecord) + ' is not a Match Record'
+			);
+		});
+
+		t.equal(
+			ES.GetMatchString('', { '[[StartIndex]]': 0, '[[EndIndex]]': 0 }),
+			''
+		);
+		t.equal(
+			ES.GetMatchString('abc', { '[[StartIndex]]': 1, '[[EndIndex]]': 2 }),
+			'b'
+		);
+
+		t.end();
+	});
+
+	test('GetStringIndex', function (t) {
+		forEach(v.nonStrings, function (notString) {
+			t['throws'](
+				function () { return ES.GetStringIndex(notString); },
+				TypeError,
+				'`S`: ' + debug(notString) + ' is not a string'
+			);
+		});
+
+		forEach(v.notNonNegativeIntegers, function (nonNonNegativeInteger) {
+			t['throws'](
+				function () { ES.GetStringIndex('', nonNonNegativeInteger); },
+				TypeError,
+				'`e`: ' + debug(nonNonNegativeInteger) + ' is not a non-negative integer'
+			);
+		});
+
+		var strWithWholePoo = 'a' + wholePoo + 'c';
+		t.equal(ES.GetStringIndex(strWithWholePoo, 0), 0, 'index 0 yields 0');
+		t.equal(ES.GetStringIndex(strWithWholePoo, 1), 1, 'index 1 yields 1');
+		t.equal(ES.GetStringIndex(strWithWholePoo, 2), 3, 'index 2 yields 3');
+		t.equal(ES.GetStringIndex(strWithWholePoo, 3), 4, 'index 3 yields 4');
+
+		t.end();
+	});
+
+	test('InstallErrorCause', function (t) {
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.CreateNonEnumerableDataPropertyOrThrow(primitive, 'key'); },
+				TypeError,
+				'O must be an Object; ' + debug(primitive) + ' is not one'
+			);
+		});
+
+		var obj = {};
+		ES.InstallErrorCause(obj);
+		t.notOk(
+			'cause' in obj,
+			'installs nothing when `options` is omitted'
+		);
+
+		ES.InstallErrorCause(obj, {});
+		t.notOk(
+			'cause' in obj,
+			'installs nothing when `cause` is absent'
+		);
+
+		ES.InstallErrorCause(obj, { cause: undefined });
+		t.ok(
+			'cause' in obj,
+			'installs `undefined` when `cause` is present and `undefined`'
+		);
+		t.equal(obj.cause, undefined, 'obj.cause is `undefined`');
+
+		var obj2 = {};
+		ES.InstallErrorCause(obj2, { cause: obj });
+		t.ok(
+			'cause' in obj2,
+			'installs when `cause` is present'
+		);
+		t.equal(obj2.cause, obj, 'obj2.cause is as expected');
+
+		t.end();
+	});
+
+	test('IsStrictlyEqual', function (t) {
+		t.test('same types use ===', function (st) {
+			forEach(v.primitives.concat(v.objects), function (value) {
+				st.equal(ES.IsStrictlyEqual(value, value), value === value, debug(value) + ' is strictly equal to itself');
+			});
+			st.end();
+		});
+
+		t.test('different types are not ===', function (st) {
+			var pairs = [
+				[null, undefined],
+				[3, '3'],
+				[true, '3'],
+				[true, 3],
+				[false, 0],
+				[false, '0'],
+				[3, [3]],
+				['3', [3]],
+				[true, [1]],
+				[false, [0]],
+				[String(v.coercibleObject), v.coercibleObject],
+				[Number(String(v.coercibleObject)), v.coercibleObject],
+				[Number(v.coercibleObject), v.coercibleObject],
+				[String(Number(v.coercibleObject)), v.coercibleObject]
+			];
+			forEach(pairs, function (pair) {
+				var a = pair[0];
+				var b = pair[1];
+				st.equal(ES.IsStrictlyEqual(a, b), a === b, debug(a) + ' === ' + debug(b));
+				st.equal(ES.IsStrictlyEqual(b, a), b === a, debug(b) + ' === ' + debug(a));
+			});
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('IsLooselyEqual', function (t) {
+		t.test('same types use ===', function (st) {
+			forEach(v.primitives.concat(v.objects), function (value) {
+				st.equal(ES.IsLooselyEqual(value, value), value === value, debug(value) + ' is abstractly equal to itself');
+			});
+			st.end();
+		});
+
+		t.test('different types coerce', function (st) {
+			var pairs = [
+				[null, undefined],
+				[3, '3'],
+				[true, '3'],
+				[true, 3],
+				[false, 0],
+				[false, '0'],
+				[3, [3]],
+				['3', [3]],
+				[true, [1]],
+				[false, [0]],
+				[String(v.coercibleObject), v.coercibleObject],
+				[Number(String(v.coercibleObject)), v.coercibleObject],
+				[Number(v.coercibleObject), v.coercibleObject],
+				[String(Number(v.coercibleObject)), v.coercibleObject]
+			];
+			forEach(pairs, function (pair) {
+				var a = pair[0];
+				var b = pair[1];
+				// eslint-disable-next-line eqeqeq
+				st.equal(ES.IsLooselyEqual(a, b), a == b, debug(a) + ' == ' + debug(b));
+				// eslint-disable-next-line eqeqeq
+				st.equal(ES.IsLooselyEqual(b, a), b == a, debug(b) + ' == ' + debug(a));
+			});
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('IsLessThan', function (t) {
+		t.test('at least one operand is NaN', function (st) {
+			st.equal(ES.IsLessThan(NaN, {}, true), undefined, 'LeftFirst: first is NaN, returns undefined');
+			st.equal(ES.IsLessThan({}, NaN, true), undefined, 'LeftFirst: second is NaN, returns undefined');
+			st.equal(ES.IsLessThan(NaN, {}, false), undefined, '!LeftFirst: first is NaN, returns undefined');
+			st.equal(ES.IsLessThan({}, NaN, false), undefined, '!LeftFirst: second is NaN, returns undefined');
+			st.end();
+		});
+
+		forEach(v.nonBooleans, function (nonBoolean) {
+			t['throws'](
+				function () { ES.IsLessThan(3, 4, nonBoolean); },
+				TypeError,
+				debug(nonBoolean) + ' is not a Boolean'
+			);
+		});
+
+		forEach(v.zeroes, function (zero) {
+			t.equal(ES.IsLessThan(zero, 1, true), true, 'LeftFirst: ' + debug(zero) + ' is less than 1');
+			t.equal(ES.IsLessThan(zero, 1, false), true, '!LeftFirst: ' + debug(zero) + ' is less than 1');
+			t.equal(ES.IsLessThan(1, zero, true), false, 'LeftFirst: 1 is not less than ' + debug(zero));
+			t.equal(ES.IsLessThan(1, zero, false), false, '!LeftFirst: 1 is not less than ' + debug(zero));
+
+			t.equal(ES.IsLessThan(zero, zero, true), false, 'LeftFirst: ' + debug(zero) + ' is not less than ' + debug(zero));
+			t.equal(ES.IsLessThan(zero, zero, false), false, '!LeftFirst: ' + debug(zero) + ' is not less than ' + debug(zero));
+		});
+
+		t.equal(ES.IsLessThan(Infinity, -Infinity, true), false, 'LeftFirst: ∞ is not less than -∞');
+		t.equal(ES.IsLessThan(Infinity, -Infinity, false), false, '!LeftFirst: ∞ is not less than -∞');
+		t.equal(ES.IsLessThan(-Infinity, Infinity, true), true, 'LeftFirst: -∞ is less than ∞');
+		t.equal(ES.IsLessThan(-Infinity, Infinity, false), true, '!LeftFirst: -∞ is less than ∞');
+		t.equal(ES.IsLessThan(-Infinity, 0, true), true, 'LeftFirst: -∞ is less than +0');
+		t.equal(ES.IsLessThan(-Infinity, 0, false), true, '!LeftFirst: -∞ is less than +0');
+		t.equal(ES.IsLessThan(0, -Infinity, true), false, 'LeftFirst: +0 is not less than -∞');
+		t.equal(ES.IsLessThan(0, -Infinity, false), false, '!LeftFirst: +0 is not less than -∞');
+
+		t.equal(ES.IsLessThan(3, 4, true), true, 'LeftFirst: 3 is less than 4');
+		t.equal(ES.IsLessThan(4, 3, true), false, 'LeftFirst: 3 is not less than 4');
+		t.equal(ES.IsLessThan(3, 4, false), true, '!LeftFirst: 3 is less than 4');
+		t.equal(ES.IsLessThan(4, 3, false), false, '!LeftFirst: 3 is not less than 4');
+
+		t.equal(ES.IsLessThan('3', '4', true), true, 'LeftFirst: "3" is less than "4"');
+		t.equal(ES.IsLessThan('4', '3', true), false, 'LeftFirst: "3" is not less than "4"');
+		t.equal(ES.IsLessThan('3', '4', false), true, '!LeftFirst: "3" is less than "4"');
+		t.equal(ES.IsLessThan('4', '3', false), false, '!LeftFirst: "3" is not less than "4"');
+
+		t.equal(ES.IsLessThan('a', 'abc', true), true, 'LeftFirst: "a" is less than "abc"');
+		t.equal(ES.IsLessThan('abc', 'a', true), false, 'LeftFirst: "abc" is not less than "a"');
+		t.equal(ES.IsLessThan('a', 'abc', false), true, '!LeftFirst: "a" is less than "abc"');
+		t.equal(ES.IsLessThan('abc', 'a', false), false, '!LeftFirst: "abc" is not less than "a"');
+
+		t.equal(ES.IsLessThan(v.coercibleObject, 42, true), true, 'LeftFirst: coercible object is less than 42');
+		t.equal(ES.IsLessThan(42, v.coercibleObject, true), false, 'LeftFirst: 42 is not less than coercible object');
+		t.equal(ES.IsLessThan(v.coercibleObject, 42, false), true, '!LeftFirst: coercible object is less than 42');
+		t.equal(ES.IsLessThan(42, v.coercibleObject, false), false, '!LeftFirst: 42 is not less than coercible object');
+
+		t.equal(ES.IsLessThan(v.coercibleObject, '3', true), false, 'LeftFirst: coercible object is not less than "3"');
+		t.equal(ES.IsLessThan('3', v.coercibleObject, true), false, 'LeftFirst: "3" is not less than coercible object');
+		t.equal(ES.IsLessThan(v.coercibleObject, '3', false), false, '!LeftFirst: coercible object is not less than "3"');
+		t.equal(ES.IsLessThan('3', v.coercibleObject, false), false, '!LeftFirst: "3" is not less than coercible object');
+
+		t.end();
+	});
+
+	test('IsStringWellFormedUnicode', function (t) {
+		forEach(v.nonStrings, function (notString) {
+			t['throws'](
+				function () { return ES.IsStringWellFormedUnicode(notString); },
+				TypeError,
+				debug(notString) + ' is not a string'
+			);
+		});
+
+		forEach(v.strings.concat(wholePoo), function (string) {
+			t.equal(ES.IsStringWellFormedUnicode(string), true, debug(string) + ' is well-formed unicode');
+		});
+
+		forEach([leadingPoo, trailingPoo], function (badString) {
+			t.equal(ES.IsStringWellFormedUnicode(badString), false, debug(badString) + ' is not well-formed unicode');
+		});
+
+		t.end();
+	});
+
+	test('MakeMatchIndicesIndexPairArray', function (t) {
+		forEach(v.nonStrings, function (notString) {
+			t['throws'](
+				function () { return ES.MakeMatchIndicesIndexPairArray(notString); },
+				TypeError,
+				'`S`: ' + debug(notString) + ' is not a string'
+			);
+		});
+
+		forEach(v.nonArrays, function (nonArray) {
+			t['throws'](
+				function () { return ES.MakeMatchIndicesIndexPairArray('', nonArray); },
+				TypeError,
+				'`indices`: ' + debug(nonArray) + ' is not a List'
+			);
+
+			t['throws'](
+				function () { return ES.MakeMatchIndicesIndexPairArray('', [undefined], nonArray); },
+				TypeError,
+				'`groupNames`: ' + debug(nonArray) + ' is not a List'
+			);
+		});
+
+		forEach(v.nonBooleans, function (nonBoolean) {
+			t['throws'](
+				function () { ES.MakeMatchIndicesIndexPairArray('', [undefined], [], nonBoolean); },
+				TypeError,
+				'`hasGroups`: ' + debug(nonBoolean) + ' is not a Boolean'
+			);
+		});
+
+		t.deepEqual(
+			ES.MakeMatchIndicesIndexPairArray(
+				'abc',
+				[undefined, { '[[StartIndex]]': 0, '[[EndIndex]]': 1 }, { '[[StartIndex]]': 1, '[[EndIndex]]': 3 }],
+				[undefined, undefined],
+				false
+			),
+			assign([undefined, [0, 1], [1, 3]], { groups: undefined }),
+			'no groups'
+		);
+
+		t.test('has groups', { skip: !Object.create && !$setProto }, function (st) {
+			var result = ES.MakeMatchIndicesIndexPairArray(
+				'abc',
+				[undefined, { '[[StartIndex]]': 0, '[[EndIndex]]': 1 }, { '[[StartIndex]]': 1, '[[EndIndex]]': 3 }],
+				['G1', 'G2'],
+				true
+			);
+
+			st.equal('toString' in {}, true, 'normal objects have toString');
+			st.equal('toString' in result.groups, false, 'makes a null `groups` object');
+
+			st.deepEqual(
+				result,
+				assign(
+					[undefined, [0, 1], [1, 3]],
+					{ groups: $setProto({ G1: [0, 1], G2: [1, 3] }, null) }
+				),
+				'has groups, no group names'
+			);
+
+			st.end();
+		});
+
+		t.test('has groups when no native Object.create', { skip: Object.create || $setProto }, function (st) {
+			st['throws'](
+				function () { ES.MakeMatchIndicesIndexPairArray(null); },
+				SyntaxError,
+				'without a native Object.create, can not create null objects'
+			);
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('RegExpHasFlag', function (t) {
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.RegExpHasFlag(primitive, 'x'); },
+				TypeError,
+				'R must be an Object; ' + debug(primitive) + ' is not one'
+			);
+		});
+
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { return ES.RegExpHasFlag({}, nonString); },
+				TypeError,
+				debug(nonString) + ' is not a string'
+			);
+		});
+
+		var allFlags = new RegExp('a', supportedRegexFlags.join(''));
+		forEach(supportedRegexFlags, function (flag) {
+			t.equal(ES.RegExpHasFlag(/a/, flag), false, 'regex with no flags does not have flag ' + flag);
+
+			var r = new RegExp('a', flag);
+			t.equal(ES.RegExpHasFlag(r, flag), true, debug(r) + ' has flag ' + flag);
+
+			t.equal(ES.RegExpHasFlag(allFlags, flag), true, debug(allFlags) + ' has flag ' + flag);
+		});
+
+		t.end();
+	});
+
+	test('SortIndexedProperties', function (t) {
+		/* eslint no-unused-vars: 0 */
+
+		var emptySortCompare = function (a, b) {};
+
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.SortIndexedProperties(primitive, 0, emptySortCompare); },
+				TypeError,
+				'obj must be an Object; ' + debug(primitive) + ' is not one'
+			);
+		});
+
+		forEach(v.notNonNegativeIntegers, function (nonNonNegativeInteger) {
+			t['throws'](
+				function () { ES.SortIndexedProperties({}, nonNonNegativeInteger, emptySortCompare); },
+				TypeError,
+				'`len`: ' + debug(nonNonNegativeInteger) + ' is not a non-negative integer'
+			);
+		});
+
+		forEach(
+			v.nonFunctions.concat(
+				function () {},
+				function f(a, b) { return 0; },
+				function (a) { return 0; },
+				arrowFns.length > 0 ? [
+					/* eslint no-new-func: 1 */
+					Function('return () => {}')(),
+					Function('return (a) => {}')(),
+					Function('return (a, b, c) => {}')()
+				] : []
+			),
+			function (nonTwoArgAbstractClosure) {
+				t['throws'](
+					function () { ES.SortIndexedProperties({}, 0, nonTwoArgAbstractClosure); },
+					TypeError,
+					'`len`: ' + debug(nonTwoArgAbstractClosure) + ' is not an abstract closure taking two args'
+				);
+			}
+		);
+
+		forEach([
+			function (a, b) { return 0; }
+		].concat(arrowFns.length > 0 ? [
+			/* eslint no-new-func: 1 */
+			Function('return (a, b) => 0')()
+		] : []), function (ac) {
+			t.doesNotThrow(
+				function () { ES.SortIndexedProperties({}, 0, ac); },
+				'an abstract closure taking two args is accepted'
+			);
+		});
+
+		var o = [1, 3, 2, 0];
+		t.equal(
+			ES.SortIndexedProperties(o, 3, function (a, b) {
+				return a - b;
+			}),
+			o,
+			'passed object is returned'
+		);
+		t.deepEqual(
+			o,
+			[1, 2, 3, 0],
+			'object is sorted up to `len`'
+		);
+
+		t.equal(
+			ES.SortIndexedProperties(o, 4, function (a, b) {
+				return a - b;
+			}),
+			o,
+			'passed object is returned'
+		);
+		t.deepEqual(
+			o,
+			[0, 1, 2, 3],
+			'object is again sorted up to `len`'
+		);
+
+		t.end();
+	});
+
+	test('StringToNumber', function (t) {
+		testStringToNumber(t, ES, ES.StringToNumber);
+
+		t.end();
+	});
+
+	test('ToZeroPaddedDecimalString', function (t) {
+		forEach(v.notNonNegativeIntegers, function (notNonNegativeInteger) {
+			t['throws'](
+				function () { ES.ToZeroPaddedDecimalString(notNonNegativeInteger); },
+				RangeError,
+				debug(notNonNegativeInteger) + ' is not a non-negative integer'
+			);
+		});
+
+		t.equal(ES.ToZeroPaddedDecimalString(1, 1), '1');
+		t.equal(ES.ToZeroPaddedDecimalString(1, 2), '01');
+		t.equal(ES.ToZeroPaddedDecimalString(1, 3), '001');
+
+		t.end();
+	});
+};
+
 module.exports = {
 	es5: es5,
 	es2015: es2015,
@@ -8311,5 +8931,6 @@ module.exports = {
 	es2018: es2018,
 	es2019: es2019,
 	es2020: es2020,
-	es2021: es2021
+	es2021: es2021,
+	es2022: es2022
 };

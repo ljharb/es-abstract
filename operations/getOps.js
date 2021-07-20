@@ -19,7 +19,7 @@ async function getOps(year) {
 	const edition = year - 2009;
 
 	const specHTMLurl = year > 2015
-		? new URL(`https://raw.githubusercontent.com/tc39/ecma262/${year === 2022 ? 'master' : `es${year}`}/spec.html`)
+		? new URL(`https://raw.githubusercontent.com/tc39/ecma262/${year === 2023 ? 'HEAD' : `es${year}`}/spec.html`)
 		: new URL('https://262.ecma-international.org/6.0/');
 
 	const cmd = `curl -q --silent ${specHTMLurl}`;
@@ -28,13 +28,20 @@ async function getOps(year) {
 
 	const root = $(specHTML);
 
-	let aOps = root.filter('[aoid]')
-		.add(root.find('[aoid]'))
-		.add(root.find('[id^="sec-numeric-types-"]:not([aoid])'))
-		.not('[type="sdo"]');
+	let aOps;
 
-	if (aOps.length === 0) {
-		aOps = root.find('p:contains(" abstract operation ")').closest('section').add(root.find('#sec-reference-specification-type > section'));
+	if (year > 2021) {
+		aOps = $('[aoid],[type$="abstract operation"],[id^="sec-numeric-types-"]:not([aoid]):not([type="abstract operation"])', specHTML)
+			.not('[type="sdo"]');
+	} else {
+		aOps = root.filter('[aoid]')
+			.add(root.find('[aoid]'))
+			.add(root.find('[id^="sec-numeric-types-"]:not([aoid])'))
+			.not('[type="sdo"]');
+
+		if (aOps.length === 0) {
+			aOps = root.find('p:contains(" abstract operation ")').closest('section').add(root.find('#sec-reference-specification-type > section'));
+		}
 	}
 
 	const missings = [];
@@ -54,14 +61,14 @@ async function getOps(year) {
 		}
 
 		if (!aoid) {
-			if (!aoid && (
+			if (
 				id === 'sec-ecmascript-standard-built-in-objects'
 				|| id === 'sec-forbidden-extensions'
 				|| id === 'sec-jobs-and-job-queues'
 				|| id === 'sec-%typedarray%.prototype.sort'
-				|| id === 'sec-hostresolveimportedmodule'
+				|| (year < 2021 && id === 'sec-hostresolveimportedmodule')
 				|| id === 'sec-tostring-applied-to-the-number-type'
-			)) {
+			) {
 				return null;
 			}
 			if (op.parent().attr('id') === 'sec-reference-specification-type') {
@@ -72,7 +79,9 @@ async function getOps(year) {
 				const match = op.text().match(/When the (?<aoid>[a-zA-Z][a-z][a-zA-Z]+) abstract operation is called/m)
 					|| op.text().match(/The (?<aoid>[a-zA-Z][a-z][a-zA-Z]+) abstract operation/m)
 					|| op.text().match(/ abstract operation (?<aoid>[a-zA-Z/0-9]+)/m);
-				if (match) {
+				if (String(op.attr('type') || '').endsWith('abstract operation')) {
+					aoid = op.find('h1').text().trim().split('\n')[0].replace(/Static Semantics: |\(.*$/g, '').trim();
+				} else if (match) {
 					({ groups: { aoid } } = match);
 				}
 			}
