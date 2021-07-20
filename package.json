@@ -54,6 +54,7 @@
 		"call-bind": "^1.0.2",
 		"es-to-primitive": "^1.2.1",
 		"function-bind": "^1.1.1",
+		"function.prototype.name": "^1.1.5",
 		"get-intrinsic": "^1.1.1",
 		"get-symbol-description": "^1.0.0",
 		"has": "^1.0.3",
@@ -69,6 +70,7 @@
 		"object-inspect": "^1.12.0",
 		"object-keys": "^1.1.1",
 		"object.assign": "^4.1.2",
+		"regexp.prototype.flags": "^1.4.1",
 		"string.prototype.trimend": "^1.0.4",
 		"string.prototype.trimstart": "^1.0.4",
 		"unbox-primitive": "^1.0.2"
@@ -78,6 +80,7 @@
 		"array.prototype.filter": "^1.0.1",
 		"array.prototype.indexof": "^1.0.3",
 		"aud": "^2.0.0",
+		"available-regexp-flags": "^1.0.0",
 		"cheerio": "=1.0.0-rc.3",
 		"diff": "^5.0.0",
 		"eclint": "^2.8.1",
