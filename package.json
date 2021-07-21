@@ -70,6 +70,7 @@
 		"get-intrinsic": "^1.1.1",
 		"has": "^1.0.3",
 		"has-symbols": "^1.0.2",
+		"internal-slot": "^1.0.3",
 		"is-callable": "^1.2.3",
 		"is-negative-zero": "^2.0.1",
 		"is-regex": "^1.1.3",
