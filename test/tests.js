@@ -1269,18 +1269,38 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('making length nonwritable', { skip: !getOwnPropertyDescriptor }, function (st) {
-			var a = [];
-			ES.ArraySetLength(a, { '[[Writable]]': false });
+			var a = [0];
+			st.equal(
+				ES.ArraySetLength(a, { '[[Writable]]': false }),
+				true,
+				'array is made non-writable'
+			);
+
 			st.deepEqual(
 				getOwnPropertyDescriptor(a, 'length'),
 				{
 					configurable: false,
 					enumerable: false,
-					value: 0,
+					value: 1,
 					writable: false
 				},
 				'without a value, length becomes nonwritable'
 			);
+
+			st.equal(
+				ES.ArraySetLength(a, { '[[Value]]': 0 }),
+				false,
+				'setting a lower value on a non-writable length fails'
+			);
+			st.equal(a.length, 1, 'array still has a length of 1');
+
+			st.equal(
+				ES.ArraySetLength(a, { '[[Value]]': 2 }),
+				false,
+				'setting a higher value on a non-writable length fails'
+			);
+			st.equal(a.length, 1, 'array still has a length of 1');
+
 			st.end();
 		});
 
@@ -1293,8 +1313,17 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		});
 
 		var arr = [];
-		ES.ArraySetLength(arr, { '[[Value]]': 7 });
-		t.equal(arr.length, 7, 'array now has a length of 7');
+		t.equal(
+			ES.ArraySetLength(arr, { '[[Value]]': 7 }),
+			true
+		);
+		t.equal(arr.length, 7, 'array now has a length of 0 -> 7');
+
+		t.equal(
+			ES.ArraySetLength(arr, { '[[Value]]': 2 }),
+			true
+		);
+		t.equal(arr.length, 2, 'array now has a length of 7 -> 2');
 
 		t.end();
 	});
