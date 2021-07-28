@@ -6,6 +6,8 @@ var Test = require('tape/lib/test');
 var forEach = require('for-each');
 var debug = require('object-inspect');
 var assign = require('object.assign');
+var entries = require('object.entries');
+var fromEntries = require('object.fromentries');
 var keys = require('object-keys');
 var flatMap = require('array.prototype.flatmap');
 var has = require('has');
@@ -32,6 +34,7 @@ var reduce = require('../helpers/reduce');
 var fromPropertyDescriptor = require('../helpers/fromPropertyDescriptor');
 var assertRecordTests = require('./helpers/assertRecord');
 var diffOps = require('./diffOps');
+const { mutatorDescriptor } = require('es-value-fixtures');
 
 var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1;
 var MAX_VALUE = Number.MAX_VALUE || 1.7976931348623157e+308;
@@ -4988,6 +4991,128 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				false,
 				'false if both Gets are not equal'
 			);
+
+			st.end();
+		});
+
+		t.test('dynamically constructed test cases', function (st) {
+			// test cases adapted from https://jsfiddle.net/028yqu6d
+			function getDataProp() {
+				return {
+					value: 'data',
+					writable: true,
+					configurable: true,
+					enumerable: true
+				};
+			}
+
+			function getAccessorProps() {
+				var accessor = ES.FromPropertyDescriptor(v.accessorDescriptor());
+				var mutator = ES.FromPropertyDescriptor(v.mutatorDescriptor());
+				return [
+					assign({}, accessor, mutator),
+					accessor,
+					mutator
+				];
+			}
+
+			function* descriptorVariants(desc, options = {}) {
+				var descEntries = entries(desc);
+				var isComplete = descEntries.length === 4;
+
+				// There's only one variant of an empty descriptor.
+				if (descEntries.length === 0) {
+					yield {};
+					return;
+				}
+
+				// Vary the last attribute.
+				var descEntry = descEntries.pop();
+				var attrName = descEntry[0];
+				var baseValue = descEntry[1];
+				var otherAttrs = fromEntries(descEntries);
+
+				// Include the current value (and if boolean, its opposite).
+				var values = [baseValue];
+				if (typeof baseValue === "boolean") {
+					values.push(!baseValue);
+				}
+
+				// For update, include the "absent" case and the "replacement" case
+				// (the latter covering [[Value]], [[Get]], and [[Set]]).
+				if (options.forUpdate) {
+					values.unshift(undefined);
+					if (typeof baseValue !== 'boolean') {
+						values.push(function replacement(){});
+					}
+				}
+
+				// Apply all cases to the variants of remaining attributes.
+				for (let variant of descriptorVariants(otherAttrs, options)) {
+					for (let value of values) {
+						var obj = {};
+						obj[attrName] = value;
+						if (value === undefined) {
+							yield variant;
+						} else {
+							yield assign({}, variant, obj);
+						}
+					}
+				}
+
+				// Add appropriate type-changing cases.
+				if (isComplete && options.forUpdate && options.crossType) {
+					var crossTypeOptions = assign({}, options, { crossType: false });
+					if (ES.IsAccessorDescriptor(ES.ToPropertyDescriptor(desc))) {
+						for (let variant of descriptorVariants(getDataProp(), crossTypeOptions)) {
+							if ('value' in variant) {
+								yield variant;
+							}
+						}
+					} else {
+						var fullyPopulatedAccessorDescriptors = getAccessorProps().find(p => p.get && p.set);
+						for (let variant of descriptorVariants(fullyPopulatedAccessorDescriptors, crossTypeOptions)) {
+							if ('get' in variant || 'set' in variant) {
+								yield variant;
+							}
+						}
+					}
+				}
+			}
+
+			forEach(v.booleans, function (extensible) {
+				forEach([getDataProp()].concat(getAccessorProps()), function (currentBase) {
+					for (let current of descriptorVariants(currentBase)) {
+						for (let Desc of descriptorVariants(current, { forUpdate: true, crossType: true })) {
+							var expected = current.configurable
+								// current is accessor or not
+								&& ('get' in current || 'set' in current) === (
+									('get' in Desc || 'set' in Desc) // "Desc is accessor"
+									&& !('value' in Desc || 'writable' in Desc) // not "Desc is data"
+								);
+							var actual = ES.ValidateAndApplyPropertyDescriptor(
+								{},
+								'',
+								extensible,
+								ES.ToPropertyDescriptor(Desc),
+								ES.ToPropertyDescriptor(current)
+							);
+
+							st.deepEqual(
+								actual,
+								expected,
+								debug({
+									extensible: extensible,
+									current: current,
+									Desc: Desc,
+									actual: actual,
+									expected: expected
+								})
+							);
+						}
+					}
+				});
+			});
 
 			st.end();
 		});
