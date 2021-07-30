@@ -1,3 +1,10 @@
+1.18.4 / 2021-07-29
+=================
+  * [meta] partial revert of b54cfe8525faff482450e843a49d43be3a086225
+  * [Deps] update `internal-slot`, `object-inspect`
+  * [Dev Deps] update `eslint`, `tape`
+  * [Tests] `ArraySetLength`: increase coverage
+
 1.18.3 / 2021-05-27
 =================
   * [Fix] `ES2020+`: `ToNumber`: ensure it throws on a BigInt (#130)
