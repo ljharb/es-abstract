@@ -20,19 +20,6 @@
 	"license": "MIT",
 	"main": "index.js",
 	"type": "commonjs",
-	"exports": {
-		".": "./index.js",
-		"./package.json": "./package.json",
-		"./2020/": "./2020/",
-		"./2019/": "./2019/",
-		"./2018/": "./2018/",
-		"./2017/": "./2017/",
-		"./2016/": "./2016/",
-		"./2015/": "./2015/",
-		"./helpers/": "./helpers/",
-		"./5/": "./5/",
-		"./": "./"
-	},
 	"sideEffects": false,
 	"scripts": {
 		"prespackle": "git ls-files | xargs git check-attr spackled | grep -v 'unspecified$' | cut -d: -f1 | xargs rm || true",

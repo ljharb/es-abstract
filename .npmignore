@@ -14,3 +14,5 @@ yarn.lock
 # dev scripts
 operations/*.js
 !operations/20*.js
+
+test/
