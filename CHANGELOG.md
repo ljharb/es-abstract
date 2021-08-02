@@ -1,3 +1,8 @@
+1.18.5 / 2021-08-01
+=================
+  * [meta] remove "exports" (#133)
+  * [Dev Deps] update `eslint`
+
 1.18.4 / 2021-07-29
 =================
   * [meta] partial revert of b54cfe8525faff482450e843a49d43be3a086225
