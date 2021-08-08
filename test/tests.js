@@ -2294,6 +2294,18 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			'supports $` at position > 0'
 		);
 
+		// https://github.com/tc39/ecma262/pull/2484#discussion_r684725247
+		t.equal(
+			ES.GetSubstitution('1234567', 'abc', 0, [], ">$'<"),
+			'><',
+			'match is longer than the input string'
+		);
+		t.equal(
+			ES.GetSubstitution('x', 'abc', 3, [], ">$'<"),
+			'><',
+			'nonempty match at the end pf the input string'
+		);
+
 		t.equal(
 			ES.GetSubstitution('def', 'abcdefghi', 7, [], ">$'<"),
 			'><',
