@@ -206,7 +206,7 @@ var expectedMissing = [
 	'SynchronizeEventSet',
 	'synchronizes-with',
 	'ThrowCompletion',
-	'TimeZoneString',
+	'TimeZoneString', // depends on LocalTZA
 	'TopLevelModuleEvaluationJob',
 	'TriggerPromiseReactions',
 	'TypedArrayCreate',

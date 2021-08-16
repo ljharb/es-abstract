@@ -7173,6 +7173,46 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('StringToBigInt', function (t) {
+		test('actual BigInts', { skip: !hasBigInts }, function (st) {
+			forEach(v.bigints, function (bigint) {
+				st.equal(
+					ES.StringToBigInt(String(bigint)),
+					bigint,
+					debug(String(bigint)) + ' becomes ' + debug(bigint)
+				);
+			});
+
+			forEach(v.integerNumbers, function (int) {
+				st.equal(
+					ES.StringToBigInt(String(int)),
+					BigInt(int),
+					debug(String(int)) + ' becomes ' + debug(BigInt(int))
+				);
+			});
+
+			forEach(v.nonIntegerNumbers, function (nonInt) {
+				st.equal(
+					ES.StringToBigInt(String(nonInt)),
+					NaN,
+					debug(String(nonInt)) + ' becomes NaN'
+				);
+			});
+
+			st.end();
+		});
+
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.StringToBigInt(nonString); },
+				TypeError,
+				debug(nonString) + ' is not a string'
+			);
+		});
+
+		t.end();
+	});
+
 	test('StringPad', function (t) {
 		t.equal(ES.StringPad('a', 3, undefined, 'start'), '  a');
 		t.equal(ES.StringPad('a', 3, undefined, 'end'), 'a  ');
@@ -7186,9 +7226,13 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('thisBigIntValue', { skip: !hasBigInts }, function (t) {
-		t.equal(ES.thisBigIntValue(BigInt(42)), BigInt(42));
-		t.equal(ES.thisBigIntValue(Object(BigInt(42))), BigInt(42));
+	test('thisBigIntValue', function (t) {
+		test('actual BigInts', { skip: !hasBigInts }, function (st) {
+			st.equal(ES.thisBigIntValue(BigInt(42)), BigInt(42));
+			st.equal(ES.thisBigIntValue(Object(BigInt(42))), BigInt(42));
+
+			st.end();
+		});
 
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
@@ -7197,6 +7241,123 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				debug(nonBigInt) + ' is not a BigInt'
 			);
 		});
+
+		t.end();
+	});
+
+	test('ToBigInt', function (t) {
+		t['throws'](
+			function () { ES.ToBigInt(); },
+			hasBigInts ? TypeError : SyntaxError,
+			'undefined throws'
+		);
+		t['throws'](
+			function () { ES.ToBigInt(null); },
+			hasBigInts ? TypeError : SyntaxError,
+			'null throws'
+		);
+
+		forEach(v.symbols, function (sym) {
+			t['throws'](
+				function () { ES.ToBigInt(sym); },
+				hasBigInts ? TypeError : SyntaxError,
+				debug(sym) + ' throws'
+			);
+		});
+
+		test('actual BigInts', { skip: !hasBigInts }, function (st) {
+			st.equal(ES.ToBigInt(true), BigInt(1), 'true becomes 1n');
+			st.equal(ES.ToBigInt(false), BigInt(0), 'true becomes 0n');
+
+			forEach(v.bigints, function (bigint) {
+				st.equal(
+					ES.ToBigInt(bigint),
+					bigint,
+					debug(bigint) + ' remains ' + debug(bigint)
+				);
+
+				st.equal(
+					ES.ToBigInt(String(bigint)),
+					bigint,
+					debug(String(bigint)) + ' becomes ' + debug(bigint)
+				);
+			});
+
+			forEach(v.numbers, function (number) {
+				st['throws'](
+					function () { ES.ToBigInt(number); },
+					TypeError,
+					debug(number) + ' throws'
+				);
+			});
+
+			forEach(v.integerNumbers, function (int) {
+				st.equal(
+					ES.ToBigInt(String(int)),
+					BigInt(int),
+					debug(String(int)) + ' becomes ' + debug(BigInt(int))
+				);
+			});
+
+			forEach(v.nonIntegerNumbers, function (nonInt) {
+				st['throws'](
+					function () { ES.ToBigInt(nonInt); },
+					TypeError,
+					debug(nonInt) + ' is not an integer'
+				);
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('ToBigInt64', { skip: !hasBigInts }, function (t) {
+		var twoSixtyFour = BigInt(Math.pow(2, 64));
+		var twoSixtyThree = BigInt(Math.pow(2, 63));
+		var twoSixtyThreeMinusOne = twoSixtyThree - BigInt(1);
+		var negTwoSixtyThreeMinusOne = -twoSixtyThree - BigInt(1);
+
+		t.equal(ES.ToBigInt64(twoSixtyThreeMinusOne), twoSixtyThreeMinusOne, debug(twoSixtyThreeMinusOne) + ' returns itself');
+		t.equal(ES.ToBigInt64(-twoSixtyThree), -twoSixtyThree, debug(-twoSixtyThree) + ' returns itself');
+
+		t.equal(
+			ES.ToBigInt64(twoSixtyThree),
+			twoSixtyThree - twoSixtyFour,
+			debug(twoSixtyThree) + ' returns ' + debug(twoSixtyThree - twoSixtyFour)
+		);
+		t.equal(
+			ES.ToBigInt64(negTwoSixtyThreeMinusOne),
+			twoSixtyFour - twoSixtyThree - BigInt(1),
+			debug(negTwoSixtyThreeMinusOne) + ' returns ' + debug(twoSixtyFour - twoSixtyThree - BigInt(1))
+		);
+
+		t.end();
+	});
+
+	test('ToBigUint64', { skip: !hasBigInts }, function (t) {
+		var twoSixtyFour = BigInt(Math.pow(2, 64));
+		var twoSixtyFourMinusOne = BigInt(Math.pow(2, 64)) - BigInt(1);
+		var twoSixtyThree = BigInt(Math.pow(2, 63));
+		var twoSixtyThreeMinusOne = twoSixtyThree - BigInt(1);
+		var negTwoSixtyThreeMinusOne = -twoSixtyThree - BigInt(1);
+
+		t.equal(ES.ToBigUint64(twoSixtyThreeMinusOne), twoSixtyThreeMinusOne, debug(twoSixtyThreeMinusOne) + ' returns itself');
+		t.equal(ES.ToBigUint64(twoSixtyThree), twoSixtyThree, debug(twoSixtyThree) + ' returns itself');
+		t.equal(ES.ToBigUint64(twoSixtyFourMinusOne), twoSixtyFourMinusOne, debug(twoSixtyFourMinusOne) + ' returns itself');
+		t.equal(ES.ToBigUint64(-twoSixtyThree), twoSixtyThree, debug(-twoSixtyThree) + ' returns ' + debug(twoSixtyThree));
+
+		t.equal(
+			ES.ToBigUint64(twoSixtyFour),
+			BigInt(0),
+			debug(twoSixtyFour) + ' returns 0n'
+		);
+		t.equal(
+			ES.ToBigUint64(negTwoSixtyThreeMinusOne),
+			twoSixtyFour - twoSixtyThree - BigInt(1),
+			debug(negTwoSixtyThreeMinusOne) + ' returns ' + debug(twoSixtyFour - twoSixtyThree - BigInt(1))
+		);
 
 		t.end();
 	});

@@ -207,14 +207,10 @@ var expectedMissing = [
 	'SetViewValue',
 	'SharedDataBlockEventSet',
 	'SortCompare', // mystery access to `comparefn` arg
-	'StringToBigInt',
 	'Suspend',
 	'synchronizes-with',
 	'ThrowCompletion',
-	'TimeZoneString',
-	'ToBigInt',
-	'ToBigInt64',
-	'ToBigUint64',
+	'TimeZoneString', // depends on LocalTZA
 	'TriggerPromiseReactions',
 	'TypedArrayCreate',
 	'TypedArraySpeciesCreate',
