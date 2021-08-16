@@ -864,6 +864,8 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 		t.equal(ES['Abstract Relational Comparison'](v.coercibleObject, '3', false), false, '!LeftFirst: coercible object is not less than "3"');
 		t.equal(ES['Abstract Relational Comparison']('3', v.coercibleObject, false), false, '!LeftFirst: "3" is not less than coercible object');
 
+		// TODO: compare LeftFirst true/false for observability
+
 		t.end();
 	});
 
@@ -4819,6 +4821,44 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 	}));
 	var test = makeTest(skips);
 
+	test('Abstract Relational Comparison', function (t) {
+		forEach(v.bigints, function (bigint) {
+			t.equal(
+				ES['Abstract Relational Comparison'](bigint, bigint + BigInt(1), false),
+				true,
+				debug(bigint) + ' is less than the same + 1n'
+			);
+			t.equal(
+				ES['Abstract Relational Comparison'](bigint, bigint - BigInt(1), false),
+				false,
+				debug(bigint) + ' is not less than the same - 1n'
+			);
+
+			t.equal(
+				ES['Abstract Relational Comparison'](bigint, -Infinity, false),
+				false,
+				debug(bigint) + ' is not less than -∞'
+			);
+			t.equal(
+				ES['Abstract Relational Comparison'](-Infinity, bigint, false),
+				true,
+				'-∞ is less than ' + debug(bigint)
+			);
+			t.equal(
+				ES['Abstract Relational Comparison'](bigint, Infinity, false),
+				true,
+				debug(bigint) + ' is less than ∞'
+			);
+			t.equal(
+				ES['Abstract Relational Comparison'](Infinity, bigint, false),
+				false,
+				'∞ is not less than ' + debug(bigint)
+			);
+		});
+
+		t.end();
+	});
+
 	test('CopyDataProperties', function (t) {
 		t.test('first argument: target', function (st) {
 			forEach(v.primitives, function (primitive) {
@@ -5428,6 +5468,76 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		UTF16Decode: true
 	}));
 	var test = makeTest(skips);
+
+	test('Abstract Equality Comparison', { skip: !hasBigInts }, function (t) {
+		t.equal(
+			ES['Abstract Equality Comparison'](BigInt(1), 1),
+			true,
+			debug(BigInt(1)) + ' == ' + debug(1)
+		);
+		t.equal(
+			ES['Abstract Equality Comparison'](1, BigInt(1)),
+			true,
+			debug(1) + ' == ' + debug(BigInt(1))
+		);
+		t.equal(
+			ES['Abstract Equality Comparison'](BigInt(1), 1.1),
+			false,
+			debug(BigInt(1)) + ' != ' + debug(1.1)
+		);
+		t.equal(
+			ES['Abstract Equality Comparison'](1.1, BigInt(1)),
+			false,
+			debug(1.1) + ' != ' + debug(BigInt(1))
+		);
+
+		t.equal(
+			ES['Abstract Equality Comparison'](BigInt(1), '1'),
+			true,
+			debug(BigInt(1)) + ' == ' + debug('1')
+		);
+		t.equal(
+			ES['Abstract Equality Comparison']('1', BigInt(1)),
+			true,
+			debug(1) + ' == ' + debug(BigInt('1'))
+		);
+		t.equal(
+			ES['Abstract Equality Comparison'](BigInt(1), '1.1'),
+			false,
+			debug(BigInt(1)) + ' != ' + debug('1.1')
+		);
+		t.equal(
+			ES['Abstract Equality Comparison']('1.1', BigInt(1)),
+			false,
+			debug('1.1') + ' != ' + debug(BigInt(1))
+		);
+
+		var bigIntObject = {
+			valueOf: function () { return BigInt(1); }
+		};
+		t.equal(
+			ES['Abstract Equality Comparison'](BigInt(1), bigIntObject),
+			true,
+			debug(BigInt(1)) + ' == ' + debug(bigIntObject)
+		);
+		t.equal(
+			ES['Abstract Equality Comparison'](bigIntObject, BigInt(1)),
+			true,
+			debug(bigIntObject) + ' == ' + debug(BigInt('1'))
+		);
+		t.equal(
+			ES['Abstract Equality Comparison'](BigInt(1), v.coercibleObject),
+			false,
+			debug(BigInt(1)) + ' != ' + debug(v.coercibleObject)
+		);
+		t.equal(
+			ES['Abstract Equality Comparison'](v.coercibleObject, BigInt(1)),
+			false,
+			debug(bigIntObject) + ' != ' + debug(BigInt(1))
+		);
+
+		t.end();
+	});
 
 	test('BigInt::add', { skip: !hasBigInts }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {

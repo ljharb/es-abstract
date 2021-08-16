@@ -6,15 +6,19 @@ var $Number = GetIntrinsic('%Number%');
 var $TypeError = GetIntrinsic('%TypeError%');
 
 var $isNaN = require('../helpers/isNaN');
-var $isFinite = require('../helpers/isFinite');
 
 var IsStringPrefix = require('./IsStringPrefix');
-var ToNumber = require('./ToNumber');
+var StringToBigInt = require('./StringToBigInt');
+var ToNumeric = require('./ToNumeric');
 var ToPrimitive = require('./ToPrimitive');
 var Type = require('./Type');
 
+var BigIntLessThan = require('./BigInt/lessThan');
+var NumberLessThan = require('./Number/lessThan');
+
 // https://262.ecma-international.org/9.0/#sec-abstract-relational-comparison
 
+// eslint-disable-next-line max-statements, max-lines-per-function
 module.exports = function AbstractRelationalComparison(x, y, LeftFirst) {
 	if (Type(LeftFirst) !== 'Boolean') {
 		throw new $TypeError('Assertion failed: LeftFirst argument must be a Boolean');
@@ -37,25 +41,42 @@ module.exports = function AbstractRelationalComparison(x, y, LeftFirst) {
 		}
 		return px < py; // both strings, neither a prefix of the other. shortcut for steps 3 c-f
 	}
-	var nx = ToNumber(px);
-	var ny = ToNumber(py);
+
+	var pxType = Type(px);
+	var pyType = Type(py);
+	var nx;
+	var ny;
+	if (pxType === 'BigInt' && pyType === 'String') {
+		ny = StringToBigInt(py);
+		if ($isNaN(ny)) {
+			return void undefined;
+		}
+		return BigIntLessThan(px, ny);
+	}
+	if (pxType === 'String' && pyType === 'BigInt') {
+		nx = StringToBigInt(px);
+		if ($isNaN(nx)) {
+			return void undefined;
+		}
+		return BigIntLessThan(px, ny);
+	}
+
+	nx = ToNumeric(px);
+	ny = ToNumeric(py);
+	var nxType = Type(nx);
+	if (nxType === Type(ny)) {
+		return nxType === 'Number' ? NumberLessThan(nx, ny) : BigIntLessThan(nx, ny);
+	}
+
 	if ($isNaN(nx) || $isNaN(ny)) {
-		return undefined;
+		return void undefined;
 	}
-	if ($isFinite(nx) && $isFinite(ny) && nx === ny) {
-		return false;
-	}
-	if (nx === Infinity) {
-		return false;
-	}
-	if (ny === Infinity) {
+	if (nx === -Infinity || ny === Infinity) {
 		return true;
 	}
-	if (ny === -Infinity) {
+	if (nx === Infinity || ny === -Infinity) {
 		return false;
 	}
-	if (nx === -Infinity) {
-		return true;
-	}
+
 	return nx < ny; // by now, these are both nonzero, finite, and not equal
 };
