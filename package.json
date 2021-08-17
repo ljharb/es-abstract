@@ -92,7 +92,7 @@
 		"object.fromentries": "^2.0.4",
 		"safe-publish-latest": "^1.1.4",
 		"ses": "^0.10.4",
-		"tape": "^5.3.0"
+		"tape": "^5.3.1"
 	},
 	"testling": {
 		"files": "test/index.js",
