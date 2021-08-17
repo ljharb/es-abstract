@@ -6,8 +6,8 @@ var forEach = require('foreach');
 var has = require('has');
 
 var v = require('es-value-fixtures');
-var getSymbolDescription = require('../../helpers/getSymbolDescription');
-var getInferredName = require('../../helpers/getInferredName');
+var getSymbolDescription = require('get-symbol-description');
+var getInferredName = require('get-symbol-description/getInferredName');
 
 test('getSymbolDescription', function (t) {
 	t.test('no symbols', { skip: v.hasSymbols }, function (st) {

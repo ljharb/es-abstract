@@ -55,6 +55,7 @@
 		"es-to-primitive": "^1.2.1",
 		"function-bind": "^1.1.1",
 		"get-intrinsic": "^1.1.1",
+		"get-symbol-description": "^1.0.0",
 		"has": "^1.0.3",
 		"has-symbols": "^1.0.2",
 		"internal-slot": "^1.0.3",
