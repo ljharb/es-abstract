@@ -38,7 +38,7 @@ async function getOps(year) {
 
 	const missings = [];
 
-	const entries = aOps.toArray().map(function (x) {
+	const entries = aOps.toArray().map((x) => {
 		const op = $(x);
 		let aoid = op.attr('aoid');
 		let id = op.attr('id');
@@ -64,15 +64,15 @@ async function getOps(year) {
 				return null;
 			}
 			if (op.parent().attr('id') === 'sec-reference-specification-type') {
-				aoid = op.find('h1').text().match(/\s([a-zA-Z][a-z][a-zA-Z]+)\s/m)[1];
+				({ aoid } = op.find('h1').text().match(/\s(?<aoid>[a-zA-Z][a-z][a-zA-Z]+)\s/m));
 			} else if ((/^sec-numeric-types-(?:number|bigint)-/).test(op.attr('id'))) {
-				aoid = op.find('h1').text().match(/\s?([a-zA-Z][a-z][a-zA-Z]+(?:::[a-zA-Z][a-z][a-zA-Z]+))\s/m)[1];
+				({ aoid } = op.find('h1').text().match(/\s?(?<aoid>[a-zA-Z][a-z][a-zA-Z]+(?:::[a-zA-Z][a-z][a-zA-Z]+))\s/m));
 			} else {
-				const match = op.text().match(/When the ([a-zA-Z][a-z][a-zA-Z]+) abstract operation is called/m)
-					|| op.text().match(/The ([a-zA-Z][a-z][a-zA-Z]+) abstract operation/m)
-					|| op.text().match(/ abstract operation ([a-zA-Z/0-9]+)/m);
+				const match = op.text().match(/When the (?<aoid>[a-zA-Z][a-z][a-zA-Z]+) abstract operation is called/m)
+					|| op.text().match(/The (?<aoid>[a-zA-Z][a-z][a-zA-Z]+) abstract operation/m)
+					|| op.text().match(/ abstract operation (?<aoid>[a-zA-Z/0-9]+)/m);
 				if (match) {
-					aoid = match[1];
+					({ aoid } = match);
 				}
 			}
 		}
@@ -155,7 +155,7 @@ async function getOps(year) {
 	const outputPath = path.join('operations', `${year}.js`);
 	let output = `'use strict';\n\nmodule.exports = ${JSON.stringify(obj, null, '\t')};\n`;
 	if ((year === 5 || year >= 2015) && year < 2018) {
-		output = output.replace(/= \{\n/m, "= {\n\tIsPropertyDescriptor: 'https://262.ecma-international.org/6.0/#sec-property-descriptor-specification-type', // not actually an abstract op\n\n");
+		output = output.replace(/[=] \{\n/m, "= {\n\tIsPropertyDescriptor: 'https://262.ecma-international.org/6.0/#sec-property-descriptor-specification-type', // not actually an abstract op\n\n");
 	}
 	await fs.writeFile(outputPath, output);
 

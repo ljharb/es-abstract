@@ -14,7 +14,7 @@ const results = Object.fromEntries([5].concat(years).map((y) => [
 	{ added: new Set(), removed: new Set() },
 ]));
 
-const parse = function parse(from, to, result) {
+function parse(from, to, result) {
 	diff.diffArrays(from, to).forEach((x) => {
 		x.value.forEach((v) => {
 			if (x.added) {
@@ -25,7 +25,7 @@ const parse = function parse(from, to, result) {
 			}
 		});
 	});
-};
+}
 
 keys.reduce(([, pK], [y, k]) => {
 	parse(pK, k, results[y]);
