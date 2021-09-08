@@ -1,3 +1,12 @@
+1.18.6 / 2021-09-07
+=================
+  * [Fix] `ES2020+`: `NumberToBigInt`: throw a SyntaxError when BigInts are not supported
+  * [Refactor] extract getSymbolDescription logic to `get-symbol-description`
+  * [Refactor] `ES2018+`: `AbstractRelationalComparison`: use `IsStringPrefix`
+  * [Deps] update `is-callable`, `is-regex`, `is-string`
+  * [Dev Deps] update `@ljharb/eslint-config`, `tape`
+  * [Tests] `GetSubstitution`: add cases
+
 1.18.5 / 2021-08-01
 =================
   * [meta] remove "exports" (#133)
