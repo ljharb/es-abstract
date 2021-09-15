@@ -2303,7 +2303,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.equal(
 			ES.GetSubstitution('x', 'abc', 3, [], ">$'<"),
 			'><',
-			'nonempty match at the end pf the input string'
+			'nonempty match at the end of the input string'
 		);
 
 		t.equal(
