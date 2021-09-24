@@ -15,7 +15,6 @@ var Type = require('./Type');
 
 // https://262.ecma-international.org/9.0/#sec-abstract-relational-comparison
 
-// eslint-disable-next-line max-statements
 module.exports = function AbstractRelationalComparison(x, y, LeftFirst) {
 	if (Type(LeftFirst) !== 'Boolean') {
 		throw new $TypeError('Assertion failed: LeftFirst argument must be a Boolean');
