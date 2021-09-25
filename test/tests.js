@@ -1315,13 +1315,15 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		var arr = [];
 		t.equal(
 			ES.ArraySetLength(arr, { '[[Value]]': 7 }),
-			true
+			true,
+			'set length succeeded'
 		);
 		t.equal(arr.length, 7, 'array now has a length of 0 -> 7');
 
 		t.equal(
 			ES.ArraySetLength(arr, { '[[Value]]': 2 }),
-			true
+			true,
+			'set length succeeded'
 		);
 		t.equal(arr.length, 2, 'array now has a length of 7 -> 2');
 
