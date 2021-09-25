@@ -28,6 +28,7 @@ var ES2020 = {
 	CreateIterResultObject: require('./2020/CreateIterResultObject'),
 	CreateListFromArrayLike: require('./2020/CreateListFromArrayLike'),
 	CreateMethodProperty: require('./2020/CreateMethodProperty'),
+	CreateRegExpStringIterator: require('./2020/CreateRegExpStringIterator'),
 	DateFromTime: require('./2020/DateFromTime'),
 	DateString: require('./2020/DateString'),
 	Day: require('./2020/Day'),

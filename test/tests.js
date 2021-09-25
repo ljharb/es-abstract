@@ -72,11 +72,25 @@ var getArraySubclassWithSpeciesConstructor = function getArraySubclass(speciesCo
 var testIterator = function (t, iterator, expected) {
 	var resultCount = 0;
 	var result;
-	while (result = iterator.next(), !result.done) { // eslint-disable-line no-sequences
+	while (result = iterator.next(), !result.done && resultCount < expected.length + 1) { // eslint-disable-line no-sequences
 		t.deepEqual(result, { done: false, value: expected[resultCount] }, 'result ' + resultCount);
 		resultCount += 1;
 	}
-	t.equal(resultCount, expected.length, 'expected ' + expected.length + ', got ' + resultCount);
+	t.equal(resultCount, expected.length, 'expected ' + expected.length + ', got ' + (result.done ? '' : 'more than ') + resultCount);
+};
+
+// eslint-disable-next-line max-params
+var testRESIterator = function testRegExpStringIterator(ES, t, regex, str, global, unicode, expected) {
+	var iterator = ES.CreateRegExpStringIterator(regex, str, global, unicode);
+	t.equal(typeof iterator, 'object', 'iterator is an object');
+	t.equal(typeof iterator.next, 'function', '`.next` is a function');
+
+	t.test('has symbols', { skip: !v.hasSymbols }, function (st) {
+		st.equal(typeof iterator[Symbol.iterator], 'function', '[`Symbol.iterator`] is a function');
+		st.end();
+	});
+
+	testIterator(t, iterator, expected);
 };
 
 var hasSpecies = v.hasSymbols && Symbol.species;
@@ -5933,6 +5947,125 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		});
 
 		// TODO: CopyDataProperties throws when copying fails
+
+		t.end();
+	});
+
+	test('CreateRegExpStringIterator', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.CreateRegExpStringIterator({}, nonString, false, false); },
+				TypeError,
+				debug(nonString) + ' is not a String'
+			);
+		});
+
+		forEach(v.nonBooleans, function (nonBoolean) {
+			t['throws'](
+				function () { ES.CreateRegExpStringIterator({}, '', nonBoolean, false); },
+				TypeError,
+				debug(nonBoolean) + ' is not a String (`global`)'
+			);
+
+			t['throws'](
+				function () { ES.CreateRegExpStringIterator({}, '', false, nonBoolean); },
+				TypeError,
+				debug(nonBoolean) + ' is not a String (`fullUnicode`)'
+			);
+		});
+
+		t.test('`global` matches `g` flag', function (st) {
+			st.test('non-global regex', function (s2t) {
+				var regex = /a/;
+				var str = 'abcabc';
+				var expected = [
+					assign(['a'], kludgeMatch(regex, { index: 0, input: str }))
+				];
+				testRESIterator(ES, s2t, regex, str, false, false, expected);
+				s2t.end();
+			});
+
+			st.test('non-global unicode regex', { skip: !('unicode' in RegExp.prototype) }, function (s2t) {
+				var regex = new RegExp(wholePoo, 'u');
+				var str = 'a' + wholePoo + 'ca' + wholePoo + 'c';
+				var expected = [
+					assign([wholePoo], kludgeMatch(regex, { index: 1, input: str }))
+				];
+				testRESIterator(ES, s2t, regex, str, false, true, expected);
+				s2t.end();
+			});
+
+			st.test('global regex', function (s2t) {
+				var regex = /a/g;
+				var str = 'abcabc';
+				var expected = [
+					assign(['a'], kludgeMatch(regex, { index: 0, input: str })),
+					assign(['a'], kludgeMatch(regex, { index: 3, input: str }))
+				];
+				testRESIterator(ES, s2t, regex, str, true, false, expected);
+				s2t.end();
+			});
+
+			st.test('global unicode regex', { skip: !('unicode' in RegExp.prototype) }, function (s2t) {
+				var regex = new RegExp(wholePoo, 'gu');
+				var str = 'a' + wholePoo + 'ca' + wholePoo + 'c';
+				var expected = [
+					assign([wholePoo], kludgeMatch(regex, { index: 1, input: str })),
+					assign([wholePoo], kludgeMatch(regex, { index: 5, input: str }))
+				];
+				testRESIterator(ES, s2t, regex, str, true, true, expected);
+				s2t.end();
+			});
+
+			st.end();
+		});
+
+		// these tests are technically allowed by the AO, but the spec never causes them to happen
+		t.test('`global` does not match `g` flag', { skip: true }, function (st) {
+			st.test('non-global regex', function (s2t) {
+				var regex = /a/;
+				var str = 'abcabc';
+				var expected = [
+					assign(['a'], kludgeMatch(regex, { index: 0, input: str }))
+				];
+				testRESIterator(ES, s2t, regex, str, true, false, expected);
+				s2t.end();
+			});
+
+			st.test('non-global unicode regex', { skip: !('unicode' in RegExp.prototype) }, function (s2t) {
+				var regex = new RegExp(wholePoo, 'u');
+				var str = 'a' + wholePoo + 'ca' + wholePoo + 'c';
+				var expected = [
+					assign([wholePoo], kludgeMatch(regex, { index: 1, input: str }))
+				];
+				testRESIterator(ES, s2t, regex, str, true, true, expected);
+				s2t.end();
+			});
+
+			st.test('global regex', function (s2t) {
+				var regex = /a/g;
+				var str = 'abcabc';
+				var expected = [
+					assign(['a'], kludgeMatch(regex, { index: 0, input: str })),
+					assign(['a'], kludgeMatch(regex, { index: 3, input: str }))
+				];
+				testRESIterator(ES, s2t, regex, str, false, false, expected);
+				s2t.end();
+			});
+
+			st.test('global unicode regex', { skip: !('unicode' in RegExp.prototype) }, function (s2t) {
+				var regex = new RegExp(wholePoo, 'gu');
+				var str = 'a' + wholePoo + 'ca' + wholePoo + 'c';
+				var expected = [
+					assign([wholePoo], kludgeMatch(regex, { index: 1, input: str })),
+					assign([wholePoo], kludgeMatch(regex, { index: 5, input: str }))
+				];
+				testRESIterator(ES, s2t, regex, str, false, true, expected);
+				s2t.end();
+			});
+
+			st.end();
+		});
 
 		t.end();
 	});

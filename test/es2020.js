@@ -53,7 +53,6 @@ var expectedMissing = [
 	'CreateMappedArgumentsObject',
 	'CreatePerIterationEnvironment',
 	'CreateRealm',
-	'CreateRegExpStringIterator',
 	'CreateResolvingFunctions',
 	'CreateSetIterator',
 	'CreateSharedByteDataBlock',
