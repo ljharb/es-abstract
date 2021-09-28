@@ -1,3 +1,10 @@
+1.18.7 / 2021-09-28
+=================
+  * [Fix] `getOwnPropertyDescriptor` helper: avoid crashing in IE < 9
+  * [Fix] `ArraySetLength`: `node` `v0.6` has a bug where array lengths can be Set but not Defined
+  * [eslint] remove unused directive
+  * [Tests] fix spelling
+
 1.18.6 / 2021-09-07
 =================
   * [Fix] `ES2020+`: `NumberToBigInt`: throw a SyntaxError when BigInts are not supported
