@@ -22,9 +22,28 @@ var assertRecordTests = require('./helpers/assertRecord');
 var v = require('es-value-fixtures');
 var diffOps = require('./diffOps');
 
+var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1;
+
 var $BigInt = hasBigInts ? BigInt : null;
 
-var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1;
+// node v10.4-v10.8 have a bug where you can't `BigInt(x)` anything larger than MAX_SAFE_INTEGER
+var needsBigIntHack = false;
+if (hasBigInts) {
+	try {
+		$BigInt(Math.pow(2, 64));
+	} catch (e) {
+		needsBigIntHack = true;
+	}
+}
+var safeBigInt = needsBigIntHack ? function (int) {
+	if (int > MAX_SAFE_INTEGER) {
+		return eval(int + 'n'); // eslint-disable-line no-eval
+	}
+	return $BigInt(int);
+} : $BigInt;
+
+var twoSixtyFour = hasBigInts && safeBigInt(Math.pow(2, 64));
+var twoSixtyThree = hasBigInts && safeBigInt(Math.pow(2, 63));
 
 var canDistinguishSparseFromUndefined = 0 in [undefined]; // IE 6 - 8 have a bug where this returns false
 
@@ -7294,10 +7313,11 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			});
 
 			forEach(v.integerNumbers, function (int) {
+				var bigint = safeBigInt(int);
 				st.equal(
 					ES.StringToBigInt(String(int)),
-					BigInt(int),
-					debug(String(int)) + ' becomes ' + debug(BigInt(int))
+					bigint,
+					debug(String(int)) + ' becomes ' + debug(bigint)
 				);
 			});
 
@@ -7404,8 +7424,8 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			forEach(v.integerNumbers, function (int) {
 				st.equal(
 					ES.ToBigInt(String(int)),
-					BigInt(int),
-					debug(String(int)) + ' becomes ' + debug(BigInt(int))
+					safeBigInt(int),
+					debug(String(int)) + ' becomes ' + debug(safeBigInt(int))
 				);
 			});
 
@@ -7423,9 +7443,8 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('ToBigInt64', { skip: !hasBigInts }, function (t) {
-		var twoSixtyFour = BigInt(Math.pow(2, 64));
-		var twoSixtyThree = BigInt(Math.pow(2, 63));
+	// TODO: fix these tests/this AO in node v10.4-v10.8, and remove `needsBigIntHack`
+	test('ToBigInt64', { skip: !hasBigInts || needsBigIntHack }, function (t) {
 		var twoSixtyThreeMinusOne = twoSixtyThree - BigInt(1);
 		var negTwoSixtyThreeMinusOne = -twoSixtyThree - BigInt(1);
 
@@ -7446,10 +7465,9 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('ToBigUint64', { skip: !hasBigInts }, function (t) {
-		var twoSixtyFour = BigInt(Math.pow(2, 64));
-		var twoSixtyFourMinusOne = BigInt(Math.pow(2, 64)) - BigInt(1);
-		var twoSixtyThree = BigInt(Math.pow(2, 63));
+	// TODO: fix these tests/this AO in node v10.4-v10.8, and remove `needsBigIntHack`
+	test('ToBigUint64', { skip: !hasBigInts || needsBigIntHack }, function (t) {
+		var twoSixtyFourMinusOne = twoSixtyFour - BigInt(1);
 		var twoSixtyThreeMinusOne = twoSixtyThree - BigInt(1);
 		var negTwoSixtyThreeMinusOne = -twoSixtyThree - BigInt(1);
 
