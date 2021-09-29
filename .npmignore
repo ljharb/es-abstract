@@ -16,3 +16,5 @@ operations/*.js
 !operations/20*.js
 
 test/
+
+.gitattributes
