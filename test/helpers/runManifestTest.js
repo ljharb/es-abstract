@@ -3,12 +3,16 @@
 var path = require('path');
 var fs = require('fs');
 
+var filter = require('array.prototype.filter');
 var forEach = require('foreach');
 var keys = require('object-keys');
 
 module.exports = function runManifestTest(test, ES, edition) {
 	test('ES' + edition + ' manifest', { skip: !fs.readdirSync }, function (t) {
-		var files = fs.readdirSync(path.join(__dirname, '../../' + edition), 'utf-8');
+		var files = filter(
+			fs.readdirSync(path.join(__dirname, '../../' + edition), 'utf-8'),
+			function rejectDotFile(file) { return file[0] !== '.'; }
+		);
 		var map = {
 			AbstractEqualityComparison: 'Abstract Equality Comparison',
 			AbstractRelationalComparison: 'Abstract Relational Comparison',
