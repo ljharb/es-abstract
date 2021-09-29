@@ -3,16 +3,15 @@
 var GetIntrinsic = require('get-intrinsic');
 
 var $BigInt = GetIntrinsic('%BigInt%', true);
+var $pow = GetIntrinsic('%Math.pow%');
 
 var ToBigInt = require('./ToBigInt');
 var BigIntRemainder = require('./BigInt/remainder');
 
 var modBigInt = require('../helpers/modBigInt');
 
-var MAX_SAFE_INTEGER = require('../helpers/maxSafeInteger');
-
 // BigInt(2**64), but node v10.4-v10.8 have a bug where you can't `BigInt(x)` anything larger than MAX_SAFE_INTEGER
-var twoSixtyFour = $BigInt && ((BigInt(MAX_SAFE_INTEGER) * BigInt(2048)) + BigInt(2048));
+var twoSixtyFour = $BigInt && (BigInt($pow(2, 32)) * BigInt($pow(2, 32)));
 
 // https://262.ecma-international.org/11.0/#sec-tobiguint64
 
