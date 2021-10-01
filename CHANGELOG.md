@@ -1,3 +1,18 @@
+1.19.0 / 2021-09-30
+=================
+  * [New] `ES2021+`: `IterableToList`: make `method` parameter optional (#61)
+  * [New] add ES2021
+  * [New] `ES2020+`: add `StringToBigInt`, `ToBigInt`, `ToBigInt64`, `ToBigUint64`
+  * [New] `ES2017`+: add `IsSharedArrayBuffer`, `OrdinaryToPrimitive`
+  * [New] `ES2015+`: add `CharacterRange`, `IsCompatiblePropertyDescriptor`
+  * [New] `ES2020+`: add `CreateRegExpStringIterator`
+  * [Fix] `ES2020+`: `ToBigInt64`/`ToBigUint64`: avoid node v10.4-v10.8 bug with limited BigInt range
+  * [Fix] `ES2020+`: `AbstractRelationalComparison`, `AbstractEqualityComparison`: support BigInt
+  * [Fix] `ES2020+`: `ToBigInt64`/`ToBigUint64`: Improve the definitions of twoSixtyThree and twoSixtyFour (#140)
+  * [meta] do not publish .gitattributes
+  * [Tests] Correct the behavior of `safeBigInt`
+  * [Tests] Exclude dotfiles from the testing sweep (#141)
+
 1.18.7 / 2021-09-28
 =================
   * [Fix] `getOwnPropertyDescriptor` helper: avoid crashing in IE < 9
