@@ -74,8 +74,8 @@
 	},
 	"devDependencies": {
 		"@ljharb/eslint-config": "^18.0.0",
-		"array.prototype.indexof": "^1.0.2",
-		"array.prototype.filter": "^1.0.0",
+		"array.prototype.filter": "^1.0.1",
+		"array.prototype.indexof": "^1.0.3",
 		"aud": "^1.1.5",
 		"cheerio": "=1.0.0-rc.3",
 		"diff": "^5.0.0",
