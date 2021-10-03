@@ -1,3 +1,8 @@
+1.19.1 / 2021-10-02
+=================
+  * [Fix] `ES2020+`: `CreateRegExpStringIterator`: should not have enumerable methods
+  * [Dev Deps] update `array.prototype.filter`, `array.prototype.indexof`
+
 1.19.0 / 2021-09-30
 =================
   * [New] `ES2021+`: `IterableToList`: make `method` parameter optional (#61)
