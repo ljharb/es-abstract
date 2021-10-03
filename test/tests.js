@@ -6395,6 +6395,12 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
+		var iterator = ES.CreateRegExpStringIterator(/a/, '', false, false);
+		t.deepEqual(keys(iterator), [], 'iterator has no enumerable keys');
+		for (var key in iterator) { // eslint-disable-line no-restricted-syntax
+			t.fail(debug(key) + ' should not be an enumerable key');
+		}
+
 		t.end();
 	});
 

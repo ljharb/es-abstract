@@ -9,6 +9,7 @@ var $defineProperty = GetIntrinsic('%Object.defineProperty%', true);
 
 var AdvanceStringIndex = require('./AdvanceStringIndex');
 var CreateIterResultObject = require('./CreateIterResultObject');
+var CreateMethodProperty = require('./CreateMethodProperty');
 var Get = require('./Get');
 var OrdinaryObjectCreate = require('./OrdinaryObjectCreate');
 var RegExpExec = require('./RegExpExec');
@@ -79,20 +80,7 @@ var RegExpStringIteratorNext = function next() {
 	SLOT.set(O, '[[Done]]', true);
 	return CreateIterResultObject(match, false);
 };
-if ($defineProperty) {
-	$defineProperty(
-		RegExpStringIterator.prototype,
-		'next',
-		{
-			enumerable: true,
-			configurable: true,
-			value: RegExpStringIteratorNext,
-			writable: true
-		}
-	);
-} else {
-	RegExpStringIterator.prototype.next = RegExpStringIteratorNext;
-}
+CreateMethodProperty(RegExpStringIterator.prototype, 'next', RegExpStringIteratorNext);
 
 if (hasSymbols) {
 	if (Symbol.toStringTag) {
@@ -112,16 +100,7 @@ if (hasSymbols) {
 		var iteratorFn = function SymbolIterator() {
 			return this;
 		};
-		if ($defineProperty) {
-			$defineProperty(RegExpStringIterator.prototype, Symbol.iterator, {
-				configurable: true,
-				enumerable: true,
-				value: iteratorFn,
-				writable: true
-			});
-		} else {
-			RegExpStringIterator.prototype[Symbol.iterator] = iteratorFn;
-		}
+		CreateMethodProperty(RegExpStringIterator.prototype, Symbol.iterator, iteratorFn);
 	}
 }
 
