@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm run test:ses
-      - uses: codecov/codecov-action@v1
+      - uses: codecov/codecov-action@v2
 
   SES:
     needs: [tests]
