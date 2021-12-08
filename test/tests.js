@@ -4829,7 +4829,6 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 		forEach(v.objects, function (nonSAB) {
 			t.equal(ES.IsSharedArrayBuffer(nonSAB), false, debug(nonSAB) + ' is not a SharedArrayBuffer');
 		});
-		/* globals SharedArrayBuffer: false */
 
 		t.test('real SABs', { skip: typeof SharedArrayBuffer !== 'function' }, function (st) {
 			var sab = new SharedArrayBuffer();

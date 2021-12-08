@@ -20,7 +20,6 @@
 		"no-magic-numbers": 0,
 		"new-cap": 0,
 		"no-extra-parens": 1,
-		"operator-linebreak": [2, "before"],
 		"sort-keys": 0,
 	},
 
@@ -51,8 +50,8 @@
 				"max-lines-per-function": 0,
 				"max-nested-callbacks": 0,
 				"max-statements": 0,
+				"no-magic-numbers": 0,
 				"no-throw-literal": 0,
-				"operator-linebreak": [2, "before"],
 			},
 		},
 		{

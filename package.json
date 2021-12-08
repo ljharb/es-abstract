@@ -73,7 +73,7 @@
 		"unbox-primitive": "^1.0.1"
 	},
 	"devDependencies": {
-		"@ljharb/eslint-config": "^18.0.0",
+		"@ljharb/eslint-config": "^20.0.0",
 		"array.prototype.filter": "^1.0.1",
 		"array.prototype.indexof": "^1.0.3",
 		"aud": "^1.1.5",
@@ -81,7 +81,7 @@
 		"diff": "^5.0.0",
 		"eclint": "^2.8.1",
 		"es-value-fixtures": "^1.2.1",
-		"eslint": "^7.32.0",
+		"eslint": "^8.4.1",
 		"foreach": "^2.0.5",
 		"functions-have-names": "^1.2.2",
 		"has-bigints": "^1.0.1",
@@ -92,10 +92,10 @@
 		"make-async-generator-function": "^1.0.0",
 		"make-generator-function": "^2.0.0",
 		"nyc": "^10.3.2",
-		"object.fromentries": "^2.0.4",
-		"safe-publish-latest": "^1.1.4",
+		"object.fromentries": "^2.0.5",
+		"safe-publish-latest": "^2.0.0",
 		"ses": "^0.10.4",
-		"tape": "^5.3.1"
+		"tape": "^5.3.2"
 	},
 	"testling": {
 		"files": "test/index.js",
