@@ -7038,6 +7038,8 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			}
 		});
 
+		t.equal(ES.Number.remainder(-1, 1), -0, '-1 % 1 is -0');
+
 		t.end();
 	});
 
