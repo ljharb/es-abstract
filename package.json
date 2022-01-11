@@ -33,7 +33,7 @@
 		"posttest": "aud --production",
 		"tests-only": "nyc node test",
 		"lint": "eslint .",
-		"eccheck": "eclint check *.js **/*.js > /dev/null"
+		"eccheck": "eclint check $(git ls-files | xargs find 2> /dev/null | grep -vE 'node_modules|\\.git')"
 	},
 	"repository": {
 		"type": "git",
