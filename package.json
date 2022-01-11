@@ -73,10 +73,10 @@
 		"unbox-primitive": "^1.0.1"
 	},
 	"devDependencies": {
-		"@ljharb/eslint-config": "^20.1.0",
+		"@ljharb/eslint-config": "^20.2.0",
 		"array.prototype.filter": "^1.0.1",
 		"array.prototype.indexof": "^1.0.3",
-		"aud": "^1.1.5",
+		"aud": "^2.0.0",
 		"cheerio": "=1.0.0-rc.3",
 		"diff": "^5.0.0",
 		"eclint": "^2.8.1",
