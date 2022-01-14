@@ -1555,9 +1555,12 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			};
 
 			defineProperty(bad, 'apply', {
+				enumerable: true,
+				configurable: true,
 				value: function () {
 					st.fail('bad.apply shouldn’t get called');
-				}
+				},
+				writable: true
 			});
 
 			ES.Call(bad, receiver, [1, 2, 3]);
@@ -3379,7 +3382,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.test('actual regex that should match against a string, with shadowed "exec"', function (st) {
 			var S = 'aabc';
 			var R = /a/g;
-			defineProperty(R, 'exec', { value: undefined });
+			defineProperty(R, 'exec', { configurable: true, enumerable: true, value: undefined, writable: true });
 			var match1 = ES.RegExpExec(R, S);
 			var expected1 = assign(['a'], kludgeMatch(R, { index: 0, input: S }));
 			var match2 = ES.RegExpExec(R, S);
@@ -4181,7 +4184,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.test('current is undefined', function (st) {
 			var propertyKey = 'howdy';
 
-			st.test('generic descriptor', function (s2t) {
+			st.test('generic descriptor', { skip: !defineProperty.oDP }, function (s2t) {
 				var generic = v.genericDescriptor();
 				generic['[[Enumerable]]'] = true;
 				var O = {};
@@ -4198,14 +4201,17 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 					'operation is successful'
 				);
 				var expected = {};
-				expected[propertyKey] = undefined;
+				expected[propertyKey] = generic['[[Value]]'];
 				s2t.deepEqual(O, expected, 'generic descriptor has been defined as an own data property');
 				s2t.end();
 			});
 
 			st.test('data descriptor', function (s2t) {
-				var data = v.dataDescriptor();
-				data['[[Enumerable]]'] = true;
+				var data = v.descriptors.enumerable(v.dataDescriptor());
+				if (!defineProperty.oDP) {
+					// IE 8 can't handle defining a new property with an incomplete descriptor
+					data = v.descriptors.configurable(v.descriptors.writable(data));
+				}
 
 				var O = {};
 				s2t.equal(
@@ -6396,8 +6402,10 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 		var iterator = ES.CreateRegExpStringIterator(/a/, '', false, false);
 		t.deepEqual(keys(iterator), [], 'iterator has no enumerable keys');
-		for (var key in iterator) { // eslint-disable-line no-restricted-syntax
-			t.fail(debug(key) + ' should not be an enumerable key');
+		if (defineProperty.oDP) {
+			for (var key in iterator) { // eslint-disable-line no-restricted-syntax
+				t.fail(debug(key) + ' should not be an enumerable key');
+			}
 		}
 
 		t.end();
