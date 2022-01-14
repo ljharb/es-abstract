@@ -14,7 +14,7 @@ if ($defineProperty) {
 }
 
 // node v0.6 has a bug where array lengths can be Set but not Defined
-var hasArrayLengthDefineBug = Object.defineProperty && Object.defineProperty([], 'length', { value: 1 }).length === 0;
+var hasArrayLengthDefineBug = $defineProperty && $defineProperty([], 'length', { value: 1 }).length === 0;
 
 // eslint-disable-next-line global-require
 var isArray = hasArrayLengthDefineBug && require('../2020/IsArray'); // this does not depend on any other AOs.
