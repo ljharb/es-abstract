@@ -4755,11 +4755,11 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 			st.equal(ES.OrdinaryToPrimitive(v.valueOfOnlyObject, 'string'), v.valueOfOnlyObject.valueOf(), 'valueOfOnlyObject with hint "string" returns non-stringified valueOf');
 
 			st.test('exceptions', function (s2t) {
-				s2t['throws'](ES.OrdinaryToPrimitive.bind(null, v.uncoercibleObject, 'number'), TypeError, 'uncoercibleObject with hint "number" throws a TypeError');
-				s2t['throws'](ES.OrdinaryToPrimitive.bind(null, v.uncoercibleObject, 'string'), TypeError, 'uncoercibleObject with hint "string" throws a TypeError');
+				s2t['throws'](function () { ES.OrdinaryToPrimitive.call(null, v.uncoercibleObject, 'number'); }, TypeError, 'uncoercibleObject with hint "number" throws a TypeError');
+				s2t['throws'](function () { ES.OrdinaryToPrimitive.call(null, v.uncoercibleObject, 'string'); }, TypeError, 'uncoercibleObject with hint "string" throws a TypeError');
 
-				s2t['throws'](ES.OrdinaryToPrimitive.bind(null, v.uncoercibleFnObject, 'number'), TypeError, 'uncoercibleFnObject with hint "number" throws a TypeError');
-				s2t['throws'](ES.OrdinaryToPrimitive.bind(null, v.uncoercibleFnObject, 'string'), TypeError, 'uncoercibleFnObject with hint "string" throws a TypeError');
+				s2t['throws'](function () { ES.OrdinaryToPrimitive.call(null, v.uncoercibleFnObject, 'number'); }, TypeError, 'uncoercibleFnObject with hint "number" throws a TypeError');
+				s2t['throws'](function () { ES.OrdinaryToPrimitive.call(null, v.uncoercibleFnObject, 'string'); }, TypeError, 'uncoercibleFnObject with hint "string" throws a TypeError');
 				s2t.end();
 			});
 			st.end();
