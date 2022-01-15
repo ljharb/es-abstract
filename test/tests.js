@@ -3712,7 +3712,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	test('StringCreate', function (t) {
 		forEach(v.nonStrings, function (nonString) {
 			t['throws'](
-				function () { ES.StringCreate(nonString); },
+				function () { ES.StringCreate(nonString, String.prototype); },
 				TypeError,
 				debug(nonString) + ' is not a String'
 			);
@@ -3720,8 +3720,8 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.deepEqual(ES.StringCreate('foo', String.prototype), Object('foo'), '"foo" with `String.prototype` makes `Object("foo")');
 
+		var proto = {};
 		if ($setProto) {
-			var proto = {};
 			t.equal($getProto(ES.StringCreate('', proto)), proto, '[[Prototype]] is set as expected');
 		} else {
 			t['throws'](
