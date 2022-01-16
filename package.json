@@ -117,11 +117,5 @@
 	},
 	"engines": {
 		"node": ">= 0.4"
-	},
-	"greenkeeper": {
-		"//": "nyc is ignored because it requires node 4+, and we support older than that",
-		"ignore": [
-			"nyc"
-		]
 	}
 }
