@@ -5041,11 +5041,13 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 				'`replacement`: ' + debug(nonString) + ' is not a String'
 			);
 
-			t['throws'](
-				function () { ES.GetSubstitution('', '', 0, [nonString], undefined, ''); },
-				TypeError,
-				'`captures`: ' + debug([nonString]) + ' is not an Array of strings'
-			);
+			if (canDistinguishSparseFromUndefined || typeof nonString !== 'undefined') {
+				t['throws'](
+					function () { ES.GetSubstitution('', '', 0, [nonString], undefined, ''); },
+					TypeError,
+					'`captures`: ' + debug([nonString]) + ' is not an Array of strings'
+				);
+			}
 		});
 
 		forEach(v.notNonNegativeIntegers, function (nonNonNegativeInteger) {
