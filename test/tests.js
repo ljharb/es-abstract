@@ -131,7 +131,9 @@ var kludgeMatch = function kludgeMatch(R, matchObject) {
 		assign(matchObject, { groups: matchObject.groups });
 	}
 	if (hasLastIndex) {
-		assign(matchObject, { lastIndex: R.lastIndex });
+		assign(matchObject, { lastIndex: matchObject.lastIndex || R.lastIndex });
+	} else {
+		delete matchObject.lastIndex; // eslint-disable-line no-param-reassign
 	}
 	return matchObject;
 };
@@ -6314,7 +6316,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				var regex = /a/;
 				var str = 'abcabc';
 				var expected = [
-					assign(['a'], kludgeMatch(regex, { index: 0, input: str }))
+					assign(['a'], kludgeMatch(regex, { index: 0, input: str, lastIndex: 1 }))
 				];
 				testRESIterator(ES, s2t, regex, str, false, false, expected);
 				s2t.end();
@@ -6324,7 +6326,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				var regex = new RegExp(wholePoo, 'u');
 				var str = 'a' + wholePoo + 'ca' + wholePoo + 'c';
 				var expected = [
-					assign([wholePoo], kludgeMatch(regex, { index: 1, input: str }))
+					assign([wholePoo], kludgeMatch(regex, { index: 1, input: str, lastIndex: 1 }))
 				];
 				testRESIterator(ES, s2t, regex, str, false, true, expected);
 				s2t.end();
@@ -6334,8 +6336,8 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				var regex = /a/g;
 				var str = 'abcabc';
 				var expected = [
-					assign(['a'], kludgeMatch(regex, { index: 0, input: str })),
-					assign(['a'], kludgeMatch(regex, { index: 3, input: str }))
+					assign(['a'], kludgeMatch(regex, { index: 0, input: str, lastIndex: 1 })),
+					assign(['a'], kludgeMatch(regex, { index: 3, input: str, lastIndex: 4 }))
 				];
 				testRESIterator(ES, s2t, regex, str, true, false, expected);
 				s2t.end();
