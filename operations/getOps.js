@@ -157,7 +157,7 @@ async function getOps(year) {
 	}
 	entries.sort(([a], [b]) => a.localeCompare(b));
 
-	const obj = fromEntries(entries);
+	const obj = fromEntries(entries.map(([ao, url]) => [ao, typeof url === 'string' ? { url } : url]));
 
 	const outputPath = path.join('operations', `${year}.js`);
 	let output = `'use strict';\n\nmodule.exports = ${JSON.stringify(obj, null, '\t')};\n`;
