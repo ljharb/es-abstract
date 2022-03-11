@@ -77,6 +77,7 @@
 	},
 	"devDependencies": {
 		"@ljharb/eslint-config": "^21.0.0",
+		"@tc39/ecma262-biblio": "^1.0.2284",
 		"array.prototype.filter": "^1.0.1",
 		"array.prototype.indexof": "^1.0.3",
 		"aud": "^2.0.0",

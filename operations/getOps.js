@@ -46,7 +46,7 @@ async function getOps(year) {
 
 	const missings = [];
 
-	const entries = aOps.toArray().map((x) => {
+	let entries = aOps.toArray().map((x) => {
 		const op = $(x);
 		let aoid = op.attr('aoid');
 		let id = op.attr('id');
@@ -165,6 +165,20 @@ async function getOps(year) {
 		);
 	}
 	entries.sort(([a], [b]) => a.localeCompare(b));
+
+	if (year >= 2022) {
+		// check the biblio for signature info
+
+		// curl to `https://unpkg.com/@tc39/ecma262-biblio@${year}/biblio.json` after year is cut
+		const json = JSON.parse('{}');
+
+		const AOs = fromEntries(entries.map(([ao, url]) => [ao, { url }]));
+		json['https://tc39.es/ecma262/'].filter((x) => x.type === 'op').forEach(({ aoid, signature }) => {
+			AOs[aoid].signature = signature;
+		});
+
+		entries = Object.entries(AOs);
+	}
 
 	const obj = fromEntries(entries.map(([ao, url]) => [ao, typeof url === 'string' ? { url } : url]));
 
