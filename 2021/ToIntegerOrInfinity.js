@@ -1,15 +1,18 @@
 'use strict';
 
-var ES5ToInteger = require('../5/ToInteger');
-
+var abs = require('./abs');
+var floor = require('./floor');
 var ToNumber = require('./ToNumber');
 
-// https://www.ecma-international.org/ecma-262/11.0/#sec-tointeger
+var $isNaN = require('../helpers/isNaN');
+var $isFinite = require('../helpers/isFinite');
+var $sign = require('../helpers/sign');
 
-module.exports = function ToInteger(value) {
+// https://262.ecma-international.org/12.0/#sec-tointegerorinfinity
+
+module.exports = function ToIntegerOrInfinity(value) {
 	var number = ToNumber(value);
-	if (number !== 0) {
-		number = ES5ToInteger(number);
-	}
-	return number === 0 ? 0 : number;
+	if ($isNaN(number) || number === 0) { return 0; }
+	if (!$isFinite(number)) { return number; }
+	return $sign(number) * floor(abs(number));
 };

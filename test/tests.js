@@ -11,6 +11,7 @@ var arrowFns = require('make-arrow-function').list();
 var hasStrictMode = require('has-strict-mode')();
 var functionsHaveNames = require('functions-have-names')();
 var functionsHaveConfigurableNames = require('functions-have-names').functionsHaveConfigurableNames();
+var boundFunctionsHaveNames = require('functions-have-names').boundFunctionsHaveNames();
 var hasBigInts = require('has-bigints')();
 
 var $getProto = require('../helpers/getProto');
@@ -67,7 +68,12 @@ var noThrowOnStrictViolation = (function () {
 	return false;
 }());
 
-var makeTest = function makeTest(skips) {
+var nameExceptions = {
+	IsArray: true,
+	IsCallable: true,
+	RequireObjectCoercible: true
+};
+var makeTest = function makeTest(ES, skips) {
 	return function test(opName, maybeOpts, maybeCb) {
 		var origOpts = arguments.length > 2 ? maybeOpts : {};
 		var opts = assign(
@@ -76,7 +82,29 @@ var makeTest = function makeTest(skips) {
 			{ skip: (skips && skips[opName]) || origOpts.skip }
 		);
 		var cb = arguments.length > 2 ? maybeCb : maybeOpts;
-		return tape(opName, opts, cb);
+		return tape(
+			opName,
+			opts,
+			ES[opName] ? function (t) {
+				var expectedName = opName.replace(/ /g, '');
+				console.log({ expectedName: expectedName, name: ES[opName] + '' });
+				t.match(
+					ES[opName].name,
+					new RegExp('^(?:bound )' + expectedName + '$'),
+					'ES.' + opName + '.name === ' + expectedName,
+					{
+						skip: !functionsHaveNames || !boundFunctionsHaveNames,
+						todo: nameExceptions[opName]
+					}
+				);
+				var origPlan = t.plan;
+				t.plan = function (n) { // eslint-disable-line no-param-reassign
+					origPlan.call(t, n + 1);
+				};
+
+				return cb.apply(null, arguments);
+			} : cb
+		);
 	};
 };
 
@@ -276,7 +304,7 @@ var testToNumber = function (t, ES, ToNumber) {
 };
 
 var es5 = function ES5(ES, ops, expectedMissing, skips) {
-	var test = makeTest(skips);
+	var test = makeTest(ES, skips);
 
 	test('has expected operations', function (t) {
 		var diff = diffOps(ES, ops, expectedMissing);
@@ -1180,7 +1208,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		ToString: true,
 		Type: true
 	}));
-	var test = makeTest(skips);
+	var test = makeTest(ES, skips);
 
 	var getNamelessFunction = function () {
 		var f = Object(function () {});
@@ -4469,7 +4497,7 @@ var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 	es2015(ES, ops, expectedMissing, assign(assign({}, skips), {
 		StringGetIndexProperty: true
 	}));
-	var test = makeTest(skips);
+	var test = makeTest(ES, skips);
 
 	test('IterableToArrayLike', function (t) {
 		t.test('custom iterables', { skip: !v.hasSymbols }, function (st) {
@@ -4614,7 +4642,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 		EnumerableOwnNames: true,
 		IterableToArrayLike: true
 	}));
-	var test = makeTest(skips);
+	var test = makeTest(ES, skips);
 
 	test('EnumerableOwnProperties', function (t) {
 		var obj = testEnumerableOwnNames(t, function (O) {
@@ -4855,7 +4883,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 		GetSubstitution: true,
 		IsPropertyDescriptor: true
 	}));
-	var test = makeTest(skips);
+	var test = makeTest(ES, skips);
 
 	test('Abstract Relational Comparison', function (t) {
 		forEach(v.bigints, function (bigint) {
@@ -5388,7 +5416,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 var es2019 = function ES2019(ES, ops, expectedMissing, skips) {
 	es2018(ES, ops, expectedMissing, assign({}, skips, {
 	}));
-	var test = makeTest(skips);
+	var test = makeTest(ES, skips);
 
 	test('AddEntriesFromIterable', function (t) {
 		t['throws'](
@@ -5505,7 +5533,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		ToNumber: true,
 		UTF16Decode: true
 	}));
-	var test = makeTest(skips);
+	var test = makeTest(ES, skips);
 
 	test('Abstract Equality Comparison', { skip: !hasBigInts }, function (t) {
 		t.equal(
@@ -7642,7 +7670,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 		UTF16DecodeSurrogatePair: true,
 		UTF16Encoding: true
 	}));
-	var test = makeTest(skips);
+	var test = makeTest(ES, skips);
 
 	test('AddToKeptObjects', function (t) {
 		forEach(v.primitives, function (nonObject) {
