@@ -87,7 +87,6 @@ var makeTest = function makeTest(ES, skips) {
 			opts,
 			ES[opName] ? function (t) {
 				var expectedName = opName.replace(/ /g, '');
-				console.log({ expectedName: expectedName, name: ES[opName] + '' });
 				t.match(
 					ES[opName].name,
 					new RegExp('^(?:bound )' + expectedName + '$'),
