@@ -3338,7 +3338,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				var p = typeof nonString === 'undefined' ? '' : nonString;
 				t.equal(
 					String(ES.RegExpCreate(p, 'g')),
-					'/' + (String(p) || RegExp.prototype.source) + '/g',
+					'/' + (String(p) || RegExp.prototype.source || String(RegExp.prototype).slice(1, -1)) + '/g',
 					debug(nonString) + ' becomes `/' + String(p) + '/g`'
 				);
 			}
