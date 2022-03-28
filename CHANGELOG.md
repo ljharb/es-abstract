@@ -1,3 +1,26 @@
+1.19.2 / 2022-03-28
+=================
+  * [Fix] `ES2018+`: `EnumerableOwnPropertyNames`, `ToIntegerOrInfinity`, `UTF16SurrogatePairToCodePoint`: proper function names
+  * [Fix] `ES2015+`: `GetOwnPropertyKeys`/`IsExtensible`/`{Set,Test}IntegrityLevel`: avoid a crash in IE 8 on missing ES5 intrinsics
+  * [Fix] `helpers/DefineOwnProperty`: avoid a crash in IE 8
+  * [Fix] `ES2015+`: `StringCreate`: properly check for `prototype` being `String.prototype`
+  * [Docs] `ES2015+`: `GetV`: Fix spec URL
+  * [meta] operations: use a URL object instead of a URL string
+  * [meta] remove defunct greenkeeper config
+  * [meta] better `eccheck` command; fix indentation
+  * [Tests] node v0.6 lacks `RegExp.prototype.source`
+  * [Tests] remove a stray `console.log`
+  * [Tests] properly set the lastIndex in IE 8
+  * [Tests] skip test due to IE 6-8 sparse/undefined bug
+  * [Tests] in IE 8, an empty regex is `` and not `(?:)`
+  * [Tests] ES3 engines don’t have `.bind`
+  * [Tests] avoid needless failures in ES3 engines that don't support descriptors
+  * [Tests] add test to cover https://github.com/tc39/ecma262/issues/2611
+  * [Deps] update `has-symbols`, `is-negative-zero`, `is-weakref`, `object-inspect`
+  * [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `object.fromentries`, `safe-publish-latest`, `tape`
+  * [actions] reuse common workflows
+  * [actions] update codecov uploader
+
 1.19.1 / 2021-10-02
 =================
   * [Fix] `ES2020+`: `CreateRegExpStringIterator`: should not have enumerable methods
