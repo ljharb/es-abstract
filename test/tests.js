@@ -92,7 +92,8 @@ var makeTest = function makeTest(ES, skips) {
 					new RegExp('^(?:bound )' + expectedName + '$'),
 					'ES.' + opName + '.name === ' + expectedName,
 					{
-						skip: !functionsHaveNames || !boundFunctionsHaveNames,
+						// node v4.0.0 has a weird bug where sometimes bound functions' names are `bound `
+						skip: !functionsHaveNames || !boundFunctionsHaveNames || process.version === 'v4.0.0',
 						todo: nameExceptions[opName]
 					}
 				);
