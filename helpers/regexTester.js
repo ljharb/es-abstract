@@ -1,11 +1,9 @@
 'use strict';
 
-var GetIntrinsic = require('get-intrinsic');
+var callBound = require('call-bind/callBound');
 
-var $test = GetIntrinsic('RegExp.prototype.test');
-
-var callBind = require('call-bind');
+var $exec = callBound('RegExp.prototype.exec');
 
 module.exports = function regexTester(regex) {
-	return callBind($test, regex);
+	return function test(s) { return $exec(regex, s) !== null; };
 };
