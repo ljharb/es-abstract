@@ -11,12 +11,10 @@ var IsArray = require('./IsArray');
 var IteratorStep = require('./IteratorStep');
 var IteratorValue = require('./IteratorValue');
 var ToObject = require('./ToObject');
-var Type = require('./Type');
 var ES = {
 	AdvanceStringIndex: AdvanceStringIndex,
 	GetMethod: GetMethod,
-	IsArray: IsArray,
-	Type: Type
+	IsArray: IsArray
 };
 
 // https://262.ecma-international.org/7.0/#sec-iterabletoarraylike
