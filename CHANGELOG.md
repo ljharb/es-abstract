@@ -1,3 +1,13 @@
+1.19.3 / 2022-04-11
+=================
+  * [Fix] `ES2015+`: `GetIterator`, `IterableToArrayLike`: in Symbol-less envs, handle boxed string objects
+  * [Robustness] use `exec` instead of `test`, since the latter observably looks up `exec`
+  * [Deps] update `is-shared-array-buffer`
+  * [actions] restrict permissions
+  * [Dev Deps] update `tape`
+  * [Tests] add test coverage
+  * [Tests] avoid a bug in node v4.0 with bound function names
+
 1.19.2 / 2022-03-28
 =================
   * [Fix] `ES2018+`: `EnumerableOwnPropertyNames`, `ToIntegerOrInfinity`, `UTF16SurrogatePairToCodePoint`: proper function names
