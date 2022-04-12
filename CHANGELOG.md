@@ -1,3 +1,7 @@
+1.19.4 / 2022-04-12
+=================
+  * [Fix] `ES2015+`: `CreateDataProperty`: a nonwritable but configurable property is still converted to a data property
+
 1.19.3 / 2022-04-11
 =================
   * [Fix] `ES2015+`: `GetIterator`, `IterableToArrayLike`: in Symbol-less envs, handle boxed string objects
