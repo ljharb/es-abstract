@@ -1755,11 +1755,11 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				var nonWritable = defineProperty({}, propertyKey, { configurable: true, writable: false });
 
 				var nonWritableStatus = ES.CreateDataProperty(nonWritable, propertyKey, sentinel);
-				st.equal(nonWritableStatus, false, 'create data property failed');
-				st.notEqual(
+				st.equal(nonWritableStatus, true, 'create data property succeeded');
+				st.equal(
 					nonWritable[propertyKey],
 					sentinel,
-					debug(sentinel) + ' is not installed on "' + debug(propertyKey) + '" on the object when key is nonwritable'
+					debug(sentinel) + ' is installed on "' + debug(propertyKey) + '" on the object when key is configurable but nonwritable'
 				);
 
 				var nonConfigurable = defineProperty({}, propertyKey, { configurable: false, writable: true });
