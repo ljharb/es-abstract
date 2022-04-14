@@ -1,3 +1,8 @@
+1.19.5 / 2022-04-13
+=================
+  * [Fix] `DefineOwnProperty`: FF 4-22 throws an exception when defining length of an array
+  * [Dev Deps] update `@ljharb/eslint-config`
+
 1.19.4 / 2022-04-12
 =================
   * [Fix] `ES2015+`: `CreateDataProperty`: a nonwritable but configurable property is still converted to a data property
