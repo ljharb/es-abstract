@@ -57,6 +57,7 @@
 		"get-intrinsic": "^1.1.1",
 		"get-symbol-description": "^1.0.0",
 		"has": "^1.0.3",
+		"has-property-descriptors": "^1.0.0",
 		"has-symbols": "^1.0.3",
 		"internal-slot": "^1.0.3",
 		"is-callable": "^1.2.4",
