@@ -92,6 +92,7 @@
 		"make-async-function": "^1.0.0",
 		"make-async-generator-function": "^1.0.0",
 		"make-generator-function": "^2.0.0",
+		"mock-property": "^1.0.0",
 		"nyc": "^10.3.2",
 		"object.fromentries": "^2.0.5",
 		"safe-publish-latest": "^2.0.0",
