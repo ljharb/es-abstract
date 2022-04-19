@@ -84,7 +84,7 @@
 		"es-value-fixtures": "^1.2.1",
 		"eslint": "=8.8.0",
 		"foreach": "^2.0.5",
-		"functions-have-names": "^1.2.2",
+		"functions-have-names": "^1.2.3",
 		"has-bigints": "^1.0.1",
 		"has-strict-mode": "^1.0.1",
 		"in-publish": "^2.0.1",
