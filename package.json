@@ -71,7 +71,7 @@
 		"object.assign": "^4.1.2",
 		"string.prototype.trimend": "^1.0.4",
 		"string.prototype.trimstart": "^1.0.4",
-		"unbox-primitive": "^1.0.1"
+		"unbox-primitive": "^1.0.2"
 	},
 	"devDependencies": {
 		"@ljharb/eslint-config": "^21.0.0",
