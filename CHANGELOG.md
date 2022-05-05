@@ -1,3 +1,14 @@
+1.20.0 / 2022-05-05
+=================
+  * [New] add ES2022
+  * [New] `ES2015+`: add `ObjectDefineProperties`
+  * [Refactor] create `fromPropertyDescriptor` helper
+  * [Refactor] use `has-property-descriptors`
+  * [Deps] update `string.prototype.trimend`, `string.prototype.trimstart`, `unbox-primitive`
+  * [meta] use `npmignore` to autogenerate an npmignore file
+  * [Dev Deps] update `es-value-fixtures`, `has-bigints`, `functions-have-names`
+  * [Tests] copy GetIntrinsic tests over from `get-intrinsic`
+
 1.19.5 / 2022-04-13
 =================
   * [Fix] `DefineOwnProperty`: FF 4-22 throws an exception when defining length of an array
