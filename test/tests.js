@@ -18,6 +18,7 @@ var $getProto = require('../helpers/getProto');
 var $setProto = require('../helpers/setProto');
 var defineProperty = require('./helpers/defineProperty');
 var getInferredName = require('../helpers/getInferredName');
+var fromPropertyDescriptor = require('../helpers/fromPropertyDescriptor');
 var getOwnPropertyDescriptor = require('../helpers/getOwnPropertyDescriptor');
 var assertRecordTests = require('./helpers/assertRecord');
 var v = require('es-value-fixtures');
@@ -3081,6 +3082,67 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				function () { ES.ObjectCreate(null); },
 				SyntaxError,
 				'without a native Object.create, can not create null objects'
+			);
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('ObjectDefineProperties', function (t) {
+		forEach(v.primitives, function (nonObject) {
+			t['throws'](
+				function () { ES.ObjectDefineProperties(nonObject); },
+				debug(nonObject) + ' is not an Object'
+			);
+		});
+
+		var sentinel = { sentinel: true };
+
+		t.test('basic data properties', function (st) {
+			var o = {};
+			var result = ES.ObjectDefineProperties(o, {
+				foo: fromPropertyDescriptor(v.assignedDescriptor(42)),
+				bar: fromPropertyDescriptor(v.assignedDescriptor(sentinel)),
+				toString: fromPropertyDescriptor(v.assignedDescriptor('not Object.prototype.toString'))
+			});
+
+			st.equal(result, o, 'returns same object');
+			st.deepEqual(
+				o,
+				{
+					foo: 42,
+					bar: sentinel,
+					toString: 'not Object.prototype.toString'
+				},
+				'expected properties are installed'
+			);
+
+			st.end();
+		});
+
+		t.test('fancy stuff', function (st) {
+			st.doesNotThrow(
+				function () { ES.ObjectDefineProperties({}, { foo: v.assignedDescriptor(42) }); },
+				TypeError
+			);
+
+			var o = {};
+			var result = ES.ObjectDefineProperties(o, {
+				foo: fromPropertyDescriptor(v.accessorDescriptor(42)),
+				bar: fromPropertyDescriptor(v.descriptors.enumerable(v.descriptors.nonConfigurable(v.dataDescriptor(sentinel)))), // eslint-disable-line max-len
+				toString: fromPropertyDescriptor(v.accessorDescriptor('not Object.prototype.toString'))
+			});
+			st.equal(result, o, 'returns same object');
+			st.deepEqual(
+				o,
+				{
+					foo: 42,
+					bar: sentinel,
+					toString: 'not Object.prototype.toString'
+				},
+				'expected properties are installed'
 			);
 
 			st.end();

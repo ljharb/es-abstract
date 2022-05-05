@@ -93,6 +93,7 @@
 2016/MinFromTime.js	spackled linguist-generated=true
 2016/MonthFromTime.js	spackled linguist-generated=true
 2016/ObjectCreate.js	spackled linguist-generated=true
+2016/ObjectDefineProperties.js	spackled linguist-generated=true
 2016/OrdinaryCreateFromConstructor.js	spackled linguist-generated=true
 2016/OrdinaryDefineOwnProperty.js	spackled linguist-generated=true
 2016/OrdinaryGetOwnProperty.js	spackled linguist-generated=true
@@ -208,6 +209,7 @@
 2017/MinFromTime.js	spackled linguist-generated=true
 2017/MonthFromTime.js	spackled linguist-generated=true
 2017/ObjectCreate.js	spackled linguist-generated=true
+2017/ObjectDefineProperties.js	spackled linguist-generated=true
 2017/OrdinaryCreateFromConstructor.js	spackled linguist-generated=true
 2017/OrdinaryDefineOwnProperty.js	spackled linguist-generated=true
 2017/OrdinaryGetOwnProperty.js	spackled linguist-generated=true
@@ -327,6 +329,7 @@
 2018/MinFromTime.js	spackled linguist-generated=true
 2018/MonthFromTime.js	spackled linguist-generated=true
 2018/ObjectCreate.js	spackled linguist-generated=true
+2018/ObjectDefineProperties.js	spackled linguist-generated=true
 2018/OrdinaryCreateFromConstructor.js	spackled linguist-generated=true
 2018/OrdinaryDefineOwnProperty.js	spackled linguist-generated=true
 2018/OrdinaryGetOwnProperty.js	spackled linguist-generated=true
@@ -455,6 +458,7 @@
 2019/MonthFromTime.js	spackled linguist-generated=true
 2019/NumberToString.js	spackled linguist-generated=true
 2019/ObjectCreate.js	spackled linguist-generated=true
+2019/ObjectDefineProperties.js	spackled linguist-generated=true
 2019/OrdinaryCreateFromConstructor.js	spackled linguist-generated=true
 2019/OrdinaryDefineOwnProperty.js	spackled linguist-generated=true
 2019/OrdinaryGetOwnProperty.js	spackled linguist-generated=true
@@ -579,6 +583,7 @@
 2020/MakeTime.js	spackled linguist-generated=true
 2020/MinFromTime.js	spackled linguist-generated=true
 2020/MonthFromTime.js	spackled linguist-generated=true
+2020/ObjectDefineProperties.js	spackled linguist-generated=true
 2020/OrdinaryDefineOwnProperty.js	spackled linguist-generated=true
 2020/OrdinaryGetOwnProperty.js	spackled linguist-generated=true
 2020/OrdinaryGetPrototypeOf.js	spackled linguist-generated=true
@@ -740,6 +745,7 @@
 2021/Number/toString.js	spackled linguist-generated=true
 2021/Number/unaryMinus.js	spackled linguist-generated=true
 2021/NumberBitwiseOp.js	spackled linguist-generated=true
+2021/ObjectDefineProperties.js	spackled linguist-generated=true
 2021/OrdinaryCreateFromConstructor.js	spackled linguist-generated=true
 2021/OrdinaryDefineOwnProperty.js	spackled linguist-generated=true
 2021/OrdinaryGetOwnProperty.js	spackled linguist-generated=true

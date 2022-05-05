@@ -103,7 +103,6 @@ var expectedMissing = [
 	'NewObjectEnvironment',
 	'NewPromiseCapability',
 	'NormalCompletion', // completion records
-	'ObjectDefineProperties',
 	'OrdinaryCallBindThis',
 	'OrdinaryCallEvaluateBody',
 	'ParseModule',

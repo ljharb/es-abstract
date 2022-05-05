@@ -137,7 +137,6 @@ var expectedMissing = [
 	'NewPromiseCapability',
 	'NormalCompletion', // completion records
 	'NumberToRawBytes',
-	'ObjectDefineProperties',
 	'OrdinaryCallBindThis',
 	'OrdinaryCallEvaluateBody',
 	'OrdinaryDelete',

@@ -154,7 +154,6 @@ var expectedMissing = [
 	'NormalCompletion', // completion records
 	'NotifyWaiter',
 	'NumberToRawBytes',
-	'ObjectDefineProperties',
 	'OrdinaryCallBindThis',
 	'OrdinaryCallEvaluateBody',
 	'OrdinaryDelete',

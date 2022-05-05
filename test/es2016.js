@@ -109,7 +109,6 @@ var expectedMissing = [
 	'NewPromiseCapability',
 	'NextJob',
 	'NormalCompletion', // completion records
-	'ObjectDefineProperties',
 	'OrdinaryCallBindThis',
 	'OrdinaryCallEvaluateBody',
 	'OrdinaryDelete',
