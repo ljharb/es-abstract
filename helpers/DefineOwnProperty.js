@@ -9,7 +9,7 @@ var $defineProperty = hasPropertyDescriptors() && GetIntrinsic('%Object.definePr
 var hasArrayLengthDefineBug = hasPropertyDescriptors.hasArrayLengthDefineBug();
 
 // eslint-disable-next-line global-require
-var isArray = hasArrayLengthDefineBug && require('../2020/IsArray'); // this does not depend on any other AOs.
+var isArray = hasArrayLengthDefineBug && require('../helpers/IsArray');
 
 var callBound = require('call-bind/callBound');
 
