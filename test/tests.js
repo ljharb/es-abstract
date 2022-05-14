@@ -2,7 +2,7 @@
 
 var tape = require('tape');
 
-var forEach = require('foreach');
+var forEach = require('for-each');
 var debug = require('object-inspect');
 var assign = require('object.assign');
 var keys = require('object-keys');
@@ -3147,7 +3147,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			var o = {};
 			var result = ES.ObjectDefineProperties(o, {
 				foo: fromPropertyDescriptor(v.accessorDescriptor(42)),
-				bar: fromPropertyDescriptor(v.descriptors.enumerable(v.descriptors.nonConfigurable(v.dataDescriptor(sentinel)))), // eslint-disable-line max-len
+				bar: fromPropertyDescriptor(v.descriptors.enumerable(v.descriptors.nonConfigurable(v.dataDescriptor(sentinel)))),
 				toString: fromPropertyDescriptor(v.accessorDescriptor('not Object.prototype.toString'))
 			});
 			st.equal(result, o, 'returns same object');

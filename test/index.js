@@ -3,7 +3,7 @@
 var ES = require('../');
 var test = require('tape');
 var keys = require('object-keys');
-var forEach = require('foreach');
+var forEach = require('for-each');
 
 var ESkeys = keys(ES).sort();
 var ES6keys = keys(ES.ES6).sort();

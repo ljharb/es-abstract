@@ -2,7 +2,7 @@
 
 var test = require('tape');
 var debug = require('object-inspect');
-var forEach = require('foreach');
+var forEach = require('for-each');
 var has = require('has');
 
 var v = require('es-value-fixtures');

@@ -1,7 +1,7 @@
 'use strict';
 
 var keys = require('object-keys');
-var forEach = require('foreach');
+var forEach = require('for-each');
 var indexOf = require('array.prototype.indexof');
 var has = require('has');
 

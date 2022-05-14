@@ -1,7 +1,7 @@
 'use strict';
 
 var test = require('tape');
-var forEach = require('foreach');
+var forEach = require('for-each');
 var debug = require('object-inspect');
 
 var isByteValue = require('../../helpers/isByteValue');

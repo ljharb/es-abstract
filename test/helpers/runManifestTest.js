@@ -4,7 +4,7 @@ var path = require('path');
 var fs = require('fs');
 
 var filter = require('array.prototype.filter');
-var forEach = require('foreach');
+var forEach = require('for-each');
 var keys = require('object-keys');
 
 module.exports = function runManifestTest(test, ES, edition) {

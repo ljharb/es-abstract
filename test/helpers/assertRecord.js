@@ -1,6 +1,6 @@
 'use strict';
 
-var forEach = require('foreach');
+var forEach = require('for-each');
 var debug = require('object-inspect');
 
 var assertRecord = require('../../helpers/assertRecord');

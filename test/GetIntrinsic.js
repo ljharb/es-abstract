@@ -3,7 +3,7 @@
 var GetIntrinsic = require('get-intrinsic');
 
 var test = require('tape');
-var forEach = require('foreach');
+var forEach = require('for-each');
 var debug = require('object-inspect');
 var generatorFns = require('make-generator-function')();
 var asyncFns = require('make-async-function').list();
