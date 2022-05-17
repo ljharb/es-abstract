@@ -1,3 +1,10 @@
+1.20.1 / 2022-05-16
+=================
+  * [Fix] `thisTimeValue`: use `getTime`, not `valueOf`, to get the time value
+  * [Refactor] create `IsArray` helper
+  * [Deps] update `regexp.prototype.flags`
+  * [Dev Deps] use `for-each` instead of `foreach`
+
 1.20.0 / 2022-05-05
 =================
   * [New] add ES2022
