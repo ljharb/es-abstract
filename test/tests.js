@@ -29,7 +29,7 @@ var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1;
 var $BigInt = hasBigInts ? BigInt : null;
 
 var supportedRegexFlags = require('available-regexp-flags');
-const thisTimeValue = require('../2015/thisTimeValue');
+var thisTimeValue = require('../2015/thisTimeValue');
 
 // node v10.4-v10.8 have a bug where you can't `BigInt(x)` anything larger than MAX_SAFE_INTEGER
 var needsBigIntHack = false;
