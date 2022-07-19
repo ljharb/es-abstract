@@ -79,11 +79,11 @@
 	"devDependencies": {
 		"@ljharb/eslint-config": "^21.0.0",
 		"array.prototype.filter": "^1.0.1",
-		"array.prototype.indexof": "^1.0.3",
+		"array.prototype.indexof": "^1.0.4",
 		"aud": "^2.0.0",
 		"available-regexp-flags": "^1.0.0",
 		"cheerio": "=1.0.0-rc.3",
-		"diff": "^5.0.0",
+		"diff": "^5.1.0",
 		"eclint": "^2.8.1",
 		"es-value-fixtures": "^1.4.1",
 		"eslint": "=8.8.0",
