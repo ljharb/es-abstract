@@ -12664,6 +12664,390 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 	});
 };
 
+var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
+	es2022(ES, ops, expectedMissing, assign({}, skips, {
+		'BigInt::sameValue': true,
+		'BigInt::sameValueZero': true,
+		CreateDataPropertyOrThrow: true,
+		EnumerableOwnPropertyNames: true,
+		IsStringPrefix: true,
+		IteratorClose: true,
+		IteratorNext: true,
+		IteratorStep: true,
+		GetIterator: true,
+		SameValueNonNumeric: true
+	}));
+
+	var test = makeTest(ES, skips);
+
+	test('CreateDataPropertyOrThrow', function (t) {
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.CreateDataPropertyOrThrow(primitive); },
+				TypeError,
+				debug(primitive) + ' is not an object'
+			);
+		});
+
+		forEach(v.nonPropertyKeys, function (nonPropertyKey) {
+			t['throws'](
+				function () { ES.CreateDataPropertyOrThrow({}, nonPropertyKey); },
+				TypeError,
+				debug(nonPropertyKey) + ' is not a property key'
+			);
+		});
+
+		var sentinel = {};
+		forEach(v.propertyKeys, function (propertyKey) {
+			var obj = {};
+			var status = ES.CreateDataPropertyOrThrow(obj, propertyKey, sentinel);
+			t.equal(status, undefined, 'status is ~unused~');
+			t.equal(
+				obj[propertyKey],
+				sentinel,
+				debug(sentinel) + ' is installed on "' + debug(propertyKey) + '" on the object'
+			);
+
+			if (typeof Object.preventExtensions === 'function') {
+				var notExtensible = {};
+				Object.preventExtensions(notExtensible);
+
+				t['throws'](
+					function () { ES.CreateDataPropertyOrThrow(notExtensible, propertyKey, sentinel); },
+					TypeError,
+					'can not install ' + debug(propertyKey) + ' on non-extensible object'
+				);
+				t.notEqual(
+					notExtensible[propertyKey],
+					sentinel,
+					debug(sentinel) + ' is not installed on "' + debug(propertyKey) + '" on the object'
+				);
+			}
+		});
+
+		t.end();
+	});
+
+	test('EnumerableOwnProperties', function (t) {
+		var obj = testEnumerableOwnNames(t, function (O) {
+			return ES.EnumerableOwnProperties(O, 'key');
+		});
+
+		t.deepEqual(
+			ES.EnumerableOwnProperties(obj, 'value'),
+			[obj.own],
+			'returns enumerable own values'
+		);
+
+		t.deepEqual(
+			ES.EnumerableOwnProperties(obj, 'key+value'),
+			[['own', obj.own]],
+			'returns enumerable own entries'
+		);
+
+		t.end();
+	});
+
+	test('GetIterator', function (t) {
+		try {
+			ES.GetIterator({}, null);
+		} catch (e) {
+			t.ok(e.message.indexOf('Assertion failed: `hint` must be one of \'sync\' or \'async\'' >= 0));
+		}
+
+		var arr = [1, 2];
+		testIterator(t, ES.GetIterator(arr)['[[Iterator]]'], arr);
+
+		testIterator(t, ES.GetIterator('abc')['[[Iterator]]'], 'abc'.split(''));
+
+		t.test('Symbol.iterator', { skip: !v.hasSymbols }, function (st) {
+			var m = new Map();
+			m.set(1, 'a');
+			m.set(2, 'b');
+
+			testIterator(st, ES.GetIterator(m)['[[Iterator]]'], [[1, 'a'], [2, 'b']]);
+
+			st.end();
+		});
+
+		t.test('Symbol.asyncIterator', { skip: !v.hasSymbols || !Symbol.asyncIterator }, function (st) {
+			st.test('an async iteratable returning a sync iterator', function (s2t) {
+				var it = {
+					next: function nextFromTest() {
+						return Promise.resolve({
+							done: true
+						});
+					}
+				};
+				var obj = {};
+				obj[Symbol.asyncIterator] = function () {
+					return it;
+				};
+
+				var asyncIterator = ES.GetIterator(obj, 'async');
+
+				s2t.deepEqual(asyncIterator, makeIteratorRecord(it));
+
+				s2t.end();
+			});
+
+			st.test('a throwing async iterator', function (s2t) {
+				var sentinel = {};
+
+				var asyncIterable = {};
+				asyncIterable[Symbol.asyncIterator] = function () {
+					var i = 0;
+					return {
+						next: function next() {
+							if (i > 4) {
+								throw sentinel;
+							}
+							try {
+								return {
+									done: i > 5,
+									value: i
+								};
+							} finally {
+								i += 1;
+							}
+						}
+					};
+				};
+				var iteratorRecord = ES.GetIterator(asyncIterable, 'async');
+				return testAsyncIterator(
+					s2t,
+					iteratorRecord['[[Iterator]]'],
+					[0, 1, 2, 3, 4, 5]
+				)['catch'](function (e) {
+					if (e !== sentinel) {
+						throw e;
+					}
+				});
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('IteratorClose', function (t) {
+		forEach(v.primitives, function (nonObject) {
+			t['throws'](
+				function () { ES.IteratorClose(nonObject); },
+				TypeError,
+				debug(nonObject) + ' is not an Object'
+			);
+
+			t['throws'](
+				function () {
+					ES.IteratorClose(
+						{
+							'[[Iterator]]': { 'return': function () { return nonObject; } },
+							'[[Done]]': false,
+							'[[NextMethod]]': function () { return {}; }
+						},
+						function () {}
+					);
+				},
+				TypeError,
+				'`.return` returns ' + debug(nonObject) + ', which is not an Object'
+			);
+		});
+
+		forEach(v.nonFunctions, function (nonFunction) {
+			t['throws'](
+				function () {
+					ES.IteratorClose(
+						makeIteratorRecord({ next: function () {} }),
+						nonFunction
+					);
+				},
+				TypeError,
+				debug(nonFunction) + ' is not a thunk for a Completion Record'
+			);
+
+			if (nonFunction != null) {
+				t['throws'](
+					function () {
+						ES.IteratorClose(
+							makeIteratorRecord({ next: function () {}, 'return': nonFunction }),
+							function () {}
+						);
+					},
+					TypeError,
+					'`.return` of ' + debug(nonFunction) + ' is not a Function'
+				);
+			}
+		});
+
+		var sentinel = {};
+		t.equal(
+			ES.IteratorClose(
+				makeIteratorRecord({ next: function () {}, 'return': undefined }),
+				function () { return sentinel; }
+			),
+			sentinel,
+			'when `.return` is `undefined`, invokes and returns the completion thunk'
+		);
+
+		/* eslint no-throw-literal: 0 */
+		t.throwsSentinel(
+			function () {
+				ES.IteratorClose(
+					{ '[[Iterator]]': { 'return': function () { throw sentinel; } }, '[[Done]]': false, '[[NextMethod]]': function () {} },
+					function () {}
+				);
+			},
+			sentinel,
+			'`.return` that throws, when completionThunk does not, throws exception from `.return`'
+		);
+		t.throwsSentinel(
+			function () {
+				ES.IteratorClose(
+					{ '[[Iterator]]': { 'return': function () { throw sentinel; } }, '[[Done]]': false, '[[NextMethod]]': function () {} },
+					function () { throw -1; }
+				);
+			},
+			-1,
+			'`.return` that throws, when completionThunk does too, throws exception from completionThunk'
+		);
+		t.throwsSentinel(
+			function () {
+				ES.IteratorClose(
+					{ '[[Iterator]]': { 'return': function () { } }, '[[Done]]': false, '[[NextMethod]]': function () {} },
+					function () { throw -1; }
+				);
+			},
+			-1,
+			'`.return` that does not throw, when completionThunk does, throws exception from completionThunk'
+		);
+
+		t.equal(
+			ES.IteratorClose(
+				{ '[[Iterator]]': { 'return': function () { return sentinel; } }, '[[Done]]': false, '[[NextMethod]]': function () {} },
+				function () { return 42; }
+			),
+			42,
+			'when `.return` and completionThunk do not throw, and `.return` returns an Object, returns completionThunk'
+		);
+
+		t.end();
+	});
+
+	test('IteratorNext', function (t) {
+		forEach(v.primitives, function (nonObject) {
+			t['throws'](
+				function () { ES.IteratorNext(nonObject); },
+				TypeError,
+				debug(nonObject) + ' is not an Object'
+			);
+
+			t['throws'](
+				function () { ES.IteratorNext({ next: function () { return nonObject; } }); },
+				TypeError,
+				'`next()` returns ' + debug(nonObject) + ', which is not an Object'
+			);
+		});
+
+		var iterator = {
+			next: function (value) {
+				return [arguments.length, value];
+			}
+		};
+		t.deepEqual(
+			ES.IteratorNext(makeIteratorRecord(iterator)),
+			[0, undefined],
+			'returns expected value from `.next()`; `next` receives expected 0 arguments'
+		);
+		t.deepEqual(
+			ES.IteratorNext(makeIteratorRecord(iterator), iterator),
+			[1, iterator],
+			'returns expected value from `.next()`; `next` receives expected 1 argument'
+		);
+
+		t.end();
+	});
+
+	test('IteratorStep', function (t) {
+		var iterator = {
+			next: function () {
+				return {
+					done: false,
+					value: [1, arguments.length]
+				};
+			}
+		};
+		t.deepEqual(
+			ES.IteratorStep(makeIteratorRecord(iterator)),
+			{ done: false, value: [1, 0] },
+			'not-done iterator result yields iterator result'
+		);
+
+		var iterator2 = {
+			next: function () {
+				return {
+					done: true,
+					value: [2, arguments.length]
+				};
+			}
+		};
+		t.deepEqual(
+			ES.IteratorStep(makeIteratorRecord(iterator2)),
+			false,
+			'done iterator result yields false'
+		);
+
+		t.end();
+	});
+
+	test('ParseHexOctet', function (t) {
+		for (var i = 0; i < 256; i += 1) {
+			var hex = ES.StringPad(i.toString(16), 2, '0', 'start');
+			t.equal(ES.ParseHexOctet(hex, 0), i, debug(hex) + ' parses to ' + i);
+			t.equal(ES.ParseHexOctet('0' + hex, 1), i, '0' + debug(hex) + ' at position 1 parses to ' + i);
+		}
+
+		t.end();
+	});
+
+	test('SameValueNonNumber', function (t) {
+		var willThrow = [
+			[3, 4],
+			[NaN, 4],
+			[4, ''],
+			['abc', true],
+			[{}, false]
+		];
+		forEach(willThrow, function (nums) {
+			t['throws'](function () { return ES.SameValueNonNumber.apply(ES, nums); }, TypeError, 'value must be same type and non-number: got ' + debug(nums[0]) + ' and ' + debug(nums[1]));
+		});
+
+		forEach(v.objects.concat(v.nonNumberPrimitives).concat(v.bigints), function (val) {
+			t.equal(val === val, ES.SameValueNonNumber(val, val), debug(val) + ' is SameValueNonNumber to itself');
+		});
+
+		t.end();
+	});
+
+	test('truncate', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.truncate(nonNumber); },
+				TypeError,
+				debug(nonNumber) + ' is not a number'
+			);
+		});
+
+		t.equal(ES.truncate(-1.1), -1, '-1.1 truncates to -1');
+		t.equal(ES.truncate(1.1), 1, '1.1 truncates to 1');
+		t.equal(ES.truncate(0), 0, '+0 truncates to +0');
+		t.equal(ES.truncate(-0), 0, '-0 truncates to +0');
+
+		t.end();
+	});
+};
+
 module.exports = {
 	es5: es5,
 	es2015: es2015,
@@ -12673,5 +13057,6 @@ module.exports = {
 	es2019: es2019,
 	es2020: es2020,
 	es2021: es2021,
-	es2022: es2022
+	es2022: es2022,
+	es2023: es2023
 };
