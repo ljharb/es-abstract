@@ -22,9 +22,7 @@ const writtenFiles = [5].concat(years).flatMap((year, i, arr) => {
 			const nextYear = arr[i + 1];
 			const nextFile = path.join(process.cwd(), String(nextYear), `${opPath}.js`);
 			console.log('**', opFile, op, opPath, thisFile, nextFile);
-			if (op.includes('::')) {
-				fs.mkdirSync(path.dirname(nextFile), { recursive: true });
-			}
+			fs.mkdirSync(path.dirname(nextFile), { recursive: true });
 			if (!deltas[nextYear].removed.has(op) && fs.existsSync(thisFile) && !fs.existsSync(nextFile)) {
 				console.log(`writing: ${nextYear}/${opPath} -> ${year}/${opPath}`);
 				const thisSpecifier = `../${year}/${opPath}`;
