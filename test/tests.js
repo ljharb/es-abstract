@@ -24,6 +24,7 @@ var isCore = require('is-core-module');
 var isRegex = require('is-regex');
 var v = require('es-value-fixtures');
 var mockProperty = require('mock-property');
+var isRegisteredSymbol = require('is-registered-symbol');
 
 var $getProto = require('../helpers/getProto');
 var $setProto = require('../helpers/setProto');
@@ -45,6 +46,8 @@ var $BigInt = hasBigInts ? BigInt : null;
 
 var supportedRegexFlags = require('available-regexp-flags');
 var whichTypedArray = require('which-typed-array');
+
+var $symbolFor = v.hasSymbols && Symbol['for']; // eslint-disable-line no-restricted-properties
 
 /* globals postMessage */
 var canDetach = typeof structuredClone === 'function' || typeof postMessage === 'function' || isCore('worker_threads');
@@ -12739,6 +12742,1269 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 	});
 };
 
+var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
+	es2022(ES, ops, expectedMissing, assign({}, skips, {
+		'BigInt::sameValue': true,
+		'BigInt::sameValueZero': true,
+		'BigInt::toString': true,
+		'Number::toString': true,
+		Canonicalize: true,
+		CreateDataPropertyOrThrow: true,
+		EnumerableOwnPropertyNames: true,
+		GetIterator: true,
+		IsStringPrefix: true,
+		IsWordChar: true,
+		IterableToList: true,
+		IteratorClose: true,
+		IteratorNext: true,
+		IteratorStep: true,
+		SameValueNonNumeric: true,
+		SortIndexedProperties: true,
+		WordCharacters: true
+	}));
+
+	var test = makeTest(ES, skips);
+
+	test('BigInt::toString', function (t) {
+		forEach(v.nonBigInts, function (nonBigInt) {
+			t['throws'](
+				function () { ES.BigInt.toString(nonBigInt); },
+				TypeError,
+				debug(nonBigInt) + ' is not a BigInt'
+			);
+		});
+
+		test('BigInts are supported', { skip: !hasBigInts }, function (st) {
+			forEach(v.nonIntegerNumbers.concat(0, 1, 37), function (nonIntegerNumber) {
+				st['throws'](
+					function () { ES.Number.toString($BigInt(0), nonIntegerNumber); },
+					TypeError,
+					debug(nonIntegerNumber) + ' is not an integer [2, 36]'
+				);
+			});
+
+			forEach([
+				[37, 2, '100101'],
+				[37, 3, '1101'],
+				[37, 4, '211'],
+				[37, 5, '122'],
+				[37, 6, '101'],
+				[37, 7, '52'],
+				[37, 8, '45'],
+				[37, 9, '41'],
+				[37, 10, '37'],
+				[37, 11, '34'],
+				[37, 12, '31'],
+				[37, 13, '2b'],
+				[37, 14, '29'],
+				[37, 15, '27'],
+				[37, 16, '25'],
+				[37, 17, '23'],
+				[37, 18, '21'],
+				[37, 19, '1i'],
+				[37, 20, '1h'],
+				[37, 21, '1g'],
+				[37, 22, '1f'],
+				[37, 23, '1e'],
+				[37, 24, '1d'],
+				[37, 25, '1c'],
+				[37, 26, '1b'],
+				[37, 27, '1a'],
+				[37, 28, '19'],
+				[37, 29, '18'],
+				[37, 30, '17'],
+				[37, 31, '16'],
+				[37, 32, '15'],
+				[37, 33, '14'],
+				[37, 34, '13'],
+				[37, 35, '12'],
+				[37, 36, '11']
+			], function (testCase) {
+				var num = $BigInt(testCase[0]);
+				st.equal(
+					ES.BigInt.toString(num, testCase[1]),
+					testCase[2],
+					debug(num) + ' stringifies to ' + debug(testCase[2]) + ' in base ' + debug(testCase[1])
+				);
+			});
+
+			st.end();
+		});
+
+		forEach(v.bigints, function (bigint) {
+			t.equal(ES.BigInt.toString(bigint, 10), String(bigint), debug(bigint) + ' stringifies to ' + bigint);
+		});
+
+		t.end();
+	});
+
+	test('CanBeHeldWeakly', function (t) {
+		forEach(v.nonSymbolPrimitives, function (nonSymbolPrimitive) {
+			t.equal(ES.CanBeHeldWeakly(nonSymbolPrimitive), false, debug(nonSymbolPrimitive) + ' cannot be held weakly');
+		});
+
+		forEach(v.objects, function (object) {
+			t.equal(
+				ES.CanBeHeldWeakly(object),
+				true,
+				debug(object) + ' can be held weakly'
+			);
+		});
+
+		forEach(v.symbols.concat($symbolFor ? $symbolFor('registered!') : []), function (symbol) {
+			var isReg = isRegisteredSymbol(symbol);
+			t.equal(
+				ES.CanBeHeldWeakly(symbol),
+				!isReg,
+				debug(symbol) + ' can' + (isReg ? ' not' : '') + ' be held weakly'
+			);
+		});
+
+		t.end();
+	});
+
+	test('Canonicalize', function (t) {
+		var rer = {
+			'[[IgnoreCase]]': false,
+			'[[Multiline]]': false,
+			'[[DotAll]]': false,
+			'[[Unicode]]': false,
+			'[[CapturingGroupsCount]]': 0
+		};
+
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.Canonicalize(rer, nonString); },
+				TypeError,
+				'arg 1: ' + debug(nonString) + ' is not a String'
+			);
+		});
+
+		forEach(v.nonBooleans, function (nonBoolean) {
+			t['throws'](
+				function () { ES.Canonicalize(assign({}, rer, { '[[IgnoreCase]]': nonBoolean }), ''); },
+				TypeError,
+				'[[IgnoreCase]]: ' + debug(nonBoolean) + ' is not a Boolean'
+			);
+
+			t['throws'](
+				function () { ES.Canonicalize(assign({}, rer, { '[[Unicode]]': nonBoolean }), ''); },
+				TypeError,
+				'[[Unicode]]: ' + debug(nonBoolean) + ' is not a Boolean'
+			);
+		});
+
+		t.equal(ES.Canonicalize(rer, leadingPoo), leadingPoo, 'when IgnoreCase is false, ch is returned');
+
+		forEach(keys(caseFolding.C), function (input) {
+			var output = caseFolding.C[input];
+
+			t.equal(
+				ES.Canonicalize(assign({}, rer, { '[[Unicode]]': true }), input),
+				input,
+				'C mapping, IgnoreCase false: ' + debug(input) + ' canonicalizes to ' + debug(input)
+			);
+			t.equal(
+				ES.Canonicalize(assign({}, rer, { '[[IgnoreCase]]': true, '[[Unicode]]': true }), input),
+				output,
+				'C mapping, IgnoreCase true: ' + debug(input) + ' canonicalizes to ' + debug(output)
+			);
+		});
+
+		forEach(keys(caseFolding.S), function (input) {
+			var output = caseFolding.S[input];
+
+			t.equal(
+				ES.Canonicalize(assign({}, rer, { '[[Unicode]]': true }), input),
+				input,
+				'S mapping, IgnoreCase false: ' + debug(input) + ' canonicalizes to ' + debug(input)
+			);
+			t.equal(
+				ES.Canonicalize(assign({}, rer, { '[[IgnoreCase]]': true, '[[Unicode]]': true }), input),
+				output,
+				'S mapping, IgnoreCase true: ' + debug(input) + ' canonicalizes to ' + debug(output)
+			);
+		});
+
+		t.end();
+	});
+
+	test('CompareArrayElements', function (t) {
+		forEach(v.nonFunctions, function (nonFunction) {
+			if (typeof nonFunction !== 'undefined') {
+				t['throws'](
+					function () { ES.CompareArrayElements(0, 0, nonFunction); },
+					TypeError,
+					debug(nonFunction) + ' is not a function or undefined'
+				);
+			}
+		});
+
+		t.equal(ES.CompareArrayElements(), 0, 'both absent yields 0');
+		t.equal(ES.CompareArrayElements(undefined, undefined), 0, 'both undefined yields 0');
+		t.equal(ES.CompareArrayElements(undefined, 1), 1, 'x of undefined yields 1');
+		t.equal(ES.CompareArrayElements(1, undefined), -1, 'y of undefined yields -1');
+
+		t.equal(ES.CompareArrayElements(+0, +0), 0, '+0 == +0');
+		t.equal(ES.CompareArrayElements(+0, -0), 0, '+0 == -0');
+		t.equal(ES.CompareArrayElements(-0, +0), 0, '-0 == +0');
+		t.equal(ES.CompareArrayElements(1, 1), 0, '1 == 1');
+		t.equal(ES.CompareArrayElements(1, 2), -1, '1 < 2');
+		t.equal(ES.CompareArrayElements(2, 1), 1, '2 > 1');
+
+		var xSentinel = {};
+		var ySentinel = {};
+		t.equal(
+			ES.CompareArrayElements(xSentinel, ySentinel, function (x, y) {
+				t.equal(this, undefined, 'receiver is undefined');
+				t.equal(x, xSentinel, 'sentinel x value received');
+				t.equal(y, ySentinel, 'sentinel y value received');
+
+				return { valueOf: function () { return 42; } };
+			}),
+			42,
+			'custom comparator returns number-coerced result'
+		);
+
+		t.equal(
+			ES.CompareArrayElements(xSentinel, ySentinel, function (x, y) {
+				return NaN;
+			}),
+			0,
+			'custom comparator returning NaN yields 0'
+		);
+
+		t.end();
+	});
+
+	test('CompareTypedArrayElements', function (t) {
+		t['throws'](
+			function () { ES.CompareTypedArrayElements(); },
+			TypeError,
+			'no arguments throws a TypeError'
+		);
+		t['throws'](
+			function () { ES.CompareTypedArrayElements(1, 'a'); },
+			TypeError,
+			'one String argument throws a TypeError'
+		);
+		if (hasBigInts) {
+			t['throws'](
+				function () { ES.CompareTypedArrayElements(1, twoSixtyFour); },
+				TypeError,
+				'one Number and other BigInt argument throws a TypeError'
+			);
+		}
+
+		forEach(v.nonFunctions, function (nonFunction) {
+			if (typeof nonFunction !== 'undefined') {
+				t['throws'](
+					function () { ES.CompareTypedArrayElements(0, 0, nonFunction); },
+					TypeError,
+					debug(nonFunction) + ' is not a function or undefined'
+				);
+			}
+		});
+
+		t.equal(ES.CompareTypedArrayElements(1, 1, undefined), 0, '1 == 1');
+		t.equal(ES.CompareTypedArrayElements(0, 1, undefined), -1, '0 < 1');
+		t.equal(ES.CompareTypedArrayElements(1, 0, undefined), 1, '1 > 0');
+
+		t.equal(ES.CompareTypedArrayElements(NaN, NaN, undefined), 0, 'NaN == NaN');
+		t.equal(ES.CompareTypedArrayElements(NaN, 0, undefined), 1, 'NaN > 0');
+		t.equal(ES.CompareTypedArrayElements(0, NaN, undefined), -1, '0 > NaN');
+
+		t.equal(ES.CompareTypedArrayElements(0, -0, undefined), 1, '0 > -0');
+		t.equal(ES.CompareTypedArrayElements(-0, 0, undefined), -1, '-0 < 0');
+		t.equal(ES.CompareTypedArrayElements(-0, -0, undefined), 0, '-0 == -0');
+
+		var compareFn = function compareFn(x, y) {
+			t.equal(this, undefined, 'receiver is undefined');
+			t.equal(x, 0, 'sentinel x value received');
+			t.equal(y, 1, 'sentinel y value received');
+
+			return -Infinity;
+		};
+		t.equal(ES.CompareTypedArrayElements(0, 1, compareFn), -Infinity, 'comparefn return is passed through');
+
+		t.equal(ES.CompareTypedArrayElements(0, 1, function () { return NaN; }), 0, 'comparefn returning NaN yields +0');
+
+		t.end();
+	});
+
+	test('CreateDataPropertyOrThrow', function (t) {
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.CreateDataPropertyOrThrow(primitive); },
+				TypeError,
+				debug(primitive) + ' is not an object'
+			);
+		});
+
+		forEach(v.nonPropertyKeys, function (nonPropertyKey) {
+			t['throws'](
+				function () { ES.CreateDataPropertyOrThrow({}, nonPropertyKey); },
+				TypeError,
+				debug(nonPropertyKey) + ' is not a property key'
+			);
+		});
+
+		var sentinel = {};
+		forEach(v.propertyKeys, function (propertyKey) {
+			var obj = {};
+			var status = ES.CreateDataPropertyOrThrow(obj, propertyKey, sentinel);
+			t.equal(status, undefined, 'status is ~unused~');
+			t.equal(
+				obj[propertyKey],
+				sentinel,
+				debug(sentinel) + ' is installed on "' + debug(propertyKey) + '" on the object'
+			);
+
+			if (typeof Object.preventExtensions === 'function') {
+				var notExtensible = {};
+				Object.preventExtensions(notExtensible);
+
+				t['throws'](
+					function () { ES.CreateDataPropertyOrThrow(notExtensible, propertyKey, sentinel); },
+					TypeError,
+					'can not install ' + debug(propertyKey) + ' on non-extensible object'
+				);
+				t.notEqual(
+					notExtensible[propertyKey],
+					sentinel,
+					debug(sentinel) + ' is not installed on "' + debug(propertyKey) + '" on the object'
+				);
+			}
+		});
+
+		t.test('non-extensible object', { skip: !Object.preventExtensions }, function (st) {
+			var nonExtensible = Object.preventExtensions({});
+
+			st['throws'](
+				function () { ES.CreateDataPropertyOrThrow(nonExtensible, 'foo', {}); },
+				TypeError,
+				'can not install "foo" on non-extensible object'
+			);
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('EnumerableOwnProperties', function (t) {
+		var obj = testEnumerableOwnNames(t, function (O) {
+			return ES.EnumerableOwnProperties(O, 'key');
+		});
+
+		t.deepEqual(
+			ES.EnumerableOwnProperties(obj, 'value'),
+			[obj.own],
+			'returns enumerable own values'
+		);
+
+		t.deepEqual(
+			ES.EnumerableOwnProperties(obj, 'key+value'),
+			[['own', obj.own]],
+			'returns enumerable own entries'
+		);
+
+		t.end();
+	});
+
+	test('FindViaPredicate', function (t) {
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.FindViaPredicate(primitive, 0, 'ascending', function () {}); },
+				TypeError,
+				debug(primitive) + ' is not an object'
+			);
+		});
+
+		forEach(v.notNonNegativeIntegers, function (notNonNegativeInteger) {
+			t['throws'](
+				function () { ES.FindViaPredicate({}, notNonNegativeInteger, 'ascending', function () {}); },
+				TypeError,
+				debug(notNonNegativeInteger) + ' is not a non-negative integer'
+			);
+		});
+
+		forEach(v.nonFunctions, function (nonFunction) {
+			t['throws'](
+				function () { ES.FindViaPredicate({}, 0, 'ascending', nonFunction); },
+				TypeError,
+				debug(nonFunction) + ' is not a function'
+			);
+		});
+
+		t['throws'](
+			function () { ES.FindViaPredicate({}, 0, 'invalid', function () {}); },
+			TypeError,
+			'invalid direction'
+		);
+
+		var sentinel = {};
+		var arr = [1, 2, 3, 4];
+		var fakeLength = 3;
+		t.test('ascending', function (st) {
+			var expectedIndex = 1;
+			st.plan(((expectedIndex + 1) * 3) + 1);
+
+			var result = ES.FindViaPredicate(arr, fakeLength, 'ascending', function (element, index, obj) {
+				st.equal(element, arr[index], 'first callback arg is in O, at second callback arg');
+				st.equal(obj, arr, 'third callback arg is O');
+				st.equal(this, sentinel, 'callback receiver is thisArg');
+
+				return element % 2 === 0;
+			}, sentinel);
+
+			st.deepEqual(result, { '[[Index]]': expectedIndex, '[[Value]]': 2 }, 'expected result is found');
+
+			st.end();
+		});
+
+		t.test('descending', function (st) {
+			var expectedIndex = 3;
+			st.plan((((arr.length - expectedIndex) + 1) * 3) + 1);
+
+			var result = ES.FindViaPredicate(arr, fakeLength, 'descending', function (element, index, obj) {
+				st.equal(element, arr[index], 'first callback arg is in O, at second callback arg');
+				st.equal(obj, arr, 'third callback arg is O');
+				st.equal(this, sentinel, 'callback receiver is thisArg');
+
+				return element % 2 === 0;
+			}, sentinel);
+
+			st.deepEqual(result, { '[[Index]]': 3, '[[Value]]': 4 }, 'expected result is found');
+
+			st.end();
+		});
+
+		t.test('not found', function (st) {
+			st.plan((fakeLength * 3) + 1);
+
+			var result = ES.FindViaPredicate(arr, fakeLength, 'ascending', function (element, index, obj) {
+				st.equal(element, arr[index], 'first callback arg is in O, at second callback arg (' + index + ')');
+				st.equal(obj, arr, 'third callback arg is O');
+				st.equal(this, sentinel, 'callback receiver is thisArg');
+
+				return false;
+			}, sentinel);
+
+			st.deepEqual(result, { '[[Index]]': -1, '[[Value]]': void undefined }, 'expected result is produced');
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('GetIteratorFromMethod', function (t) {
+		forEach(v.nonFunctions, function (nonCallable) {
+			t['throws'](
+				function () { ES.GetIteratorFromMethod(null, nonCallable); },
+				TypeError,
+				debug(nonCallable) + ' is not callable'
+			);
+		});
+
+		var sentinel = {};
+
+		forEach(v.primitives, function (nonObject) {
+			t['throws'](
+				function () { ES.GetIteratorFromMethod(sentinel, function () { return nonObject; }); },
+				TypeError,
+				'method return value, ' + debug(nonObject) + ', is not an object'
+			);
+		});
+
+		var iterator = {
+			next: function next() {
+
+			}
+		};
+		var iteratorRecord = ES.GetIteratorFromMethod(sentinel, function () {
+			t.equal(this, sentinel, 'method is called with the correct this value');
+			t.equal(arguments.length, 0, 'method is called with no arguments');
+
+			return iterator;
+		});
+
+		t.deepEqual(
+			iteratorRecord,
+			{
+				'[[Iterator]]': iterator,
+				'[[NextMethod]]': iterator.next,
+				'[[Done]]': false
+			},
+			'iterator record is correct'
+		);
+
+		t.end();
+	});
+
+	test('GetIterator', function (t) {
+		try {
+			ES.GetIterator({}, 'null');
+		} catch (e) {
+			t.ok(e.message.indexOf('Assertion failed: `kind` must be one of \'sync\' or \'async\'' >= 0));
+		}
+
+		var arr = [1, 2];
+		testIterator(t, ES.GetIterator(arr, 'sync')['[[Iterator]]'], arr);
+
+		testIterator(t, ES.GetIterator('abc', 'sync')['[[Iterator]]'], 'abc'.split(''));
+
+		t['throws'](
+			function () { ES.GetIterator({}, 'sync'); },
+			TypeError,
+			'sync hint: undefined iterator method throws'
+		);
+
+		t['throws'](
+			function () { ES.GetIterator({}, 'async'); },
+			TypeError,
+			'async hint: undefined iterator method throws'
+		);
+
+		t.test('Symbol.iterator', { skip: !v.hasSymbols }, function (st) {
+			var m = new Map();
+			m.set(1, 'a');
+			m.set(2, 'b');
+
+			var syncRecord = ES.GetIterator(m, 'sync');
+			testIterator(st, syncRecord['[[Iterator]]'], [[1, 'a'], [2, 'b']]);
+
+			var asyncRecord = ES.GetIterator(m, 'async');
+			return testAsyncIterator(st, asyncRecord['[[Iterator]]'], [[1, 'a'], [2, 'b']]);
+		});
+
+		t.test('Symbol.asyncIterator', { skip: !v.hasSymbols || !Symbol.asyncIterator }, function (st) {
+			st.test('an async iteratable returning a sync iterator', function (s2t) {
+				var it = {
+					next: function nextFromTest() {
+						return Promise.resolve({
+							done: true
+						});
+					}
+				};
+				var obj = {};
+				obj[Symbol.asyncIterator] = function () {
+					return it;
+				};
+
+				var asyncIterator = ES.GetIterator(obj, 'async');
+
+				s2t.deepEqual(asyncIterator, makeIteratorRecord(it));
+
+				s2t.end();
+			});
+
+			st.test('a throwing async iterator', function (s2t) {
+				var sentinel = {};
+
+				var asyncIterable = {};
+				asyncIterable[Symbol.asyncIterator] = function () {
+					var i = 0;
+					return {
+						next: function next() {
+							if (i > 4) {
+								throw sentinel;
+							}
+							try {
+								return {
+									done: i > 5,
+									value: i
+								};
+							} finally {
+								i += 1;
+							}
+						}
+					};
+				};
+				var iteratorRecord = ES.GetIterator(asyncIterable, 'async');
+				return testAsyncIterator(
+					s2t,
+					iteratorRecord['[[Iterator]]'],
+					[0, 1, 2, 3, 4, 5]
+				)['catch'](function (e) {
+					if (e !== sentinel) {
+						throw e;
+					}
+				});
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('IsWordChar', function (t) {
+		var rer = {
+			'[[IgnoreCase]]': false,
+			'[[Multiline]]': false,
+			'[[DotAll]]': false,
+			'[[Unicode]]': false,
+			'[[CapturingGroupsCount]]': 1
+		};
+
+		forEach(v.nonBooleans, function (nonBoolean) {
+			t['throws'](
+				function () { ES.Canonicalize(assign({}, rer, { '[[IgnoreCase]]': nonBoolean }), ''); },
+				TypeError,
+				'[[IgnoreCase]]: ' + debug(nonBoolean) + ' is not a Boolean'
+			);
+
+			t['throws'](
+				function () { ES.Canonicalize(assign({}, rer, { '[[Unicode]]': nonBoolean }), ''); },
+				TypeError,
+				'[[Unicode]]: ' + debug(nonBoolean) + ' is not a Boolean'
+			);
+		});
+
+		forEach(v.nonArrays, function (nonArray) {
+			t['throws'](
+				function () { return ES.IsWordChar(rer, nonArray, 0); },
+				TypeError,
+				'arg 2: ' + debug(nonArray) + ' is not an Array'
+			);
+		});
+
+		forEach(v.nonIntegerNumbers, function (nonInteger) {
+			t['throws'](
+				function () { return ES.IsWordChar(rer, [], nonInteger); },
+				TypeError,
+				'arg 3: ' + debug(nonInteger) + ' is not an integer'
+			);
+		});
+
+		t.equal(ES.IsWordChar(rer, [], -1), false, 'arg 3: -1 yields false');
+		t.equal(ES.IsWordChar(rer, [], 0), false, 'arg 2 length and arg 3 the same yields false');
+		t.equal(ES.IsWordChar(rer, ['a', '!'], 2), false, 'arg 2 length and arg 3 the same yields false even with non-word chars');
+		t.equal(ES.IsWordChar(rer, ['a', 'b'], 2), false, 'arg 2 length and arg 3 the same yields false even with word chars');
+
+		t.equal(
+			ES.IsWordChar(rer, ['a', '!'], 0),
+			true,
+			'a is a word char'
+		);
+		t.equal(
+			ES.IsWordChar(rer, ['!', 'b'], 1),
+			true,
+			'b is a word char'
+		);
+
+		forEach(keys(caseFolding.C), function (input) {
+			var isBasic = (/^[a-zA-Z0-9_]$/).test(input);
+			var isFancy = (/^[a-zA-Z0-9_]$/).test(caseFolding.C[input]);
+
+			t.equal(
+				ES.IsWordChar(assign({}, rer, { '[[Unicode]]': true }), [input], 0),
+				isBasic,
+				'C mapping, IgnoreCase false: ' + debug(input) + ' is a word char'
+			);
+			t.equal(
+				ES.IsWordChar(assign({}, rer, { '[[IgnoreCase]]': true, '[[Unicode]]': true }), [input], 0),
+				isBasic || isFancy,
+				'C mapping, IgnoreCase true: ' + debug(input) + ' is a word char'
+			);
+		});
+
+		forEach(keys(caseFolding.S), function (input) {
+			var isBasic = (/^[a-zA-Z0-9_]$/).test(input);
+			var isFancy = (/^[a-zA-Z0-9_]$/).test(caseFolding.S[input]);
+
+			t.equal(
+				ES.IsWordChar(assign({}, rer, { '[[Unicode]]': true }), [input], 0),
+				isBasic,
+				'S mapping, IgnoreCase false: ' + debug(input) + ' is a word char'
+			);
+			t.equal(
+				ES.IsWordChar(assign({}, rer, { '[[IgnoreCase]]': true, '[[Unicode]]': true }), [input], 0),
+				isBasic || isFancy,
+				'S mapping, IgnoreCase true: ' + debug(input) + ' is a word char'
+			);
+		});
+
+		t.end();
+	});
+
+	test('IteratorToList', function (t) {
+		var customIterator = function () {
+			var i = -1;
+			return {
+				next: function () {
+					i += 1;
+					return {
+						done: i >= 5,
+						value: i
+					};
+				}
+			};
+		};
+
+		var iteratorRecord = makeIteratorRecord(customIterator());
+
+		t.deepEqual(
+			ES.IteratorToList(iteratorRecord),
+			[0, 1, 2, 3, 4],
+			'iterator method is called and values collected'
+		);
+
+		t.test('Symbol support', { skip: !v.hasSymbols }, function (st) {
+			st.deepEqual(ES.IteratorToList(makeIteratorRecord('abc'[Symbol.iterator]())), ['a', 'b', 'c'], 'a string of code units spreads');
+			st.deepEqual(ES.IteratorToList(makeIteratorRecord('☃'[Symbol.iterator]())), ['☃'], 'a string of code points spreads');
+
+			var arr = [1, 2, 3];
+			st.deepEqual(ES.IteratorToList(makeIteratorRecord(arr[Symbol.iterator]())), arr, 'an array becomes a similar array');
+			st.notEqual(ES.IteratorToList(makeIteratorRecord(arr[Symbol.iterator]())), arr, 'an array becomes a different, but similar, array');
+
+			st.end();
+		});
+
+		t['throws'](
+			function () { ES.IteratorToList(makeIteratorRecord({})); },
+			TypeError,
+			'non-function iterator method'
+		);
+
+		t.end();
+	});
+
+	test('IteratorClose', function (t) {
+		forEach(v.primitives, function (nonObject) {
+			t['throws'](
+				function () { ES.IteratorClose(nonObject); },
+				TypeError,
+				debug(nonObject) + ' is not an Object'
+			);
+
+			t['throws'](
+				function () {
+					ES.IteratorClose(
+						{
+							'[[Iterator]]': { 'return': function () { return nonObject; } },
+							'[[Done]]': false,
+							'[[NextMethod]]': function () { return {}; }
+						},
+						function () {}
+					);
+				},
+				TypeError,
+				'`.return` returns ' + debug(nonObject) + ', which is not an Object'
+			);
+		});
+
+		forEach(v.nonFunctions, function (nonFunction) {
+			t['throws'](
+				function () {
+					ES.IteratorClose(
+						makeIteratorRecord({ next: function () {} }),
+						nonFunction
+					);
+				},
+				TypeError,
+				debug(nonFunction) + ' is not a thunk for a Completion Record'
+			);
+
+			if (nonFunction != null) {
+				t['throws'](
+					function () {
+						ES.IteratorClose(
+							makeIteratorRecord({ next: function () {}, 'return': nonFunction }),
+							function () {}
+						);
+					},
+					TypeError,
+					'`.return` of ' + debug(nonFunction) + ' is not a Function'
+				);
+			}
+		});
+
+		var sentinel = {};
+		t.equal(
+			ES.IteratorClose(
+				makeIteratorRecord({ next: function () {}, 'return': undefined }),
+				function () { return sentinel; }
+			),
+			sentinel,
+			'when `.return` is `undefined`, invokes and returns the completion thunk'
+		);
+
+		/* eslint no-throw-literal: 0 */
+		t.throwsSentinel(
+			function () {
+				ES.IteratorClose(
+					{ '[[Iterator]]': { 'return': function () { throw sentinel; } }, '[[Done]]': false, '[[NextMethod]]': function () {} },
+					function () {}
+				);
+			},
+			sentinel,
+			'`.return` that throws, when completionThunk does not, throws exception from `.return`'
+		);
+		t.throwsSentinel(
+			function () {
+				ES.IteratorClose(
+					{ '[[Iterator]]': { 'return': function () { throw sentinel; } }, '[[Done]]': false, '[[NextMethod]]': function () {} },
+					function () { throw -1; }
+				);
+			},
+			-1,
+			'`.return` that throws, when completionThunk does too, throws exception from completionThunk'
+		);
+		t.throwsSentinel(
+			function () {
+				ES.IteratorClose(
+					{ '[[Iterator]]': { 'return': function () { } }, '[[Done]]': false, '[[NextMethod]]': function () {} },
+					function () { throw -1; }
+				);
+			},
+			-1,
+			'`.return` that does not throw, when completionThunk does, throws exception from completionThunk'
+		);
+
+		t.equal(
+			ES.IteratorClose(
+				{ '[[Iterator]]': { 'return': function () { return sentinel; } }, '[[Done]]': false, '[[NextMethod]]': function () {} },
+				function () { return 42; }
+			),
+			42,
+			'when `.return` and completionThunk do not throw, and `.return` returns an Object, returns completionThunk'
+		);
+
+		t.end();
+	});
+
+	test('IteratorNext', function (t) {
+		forEach(v.primitives, function (nonObject) {
+			t['throws'](
+				function () { ES.IteratorNext(nonObject); },
+				TypeError,
+				debug(nonObject) + ' is not an Object'
+			);
+
+			t['throws'](
+				function () { ES.IteratorNext({ next: function () { return nonObject; } }); },
+				TypeError,
+				'`next()` returns ' + debug(nonObject) + ', which is not an Object'
+			);
+		});
+
+		var iterator = {
+			next: function (value) {
+				return [arguments.length, value];
+			}
+		};
+		t.deepEqual(
+			ES.IteratorNext(makeIteratorRecord(iterator)),
+			[0, undefined],
+			'returns expected value from `.next()`; `next` receives expected 0 arguments'
+		);
+		t.deepEqual(
+			ES.IteratorNext(makeIteratorRecord(iterator), iterator),
+			[1, iterator],
+			'returns expected value from `.next()`; `next` receives expected 1 argument'
+		);
+
+		t.end();
+	});
+
+	test('IteratorStep', function (t) {
+		var iterator = {
+			next: function () {
+				return {
+					done: false,
+					value: [1, arguments.length]
+				};
+			}
+		};
+		t.deepEqual(
+			ES.IteratorStep(makeIteratorRecord(iterator)),
+			{ done: false, value: [1, 0] },
+			'not-done iterator result yields iterator result'
+		);
+
+		var iterator2 = {
+			next: function () {
+				return {
+					done: true,
+					value: [2, arguments.length]
+				};
+			}
+		};
+		t.deepEqual(
+			ES.IteratorStep(makeIteratorRecord(iterator2)),
+			false,
+			'done iterator result yields false'
+		);
+
+		t.end();
+	});
+
+	test('KeyForSymbol', function (t) {
+		forEach(v.nonSymbols, function (nonSymbol) {
+			t['throws'](
+				function () { ES.KeyForSymbol(nonSymbol); },
+				TypeError,
+				debug(nonSymbol) + ' is not a Symbol'
+			);
+		});
+
+		forEach(v.symbols.concat($symbolFor ? $symbolFor('registered!') : []), function (symbol) {
+			t.equal(
+				ES.KeyForSymbol(symbol),
+				isRegisteredSymbol(symbol) ? ES.SymbolDescriptiveString(symbol).slice(7, -1) : undefined,
+				debug(symbol) + ' yields expected key'
+			);
+		});
+
+		t.end();
+	});
+
+	test('Number::toString', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.Number.toString(nonNumber); },
+				TypeError,
+				debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		forEach(v.nonIntegerNumbers.concat(0, 1, 37), function (nonIntegerNumber) {
+			t['throws'](
+				function () { ES.Number.toString(0, nonIntegerNumber); },
+				TypeError,
+				debug(nonIntegerNumber) + ' is not an integer [2, 36]'
+			);
+		});
+
+		forEach(v.numbers, function (number) {
+			t.equal(ES.Number.toString(number, 10), String(number), debug(number) + ' stringifies to ' + number);
+		});
+
+		forEach([
+			[37, 2, '100101'],
+			[37, 3, '1101'],
+			[37, 4, '211'],
+			[37, 5, '122'],
+			[37, 6, '101'],
+			[37, 7, '52'],
+			[37, 8, '45'],
+			[37, 9, '41'],
+			[37, 10, '37'],
+			[37, 11, '34'],
+			[37, 12, '31'],
+			[37, 13, '2b'],
+			[37, 14, '29'],
+			[37, 15, '27'],
+			[37, 16, '25'],
+			[37, 17, '23'],
+			[37, 18, '21'],
+			[37, 19, '1i'],
+			[37, 20, '1h'],
+			[37, 21, '1g'],
+			[37, 22, '1f'],
+			[37, 23, '1e'],
+			[37, 24, '1d'],
+			[37, 25, '1c'],
+			[37, 26, '1b'],
+			[37, 27, '1a'],
+			[37, 28, '19'],
+			[37, 29, '18'],
+			[37, 30, '17'],
+			[37, 31, '16'],
+			[37, 32, '15'],
+			[37, 33, '14'],
+			[37, 34, '13'],
+			[37, 35, '12'],
+			[37, 36, '11']
+		], function (testCase) {
+			t.equal(
+				ES.Number.toString(testCase[0], testCase[1]),
+				testCase[2],
+				debug(testCase[0]) + ' stringifies to ' + debug(testCase[2]) + ' in base ' + debug(testCase[1])
+			);
+		});
+
+		t.end();
+	});
+
+	test('ParseHexOctet', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.ParseHexOctet(nonString, 0); },
+				TypeError,
+				debug(nonString) + ' is not a String'
+			);
+		});
+
+		forEach(v.notNonNegativeIntegers, function (nonNonNegativeInteger) {
+			t['throws'](
+				function () { ES.ParseHexOctet('', nonNonNegativeInteger); },
+				TypeError,
+				debug(nonNonNegativeInteger) + ' is not a non-negative integer'
+			);
+		});
+
+		var str = 'abc';
+		t.deepEqual(
+			ES.ParseHexOctet(str, str.length - 1),
+			[new SyntaxError('requested a position on a string that does not contain 2 characters at that position')],
+			'"position + 2" is not a valid index into the string'
+		);
+
+		t.deepEqual(
+			ES.ParseHexOctet('0gx', 0),
+			[new SyntaxError('Invalid hexadecimal characters')],
+			'invalid hex characters return an array with an error'
+		);
+
+		for (var i = 0; i < 256; i += 1) {
+			var hex = ES.StringPad(i.toString(16), 2, '0', 'start');
+			t.equal(ES.ParseHexOctet(hex, 0), i, debug(hex) + ' parses to ' + i);
+			t.equal(ES.ParseHexOctet('0' + hex, 1), i, '0' + debug(hex) + ' at position 1 parses to ' + i);
+		}
+
+		t.end();
+	});
+
+	test('SameValueNonNumber', function (t) {
+		var willThrow = [
+			[3, 4],
+			[NaN, 4],
+			[4, ''],
+			['abc', true],
+			[{}, false]
+		];
+		forEach(willThrow, function (nums) {
+			t['throws'](function () { return ES.SameValueNonNumber.apply(ES, nums); }, TypeError, 'value must be same type and non-number: got ' + debug(nums[0]) + ' and ' + debug(nums[1]));
+		});
+
+		forEach(v.objects.concat(v.nonNumberPrimitives).concat(v.bigints), function (val) {
+			t.equal(val === val, ES.SameValueNonNumber(val, val), debug(val) + ' is SameValueNonNumber to itself');
+		});
+
+		t.end();
+	});
+
+	test('SortIndexedProperties', function (t) {
+		/* eslint no-unused-vars: 0 */
+
+		var emptySortCompare = function (a, b) {};
+
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.SortIndexedProperties(primitive, 0, emptySortCompare, 'skip-holes'); },
+				TypeError,
+				'obj must be an Object; ' + debug(primitive) + ' is not one'
+			);
+		});
+
+		forEach(v.notNonNegativeIntegers, function (nonNonNegativeInteger) {
+			t['throws'](
+				function () { ES.SortIndexedProperties({}, nonNonNegativeInteger, emptySortCompare, 'skip-holes'); },
+				TypeError,
+				'`len`: ' + debug(nonNonNegativeInteger) + ' is not a non-negative integer'
+			);
+		});
+
+		forEach(
+			v.nonFunctions.concat(
+				function () {},
+				function f(a, b) { return 0; },
+				function (a) { return 0; },
+				arrowFns.length > 0 ? [
+					/* eslint no-new-func: 1 */
+					Function('return () => {}')(),
+					Function('return (a) => {}')(),
+					Function('return (a, b, c) => {}')()
+				] : []
+			),
+			function (nonTwoArgAbstractClosure) {
+				t['throws'](
+					function () { ES.SortIndexedProperties({}, 0, nonTwoArgAbstractClosure, 'skip-holes'); },
+					TypeError,
+					'`len`: ' + debug(nonTwoArgAbstractClosure) + ' is not an abstract closure taking two args'
+				);
+			}
+		);
+
+		forEach([
+			function (a, b) { return 0; }
+		].concat(arrowFns.length > 0 ? [
+			/* eslint no-new-func: 1 */
+			Function('return (a, b) => 0')()
+		] : []), function (ac) {
+			t.doesNotThrow(
+				function () { ES.SortIndexedProperties({}, 0, ac, 'skip-holes'); },
+				'an abstract closure taking two args is accepted'
+			);
+		});
+
+		t['throws'](
+			function () { ES.SortIndexedProperties({}, 0, emptySortCompare, ''); },
+			TypeError,
+			'`holes`: only enums allowed'
+		);
+
+		var o = [1, 3, 2, 0];
+
+		forEach(['skip-holes', 'read-through-holes'], function (holes) {
+			t.deepEqual(
+				ES.SortIndexedProperties(
+					o,
+					3,
+					function (a, b) { return a - b; },
+					holes
+				),
+				[1, 2, 3],
+				holes + ': sorted items are returned, up to the expected length of the object'
+			);
+
+			t.deepEqual(
+				ES.SortIndexedProperties(
+					o,
+					4,
+					function (a, b) { return b - a; },
+					holes
+				),
+				[3, 2, 1, 0],
+				holes + ': sorted items are returned'
+			);
+		});
+
+		t.deepEqual(
+			ES.SortIndexedProperties(
+				o,
+				6,
+				function (a, b) { return a - b; },
+				'read-through-holes'
+			),
+			[0, 1, 2, 3, undefined, undefined],
+			'read-through-holes: sorted items are returned'
+		);
+		t.deepEqual(
+			ES.SortIndexedProperties(
+				o,
+				6,
+				function (a, b) { return a - b; },
+				'skip-holes'
+			),
+			[0, 1, 2, 3],
+			'skip-holes: sorted items are returned, holes skipped'
+		);
+
+		// TODO: tests with holes
+
+		t.end();
+	});
+
+	test('TypedArrayCreateSameType', function (t) {
+		t.test('no Typed Array support', { skip: availableTypedArrays.length > 0 }, function (st) {
+			forEach(v.primitives.concat(v.objects), function (nonTA) {
+				st['throws'](
+					function () { ES.TypedArrayCreateSameType(nonTA, []); },
+					SyntaxError,
+					'no Typed Array support'
+				);
+			});
+
+			forEach(v.nonArrays, function (nonArray) {
+				st['throws'](
+					function () { ES.TypedArrayCreate(Array, nonArray); },
+					SyntaxError,
+					'no Typed Array support'
+				);
+			});
+
+			st.end();
+		});
+
+		t.test('Typed Array support', { skip: availableTypedArrays.length === 0 }, function (st) {
+			forEach(v.primitives.concat(v.objects), function (nonTA) {
+				st['throws'](
+					function () { ES.TypedArrayCreateSameType(nonTA, []); },
+					TypeError,
+					debug(nonTA) + ' is not a Typed Array'
+				);
+			});
+
+			forEach(v.nonArrays, function (nonArray) {
+				st['throws'](
+					function () { ES.TypedArrayCreateSameType(new global[availableTypedArrays[0]](), nonArray); },
+					TypeError,
+					debug(nonArray) + ' is not an Array'
+				);
+			});
+
+			forEach(availableTypedArrays, function (TypedArray) {
+				var Constructor = global[TypedArray];
+
+				var typedArray = ES.TypedArrayCreateSameType(new Constructor(), []);
+				st.equal(whichTypedArray(typedArray), TypedArray, 'created a ' + TypedArray);
+				st.equal(typedArrayLength(typedArray), 0, 'created a ' + TypedArray + ' of length 42');
+
+				var taLength = ES.TypedArrayCreateSameType(new Constructor(1), [42]);
+				st.equal(whichTypedArray(taLength), TypedArray, 'created a ' + TypedArray);
+				st.equal(typedArrayLength(taLength), 42, 'created a ' + TypedArray + ' of length 42');
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('truncate', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.truncate(nonNumber); },
+				TypeError,
+				debug(nonNumber) + ' is not a number'
+			);
+		});
+
+		t.equal(ES.truncate(-1.1), -1, '-1.1 truncates to -1');
+		t.equal(ES.truncate(1.1), 1, '1.1 truncates to 1');
+		t.equal(ES.truncate(0), 0, '+0 truncates to +0');
+		t.equal(ES.truncate(-0), 0, '-0 truncates to +0');
+
+		t.end();
+	});
+
+	test('WordCharacters', function (t) {
+		var rer = {
+			'[[IgnoreCase]]': false,
+			'[[Multiline]]': false,
+			'[[DotAll]]': false,
+			'[[Unicode]]': false,
+			'[[CapturingGroupsCount]]': 0
+		};
+
+		forEach(v.nonBooleans, function (nonBoolean) {
+			t['throws'](
+				function () { ES.Canonicalize(assign({}, rer, { '[[IgnoreCase]]': nonBoolean })); },
+				TypeError,
+				'[[IgnoreCase]]: ' + debug(nonBoolean) + ' is not a Boolean'
+			);
+
+			t['throws'](
+				function () { ES.Canonicalize(assign({}, rer, { '[[Unicode]]': nonBoolean })); },
+				TypeError,
+				'[[Unicode]]: ' + debug(nonBoolean) + ' is not a Boolean'
+			);
+		});
+
+		t.equal(ES.WordCharacters(rer), 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_', 'not both true gives a-zA-Z0-9_');
+		t.equal(ES.WordCharacters(assign({}, rer, { '[[Unicode]]': true })), 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_', 'not both true gives a-zA-Z0-9_');
+		t.equal(ES.WordCharacters(assign({}, rer, { '[[IgnoreCase]]': true })), 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_', 'not both true gives a-zA-Z0-9_');
+		t.equal(ES.WordCharacters(assign({}, rer, { '[[IgnoreCase]]': true, '[[Unicode]]': true })), 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_', 'both true gives a-zA-Z0-9_');
+
+		t.end();
+	});
+};
+
 module.exports = {
 	es5: es5,
 	es2015: es2015,
@@ -12748,5 +14014,6 @@ module.exports = {
 	es2019: es2019,
 	es2020: es2020,
 	es2021: es2021,
-	es2022: es2022
+	es2022: es2022,
+	es2023: es2023
 };

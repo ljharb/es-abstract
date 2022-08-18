@@ -113,7 +113,7 @@ var expectedMissing = [
 	'IsPropertyReference',
 	'IsSuperReference',
 	'IsUnresolvableReference',
-	'IsValidRegularExpressionLiteral',
+	'IsValidRegularExpressionLiteral', // returns a Parse Node
 	'LeaveCriticalSection',
 	'LocalTime',
 	'LocalTZA',

@@ -6,6 +6,7 @@ var $TypeError = GetIntrinsic('%TypeError%');
 var $SyntaxError = GetIntrinsic('%SyntaxError%');
 
 var has = require('has');
+var isInteger = require('./isInteger');
 
 var isMatchRecord = require('./isMatchRecord');
 
@@ -57,6 +58,21 @@ var predicates = {
 			&& has(value, '[[Completion]]') // TODO: confirm is a completion record
 			&& has(value, '[[Capability]]')
 			&& predicates['PromiseCapability Record'](value['[[Capability]]']);
+	},
+	'RegExp Record': function isRegExpRecord(value) {
+		return value
+			&& has(value, '[[IgnoreCase]]')
+			&& typeof value['[[IgnoreCase]]'] === 'boolean'
+			&& has(value, '[[Multiline]]')
+			&& typeof value['[[Multiline]]'] === 'boolean'
+			&& has(value, '[[DotAll]]')
+			&& typeof value['[[DotAll]]'] === 'boolean'
+			&& has(value, '[[Unicode]]')
+			&& typeof value['[[Unicode]]'] === 'boolean'
+			&& has(value, '[[CapturingGroupsCount]]')
+			&& typeof value['[[CapturingGroupsCount]]'] === 'number'
+			&& isInteger(value['[[CapturingGroupsCount]]'])
+			&& value['[[CapturingGroupsCount]]'] >= 0;
 	}
 };
 
