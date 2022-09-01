@@ -6,6 +6,7 @@ var forEach = require('for-each');
 var debug = require('object-inspect');
 var assign = require('object.assign');
 var keys = require('object-keys');
+var flatMap = require('array.prototype.flatmap');
 var has = require('has');
 var arrowFns = require('make-arrow-function').list();
 var hasStrictMode = require('has-strict-mode')();
@@ -7444,9 +7445,19 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			[4, ''],
 			['abc', true],
 			[{}, false]
-		];
+		].concat(flatMap(v.bigints, function (bigint) {
+			return [
+				[bigint, bigint],
+				[bigint, {}],
+				[{}, bigint],
+				[3, bigint],
+				[bigint, 3],
+				['', bigint],
+				[bigint, '']
+			];
+		}));
 		forEach(willThrow, function (nums) {
-			t['throws'](function () { return ES.SameValueNonNumeric.apply(ES, nums); }, TypeError, 'value must be same type and non-number');
+			t['throws'](function () { return ES.SameValueNonNumeric.apply(ES, nums); }, TypeError, 'value must be same type and non-number/bigint: got ' + debug(nums[0]) + ' and ' + debug(nums[1]));
 		});
 
 		forEach(v.objects.concat(v.nonNumberPrimitives), function (val) {
