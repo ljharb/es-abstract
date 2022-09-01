@@ -1,3 +1,11 @@
+1.20.2 / 2022-09-01
+=================
+  * [Fix] `ES2020+`: `SameValueNonNumeric`: properly throw on BigInt values
+  * [Deps] update `object.assign`, `get-intrinsic`, `object-inspect`
+  * [Dev Deps] update `array.prototype.indexof`, `diff`, `es-value-fixtures`, `tape`
+  * [meta] `spackle`: always mkdirp new files to be written
+  * [Tests] fix vscode auto-const from 8fc256d
+
 1.20.1 / 2022-05-16
 =================
   * [Fix] `thisTimeValue`: use `getTime`, not `valueOf`, to get the time value
