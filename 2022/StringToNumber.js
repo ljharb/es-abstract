@@ -8,7 +8,7 @@ var $TypeError = GetIntrinsic('%TypeError%');
 var $parseInteger = GetIntrinsic('%parseInt%');
 
 var callBound = require('call-bind/callBound');
-var regexTester = require('../helpers/regexTester');
+var regexTester = require('safe-regex-test');
 
 var $strSlice = callBound('String.prototype.slice');
 var isBinary = regexTester(/^0b[01]+$/i);

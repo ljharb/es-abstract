@@ -72,6 +72,7 @@
 		"object-keys": "^1.1.1",
 		"object.assign": "^4.1.4",
 		"regexp.prototype.flags": "^1.4.3",
+		"safe-regex-test": "^1.0.0",
 		"string.prototype.trimend": "^1.0.5",
 		"string.prototype.trimstart": "^1.0.5",
 		"unbox-primitive": "^1.0.2"
