@@ -1,3 +1,9 @@
+1.20.3 / 2022-09-22
+=================
+  * [Refactor] extract regex tester to `safe-regex-test` package
+  * [Deps] update `get-intrinsic`, `is-callable`
+  * [Dev Deps] update `aud`, `tape`
+
 1.20.2 / 2022-09-01
 =================
   * [Fix] `ES2020+`: `SameValueNonNumeric`: properly throw on BigInt values
