@@ -1,3 +1,8 @@
+1.20.4 / 2022-10-06
+=================
+  * [Fix] `ES2021+`: values that truncate to -0 in `ToIntegerOrInfinity` (#146)
+  * [Deps] update `is-callable`
+
 1.20.3 / 2022-09-22
 =================
   * [Refactor] extract regex tester to `safe-regex-test` package
