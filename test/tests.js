@@ -7655,13 +7655,14 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 	test('ToInteger', function (t) {
 		forEach([0, -0, NaN], function (num) {
-			t.equal(0, ES.ToInteger(num), debug(num) + ' returns +0');
+			t.equal(ES.ToInteger(num), +0, debug(num) + ' returns +0');
 		});
 		forEach([Infinity, 42], function (num) {
-			t.equal(num, ES.ToInteger(num), debug(num) + ' returns itself');
-			t.equal(-num, ES.ToInteger(-num), '-' + debug(num) + ' returns itself');
+			t.equal(ES.ToInteger(num), num, debug(num) + ' returns itself');
+			t.equal(ES.ToInteger(-num), -num, '-' + debug(num) + ' returns itself');
 		});
-		t.equal(3, ES.ToInteger(Math.PI), 'pi returns 3');
+		t.equal(ES.ToInteger(Math.PI), 3, 'pi returns 3');
+		t.equal(ES.ToInteger(-0.1), +0, '-0.1 truncates to +0, not -0');
 		t['throws'](function () { return ES.ToInteger(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 		t.end();
 	});
@@ -8149,13 +8150,14 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 
 	test('ToIntegerOrInfinity', function (t) {
 		forEach([0, -0, NaN], function (num) {
-			t.equal(0, ES.ToIntegerOrInfinity(num), debug(num) + ' returns +0');
+			t.equal(ES.ToIntegerOrInfinity(num), +0, debug(num) + ' returns +0');
 		});
 		forEach([Infinity, 42], function (num) {
-			t.equal(num, ES.ToIntegerOrInfinity(num), debug(num) + ' returns itself');
-			t.equal(-num, ES.ToIntegerOrInfinity(-num), '-' + debug(num) + ' returns itself');
+			t.equal(ES.ToIntegerOrInfinity(num), num, debug(num) + ' returns itself');
+			t.equal(ES.ToIntegerOrInfinity(-num), -num, '-' + debug(num) + ' returns itself');
 		});
-		t.equal(3, ES.ToIntegerOrInfinity(Math.PI), 'pi returns 3');
+		t.equal(ES.ToIntegerOrInfinity(Math.PI), 3, 'pi returns 3');
+		t.equal(ES.ToIntegerOrInfinity(-0.1), +0, '-0.1 truncates to +0, not -0');
 		t['throws'](function () { return ES.ToIntegerOrInfinity(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 		t.end();
 	});
