@@ -12831,6 +12831,18 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('GetUTCEpochNanoseconds', function (t) {
+		t.fail();
+
+		t.end();
+	});
+
+	test('IsTimeZoneOffsetString', function (t)	{
+		t.fail();
+
+		t.end();
+	});
+
 	test('IteratorClose', function (t) {
 		forEach(v.primitives, function (nonObject) {
 			t['throws'](
