@@ -76,7 +76,6 @@ var expectedMissing = [
 	'GetIdentifierReference',
 	'GetModifySetValueInBuffer',
 	'GetModuleNamespace',
-	'GetNamedTimeZoneEpochNanoseconds',
 	'GetNamedTimeZoneOffsetNanoseconds',
 	'GetNewTarget',
 	'GetSuperConstructor',
@@ -226,9 +225,7 @@ var expectedMissing = [
 	'EmptyMatcher', // regex matcher stuff
 	'EnqueueAtomicsWaitAsyncTimeoutJob',
 	'EnqueueResolveInAgentJob', // agent stuff
-	'GetUTCEpochNanoseconds',
 	'GetRawBytesFromSharedBlock', // atomics
-	'IsTimeZoneOffsetString',
 	'MatchSequence', // regex matcher stuff
 	'MatchTwoAlternatives', // regex matcher stuff
 	'MaybeSimpleCaseFolding', // depends on scf

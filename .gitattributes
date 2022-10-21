@@ -1433,10 +1433,12 @@
 /2024/GetMatchIndexPair.js	spackled linguist-generated=true
 /2024/GetMatchString.js	spackled linguist-generated=true
 /2024/GetMethod.js	spackled linguist-generated=true
+/2024/GetNamedTimeZoneEpochNanoseconds.js	spackled linguist-generated=true
 /2024/GetOwnPropertyKeys.js	spackled linguist-generated=true
 /2024/GetPromiseResolve.js	spackled linguist-generated=true
 /2024/GetPrototypeFromConstructor.js	spackled linguist-generated=true
 /2024/GetStringIndex.js	spackled linguist-generated=true
+/2024/GetUTCEpochNanoseconds.js	spackled linguist-generated=true
 /2024/GetV.js	spackled linguist-generated=true
 /2024/HasOwnProperty.js	spackled linguist-generated=true
 /2024/HasProperty.js	spackled linguist-generated=true
@@ -1465,6 +1467,7 @@
 /2024/IsSharedArrayBuffer.js	spackled linguist-generated=true
 /2024/IsStrictlyEqual.js	spackled linguist-generated=true
 /2024/IsStringWellFormedUnicode.js	spackled linguist-generated=true
+/2024/IsTimeZoneOffsetString.js	spackled linguist-generated=true
 /2024/IsWordChar.js	spackled linguist-generated=true
 /2024/IteratorComplete.js	spackled linguist-generated=true
 /2024/IteratorValue.js	spackled linguist-generated=true
