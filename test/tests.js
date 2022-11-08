@@ -14,13 +14,13 @@ var functionsHaveNames = require('functions-have-names')();
 var functionsHaveConfigurableNames = require('functions-have-names').functionsHaveConfigurableNames();
 var boundFunctionsHaveNames = require('functions-have-names').boundFunctionsHaveNames();
 var hasBigInts = require('has-bigints')();
+var getOwnPropertyDescriptor = require('gopd');
 
 var $getProto = require('../helpers/getProto');
 var $setProto = require('../helpers/setProto');
 var defineProperty = require('./helpers/defineProperty');
 var getInferredName = require('../helpers/getInferredName');
 var fromPropertyDescriptor = require('../helpers/fromPropertyDescriptor');
-var getOwnPropertyDescriptor = require('../helpers/getOwnPropertyDescriptor');
 var assertRecordTests = require('./helpers/assertRecord');
 var v = require('es-value-fixtures');
 var diffOps = require('./diffOps');

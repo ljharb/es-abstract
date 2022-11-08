@@ -12,7 +12,7 @@ var mockProperty = require('mock-property');
 
 var callBound = require('call-bind/callBound');
 var v = require('es-value-fixtures');
-var $gOPD = require('../helpers/getOwnPropertyDescriptor');
+var $gOPD = require('gopd');
 var DefinePropertyOrThrow = require('../2021/DefinePropertyOrThrow');
 
 var $isProto = callBound('%Object.prototype.isPrototypeOf%');
