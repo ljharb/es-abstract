@@ -47,6 +47,7 @@ var ES2022 = {
 	DayWithinYear: require('./2022/DayWithinYear'),
 	DefinePropertyOrThrow: require('./2022/DefinePropertyOrThrow'),
 	DeletePropertyOrThrow: require('./2022/DeletePropertyOrThrow'),
+	DetachArrayBuffer: require('./2022/DetachArrayBuffer'),
 	EnumerableOwnPropertyNames: require('./2022/EnumerableOwnPropertyNames'),
 	FlattenIntoArray: require('./2022/FlattenIntoArray'),
 	floor: require('./2022/floor'),

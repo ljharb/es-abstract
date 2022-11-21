@@ -29,6 +29,7 @@ var ES2015 = {
 	DayWithinYear: require('./2015/DayWithinYear'),
 	DefinePropertyOrThrow: require('./2015/DefinePropertyOrThrow'),
 	DeletePropertyOrThrow: require('./2015/DeletePropertyOrThrow'),
+	DetachArrayBuffer: require('./2015/DetachArrayBuffer'),
 	EnumerableOwnNames: require('./2015/EnumerableOwnNames'),
 	floor: require('./2015/floor'),
 	FromPropertyDescriptor: require('./2015/FromPropertyDescriptor'),

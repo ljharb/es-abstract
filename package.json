@@ -19,6 +19,9 @@
 	"description": "ECMAScript spec abstract operations.",
 	"license": "MIT",
 	"main": "index.js",
+	"browser": {
+		"worker_threads": false
+	},
 	"type": "commonjs",
 	"sideEffects": false,
 	"scripts": {
@@ -66,6 +69,7 @@
 		"has-proto": "^1.0.1",
 		"has-symbols": "^1.0.3",
 		"internal-slot": "^1.0.4",
+		"is-array-buffer": "^3.0.0",
 		"is-callable": "^1.2.7",
 		"is-negative-zero": "^2.0.2",
 		"is-regex": "^1.1.4",
@@ -103,6 +107,7 @@
 		"has-bigints": "^1.0.2",
 		"has-strict-mode": "^1.0.1",
 		"in-publish": "^2.0.1",
+		"is-core-module": "^2.11.0",
 		"make-arrow-function": "^1.2.0",
 		"make-async-function": "^1.0.0",
 		"make-async-generator-function": "^1.0.0",

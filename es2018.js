@@ -33,6 +33,7 @@ var ES2018 = {
 	DayWithinYear: require('./2018/DayWithinYear'),
 	DefinePropertyOrThrow: require('./2018/DefinePropertyOrThrow'),
 	DeletePropertyOrThrow: require('./2018/DeletePropertyOrThrow'),
+	DetachArrayBuffer: require('./2018/DetachArrayBuffer'),
 	EnumerableOwnPropertyNames: require('./2018/EnumerableOwnPropertyNames'),
 	floor: require('./2018/floor'),
 	FromPropertyDescriptor: require('./2018/FromPropertyDescriptor'),

@@ -49,6 +49,7 @@ var ES2021 = {
 	DayWithinYear: require('./2021/DayWithinYear'),
 	DefinePropertyOrThrow: require('./2021/DefinePropertyOrThrow'),
 	DeletePropertyOrThrow: require('./2021/DeletePropertyOrThrow'),
+	DetachArrayBuffer: require('./2021/DetachArrayBuffer'),
 	EnumerableOwnPropertyNames: require('./2021/EnumerableOwnPropertyNames'),
 	FlattenIntoArray: require('./2021/FlattenIntoArray'),
 	floor: require('./2021/floor'),

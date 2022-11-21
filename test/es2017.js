@@ -47,7 +47,6 @@ var expectedMissing = [
 	'CreateUnmappedArgumentsObject',
 	'DaylightSavingTA',
 	'Decode',
-	'DetachArrayBuffer',
 	'Encode',
 	'EnqueueJob',
 	'EnterCriticalSection',

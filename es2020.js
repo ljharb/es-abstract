@@ -42,6 +42,7 @@ var ES2020 = {
 	DayWithinYear: require('./2020/DayWithinYear'),
 	DefinePropertyOrThrow: require('./2020/DefinePropertyOrThrow'),
 	DeletePropertyOrThrow: require('./2020/DeletePropertyOrThrow'),
+	DetachArrayBuffer: require('./2020/DetachArrayBuffer'),
 	EnumerableOwnPropertyNames: require('./2020/EnumerableOwnPropertyNames'),
 	FlattenIntoArray: require('./2020/FlattenIntoArray'),
 	floor: require('./2020/floor'),

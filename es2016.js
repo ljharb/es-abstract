@@ -29,6 +29,7 @@ var ES2016 = {
 	DayWithinYear: require('./2016/DayWithinYear'),
 	DefinePropertyOrThrow: require('./2016/DefinePropertyOrThrow'),
 	DeletePropertyOrThrow: require('./2016/DeletePropertyOrThrow'),
+	DetachArrayBuffer: require('./2016/DetachArrayBuffer'),
 	EnumerableOwnNames: require('./2016/EnumerableOwnNames'),
 	floor: require('./2016/floor'),
 	FromPropertyDescriptor: require('./2016/FromPropertyDescriptor'),

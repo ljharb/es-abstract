@@ -55,7 +55,6 @@ var expectedMissing = [
 	'CreateStringIterator',
 	'CreateUnmappedArgumentsObject',
 	'Decode',
-	'DetachArrayBuffer',
 	'Encode',
 	'EnterCriticalSection',
 	'EnumerateObjectProperties', // only used in for-in loops

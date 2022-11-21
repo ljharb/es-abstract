@@ -61,6 +61,7 @@
 /2016/DaysInYear.js	spackled linguist-generated=true
 /2016/DefinePropertyOrThrow.js	spackled linguist-generated=true
 /2016/DeletePropertyOrThrow.js	spackled linguist-generated=true
+/2016/DetachArrayBuffer.js	spackled linguist-generated=true
 /2016/EnumerableOwnNames.js	spackled linguist-generated=true
 /2016/FromPropertyDescriptor.js	spackled linguist-generated=true
 /2016/Get.js	spackled linguist-generated=true
@@ -445,6 +446,7 @@
 /2019/DaysInYear.js	spackled linguist-generated=true
 /2019/DefinePropertyOrThrow.js	spackled linguist-generated=true
 /2019/DeletePropertyOrThrow.js	spackled linguist-generated=true
+/2019/DetachArrayBuffer.js	spackled linguist-generated=true
 /2019/EnumerableOwnPropertyNames.js	spackled linguist-generated=true
 /2019/FromPropertyDescriptor.js	spackled linguist-generated=true
 /2019/Get.js	spackled linguist-generated=true
@@ -585,6 +587,7 @@
 /2020/DaysInYear.js	spackled linguist-generated=true
 /2020/DefinePropertyOrThrow.js	spackled linguist-generated=true
 /2020/DeletePropertyOrThrow.js	spackled linguist-generated=true
+/2020/DetachArrayBuffer.js	spackled linguist-generated=true
 /2020/EnumerableOwnPropertyNames.js	spackled linguist-generated=true
 /2020/FromPropertyDescriptor.js	spackled linguist-generated=true
 /2020/Get.js	spackled linguist-generated=true
@@ -737,6 +740,7 @@
 /2021/DaysInYear.js	spackled linguist-generated=true
 /2021/DefinePropertyOrThrow.js	spackled linguist-generated=true
 /2021/DeletePropertyOrThrow.js	spackled linguist-generated=true
+/2021/DetachArrayBuffer.js	spackled linguist-generated=true
 /2021/EnumerableOwnPropertyNames.js	spackled linguist-generated=true
 /2021/FlattenIntoArray.js	spackled linguist-generated=true
 /2021/FromPropertyDescriptor.js	spackled linguist-generated=true
@@ -928,6 +932,7 @@
 /2022/DaysInYear.js	spackled linguist-generated=true
 /2022/DefinePropertyOrThrow.js	spackled linguist-generated=true
 /2022/DeletePropertyOrThrow.js	spackled linguist-generated=true
+/2022/DetachArrayBuffer.js	spackled linguist-generated=true
 /2022/EnumerableOwnPropertyNames.js	spackled linguist-generated=true
 /2022/FlattenIntoArray.js	spackled linguist-generated=true
 /2022/FromPropertyDescriptor.js	spackled linguist-generated=true

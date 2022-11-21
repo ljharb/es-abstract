@@ -36,7 +36,6 @@ var expectedMissing = [
 	'CreateUnmappedArgumentsObject',
 	'DaylightSavingTA',
 	'Decode',
-	'DetachArrayBuffer',
 	'Encode',
 	'EnqueueJob',
 	'EnumerateObjectProperties', // only used in for-in loops

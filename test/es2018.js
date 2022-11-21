@@ -56,7 +56,6 @@ var expectedMissing = [
 	'CreateStringIterator',
 	'CreateUnmappedArgumentsObject',
 	'Decode',
-	'DetachArrayBuffer',
 	'Encode',
 	'EnqueueJob',
 	'EnterCriticalSection',
