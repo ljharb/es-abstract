@@ -4,3 +4,4 @@ require('./getSymbolDescription');
 require('./isByteValue');
 require('./isCodePoint');
 require('./OwnPropertyKeys');
+require('./mod');
