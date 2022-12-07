@@ -42,7 +42,6 @@ var expectedMissing = [
 	'CopyDataBlockBytes',
 	'CreateArrayFromList',
 	'CreateArrayIterator', // es-create-array-iterator package, but it has a Type dependence and a shared ArrayIteratorPrototype
-	'CreateAsyncFromSyncIterator',
 	'CreateBuiltinFunction',
 	'CreateByteDataBlock',
 	'CreateDynamicFunction',

@@ -141,6 +141,23 @@ var testIterator = function (t, iterator, expected) {
 	t.equal(resultCount, expected.length, 'expected ' + expected.length + ', got ' + (result.done ? '' : 'more than ') + resultCount);
 };
 
+var testAsyncIterator = function (t, asyncIterator, expected) {
+	var results = arguments.length > 3 ? arguments[3] : [];
+
+	var nextResult = asyncIterator.next();
+
+	return Promise.resolve(nextResult).then(function (result) {
+		results.push(result);
+		if (!result.done && results.length < expected.length) {
+			t.deepEqual(result, { done: false, value: expected[results.length - 1] }, 'result ' + (results.length - 1));
+			return testAsyncIterator(t, asyncIterator, expected, results);
+		}
+
+		t.equal(results.length, expected.length, 'expected ' + expected.length + ', got ' + (result.done ? '' : 'more than ') + results.length);
+		return results.length;
+	});
+};
+
 // eslint-disable-next-line max-params
 var testRESIterator = function testRegExpStringIterator(ES, t, regex, str, global, unicode, expected) {
 	var iterator = ES.CreateRegExpStringIterator(regex, str, global, unicode);
@@ -4984,6 +5001,31 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 	});
 };
 
+var makeAsyncFromSyncIterator = function makeAsyncFromSyncIterator(ES, end, throwMethod, returnMethod) {
+	var i = 0;
+	var iterator = {
+		next: function next() {
+			try {
+				return {
+					done: i > end,
+					value: i
+				};
+			} finally {
+				i += 1;
+			}
+		},
+		'return': returnMethod,
+		'throw': throwMethod
+	};
+	var syncIteratorRecord = {
+		'[[Iterator]]': iterator,
+		'[[NextMethod]]': iterator.next,
+		'[[Done]]': false
+	};
+
+	return ES.CreateAsyncFromSyncIterator(syncIteratorRecord);
+};
+
 var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 	es2017(ES, ops, expectedMissing, assign({}, skips, {
 		EnumerableOwnProperties: true,
@@ -5122,6 +5164,123 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 		// TODO: CopyDataProperties does not throw when copying fails
 
 		t.end();
+	});
+
+	test('CreateAsyncFromSyncIterator', function (t) {
+		forEach(v.primitives.concat(v.objects), function (nonIteratorRecord) {
+			t['throws'](
+				function () { ES.CreateAsyncFromSyncIterator(nonIteratorRecord); },
+				TypeError,
+				debug(nonIteratorRecord) + ' is not an Iterator Record'
+			);
+		});
+
+		t.test('with Promise support', { skip: typeof Promise === 'undefined' }, function (st) {
+			var asyncIteratorRecord = makeAsyncFromSyncIterator(ES, 5);
+
+			st.deepEqual(
+				keys(asyncIteratorRecord).sort(),
+				['[[Iterator]]', '[[NextMethod]]', '[[Done]]'].sort(),
+				'has expected Iterator Record fields'
+			);
+			st.equal(typeof asyncIteratorRecord['[[NextMethod]]'], 'function', '[[NextMethod]] is a function');
+			st.equal(typeof asyncIteratorRecord['[[Done]]'], 'boolean', '[[Done]] is a boolean');
+
+			var itNoThrow = asyncIteratorRecord['[[Iterator]]'];
+
+			st.test('.throw()', function (s2t) {
+				var asyncThrows = makeAsyncFromSyncIterator(
+					ES,
+					5,
+					function throws(x) {
+						s2t.equal(x, arguments.length === 1 ? false : void undefined, '.throw() called with `false`, or nothing');
+
+						throw true;
+					}
+				)['[[Iterator]]'];
+
+				var asyncThrowReturnsNonObject = makeAsyncFromSyncIterator(
+					ES,
+					5,
+					function throws(x) {
+						s2t.equal(x, arguments.length === 1 ? false : void undefined, '.throw() called with `false`, or nothing');
+					}
+				)['[[Iterator]]'];
+
+				var asyncThrowReturnsObject = makeAsyncFromSyncIterator(
+					ES,
+					5,
+					function throws(x) {
+						s2t.equal(x, arguments.length === 1 ? false : void undefined, '.throw() called with `false`, or nothing');
+
+						return {
+							done: true,
+							value: Promise.resolve(42)
+						};
+					}
+				)['[[Iterator]]'];
+
+				return Promise.all([
+					itNoThrow['throw']().then(s2t.fail, s2t.pass), // "pass", since it rejects with `undefined`
+					itNoThrow['throw'](true).then(s2t.fail, s2t.ok), // "ok", since it rejects with `true`
+					asyncThrows['throw']().then(s2t.fail, s2t.ok), // "ok", since it rejects with `true`
+					asyncThrows['throw'](false).then(s2t.fail, s2t.ok), // "ok", since it rejects with `true`
+					asyncThrowReturnsNonObject['throw']().then(s2t.fail, s2t.ok), // "ok", since it rejects with an error
+					asyncThrowReturnsNonObject['throw'](false).then(s2t.fail, s2t.ok), // "ok", since it rejects with an error
+					asyncThrowReturnsObject['throw']().then(function (x) { s2t.deepEqual(x, { done: true, value: 42 }); }),
+					asyncThrowReturnsObject['throw'](false).then(function (x) { s2t.deepEqual(x, { done: true, value: 42 }); })
+				]);
+			});
+
+			st.test('.return()', function (s2t) {
+				var asyncThrows = makeAsyncFromSyncIterator(
+					ES,
+					5,
+					void undefined,
+					function returns(x) {
+						s2t.equal(x, arguments.length === 1 ? false : void undefined, '.throw() called with `false`, or nothing');
+
+						throw true;
+					}
+				)['[[Iterator]]'];
+
+				var asyncThrowReturnsNonObject = makeAsyncFromSyncIterator(
+					ES,
+					5,
+					void undefined,
+					function returns(x) {
+						s2t.equal(x, arguments.length === 1 ? false : void undefined, '.throw() called with `false`, or nothing');
+					}
+				)['[[Iterator]]'];
+
+				var asyncThrowReturnsObject = makeAsyncFromSyncIterator(
+					ES,
+					5,
+					void undefined,
+					function returns(x) {
+						s2t.equal(x, arguments.length === 1 ? false : void undefined, '.throw() called with `false`, or nothing');
+
+						return {
+							done: true,
+							value: Promise.resolve(42)
+						};
+					}
+				)['[[Iterator]]'];
+
+				return Promise.all([
+					itNoThrow['return']().then(function (x) { s2t.deepEqual(x, { done: true, value: void undefined }); }),
+					itNoThrow['return'](true).then(function (x) { s2t.deepEqual(x, { done: true, value: true }); }),
+					asyncThrows['return']().then(s2t.fail, s2t.ok), // "ok", since it rejects with `true`
+					asyncThrows['return'](false).then(s2t.fail, s2t.ok), // "ok", since it rejects with `true`
+					asyncThrowReturnsNonObject['return']().then(s2t.fail, s2t.ok), // "ok", since it rejects with an error
+					asyncThrowReturnsNonObject['return'](false).then(s2t.fail, s2t.ok), // "ok", since it rejects with an error
+					asyncThrowReturnsObject['return']().then(function (x) { s2t.deepEqual(x, { done: true, value: 42 }); }),
+					asyncThrowReturnsObject['return'](false).then(function (x) { s2t.deepEqual(x, { done: true, value: 42 }); })
+				]);
+			});
+
+			return testAsyncIterator(st, asyncIteratorRecord['[[Iterator]]'], [0, 1, 2, 3, 4]);
+		});
 	});
 
 	test('DateString', function (t) {

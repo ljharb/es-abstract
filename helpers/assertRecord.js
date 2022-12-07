@@ -35,7 +35,10 @@ var predicates = {
 		return true;
 	},
 	// https://262.ecma-international.org/13.0/#sec-match-records
-	'Match Record': isMatchRecord
+	'Match Record': isMatchRecord,
+	'Iterator Record': function isIteratorRecord(value) {
+		return has(value, '[[Iterator]]') && has(value, '[[NextMethod]]') && has(value, '[[Done]]');
+	}
 };
 
 module.exports = function assertRecord(Type, recordType, argumentName, value) {

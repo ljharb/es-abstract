@@ -16,6 +16,7 @@ var ES2018 = {
 	CharacterRange: require('./2018/CharacterRange'),
 	CompletePropertyDescriptor: require('./2018/CompletePropertyDescriptor'),
 	CopyDataProperties: require('./2018/CopyDataProperties'),
+	CreateAsyncFromSyncIterator: require('./2018/CreateAsyncFromSyncIterator'),
 	CreateDataProperty: require('./2018/CreateDataProperty'),
 	CreateDataPropertyOrThrow: require('./2018/CreateDataPropertyOrThrow'),
 	CreateHTML: require('./2018/CreateHTML'),

@@ -680,6 +680,7 @@
 /2021/CanonicalNumericIndexString.js	spackled linguist-generated=true
 /2021/CharacterRange.js	spackled linguist-generated=true
 /2021/CompletePropertyDescriptor.js	spackled linguist-generated=true
+/2021/CreateAsyncFromSyncIterator.js	spackled linguist-generated=true
 /2021/CreateDataProperty.js	spackled linguist-generated=true
 /2021/CreateDataPropertyOrThrow.js	spackled linguist-generated=true
 /2021/CreateHTML.js	spackled linguist-generated=true
@@ -860,6 +861,7 @@
 /2022/CodePointsToString.js	spackled linguist-generated=true
 /2022/CompletePropertyDescriptor.js	spackled linguist-generated=true
 /2022/CopyDataProperties.js	spackled linguist-generated=true
+/2022/CreateAsyncFromSyncIterator.js	spackled linguist-generated=true
 /2022/CreateDataProperty.js	spackled linguist-generated=true
 /2022/CreateDataPropertyOrThrow.js	spackled linguist-generated=true
 /2022/CreateHTML.js	spackled linguist-generated=true
