@@ -1217,6 +1217,15 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 		t.equal(ES.modulo(-3, 2), 1, '-3 mod 2 is +1');
 		t.end();
 	});
+
+	test('floor', function (t) {
+		t.equal(ES.floor(3.2), 3, 'floor(3.2) is 3');
+		t.equal(ES.floor(-3.2), -4, 'floor(-3.2) is -4');
+		t.equal(ES.floor(0), 0, 'floor(+0) is +0');
+		t.equal(ES.floor(-0), -0, 'floor(-0) is -0');
+
+		t.end();
+	});
 };
 
 var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
@@ -6537,6 +6546,14 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				t.fail(debug(key) + ' should not be an enumerable key');
 			}
 		}
+
+		t.end();
+	});
+
+	test('floor (with BigInts)', { skip: !hasBigInts }, function (t) {
+		t.equal(ES.floor(BigInt(3)), BigInt(3), 'floor(3n) is 3n');
+		t.equal(ES.floor(BigInt(-3)), BigInt(-3), 'floor(-3n) is -3n');
+		t.equal(ES.floor(BigInt(0)), BigInt(0), 'floor(0n) is 0n');
 
 		t.end();
 	});
