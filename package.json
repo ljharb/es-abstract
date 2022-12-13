@@ -61,6 +61,7 @@
 		"gopd": "^1.0.1",
 		"has": "^1.0.3",
 		"has-property-descriptors": "^1.0.0",
+		"has-proto": "^1.0.0",
 		"has-symbols": "^1.0.3",
 		"internal-slot": "^1.0.4",
 		"is-callable": "^1.2.7",

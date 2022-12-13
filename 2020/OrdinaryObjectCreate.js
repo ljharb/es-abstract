@@ -9,7 +9,7 @@ var $SyntaxError = GetIntrinsic('%SyntaxError%');
 var IsArray = require('./IsArray');
 var Type = require('./Type');
 
-var hasProto = !({ __proto__: null } instanceof Object);
+var hasProto = require('has-proto')();
 
 // https://262.ecma-international.org/6.0/#sec-objectcreate
 

@@ -8,7 +8,7 @@ var $SyntaxError = GetIntrinsic('%SyntaxError%');
 
 var Type = require('./Type');
 
-var hasProto = !({ __proto__: null } instanceof Object);
+var hasProto = require('has-proto')();
 
 // https://ecma-international.org/ecma-262/6.0/#sec-objectcreate
 
