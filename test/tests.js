@@ -15,6 +15,7 @@ var functionsHaveConfigurableNames = require('functions-have-names').functionsHa
 var boundFunctionsHaveNames = require('functions-have-names').boundFunctionsHaveNames();
 var hasBigInts = require('has-bigints')();
 var getOwnPropertyDescriptor = require('gopd');
+var SLOT = require('internal-slot');
 
 var $getProto = require('../helpers/getProto');
 var $setProto = require('../helpers/setProto');
@@ -3105,10 +3106,18 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.test('internal slots arg', function (st) {
 			st.doesNotThrow(function () { ES.ObjectCreate({}, []); }, 'an empty slot list is valid');
 
+			var O = ES.ObjectCreate({}, ['a', 'b']);
+			st.doesNotThrow(
+				function () {
+					SLOT.assert(O, 'a');
+					SLOT.assert(O, 'b');
+				},
+				'expected internal slots exist'
+			);
 			st['throws'](
-				function () { ES.ObjectCreate({}, ['a']); },
-				SyntaxError,
-				'internal slots are not supported'
+				function () { SLOT.assert(O, 'c'); },
+				TypeError,
+				'internal slots that should not exist throw'
 			);
 
 			st.end();
@@ -3229,10 +3238,18 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				'an empty slot list is valid'
 			);
 
+			var O = ES.OrdinaryCreateFromConstructor(function () {}, '%Array.prototype%', ['a', 'b']);
+			st.doesNotThrow(
+				function () {
+					SLOT.assert(O, 'a');
+					SLOT.assert(O, 'b');
+				},
+				'expected internal slots exist'
+			);
 			st['throws'](
-				function () { ES.OrdinaryCreateFromConstructor(function () {}, '%Array.prototype%', ['a']); },
-				SyntaxError,
-				'internal slots are not supported'
+				function () { SLOT.assert(O, 'c'); },
+				TypeError,
+				'internal slots that should not exist throw'
 			);
 
 			st.end();
@@ -7585,10 +7602,18 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.test('internal slots arg', function (st) {
 			st.doesNotThrow(function () { ES.OrdinaryObjectCreate({}, []); }, 'an empty slot list is valid');
 
+			var O = ES.OrdinaryObjectCreate({}, ['a', 'b']);
+			st.doesNotThrow(
+				function () {
+					SLOT.assert(O, 'a');
+					SLOT.assert(O, 'b');
+				},
+				'expected internal slots exist'
+			);
 			st['throws'](
-				function () { ES.OrdinaryObjectCreate({}, ['a']); },
-				SyntaxError,
-				'internal slots are not supported'
+				function () { SLOT.assert(O, 'c'); },
+				TypeError,
+				'internal slots that should not exist throw'
 			);
 
 			st.end();
