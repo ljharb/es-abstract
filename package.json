@@ -62,7 +62,7 @@
 		"has": "^1.0.3",
 		"has-property-descriptors": "^1.0.0",
 		"has-symbols": "^1.0.3",
-		"internal-slot": "^1.0.3",
+		"internal-slot": "^1.0.4",
 		"is-callable": "^1.2.7",
 		"is-negative-zero": "^2.0.2",
 		"is-regex": "^1.1.4",
