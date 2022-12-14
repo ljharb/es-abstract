@@ -148,7 +148,6 @@ var expectedMissing = [
 	'NewPromiseCapability',
 	'NewPromiseReactionJob',
 	'NewPromiseResolveThenableJob',
-	'NormalCompletion', // completion records
 	'NotifyWaiter',
 	'NumericToRawBytes',
 	'OrdinaryCallBindThis',
@@ -199,7 +198,6 @@ var expectedMissing = [
 	'SortCompare', // mystery access to `comparefn` arg
 	'Suspend',
 	'synchronizes-with',
-	'ThrowCompletion',
 	'TimeZoneString', // depends on LocalTZA
 	'TriggerPromiseReactions',
 	'TypedArrayCreate',

@@ -109,6 +109,12 @@ async function getOps(year) {
 		throw `Missing URLs: ${missings}`;
 	}
 
+	entries.push([
+		'CompletionRecord', year < 2015
+			? 'https://262.ecma-international.org/5.1/#sec-8.9'
+			: `https://262.ecma-international.org/${edition}.0/#sec-completion-record-specification-type`,
+	]);
+
 	if (year === 2015) {
 		entries.push(
 			['abs', 'https://262.ecma-international.org/6.0/#sec-algorithm-conventions'],

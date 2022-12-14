@@ -100,6 +100,7 @@
 /2016/MakeTime.js	spackled linguist-generated=true
 /2016/MinFromTime.js	spackled linguist-generated=true
 /2016/MonthFromTime.js	spackled linguist-generated=true
+/2016/NormalCompletion.js	spackled linguist-generated=true
 /2016/ObjectCreate.js	spackled linguist-generated=true
 /2016/ObjectDefineProperties.js	spackled linguist-generated=true
 /2016/OrdinaryCreateFromConstructor.js	spackled linguist-generated=true
@@ -165,6 +166,7 @@
 /2017/CanonicalNumericIndexString.js	spackled linguist-generated=true
 /2017/CharacterRange.js	spackled linguist-generated=true
 /2017/CompletePropertyDescriptor.js	spackled linguist-generated=true
+/2017/CompletionRecord.js	spackled linguist-generated=true
 /2017/CreateDataProperty.js	spackled linguist-generated=true
 /2017/CreateDataPropertyOrThrow.js	spackled linguist-generated=true
 /2017/CreateHTML.js	spackled linguist-generated=true
@@ -216,6 +218,7 @@
 /2017/MakeTime.js	spackled linguist-generated=true
 /2017/MinFromTime.js	spackled linguist-generated=true
 /2017/MonthFromTime.js	spackled linguist-generated=true
+/2017/NormalCompletion.js	spackled linguist-generated=true
 /2017/ObjectCreate.js	spackled linguist-generated=true
 /2017/ObjectDefineProperties.js	spackled linguist-generated=true
 /2017/OrdinaryCreateFromConstructor.js	spackled linguist-generated=true
@@ -285,6 +288,7 @@
 /2018/CanonicalNumericIndexString.js	spackled linguist-generated=true
 /2018/CharacterRange.js	spackled linguist-generated=true
 /2018/CompletePropertyDescriptor.js	spackled linguist-generated=true
+/2018/CompletionRecord.js	spackled linguist-generated=true
 /2018/CreateDataProperty.js	spackled linguist-generated=true
 /2018/CreateDataPropertyOrThrow.js	spackled linguist-generated=true
 /2018/CreateHTML.js	spackled linguist-generated=true
@@ -336,6 +340,7 @@
 /2018/MakeTime.js	spackled linguist-generated=true
 /2018/MinFromTime.js	spackled linguist-generated=true
 /2018/MonthFromTime.js	spackled linguist-generated=true
+/2018/NormalCompletion.js	spackled linguist-generated=true
 /2018/ObjectCreate.js	spackled linguist-generated=true
 /2018/ObjectDefineProperties.js	spackled linguist-generated=true
 /2018/OrdinaryCreateFromConstructor.js	spackled linguist-generated=true
@@ -408,6 +413,7 @@
 /2019/CanonicalNumericIndexString.js	spackled linguist-generated=true
 /2019/CharacterRange.js	spackled linguist-generated=true
 /2019/CompletePropertyDescriptor.js	spackled linguist-generated=true
+/2019/CompletionRecord.js	spackled linguist-generated=true
 /2019/CopyDataProperties.js	spackled linguist-generated=true
 /2019/CreateDataProperty.js	spackled linguist-generated=true
 /2019/CreateDataPropertyOrThrow.js	spackled linguist-generated=true
@@ -464,6 +470,7 @@
 /2019/MakeTime.js	spackled linguist-generated=true
 /2019/MinFromTime.js	spackled linguist-generated=true
 /2019/MonthFromTime.js	spackled linguist-generated=true
+/2019/NormalCompletion.js	spackled linguist-generated=true
 /2019/NumberToString.js	spackled linguist-generated=true
 /2019/ObjectCreate.js	spackled linguist-generated=true
 /2019/ObjectDefineProperties.js	spackled linguist-generated=true
@@ -494,6 +501,7 @@
 /2019/StringGetOwnProperty.js	spackled linguist-generated=true
 /2019/SymbolDescriptiveString.js	spackled linguist-generated=true
 /2019/TestIntegrityLevel.js	spackled linguist-generated=true
+/2019/ThrowCompletion.js	spackled linguist-generated=true
 /2019/TimeClip.js	spackled linguist-generated=true
 /2019/TimeFromYear.js	spackled linguist-generated=true
 /2019/TimeString.js	spackled linguist-generated=true
@@ -539,6 +547,7 @@
 /2020/CanonicalNumericIndexString.js	spackled linguist-generated=true
 /2020/CharacterRange.js	spackled linguist-generated=true
 /2020/CompletePropertyDescriptor.js	spackled linguist-generated=true
+/2020/CompletionRecord.js	spackled linguist-generated=true
 /2020/CreateDataProperty.js	spackled linguist-generated=true
 /2020/CreateDataPropertyOrThrow.js	spackled linguist-generated=true
 /2020/CreateHTML.js	spackled linguist-generated=true
@@ -591,6 +600,7 @@
 /2020/MakeTime.js	spackled linguist-generated=true
 /2020/MinFromTime.js	spackled linguist-generated=true
 /2020/MonthFromTime.js	spackled linguist-generated=true
+/2020/NormalCompletion.js	spackled linguist-generated=true
 /2020/ObjectDefineProperties.js	spackled linguist-generated=true
 /2020/OrdinaryDefineOwnProperty.js	spackled linguist-generated=true
 /2020/OrdinaryGetOwnProperty.js	spackled linguist-generated=true
@@ -616,6 +626,7 @@
 /2020/StringGetOwnProperty.js	spackled linguist-generated=true
 /2020/SymbolDescriptiveString.js	spackled linguist-generated=true
 /2020/TestIntegrityLevel.js	spackled linguist-generated=true
+/2020/ThrowCompletion.js	spackled linguist-generated=true
 /2020/TimeClip.js	spackled linguist-generated=true
 /2020/TimeFromYear.js	spackled linguist-generated=true
 /2020/TimeString.js	spackled linguist-generated=true
@@ -680,6 +691,7 @@
 /2021/CanonicalNumericIndexString.js	spackled linguist-generated=true
 /2021/CharacterRange.js	spackled linguist-generated=true
 /2021/CompletePropertyDescriptor.js	spackled linguist-generated=true
+/2021/CompletionRecord.js	spackled linguist-generated=true
 /2021/CreateAsyncFromSyncIterator.js	spackled linguist-generated=true
 /2021/CreateDataProperty.js	spackled linguist-generated=true
 /2021/CreateDataPropertyOrThrow.js	spackled linguist-generated=true
@@ -738,6 +750,7 @@
 /2021/MakeDate.js	spackled linguist-generated=true
 /2021/MinFromTime.js	spackled linguist-generated=true
 /2021/MonthFromTime.js	spackled linguist-generated=true
+/2021/NormalCompletion.js	spackled linguist-generated=true
 /2021/Number/bitwiseAND.js	spackled linguist-generated=true
 /2021/Number/bitwiseNOT.js	spackled linguist-generated=true
 /2021/Number/bitwiseOR.js	spackled linguist-generated=true
@@ -781,6 +794,7 @@
 /2021/StringToBigInt.js	spackled linguist-generated=true
 /2021/SymbolDescriptiveString.js	spackled linguist-generated=true
 /2021/TestIntegrityLevel.js	spackled linguist-generated=true
+/2021/ThrowCompletion.js	spackled linguist-generated=true
 /2021/TimeClip.js	spackled linguist-generated=true
 /2021/TimeFromYear.js	spackled linguist-generated=true
 /2021/TimeString.js	spackled linguist-generated=true
@@ -860,6 +874,7 @@
 /2022/CodePointAt.js	spackled linguist-generated=true
 /2022/CodePointsToString.js	spackled linguist-generated=true
 /2022/CompletePropertyDescriptor.js	spackled linguist-generated=true
+/2022/CompletionRecord.js	spackled linguist-generated=true
 /2022/CopyDataProperties.js	spackled linguist-generated=true
 /2022/CreateAsyncFromSyncIterator.js	spackled linguist-generated=true
 /2022/CreateDataProperty.js	spackled linguist-generated=true
@@ -923,6 +938,7 @@
 /2022/MakeTime.js	spackled linguist-generated=true
 /2022/MinFromTime.js	spackled linguist-generated=true
 /2022/MonthFromTime.js	spackled linguist-generated=true
+/2022/NormalCompletion.js	spackled linguist-generated=true
 /2022/Number/add.js	spackled linguist-generated=true
 /2022/Number/bitwiseAND.js	spackled linguist-generated=true
 /2022/Number/bitwiseNOT.js	spackled linguist-generated=true
@@ -977,6 +993,7 @@
 /2022/StringToCodePoints.js	spackled linguist-generated=true
 /2022/SymbolDescriptiveString.js	spackled linguist-generated=true
 /2022/TestIntegrityLevel.js	spackled linguist-generated=true
+/2022/ThrowCompletion.js	spackled linguist-generated=true
 /2022/TimeClip.js	spackled linguist-generated=true
 /2022/TimeFromYear.js	spackled linguist-generated=true
 /2022/TimeString.js	spackled linguist-generated=true

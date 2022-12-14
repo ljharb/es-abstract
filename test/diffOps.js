@@ -5,7 +5,7 @@ var forEach = require('for-each');
 var indexOf = require('array.prototype.indexof');
 var has = require('has');
 
-module.exports = function diffOperations(actual, expected, expectedMissing) {
+module.exports = function diffOperations(actual, expected, expectedMissing, expectedExtra) {
 	var actualKeys = keys(actual);
 	var expectedKeys = keys(expected);
 
@@ -19,7 +19,9 @@ module.exports = function diffOperations(actual, expected, expectedMissing) {
 				forEach(keys(actual[op]), function (nestedOp) {
 					var fullNestedOp = op + '::' + nestedOp;
 					if (!(fullNestedOp in expected)) {
-						extra.push(fullNestedOp);
+						if (indexOf(expectedExtra, fullNestedOp) === -1) {
+							extra.push(fullNestedOp);
+						}
 					} else if (indexOf(expectedMissing, fullNestedOp) !== -1) {
 						extra.push(fullNestedOp);
 					}

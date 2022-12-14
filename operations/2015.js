@@ -60,6 +60,9 @@ module.exports = {
 	Completion: {
 		url: 'https://262.ecma-international.org/6.0/#sec-implicit-completion-values'
 	},
+	CompletionRecord: {
+		url: 'https://262.ecma-international.org/6.0/#sec-completion-record-specification-type'
+	},
 	Construct: {
 		url: 'https://262.ecma-international.org/6.0/#sec-construct'
 	},

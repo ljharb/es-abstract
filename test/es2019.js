@@ -145,7 +145,6 @@ var expectedMissing = [
 	'NewModuleEnvironment',
 	'NewObjectEnvironment',
 	'NewPromiseCapability',
-	'NormalCompletion', // completion records
 	'NotifyWaiter',
 	'NumberToRawBytes',
 	'OrdinaryCallBindThis',
@@ -198,7 +197,6 @@ var expectedMissing = [
 	'Suspend',
 	'SynchronizeEventSet',
 	'synchronizes-with',
-	'ThrowCompletion',
 	'TimeZoneString', // depends on LocalTZA
 	'TopLevelModuleEvaluationJob',
 	'TriggerPromiseReactions',

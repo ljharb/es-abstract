@@ -131,7 +131,6 @@ var expectedMissing = [
 	'NewModuleEnvironment',
 	'NewObjectEnvironment',
 	'NewPromiseCapability',
-	'NormalCompletion', // completion records
 	'NumberToRawBytes',
 	'OrdinaryCallBindThis',
 	'OrdinaryCallEvaluateBody',

@@ -145,7 +145,6 @@ var expectedMissing = [
 	'NewModuleEnvironment',
 	'NewObjectEnvironment',
 	'NewPromiseCapability',
-	'NormalCompletion', // completion records
 	'NumberToRawBytes',
 	'OrdinaryCallBindThis',
 	'OrdinaryCallEvaluateBody',
@@ -196,7 +195,6 @@ var expectedMissing = [
 	'SortCompare', // mystery access to `comparefn` arg
 	'Suspend',
 	'synchronizes-with',
-	'ThrowCompletion',
 	'TimeZoneString', // depends on LocalTZA
 	'TopLevelModuleEvaluationJob',
 	'TriggerPromiseReactions',

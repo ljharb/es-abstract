@@ -223,6 +223,9 @@ module.exports = {
 	Completion: {
 		url: 'https://262.ecma-international.org/12.0/#sec-completion-record-specification-type'
 	},
+	CompletionRecord: {
+		url: 'https://262.ecma-international.org/12.0/#sec-completion-record-specification-type'
+	},
 	ComposeWriteEventBytes: {
 		url: 'https://262.ecma-international.org/12.0/#sec-composewriteeventbytes'
 	},

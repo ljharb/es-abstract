@@ -344,7 +344,7 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 	var test = makeTest(ES, skips);
 
 	test('has expected operations', function (t) {
-		var diff = diffOps(ES, ops, expectedMissing);
+		var diff = diffOps(ES, ops, expectedMissing, []);
 
 		t.deepEqual(diff.extra, [], 'no extra ops');
 
@@ -1761,6 +1761,38 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('CompletionRecord', function (t) {
+		t['throws'](
+			function () { return new ES.CompletionRecord('invalid'); },
+			SyntaxError,
+			'invalid Completion Record type throws'
+		);
+
+		forEach(['break', 'continue', 'return'], function (unsupportedType) {
+			var completion = ES.CompletionRecord(unsupportedType);
+			t['throws'](
+				function () { completion['?'](); },
+				SyntaxError,
+				'type ' + unsupportedType + ' is not supported'
+			);
+		});
+
+		forEach(['break', 'continue', 'return', 'throw'], function (nonNormalType) {
+			var completion = ES.CompletionRecord(nonNormalType);
+			t['throws'](
+				function () { completion['!'](); },
+				SyntaxError,
+				'assertion failed: type ' + nonNormalType + ' is not "normal"'
+			);
+		});
+
+		var sentinel = {};
+		var completion = ES.CompletionRecord('normal', sentinel);
+		t.equal(completion['!'](), sentinel, '! returns the value of a normal completion');
+
+		t.end();
+	});
+
 	test('CreateDataProperty', function (t) {
 		forEach(v.primitives, function (primitive) {
 			t['throws'](
@@ -3080,6 +3112,20 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			42,
 			'when `.return` and completionThunk do not throw, and `.return` returns an Object, returns completionThunk'
 		);
+
+		t.end();
+	});
+
+	test('NormalCompletion', function (t) {
+		var sentinel = {};
+		var completion = ES.NormalCompletion(sentinel);
+
+		t.ok(completion instanceof ES.CompletionRecord, 'produces an instance of CompletionRecord');
+
+		t.equal(SLOT.get(completion, '[[type]]'), 'normal', 'completion type is "normal"');
+		t.equal(completion.type(), 'normal', 'completion type is "normal" (via property)');
+		t.equal(SLOT.get(completion, '[[value]]'), sentinel, 'completion value is the argument provided');
+		t.equal(completion.value(), sentinel, 'completion value is the argument provided (via property)');
 
 		t.end();
 	});
@@ -4636,6 +4682,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 	es2015(ES, ops, expectedMissing, assign(assign({}, skips), {
+		NormalCompletion: true,
 		StringGetIndexProperty: true
 	}));
 	var test = makeTest(ES, skips);
@@ -4674,6 +4721,20 @@ var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 
 		var O = {};
 		t.equal(ES.IterableToArrayLike(O), O, 'a non-iterable non-array non-string object is returned directly');
+
+		t.end();
+	});
+
+	test('NormalCompletion', function (t) {
+		var sentinel = {};
+		var completion = ES.NormalCompletion(sentinel);
+
+		t.ok(completion instanceof ES.CompletionRecord, 'produces an instance of CompletionRecord');
+
+		t.equal(SLOT.get(completion, '[[Type]]'), 'normal', 'completion type is "normal"');
+		t.equal(completion.type(), 'normal', 'completion type is "normal" (via method)');
+		t.equal(SLOT.get(completion, '[[Value]]'), sentinel, 'completion value is the argument provided');
+		t.equal(completion.value(), sentinel, 'completion value is the argument provided (via method)');
 
 		t.end();
 	});
@@ -5650,6 +5711,19 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 
 			st.end();
 		});
+
+		t.end();
+	});
+
+	test('ThrowCompletion', function (t) {
+		var sentinel = {};
+		var completion = ES.ThrowCompletion(sentinel);
+
+		t.ok(completion instanceof ES.CompletionRecord, 'produces an instance of CompletionRecord');
+		t.equal(SLOT.get(completion, '[[Type]]'), 'throw', 'completion type is "throw"');
+		t.equal(completion.type(), 'throw', 'completion type is "throw" (via property)');
+		t.equal(SLOT.get(completion, '[[Value]]'), sentinel, 'completion value is the argument provided');
+		t.equal(completion.value(), sentinel, 'completion value is the argument provided (via property)');
 
 		t.end();
 	});
