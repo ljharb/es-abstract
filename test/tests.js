@@ -3089,6 +3089,11 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			sentinel,
 			'when `.return` is `undefined`, invokes and returns the completion thunk'
 		);
+		t.equal(
+			ES.IteratorClose({ 'return': undefined }, ES.NormalCompletion(sentinel)),
+			sentinel,
+			'when `.return` is `undefined`, invokes and returns the Completion Record'
+		);
 
 		/* eslint no-throw-literal: 0 */
 		t['throws'](
@@ -3097,20 +3102,42 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			'`.return` that throws, when completionThunk does not, throws exception from `.return`'
 		);
 		t['throws'](
+			function () { ES.IteratorClose({ 'return': function () { throw sentinel; } }, ES.NormalCompletion()); },
+			sentinel,
+			'`.return` that throws, when Completion Record does not, throws exception from `.return`'
+		);
+
+		t['throws'](
 			function () { ES.IteratorClose({ 'return': function () { throw sentinel; } }, function () { throw -1; }); },
 			-1,
 			'`.return` that throws, when completionThunk does too, throws exception from completionThunk'
 		);
 		t['throws'](
+			function () { ES.IteratorClose({ 'return': function () { throw sentinel; } }, ES.CompletionRecord('throw', -1)); },
+			-1,
+			'`.return` that throws, when completionThunk does too, throws exception from Completion Record'
+		);
+
+		t['throws'](
 			function () { ES.IteratorClose({ 'return': function () { } }, function () { throw -1; }); },
 			-1,
 			'`.return` that does not throw, when completionThunk does, throws exception from completionThunk'
+		);
+		t['throws'](
+			function () { ES.IteratorClose({ 'return': function () { } }, ES.CompletionRecord('throw', -1)); },
+			-1,
+			'`.return` that does not throw, when completionThunk does, throws exception from Competion Record'
 		);
 
 		t.equal(
 			ES.IteratorClose({ 'return': function () { return sentinel; } }, function () { return 42; }),
 			42,
 			'when `.return` and completionThunk do not throw, and `.return` returns an Object, returns completionThunk'
+		);
+		t.equal(
+			ES.IteratorClose({ 'return': function () { return sentinel; } }, ES.NormalCompletion(42)),
+			42,
+			'when `.return` and Completion Record do not throw, and `.return` returns an Object, returns completionThunk'
 		);
 
 		t.end();
@@ -5765,6 +5792,22 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 		t.equal(ES.UnicodeEscape('a'), '\\u0061');
 		t.equal(ES.UnicodeEscape(leadingPoo), '\\ud83d');
 		t.equal(ES.UnicodeEscape(trailingPoo), '\\udca9');
+
+		t.end();
+	});
+
+	test('IteratorClose', function (t) {
+		var sentinel = {};
+		t['throws'](
+			function () { ES.IteratorClose({ 'return': function () { throw sentinel; } }, ES.ThrowCompletion(-1)); },
+			-1,
+			'`.return` that throws, when completionThunk does too, throws exception from Competion Record'
+		);
+		t['throws'](
+			function () { ES.IteratorClose({ 'return': function () { } }, ES.ThrowCompletion(-1)); },
+			-1,
+			'`.return` that does not throw, when completionThunk does, throws exception from Competion Record'
+		);
 
 		t.end();
 	});
