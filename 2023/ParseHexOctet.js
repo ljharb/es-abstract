@@ -2,6 +2,7 @@
 
 var GetIntrinsic = require('get-intrinsic');
 
+var $Number = GetIntrinsic('%Number%');
 var $SyntaxError = GetIntrinsic('%SyntaxError%');
 var $TypeError = GetIntrinsic('%TypeError%');
 
@@ -28,7 +29,7 @@ module.exports = function ParseHexOctet(string, position) {
 	}
 	var hexDigits = substring(string, position, position + 2); // step 3
 
-	var n = parseInt(hexDigits, 16);
+	var n = $Number('0x' + hexDigits);
 	if (isNaN(n)) {
 		return [new $SyntaxError('Invalid hexadecimal characters')];
 	}

@@ -220,6 +220,12 @@ module.exports = {
 	CodePointsToString: {
 		url: 'https://262.ecma-international.org/14.0/#sec-codepointstostring'
 	},
+	CompareArrayElements: {
+		url: 'https://262.ecma-international.org/14.0/#sec-comparearrayelements'
+	},
+	CompareTypedArrayElements: {
+		url: 'https://262.ecma-international.org/14.0/#sec-comparetypedarrayelements'
+	},
 	CompletePropertyDescriptor: {
 		url: 'https://262.ecma-international.org/14.0/#sec-completepropertydescriptor'
 	},
@@ -1356,6 +1362,9 @@ module.exports = {
 	},
 	TypedArrayElementType: {
 		url: 'https://262.ecma-international.org/14.0/#sec-typedarrayelementtype'
+	},
+	TypedArrayCreateSameType: {
+		url: 'https://262.ecma-international.org/14.0/#sec-typedarray-create-same-type'
 	},
 	TypedArraySpeciesCreate: {
 		url: 'https://262.ecma-international.org/14.0/#typedarray-species-create'
