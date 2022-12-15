@@ -5,10 +5,8 @@ var callBound = require('call-bind/callBound');
 
 var $TypeError = GetIntrinsic('%TypeError%');
 
-var DeletePropertyOrThrow = require('./DeletePropertyOrThrow');
 var Get = require('./Get');
 var HasProperty = require('./HasProperty');
-var Set = require('./Set');
 var ToString = require('./ToString');
 var Type = require('./Type');
 
@@ -18,9 +16,9 @@ var isInteger = require('../helpers/isInteger');
 var $push = callBound('Array.prototype.push');
 var $sort = callBound('Array.prototype.sort');
 
-// https://262.ecma-international.org/13.0/#sec-sortindexedproperties
+// https://262.ecma-international.org/14.0/#sec-sortindexedproperties
 
-module.exports = function SortIndexedProperties(obj, len, SortCompare) {
+module.exports = function SortIndexedProperties(obj, len, SortCompare, skipHoles) {
 	if (Type(obj) !== 'Object') {
 		throw new $TypeError('Assertion failed: Type(obj) is not Object');
 	}
@@ -30,6 +28,9 @@ module.exports = function SortIndexedProperties(obj, len, SortCompare) {
 	if (!isAbstractClosure(SortCompare) || SortCompare.length !== 2) {
 		throw new $TypeError('Assertion failed: `SortCompare` must be an abstract closure taking 2 arguments');
 	}
+	if (Type(skipHoles) !== 'Boolean') {
+		throw new $TypeError('Assertion failed: `skipHoles` must be a Boolean');
+	}
 
 	var items = []; // step 1
 
@@ -37,28 +38,15 @@ module.exports = function SortIndexedProperties(obj, len, SortCompare) {
 
 	while (k < len) { // step 3
 		var Pk = ToString(k);
-		var kPresent = HasProperty(obj, Pk);
-		if (kPresent) {
+		var kRead = skipHoles ? HasProperty(obj, Pk) : true; // step 3.b - 3.c
+		if (kRead) { // step 3.d
 			var kValue = Get(obj, Pk);
 			$push(items, kValue);
 		}
-		k += 1;
+		k += 1; // step 3.e
 	}
 
-	var itemCount = items.length; // step 4
+	$sort(items, SortCompare); // step 4
 
-	$sort(items, SortCompare); // step 5
-
-	var j = 0; // step 6
-
-	while (j < itemCount) { // step 7
-		Set(obj, ToString(j), items[j], true);
-		j += 1;
-	}
-
-	while (j < len) { // step 8
-		DeletePropertyOrThrow(obj, ToString(j));
-		j += 1;
-	}
-	return obj; // step 9
+	return items; // step 5
 };

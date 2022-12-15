@@ -12886,6 +12886,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 		IteratorStep: true,
 		GetIterator: true,
 		SameValueNonNumeric: true,
+		SortIndexedProperties: true,
 		WordCharacters: true
 	}));
 
@@ -12927,6 +12928,104 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 			t.equal(ES.Canonicalize(input, false, true), input, 'S mapping, IgnoreCase false: ' + debug(input) + ' canonicalizes to ' + debug(input));
 			t.equal(ES.Canonicalize(input, true, true), output, 'S mapping, IgnoreCase true: ' + debug(input) + ' canonicalizes to ' + debug(output));
 		});
+
+		t.end();
+	});
+
+	test('CompareArrayElements', function (t) {
+		forEach(v.nonFunctions, function (nonFunction) {
+			if (typeof nonFunction !== 'undefined') {
+				t['throws'](
+					function () { ES.CompareArrayElements(null, null, nonFunction); },
+					TypeError,
+					debug(nonFunction) + ' is not a function or undefined'
+				);
+			}
+		});
+
+		t.equal(ES.CompareArrayElements(1, 1, undefined), 0, '1 == 1');
+		t.equal(ES.CompareArrayElements(0, 1, undefined), -1, '0 < 1');
+		t.equal(ES.CompareArrayElements(1, 0, undefined), 1, '1 > 0');
+		t.equal(ES.CompareArrayElements(undefined, undefined, undefined), 0, 'undefined == undefined');
+		t.equal(ES.CompareArrayElements(undefined, 42, undefined), 1, 'undefined < not undefined');
+		t.equal(ES.CompareArrayElements(42, undefined, undefined), -1, 'not undefined > undefined');
+
+		var xSentinel = { x: true };
+		var ySentinel = { y: true };
+		var compareFn = function compareFn(x, y) {
+			t.equal(this, undefined, 'receiver is undefined');
+			t.equal(x, xSentinel, 'sentinel x value received');
+			t.equal(y, ySentinel, 'sentinel y value received');
+
+			return -Infinity;
+		};
+		t.equal(ES.CompareArrayElements(xSentinel, ySentinel, compareFn), -Infinity, 'comparefn return is passed through');
+
+		t.equal(ES.CompareArrayElements(xSentinel, ySentinel, function () { return NaN; }), 0, 'comparefn returning NaN yields +0');
+
+		t.end();
+	});
+
+	test('CompareTypedArrayElements', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.CompareTypedArrayElements(nonNumber, 0, undefined); },
+				TypeError,
+				'arg 1: ' + debug(nonNumber) + ' is not a Number or BigInt'
+			);
+
+			t['throws'](
+				function () { ES.CompareTypedArrayElements(0, nonNumber, undefined); },
+				TypeError,
+				'arg 2: ' + debug(nonNumber) + ' is not a Number or BigInta'
+			);
+		});
+		forEach(v.bigints, function (bigInt) {
+			t['throws'](
+				function () { ES.CompareTypedArrayElements(bigInt, 0, undefined); },
+				TypeError,
+				debug(bigInt) + ' is a BigInt, but 0 is a Number'
+			);
+
+			t['throws'](
+				function () { ES.CompareTypedArrayElements(0, bigInt, undefined); },
+				TypeError,
+				'0 is a Number, but ' + debug(bigInt) + ' is a BigInt'
+			);
+		});
+
+		forEach(v.nonFunctions, function (nonFunction) {
+			if (typeof nonFunction !== 'undefined') {
+				t['throws'](
+					function () { ES.CompareTypedArrayElements(0, 0, nonFunction); },
+					TypeError,
+					debug(nonFunction) + ' is not a function or undefined'
+				);
+			}
+		});
+
+		t.equal(ES.CompareTypedArrayElements(1, 1, undefined), 0, '1 == 1');
+		t.equal(ES.CompareTypedArrayElements(0, 1, undefined), -1, '0 < 1');
+		t.equal(ES.CompareTypedArrayElements(1, 0, undefined), 1, '1 > 0');
+
+		t.equal(ES.CompareTypedArrayElements(NaN, NaN, undefined), 0, 'NaN == NaN');
+		t.equal(ES.CompareTypedArrayElements(NaN, 0, undefined), 1, 'NaN > 0');
+		t.equal(ES.CompareTypedArrayElements(0, NaN, undefined), -1, '0 > NaN');
+
+		t.equal(ES.CompareTypedArrayElements(0, -0, undefined), 1, '0 > -0');
+		t.equal(ES.CompareTypedArrayElements(-0, 0, undefined), -1, '-0 < 0');
+		t.equal(ES.CompareTypedArrayElements(-0, -0, undefined), 0, '-0 == -0');
+
+		var compareFn = function compareFn(x, y) {
+			t.equal(this, undefined, 'receiver is undefined');
+			t.equal(x, 0, 'sentinel x value received');
+			t.equal(y, 1, 'sentinel y value received');
+
+			return -Infinity;
+		};
+		t.equal(ES.CompareTypedArrayElements(0, 1, compareFn), -Infinity, 'comparefn return is passed through');
+
+		t.equal(ES.CompareTypedArrayElements(0, 1, function () { return NaN; }), 0, 'comparefn returning NaN yields +0');
 
 		t.end();
 	});
@@ -13336,6 +13435,35 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ParseHexOctet', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.ParseHexOctet(nonString, 0); },
+				TypeError,
+				debug(nonString) + ' is not a String'
+			);
+		});
+
+		forEach(v.notNonNegativeIntegers, function (nonNonNegativeInteger) {
+			t['throws'](
+				function () { ES.ParseHexOctet('', nonNonNegativeInteger); },
+				TypeError,
+				debug(nonNonNegativeInteger) + ' is not a non-negative integer'
+			);
+		});
+
+		var str = 'abc';
+		t.deepEqual(
+			ES.ParseHexOctet(str, str.length - 1),
+			[new SyntaxError('requested a position on a string that does not contain 2 characters at that position')],
+			'"position + 2" is not a valid index into the string'
+		);
+
+		t.deepEqual(
+			ES.ParseHexOctet('0gx', 0),
+			[new SyntaxError('Invalid hexadecimal characters')],
+			'invalid hex characters return an array with an error'
+		);
+
 		for (var i = 0; i < 256; i += 1) {
 			var hex = ES.StringPad(i.toString(16), 2, '0', 'start');
 			t.equal(ES.ParseHexOctet(hex, 0), i, debug(hex) + ' parses to ' + i);
@@ -13359,6 +13487,173 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 
 		forEach(v.objects.concat(v.nonNumberPrimitives).concat(v.bigints), function (val) {
 			t.equal(val === val, ES.SameValueNonNumber(val, val), debug(val) + ' is SameValueNonNumber to itself');
+		});
+
+		t.end();
+	});
+
+	test('SortIndexedProperties', function (t) {
+		/* eslint no-unused-vars: 0 */
+
+		var emptySortCompare = function (a, b) {};
+
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.SortIndexedProperties(primitive, 0, emptySortCompare, false); },
+				TypeError,
+				'obj must be an Object; ' + debug(primitive) + ' is not one'
+			);
+		});
+
+		forEach(v.notNonNegativeIntegers, function (nonNonNegativeInteger) {
+			t['throws'](
+				function () { ES.SortIndexedProperties({}, nonNonNegativeInteger, emptySortCompare, false); },
+				TypeError,
+				'`len`: ' + debug(nonNonNegativeInteger) + ' is not a non-negative integer'
+			);
+		});
+
+		forEach(
+			v.nonFunctions.concat(
+				function () {},
+				function f(a, b) { return 0; },
+				function (a) { return 0; },
+				arrowFns.length > 0 ? [
+					/* eslint no-new-func: 1 */
+					Function('return () => {}')(),
+					Function('return (a) => {}')(),
+					Function('return (a, b, c) => {}')()
+				] : []
+			),
+			function (nonTwoArgAbstractClosure) {
+				t['throws'](
+					function () { ES.SortIndexedProperties({}, 0, nonTwoArgAbstractClosure, false); },
+					TypeError,
+					'`len`: ' + debug(nonTwoArgAbstractClosure) + ' is not an abstract closure taking two args'
+				);
+			}
+		);
+
+		forEach([
+			function (a, b) { return 0; }
+		].concat(arrowFns.length > 0 ? [
+			/* eslint no-new-func: 1 */
+			Function('return (a, b) => 0')()
+		] : []), function (ac) {
+			t.doesNotThrow(
+				function () { ES.SortIndexedProperties({}, 0, ac, false); },
+				'an abstract closure taking two args is accepted'
+			);
+		});
+
+		forEach(v.nonBooleans, function (nonBoolean) {
+			t['throws'](
+				function () { ES.SortIndexedProperties({}, 0, emptySortCompare, nonBoolean); },
+				TypeError,
+				'`skipHoles`: ' + debug(nonBoolean) + ' is not a Boolean'
+			);
+		});
+
+		var o = [1, 3, 2, 0];
+		t.deepEqual(
+			ES.SortIndexedProperties(
+				o,
+				3,
+				function (a, b) { return a - b; },
+				false
+			),
+			[1, 2, 3],
+			'sorted items are returned, up to the expected length of the object'
+		);
+
+		t.deepEqual(
+			ES.SortIndexedProperties(
+				o,
+				4,
+				function (a, b) { return b - a; },
+				false
+			),
+			[3, 2, 1, 0],
+			'sorted items are returned'
+		);
+
+		t.deepEqual(
+			ES.SortIndexedProperties(
+				o,
+				6,
+				function (a, b) { return a - b; },
+				false
+			),
+			[0, 1, 2, 3, undefined, undefined],
+			'sorted items are returned'
+		);
+		t.deepEqual(
+			ES.SortIndexedProperties(
+				o,
+				6,
+				function (a, b) { return a - b; },
+				true
+			),
+			[0, 1, 2, 3],
+			'sorted items are returned, holes skipped'
+		);
+
+		// TODO: tests with holes
+
+		t.end();
+	});
+
+	test('TypedArrayCreateSameType', function (t) {
+		t.test('no Typed Array support', { skip: availableTypedArrays.length > 0 }, function (st) {
+			forEach(v.primitives.concat(v.objects), function (nonTA) {
+				st['throws'](
+					function () { ES.TypedArrayCreateSameType(nonTA, []); },
+					SyntaxError,
+					'no Typed Array support'
+				);
+			});
+
+			forEach(v.nonArrays, function (nonArray) {
+				st['throws'](
+					function () { ES.TypedArrayCreate(Array, nonArray); },
+					SyntaxError,
+					'no Typed Array support'
+				);
+			});
+
+			st.end();
+		});
+
+		t.test('Typed Array support', { skip: availableTypedArrays.length === 0 }, function (st) {
+			forEach(v.primitives.concat(v.objects), function (nonTA) {
+				st['throws'](
+					function () { ES.TypedArrayCreateSameType(nonTA, []); },
+					TypeError,
+					debug(nonTA) + ' is not a Typed Array'
+				);
+			});
+
+			forEach(v.nonArrays, function (nonArray) {
+				st['throws'](
+					function () { ES.TypedArrayCreateSameType(new global[availableTypedArrays[0]](), nonArray); },
+					TypeError,
+					debug(nonArray) + ' is not an Array'
+				);
+			});
+
+			forEach(availableTypedArrays, function (TypedArray) {
+				var Constructor = global[TypedArray];
+
+				var typedArray = ES.TypedArrayCreateSameType(new Constructor(), []);
+				st.equal(whichTypedArray(typedArray), TypedArray, 'created a ' + TypedArray);
+				st.equal(typedArrayLength(typedArray), 0, 'created a ' + TypedArray + ' of length 42');
+
+				var taLength = ES.TypedArrayCreateSameType(new Constructor(1), [42]);
+				st.equal(whichTypedArray(taLength), TypedArray, 'created a ' + TypedArray);
+				st.equal(typedArrayLength(taLength), 42, 'created a ' + TypedArray + ' of length 42');
+			});
+
+			st.end();
 		});
 
 		t.end();
