@@ -1199,7 +1199,6 @@
 /2023/IsPropertyKey.js	spackled linguist-generated=true
 /2023/IsRegExp.js	spackled linguist-generated=true
 /2023/IsSharedArrayBuffer.js	spackled linguist-generated=true
-/2023/IsStringWellFormedUnicode.js	spackled linguist-generated=true
 /2023/IsUnclampedIntegerElementType.js	spackled linguist-generated=true
 /2023/IsUnsignedElementType.js	spackled linguist-generated=true
 /2023/IteratorComplete.js	spackled linguist-generated=true
