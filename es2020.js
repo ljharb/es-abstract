@@ -13,6 +13,7 @@ var ES2020 = {
 	ArraySetLength: require('./2020/ArraySetLength'),
 	ArraySpeciesCreate: require('./2020/ArraySpeciesCreate'),
 	AsyncFromSyncIteratorContinuation: require('./2020/AsyncFromSyncIteratorContinuation'),
+	AsyncIteratorClose: require('./2020/AsyncIteratorClose'),
 	BigInt: require('./2020/BigInt'),
 	BigIntBitwiseOp: require('./2020/BigIntBitwiseOp'),
 	BinaryAnd: require('./2020/BinaryAnd'),

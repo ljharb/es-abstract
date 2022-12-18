@@ -22,7 +22,6 @@ var expectedMissing = [
 	'AsyncGeneratorResumeNext',
 	'AsyncGeneratorStart',
 	'AsyncGeneratorYield',
-	'AsyncIteratorClose',
 	'AtomicLoad',
 	'AtomicReadModifyWrite',
 	'Await', // macro

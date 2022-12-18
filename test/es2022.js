@@ -20,7 +20,6 @@ var expectedMissing = [
 	'AsyncGeneratorStart',
 	'AsyncGeneratorValidate',
 	'AsyncGeneratorYield',
-	'AsyncIteratorClose',
 	'AtomicReadModifyWrite',
 	'Await', // macro
 	'BackreferenceMatcher',

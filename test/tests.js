@@ -21,6 +21,7 @@ var $getProto = require('../helpers/getProto');
 var $setProto = require('../helpers/setProto');
 var defineProperty = require('./helpers/defineProperty');
 var getInferredName = require('../helpers/getInferredName');
+var reduce = require('../helpers/reduce');
 var fromPropertyDescriptor = require('../helpers/fromPropertyDescriptor');
 var assertRecordTests = require('./helpers/assertRecord');
 var v = require('es-value-fixtures');
@@ -31,7 +32,6 @@ var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1;
 var $BigInt = hasBigInts ? BigInt : null;
 
 var supportedRegexFlags = require('available-regexp-flags');
-var thisTimeValue = require('../2015/thisTimeValue');
 
 // node v10.4-v10.8 have a bug where you can't `BigInt(x)` anything larger than MAX_SAFE_INTEGER
 var needsBigIntHack = false;
@@ -5808,6 +5808,166 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 			-1,
 			'`.return` that does not throw, when completionThunk does, throws exception from Competion Record'
 		);
+
+		t.end();
+	});
+
+	test('AsyncIteratorClose', function (t) {
+		forEach(v.primitives.concat(v.objects), function (nonIteratorRecord) {
+			t['throws'](
+				function () { ES.AsyncIteratorClose(nonIteratorRecord); },
+				TypeError,
+				debug(nonIteratorRecord) + ' is not an Iterator Record'
+			);
+		});
+
+		var iterator = {
+			next: function next() {}
+		};
+		var iteratorRecord = {
+			'[[Iterator]]': iterator,
+			'[[NextMethod]]': iterator.next,
+			'[[Done]]': false
+		};
+
+		forEach(v.primitives.concat(v.objects), function (nonCompletionRecord) {
+			t['throws'](
+				function () { ES.AsyncIteratorClose(iteratorRecord, nonCompletionRecord); },
+				TypeError,
+				debug(nonCompletionRecord) + ' is not a CompletionRecord'
+			);
+		});
+
+		var sentinel = {};
+		var completionRecord = ES.NormalCompletion(sentinel);
+
+		t.test('Promises supported', { skip: typeof Promise === 'undefined' }, function (st) {
+			st.test('no return method', function (s2t) {
+				var nullReturnIterator = {
+					next: function next() {},
+					'return': null
+				};
+				var nullReturnIteratorRecord = {
+					'[[Iterator]]': nullReturnIterator,
+					'[[NextMethod]]': nullReturnIterator.next,
+					'[[Done]]': false
+				};
+				return Promise.all([
+					ES.AsyncIteratorClose(iteratorRecord, completionRecord).then(function (result) {
+						s2t.equal(result, completionRecord, 'returns a Promise for the original passed completion record (undefined)');
+					}),
+					ES.AsyncIteratorClose(nullReturnIteratorRecord, completionRecord).then(function (result) {
+						s2t.equal(result, completionRecord, 'returns a Promise for the original passed completion record (null)');
+					})
+				]);
+			});
+
+			st.test('non-function return method', function (s2t) {
+				return reduce(
+					v.nonFunctions,
+					function (prev, nonFunction) {
+						if (nonFunction == null) {
+							return prev;
+						}
+						return prev.then(function () {
+							var badIterator = {
+								next: function next() {},
+								'return': nonFunction
+							};
+							var badIteratorRecord = {
+								'[[Iterator]]': badIterator,
+								'[[NextMethod]]': badIterator.next,
+								'[[Done]]': false
+							};
+							return ES.AsyncIteratorClose(badIteratorRecord, completionRecord).then(
+								function (x) {
+									throw debug(x) + '/' + debug(nonFunction);
+								},
+								function (e) {
+									s2t.comment('`.return` of ' + debug(nonFunction) + ' is not a function');
+								}
+							);
+						});
+					},
+					Promise.resolve()
+				);
+			});
+
+			st.test('function return method (returns object)', function (s2t) {
+				var returnableIterator = {
+					next: function next() {},
+					'return': function Return() {
+						s2t.equal(arguments.length, 0, 'no args passed to `.return`');
+						return {};
+					}
+				};
+				var returnableRecord = {
+					'[[Iterator]]': returnableIterator,
+					'[[NextMethod]]': returnableIterator.next,
+					'[[Done]]': false
+				};
+				return ES.AsyncIteratorClose(returnableRecord, completionRecord);
+			});
+
+			forEach(v.primitives, function (nonObject) {
+				st.test('function return method (returns non-object ' + debug(nonObject) + ')', function (s2t) {
+					var returnableIterator = {
+						next: function next() {},
+						'return': function Return() {
+							s2t.equal(arguments.length, 0, 'no args passed to `.return`');
+							return nonObject;
+						}
+					};
+					var returnableRecord = {
+						'[[Iterator]]': returnableIterator,
+						'[[NextMethod]]': returnableIterator.next,
+						'[[Done]]': false
+					};
+					return ES.AsyncIteratorClose(returnableRecord, completionRecord).then(s2t.fail, function (e) {
+						s2t.ok(e instanceof TypeError, 'throws on non-object return value');
+					});
+				});
+			});
+
+			st.test('return method throws, completion is normal', function (s2t) {
+				var returnThrowIterator = {
+					next: function next() {},
+					'return': function Return() {
+						s2t.equal(arguments.length, 0, 'no args passed to `.return`');
+						throw sentinel;
+					}
+				};
+				var returnableRecord = {
+					'[[Iterator]]': returnThrowIterator,
+					'[[NextMethod]]': returnThrowIterator.next,
+					'[[Done]]': false
+				};
+				return ES.AsyncIteratorClose(returnableRecord, completionRecord).then(s2t.fail, function (e) {
+					s2t.equal(e, sentinel, 'return function exception is propagated');
+				});
+			});
+
+			st.test('return method throws, completion is throw', function (s2t) {
+				var throwCompletion = ES.ThrowCompletion(sentinel);
+				var returnThrowIterator = {
+					next: function next() {},
+					'return': function Return() {
+						s2t.equal(arguments.length, 0, 'no args passed to `.return`');
+						throw 42;
+					}
+				};
+				var returnableRecord = {
+					'[[Iterator]]': returnThrowIterator,
+					'[[NextMethod]]': returnThrowIterator.next,
+					'[[Done]]': false
+				};
+				return ES.AsyncIteratorClose(returnableRecord, throwCompletion).then(s2t.fail, function (e) {
+					s2t.equal(e, sentinel, 'return function exception is overridden by throw completion value');
+				});
+			});
+
+			st.end();
+		});
 
 		t.end();
 	});

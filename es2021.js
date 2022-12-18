@@ -15,6 +15,7 @@ var ES2021 = {
 	ArraySetLength: require('./2021/ArraySetLength'),
 	ArraySpeciesCreate: require('./2021/ArraySpeciesCreate'),
 	AsyncFromSyncIteratorContinuation: require('./2021/AsyncFromSyncIteratorContinuation'),
+	AsyncIteratorClose: require('./2021/AsyncIteratorClose'),
 	BigInt: require('./2021/BigInt'),
 	BigIntBitwiseOp: require('./2021/BigIntBitwiseOp'),
 	BinaryAnd: require('./2021/BinaryAnd'),

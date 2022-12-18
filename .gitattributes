@@ -409,6 +409,7 @@
 /2019/ArrayCreate.js	spackled linguist-generated=true
 /2019/ArraySetLength.js	spackled linguist-generated=true
 /2019/ArraySpeciesCreate.js	spackled linguist-generated=true
+/2019/AsyncIteratorClose.js	spackled linguist-generated=true
 /2019/Call.js	spackled linguist-generated=true
 /2019/CanonicalNumericIndexString.js	spackled linguist-generated=true
 /2019/CharacterRange.js	spackled linguist-generated=true
@@ -543,6 +544,7 @@
 /2020/ArrayCreate.js	spackled linguist-generated=true
 /2020/ArraySetLength.js	spackled linguist-generated=true
 /2020/ArraySpeciesCreate.js	spackled linguist-generated=true
+/2020/AsyncIteratorClose.js	spackled linguist-generated=true
 /2020/Call.js	spackled linguist-generated=true
 /2020/CanonicalNumericIndexString.js	spackled linguist-generated=true
 /2020/CharacterRange.js	spackled linguist-generated=true
@@ -841,6 +843,7 @@
 /2022/ArrayCreate.js	spackled linguist-generated=true
 /2022/ArraySetLength.js	spackled linguist-generated=true
 /2022/ArraySpeciesCreate.js	spackled linguist-generated=true
+/2022/AsyncIteratorClose.js	spackled linguist-generated=true
 /2022/BigInt/add.js	spackled linguist-generated=true
 /2022/BigInt/bitwiseAND.js	spackled linguist-generated=true
 /2022/BigInt/bitwiseNOT.js	spackled linguist-generated=true

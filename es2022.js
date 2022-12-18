@@ -12,6 +12,7 @@ var ES2022 = {
 	ArraySetLength: require('./2022/ArraySetLength'),
 	ArraySpeciesCreate: require('./2022/ArraySpeciesCreate'),
 	AsyncFromSyncIteratorContinuation: require('./2022/AsyncFromSyncIteratorContinuation'),
+	AsyncIteratorClose: require('./2022/AsyncIteratorClose'),
 	BigInt: require('./2022/BigInt'),
 	BigIntBitwiseOp: require('./2022/BigIntBitwiseOp'),
 	BinaryAnd: require('./2022/BinaryAnd'),

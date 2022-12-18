@@ -11,6 +11,7 @@ var ES2018 = {
 	ArrayCreate: require('./2018/ArrayCreate'),
 	ArraySetLength: require('./2018/ArraySetLength'),
 	ArraySpeciesCreate: require('./2018/ArraySpeciesCreate'),
+	AsyncIteratorClose: require('./2018/AsyncIteratorClose'),
 	Call: require('./2018/Call'),
 	CanonicalNumericIndexString: require('./2018/CanonicalNumericIndexString'),
 	CharacterRange: require('./2018/CharacterRange'),
