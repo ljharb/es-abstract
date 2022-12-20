@@ -16,7 +16,7 @@ var Type = require('./Type');
 
 var $then = callBound('Promise.prototype.then', true);
 
-// https://262.ecma-international.org/14.0/#sec-asyncfromsynciteratorcontinuation
+// https://262.ecma-international.org/10.0/#sec-asyncfromsynciteratorcontinuation
 
 module.exports = function AsyncFromSyncIteratorContinuation(result) {
 	if (Type(result) !== 'Object') {
@@ -24,7 +24,7 @@ module.exports = function AsyncFromSyncIteratorContinuation(result) {
 	}
 
 	if (arguments.length > 1) {
-		throw new $TypeError('although AsyncFromSyncIteratorContinuation should take a second argument, it is not used in this implementation');
+		throw new $SyntaxError('although AsyncFromSyncIteratorContinuation should take a second argument, it is not used in this implementation');
 	}
 
 	if (!$Promise) {
