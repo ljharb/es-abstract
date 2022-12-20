@@ -6,7 +6,6 @@ var $BigInt = GetIntrinsic('%BigInt%', true);
 var $RangeError = GetIntrinsic('%RangeError%');
 var $TypeError = GetIntrinsic('%TypeError%');
 
-var truncate = require('../truncate');
 var Type = require('../Type');
 
 var zero = $BigInt && $BigInt(0);
@@ -26,7 +25,6 @@ module.exports = function BigIntRemainder(n, d) {
 		return zero;
 	}
 
-	var quotient = n / d;
-	var q = truncate(quotient);
-	return n - (d * q);
+	// shortcut for the actual spec mechanics
+	return n % d;
 };
