@@ -53,7 +53,7 @@
 	],
 	"dependencies": {
 		"call-bind": "^1.0.2",
-		"es-set-tostringtag": "^1.0.0",
+		"es-set-tostringtag": "^2.0.0",
 		"es-to-primitive": "^1.2.1",
 		"function-bind": "^1.1.1",
 		"function.prototype.name": "^1.1.5",
@@ -62,7 +62,7 @@
 		"gopd": "^1.0.1",
 		"has": "^1.0.3",
 		"has-property-descriptors": "^1.0.0",
-		"has-proto": "^1.0.0",
+		"has-proto": "^1.0.1",
 		"has-symbols": "^1.0.3",
 		"internal-slot": "^1.0.4",
 		"is-callable": "^1.2.7",
