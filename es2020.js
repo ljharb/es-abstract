@@ -89,6 +89,8 @@ var ES2020 = {
 	MakeDate: require('./2020/MakeDate'),
 	MakeDay: require('./2020/MakeDay'),
 	MakeTime: require('./2020/MakeTime'),
+	max: require('./2020/max'),
+	min: require('./2020/min'),
 	MinFromTime: require('./2020/MinFromTime'),
 	modulo: require('./2020/modulo'),
 	MonthFromTime: require('./2020/MonthFromTime'),

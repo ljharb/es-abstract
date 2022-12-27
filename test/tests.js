@@ -3143,6 +3143,18 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('max', function (t) {
+		t.equal(ES.max.apply(null, v.numbers), Math.max.apply(null, v.numbers), 'works with numbers');
+
+		t.end();
+	});
+
+	test('min', function (t) {
+		t.equal(ES.min.apply(null, v.numbers), Math.min.apply(null, v.numbers), 'works with numbers');
+
+		t.end();
+	});
+
 	test('NormalCompletion', function (t) {
 		var sentinel = {};
 		var completion = ES.NormalCompletion(sentinel);

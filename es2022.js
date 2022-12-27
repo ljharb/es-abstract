@@ -103,6 +103,8 @@ var ES2022 = {
 	MakeDay: require('./2022/MakeDay'),
 	MakeMatchIndicesIndexPairArray: require('./2022/MakeMatchIndicesIndexPairArray'),
 	MakeTime: require('./2022/MakeTime'),
+	max: require('./2022/max'),
+	min: require('./2022/min'),
 	MinFromTime: require('./2022/MinFromTime'),
 	modulo: require('./2022/modulo'),
 	MonthFromTime: require('./2022/MonthFromTime'),

@@ -96,6 +96,8 @@ var ES2021 = {
 	MakeDate: require('./2021/MakeDate'),
 	MakeDay: require('./2021/MakeDay'),
 	MakeTime: require('./2021/MakeTime'),
+	max: require('./2021/max'),
+	min: require('./2021/min'),
 	MinFromTime: require('./2021/MinFromTime'),
 	modulo: require('./2021/modulo'),
 	MonthFromTime: require('./2021/MonthFromTime'),

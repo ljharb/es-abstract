@@ -76,6 +76,8 @@ var ES2019 = {
 	MakeDate: require('./2019/MakeDate'),
 	MakeDay: require('./2019/MakeDay'),
 	MakeTime: require('./2019/MakeTime'),
+	max: require('./2019/max'),
+	min: require('./2019/min'),
 	MinFromTime: require('./2019/MinFromTime'),
 	modulo: require('./2019/modulo'),
 	MonthFromTime: require('./2019/MonthFromTime'),

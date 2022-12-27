@@ -150,6 +150,8 @@
 /2016/YearFromTime.js	spackled linguist-generated=true
 /2016/abs.js	spackled linguist-generated=true
 /2016/floor.js	spackled linguist-generated=true
+/2016/max.js	spackled linguist-generated=true
+/2016/min.js	spackled linguist-generated=true
 /2016/modulo.js	spackled linguist-generated=true
 /2016/msFromTime.js	spackled linguist-generated=true
 /2016/thisBooleanValue.js	spackled linguist-generated=true
@@ -273,6 +275,8 @@
 /2017/YearFromTime.js	spackled linguist-generated=true
 /2017/abs.js	spackled linguist-generated=true
 /2017/floor.js	spackled linguist-generated=true
+/2017/max.js	spackled linguist-generated=true
+/2017/min.js	spackled linguist-generated=true
 /2017/modulo.js	spackled linguist-generated=true
 /2017/msFromTime.js	spackled linguist-generated=true
 /2017/thisBooleanValue.js	spackled linguist-generated=true
@@ -397,6 +401,8 @@
 /2018/YearFromTime.js	spackled linguist-generated=true
 /2018/abs.js	spackled linguist-generated=true
 /2018/floor.js	spackled linguist-generated=true
+/2018/max.js	spackled linguist-generated=true
+/2018/min.js	spackled linguist-generated=true
 /2018/modulo.js	spackled linguist-generated=true
 /2018/msFromTime.js	spackled linguist-generated=true
 /2018/thisBooleanValue.js	spackled linguist-generated=true
@@ -534,6 +540,8 @@
 /2019/YearFromTime.js	spackled linguist-generated=true
 /2019/abs.js	spackled linguist-generated=true
 /2019/floor.js	spackled linguist-generated=true
+/2019/max.js	spackled linguist-generated=true
+/2019/min.js	spackled linguist-generated=true
 /2019/modulo.js	spackled linguist-generated=true
 /2019/msFromTime.js	spackled linguist-generated=true
 /2019/thisBooleanValue.js	spackled linguist-generated=true
@@ -654,6 +662,8 @@
 /2020/WeekDay.js	spackled linguist-generated=true
 /2020/YearFromTime.js	spackled linguist-generated=true
 /2020/abs.js	spackled linguist-generated=true
+/2020/max.js	spackled linguist-generated=true
+/2020/min.js	spackled linguist-generated=true
 /2020/modulo.js	spackled linguist-generated=true
 /2020/msFromTime.js	spackled linguist-generated=true
 /2020/thisBooleanValue.js	spackled linguist-generated=true
@@ -828,6 +838,8 @@
 /2021/YearFromTime.js	spackled linguist-generated=true
 /2021/abs.js	spackled linguist-generated=true
 /2021/floor.js	spackled linguist-generated=true
+/2021/max.js	spackled linguist-generated=true
+/2021/min.js	spackled linguist-generated=true
 /2021/modulo.js	spackled linguist-generated=true
 /2021/msFromTime.js	spackled linguist-generated=true
 /2021/thisBigIntValue.js	spackled linguist-generated=true
@@ -1033,6 +1045,8 @@
 /2022/abs.js	spackled linguist-generated=true
 /2022/clamp.js	spackled linguist-generated=true
 /2022/floor.js	spackled linguist-generated=true
+/2022/max.js	spackled linguist-generated=true
+/2022/min.js	spackled linguist-generated=true
 /2022/modulo.js	spackled linguist-generated=true
 /2022/msFromTime.js	spackled linguist-generated=true
 /2022/substring.js	spackled linguist-generated=true

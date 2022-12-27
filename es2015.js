@@ -67,6 +67,8 @@ var ES2015 = {
 	MakeDate: require('./2015/MakeDate'),
 	MakeDay: require('./2015/MakeDay'),
 	MakeTime: require('./2015/MakeTime'),
+	max: require('./2015/max'),
+	min: require('./2015/min'),
 	MinFromTime: require('./2015/MinFromTime'),
 	modulo: require('./2015/modulo'),
 	MonthFromTime: require('./2015/MonthFromTime'),
