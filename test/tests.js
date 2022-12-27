@@ -16,6 +16,7 @@ var boundFunctionsHaveNames = require('functions-have-names').boundFunctionsHave
 var hasBigInts = require('has-bigints')();
 var getOwnPropertyDescriptor = require('gopd');
 var SLOT = require('internal-slot');
+var availableTypedArrays = require('available-typed-arrays')();
 
 var $getProto = require('../helpers/getProto');
 var $setProto = require('../helpers/setProto');
@@ -9422,6 +9423,48 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 		t.equal(ES.ToZeroPaddedDecimalString(1, 1), '1');
 		t.equal(ES.ToZeroPaddedDecimalString(1, 2), '01');
 		t.equal(ES.ToZeroPaddedDecimalString(1, 3), '001');
+
+		t.end();
+	});
+
+	test('TypedArrayElementSize', function (t) {
+		forEach(v.primitives.concat(v.objects), function (nonTA) {
+			t['throws'](
+				function () { ES.TypedArrayElementSize(nonTA); },
+				TypeError,
+				debug(nonTA) + ' is not a TypedArray'
+			);
+		});
+
+		forEach(availableTypedArrays, function (TA) {
+			var ta = new global[TA](0);
+			t.equal(ES.TypedArrayElementSize(ta), ta.BYTES_PER_ELEMENT, debug(TA) + ' (which should be a ' + TA + ') has correct element size');
+		});
+
+		t.end();
+	});
+
+	test('TypedArrayElementType', function (t) {
+		forEach(v.primitives.concat(v.objects), function (nonTA) {
+			t['throws'](
+				function () { ES.TypedArrayElementType(nonTA); },
+				TypeError,
+				debug(nonTA) + ' is not a TypedArray'
+			);
+		});
+
+		forEach(availableTypedArrays, function (TA) {
+			t.test(TA, function (st) {
+				var ta = new global[TA](0);
+				st.equal(
+					ES.TypedArrayElementType(ta),
+					TA.replace(/(?:lamped)?Array$/, ''),
+					debug(ta) + ' (which should be a ' + TA + ') has correct element type'
+				);
+
+				st.end();
+			});
+		});
 
 		t.end();
 	});

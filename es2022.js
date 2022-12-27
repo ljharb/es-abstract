@@ -185,6 +185,8 @@ var ES2022 = {
 	ToZeroPaddedDecimalString: require('./2022/ToZeroPaddedDecimalString'),
 	TrimString: require('./2022/TrimString'),
 	Type: require('./2022/Type'),
+	TypedArrayElementSize: require('./2022/TypedArrayElementSize'),
+	TypedArrayElementType: require('./2022/TypedArrayElementType'),
 	UnicodeEscape: require('./2022/UnicodeEscape'),
 	UTF16EncodeCodePoint: require('./2022/UTF16EncodeCodePoint'),
 	UTF16SurrogatePairToCodePoint: require('./2022/UTF16SurrogatePairToCodePoint'),

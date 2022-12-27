@@ -201,8 +201,6 @@ var expectedMissing = [
 	'TriggerPromiseReactions',
 	'TypedArrayCreate',
 	'TypedArraySpeciesCreate',
-	'TypedArrayElementSize', // TODO,
-	'TypedArrayElementType', // TODO
 	'UnicodeMatchProperty',
 	'UnicodeMatchPropertyValue',
 	'UpdateEmpty',
