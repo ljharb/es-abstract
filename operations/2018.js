@@ -409,20 +409,8 @@ module.exports = {
 	'host-synchronizes-with': {
 		url: 'https://262.ecma-international.org/9.0/#sec-host-synchronizes-with'
 	},
-	HostEnsureCanCompileStrings: {
-		url: 'https://262.ecma-international.org/9.0/#sec-hostensurecancompilestrings'
-	},
 	HostEventSet: {
 		url: 'https://262.ecma-international.org/9.0/#sec-hosteventset'
-	},
-	HostPromiseRejectionTracker: {
-		url: 'https://262.ecma-international.org/9.0/#sec-host-promise-rejection-tracker'
-	},
-	HostReportErrors: {
-		url: 'https://262.ecma-international.org/9.0/#sec-host-report-errors'
-	},
-	HostResolveImportedModule: {
-		url: 'https://262.ecma-international.org/9.0/#sec-hostresolveimportedmodule'
 	},
 	HourFromTime: {
 		url: 'https://262.ecma-international.org/9.0/#eqn-HourFromTime'

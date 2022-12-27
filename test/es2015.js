@@ -67,7 +67,6 @@ var expectedMissing = [
 	'GetValueFromBuffer',
 	'GetViewValue',
 	'HasPrimitiveBase',
-	'HostResolveImportedModule',
 	'ImportedLocalNames',
 	'InitializeHostDefinedRealm',
 	'InitializeReferencedBinding',

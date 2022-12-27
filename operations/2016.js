@@ -312,15 +312,6 @@ module.exports = {
 	HasProperty: {
 		url: 'https://262.ecma-international.org/7.0/#sec-hasproperty'
 	},
-	HostPromiseRejectionTracker: {
-		url: 'https://262.ecma-international.org/7.0/#sec-host-promise-rejection-tracker'
-	},
-	HostReportErrors: {
-		url: 'https://262.ecma-international.org/7.0/#sec-host-report-errors'
-	},
-	HostResolveImportedModule: {
-		url: 'https://262.ecma-international.org/7.0/#sec-hostresolveimportedmodule'
-	},
 	HourFromTime: {
 		url: 'https://262.ecma-international.org/7.0/#sec-hours-minutes-second-and-milliseconds'
 	},

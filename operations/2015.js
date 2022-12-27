@@ -294,9 +294,6 @@ module.exports = {
 	HasProperty: {
 		url: 'https://262.ecma-international.org/6.0/#sec-hasproperty'
 	},
-	HostResolveImportedModule: {
-		url: 'sec-hostresolveimportedmodule'
-	},
 	HourFromTime: {
 		url: 'https://262.ecma-international.org/6.0/#sec-hours-minutes-second-and-milliseconds'
 	},

@@ -541,41 +541,8 @@ module.exports = {
 	'host-synchronizes-with': {
 		url: 'https://262.ecma-international.org/13.0/#sec-host-synchronizes-with'
 	},
-	HostCallJobCallback: {
-		url: 'https://262.ecma-international.org/13.0/#sec-hostcalljobcallback'
-	},
-	HostEnqueueFinalizationRegistryCleanupJob: {
-		url: 'https://262.ecma-international.org/13.0/#sec-host-cleanup-finalization-registry'
-	},
-	HostEnqueuePromiseJob: {
-		url: 'https://262.ecma-international.org/13.0/#sec-hostenqueuepromisejob'
-	},
-	HostEnsureCanCompileStrings: {
-		url: 'https://262.ecma-international.org/13.0/#sec-hostensurecancompilestrings'
-	},
 	HostEventSet: {
 		url: 'https://262.ecma-international.org/13.0/#sec-hosteventset'
-	},
-	HostFinalizeImportMeta: {
-		url: 'https://262.ecma-international.org/13.0/#sec-hostfinalizeimportmeta'
-	},
-	HostGetImportMetaProperties: {
-		url: 'https://262.ecma-international.org/13.0/#sec-hostgetimportmetaproperties'
-	},
-	HostHasSourceTextAvailable: {
-		url: 'https://262.ecma-international.org/13.0/#sec-hosthassourcetextavailable'
-	},
-	HostImportModuleDynamically: {
-		url: 'https://262.ecma-international.org/13.0/#sec-hostimportmoduledynamically'
-	},
-	HostMakeJobCallback: {
-		url: 'https://262.ecma-international.org/13.0/#sec-hostmakejobcallback'
-	},
-	HostPromiseRejectionTracker: {
-		url: 'https://262.ecma-international.org/13.0/#sec-host-promise-rejection-tracker'
-	},
-	HostResolveImportedModule: {
-		url: 'https://262.ecma-international.org/13.0/#sec-hostresolveimportedmodule'
 	},
 	HourFromTime: {
 		url: 'https://262.ecma-international.org/13.0/#eqn-HourFromTime'

@@ -31,7 +31,7 @@ async function getOps(year) {
 	let aOps;
 
 	if (year > 2021) {
-		aOps = $('[aoid],[type$="abstract operation"],[id^="sec-numeric-types-"]:not([aoid]):not([type="abstract operation"])', specHTML)
+		aOps = $('[aoid],[type$="abstract operation"],[id^="sec-numeric-types-"]:not([aoid]):not([type~="abstract operation"])', specHTML)
 			.not('[type="sdo"]');
 	} else {
 		aOps = root.filter('[aoid]')
@@ -44,14 +44,17 @@ async function getOps(year) {
 		}
 	}
 
+	aOps = aOps.not('[type~="host-defined"]');
+
 	const missings = [];
 
-	const entries = aOps.toArray().map((x) => {
+	let entries = aOps.toArray().map((x) => {
 		const op = $(x);
 		let aoid = op.attr('aoid');
 		let id = op.attr('id');
 
 		if (!id) {
+			// covers things like (in 2022/2023 DateFromTime(), WeekDay(), etc)
 			id = op.closest('[id]').attr('id');
 		}
 		// years other than 2016 have `id.startsWith('eqn-')`
@@ -163,6 +166,9 @@ async function getOps(year) {
 			['clamp', `https://262.ecma-international.org/${edition}.0/#clamping`],
 			['substring', `https://262.ecma-international.org/${edition}.0/#substring`],
 		);
+	}
+	if (year < 2022) {
+		entries = entries.filter(([ao]) => ao === 'HostEventSet' || !ao.startsWith('Host'));
 	}
 	entries.sort(([a], [b]) => a.localeCompare(b));
 
