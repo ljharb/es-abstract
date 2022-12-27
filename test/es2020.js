@@ -40,16 +40,16 @@ var expectedMissing = [
 	'Construct',
 	'CopyDataBlockBytes',
 	'CreateArrayFromList',
-	'CreateArrayIterator',
+	'CreateArrayIterator', // es-create-array-iterator package, but it has a Type dependence and a shared ArrayIteratorPrototype
 	'CreateAsyncFromSyncIterator',
 	'CreateBuiltinFunction',
 	'CreateByteDataBlock',
 	'CreateDynamicFunction',
 	'CreateForInIterator',
 	'CreateIntrinsics',
-	'CreateListIteratorRecord',
+	'CreateListIteratorRecord', // only used in FunctionDeclarationInstantiation
 	'CreateMapIterator',
-	'CreateMappedArgumentsObject',
+	'CreateMappedArgumentsObject', // takes a Parse Node
 	'CreatePerIterationEnvironment',
 	'CreateRealm',
 	'CreateResolvingFunctions',
@@ -61,7 +61,7 @@ var expectedMissing = [
 	'DetachArrayBuffer',
 	'Encode',
 	'EnterCriticalSection',
-	'EnumerateObjectProperties',
+	'EnumerateObjectProperties', // only used in for-in loops
 	'EscapeRegExpPattern',
 	'EvalDeclarationInstantiation',
 	'EvaluateCall',
@@ -112,8 +112,8 @@ var expectedMissing = [
 	'InitializeReferencedBinding',
 	'InnerModuleEvaluation',
 	'InnerModuleLinking',
-	'IntegerIndexedElementGet',
-	'IntegerIndexedElementSet',
+	'IntegerIndexedElementGet', // depends on GetValueFromBuffer
+	'IntegerIndexedElementSet', // depends on SetValueInBuffer
 	'IntegerIndexedObjectCreate',
 	'InternalizeJSONProperty',
 	'IsAnonymousFunctionDefinition',
@@ -126,7 +126,7 @@ var expectedMissing = [
 	'IsUnresolvableReference',
 	'IsValidIntegerIndex',
 	'IsValidRegularExpressionLiteral',
-	'IsWordChar',
+	'IsWordChar', // depends on WordCharacters
 	'LeaveCriticalSection',
 	'LocalTime',
 	'LocalTZA',
@@ -177,7 +177,7 @@ var expectedMissing = [
 	'RawBytesToNumeric',
 	'reads-bytes-from',
 	'reads-from',
-	'RegExpAlloc', // creates a regex with uninitialized internal lots
+	'RegExpAlloc', // creates a regex with uninitialized internal slots
 	'RegExpBuiltinExec',
 	'RegExpInitialize', // initializes allocated regex's internal slots
 	'RejectPromise',

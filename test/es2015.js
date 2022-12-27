@@ -22,9 +22,9 @@ var expectedMissing = [
 	'CreateByteDataBlock',
 	'CreateDynamicFunction',
 	'CreateIntrinsics',
-	'CreateListIterator',
+	'CreateListIterator', // only used in FunctionDeclarationInstantiation
 	'CreateMapIterator',
-	'CreateMappedArgumentsObject',
+	'CreateMappedArgumentsObject', // takes a Parse Node
 	'CreatePerIterationEnvironment',
 	'CreateRealm',
 	'CreateSetIterator',
@@ -70,8 +70,8 @@ var expectedMissing = [
 	'ImportedLocalNames',
 	'InitializeHostDefinedRealm',
 	'InitializeReferencedBinding',
-	'IntegerIndexedElementGet',
-	'IntegerIndexedElementSet',
+	'IntegerIndexedElementGet', // depends on GetValueFromBuffer
+	'IntegerIndexedElementSet', // depends on SetValueInBuffer
 	'IntegerIndexedObjectCreate',
 	'InternalizeJSONProperty',
 	'IsAnonymousFunctionDefinition',
@@ -82,7 +82,7 @@ var expectedMissing = [
 	'IsStrictReference',
 	'IsSuperReference',
 	'IsUnresolvableReference',
-	'IsWordChar',
+	'IsWordChar', // depends on WordCharacters
 	'LocalTime',
 	'LoopContinues', // completion records
 	'MakeArgGetter',
@@ -113,7 +113,7 @@ var expectedMissing = [
 	'PrepareForTailCall',
 	'ProxyCreate',
 	'PutValue', // takes a Reference
-	'RegExpAlloc', // creates a regex with uninitialized internal lots
+	'RegExpAlloc', // creates a regex with uninitialized internal slots
 	'RegExpBuiltinExec',
 	'RegExpInitialize', // initializes allocated regex's internal slots
 	'RejectPromise',
@@ -127,7 +127,7 @@ var expectedMissing = [
 	'SetRealmGlobalObject',
 	'SetValueInBuffer',
 	'SetViewValue',
-	'sign',
+	'sign', // used in ES5, but not in ES2015, removed in ES2016
 	'SortCompare', // mystery access to `comparefn` arg
 	'TriggerPromiseReactions',
 	'TypedArrayFrom',
