@@ -1,8 +1,8 @@
 'use strict';
 
 /* eslint global-require: 0 */
-// https://ecma-international.org/ecma-262/6.0/#sec-abstract-operations
-var ES6 = {
+// https://262.ecma-international.org/6.0/#sec-abstract-operations
+var ES2015 = {
 	'Abstract Equality Comparison': require('./2015/AbstractEqualityComparison'),
 	'Abstract Relational Comparison': require('./2015/AbstractRelationalComparison'),
 	'Strict Equality Comparison': require('./2015/StrictEqualityComparison'),
@@ -123,4 +123,4 @@ var ES6 = {
 	YearFromTime: require('./2015/YearFromTime')
 };
 
-module.exports = ES6;
+module.exports = ES2015;

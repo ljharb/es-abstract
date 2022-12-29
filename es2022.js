@@ -1,7 +1,7 @@
 'use strict';
 
 /* eslint global-require: 0 */
-// https://www.ecma-international.org/ecma-262/13.0/#sec-abstract-operations
+// https://262.ecma-international.org/13.0/#sec-abstract-operations
 var ES2022 = {
 	abs: require('./2022/abs'),
 	AddEntriesFromIterable: require('./2022/AddEntriesFromIterable'),

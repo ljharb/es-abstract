@@ -1,7 +1,7 @@
 'use strict';
 
 /* eslint global-require: 0 */
-// https://www.ecma-international.org/ecma-262/12.0/#sec-abstract-operations
+// https://262.ecma-international.org/12.0/#sec-abstract-operations
 var ES2021 = {
 	'Abstract Equality Comparison': require('./2021/AbstractEqualityComparison'),
 	'Abstract Relational Comparison': require('./2021/AbstractRelationalComparison'),
@@ -25,7 +25,6 @@ var ES2021 = {
 	CanonicalNumericIndexString: require('./2021/CanonicalNumericIndexString'),
 	CharacterRange: require('./2021/CharacterRange'),
 	clamp: require('./2021/clamp'),
-	substring: require('./2021/substring'),
 	ClearKeptObjects: require('./2021/ClearKeptObjects'),
 	CodePointAt: require('./2021/CodePointAt'),
 	CodePointsToString: require('./2021/CodePointsToString'),
@@ -131,6 +130,7 @@ var ES2021 = {
 	StringPad: require('./2021/StringPad'),
 	StringToBigInt: require('./2021/StringToBigInt'),
 	StringToCodePoints: require('./2021/StringToCodePoints'),
+	substring: require('./2021/substring'),
 	SymbolDescriptiveString: require('./2021/SymbolDescriptiveString'),
 	TestIntegrityLevel: require('./2021/TestIntegrityLevel'),
 	thisBigIntValue: require('./2021/thisBigIntValue'),
