@@ -80,7 +80,7 @@ function compareOps(a, b) {
 	return a.localeCompare(b);
 }
 
-const writtenManifests = years.map((year) => {
+const writtenManifestsP = years.map(async (year) => {
 	const edition = year - 2009;
 	const contents = `'use strict';
 
@@ -94,7 +94,7 @@ module.exports = ES${year};
 `;
 	const filename = `es${String(year)}.js`;
 	const eslint = new ESLint({ fix: true });
-	eslint.lintText(contents, { filePath: filename }).then(([{ output }]) => {
+	await eslint.lintText(contents, { filePath: filename }).then(([{ output }]) => {
 		fs.writeFileSync(path.join(process.cwd(), filename), output);
 	}).catch((error) => {
 		console.error(error);
@@ -104,7 +104,9 @@ module.exports = ES${year};
 	return filename;
 });
 
-const writtenFiles = writtenManifests.concat(writtenOps.map(({ opFile }) => opFile));
+Promise.all(writtenManifestsP).then((writtenManifests) => {
+	const writtenFiles = writtenManifests.concat(writtenOps.map(({ opFile }) => opFile));
 
-fs.writeFileSync(path.join(process.cwd(), '.gitattributes'), writtenFiles.map((x) => `/${x}\tspackled linguist-generated=true`).join('\n'));
-childProcess.execSync(`git add .gitattributes ${writtenFiles.join(' ')}`);
+	fs.writeFileSync(path.join(process.cwd(), '.gitattributes'), writtenFiles.map((x) => `/${x}\tspackled linguist-generated=true`).join('\n'));
+	childProcess.execSync(`git add .gitattributes ${writtenFiles.join(' ')}`);
+});
