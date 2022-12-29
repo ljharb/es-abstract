@@ -5147,6 +5147,56 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('ValidateAtomicAccess', function (t) {
+		forEach(v.primitives.concat(v.objects, [[]]), function (nonTA) {
+			t['throws'](
+				function () { ES.ValidateAtomicAccess(nonTA, 0); },
+				TypeError,
+				debug(nonTA) + ' is not a TypedArray'
+			);
+		});
+
+		t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
+			forEach(availableTypedArrays, function (TypedArray) {
+				var ta = new global[TypedArray](8);
+
+				st.doesNotThrow(
+					function () { ES.ValidateAtomicAccess(ta, 0); },
+					debug(ta) + ' is an integer TypedArray'
+				);
+
+				st['throws'](
+					function () { ES.ValidateAtomicAccess(ta, -1); },
+					RangeError, // via ToIndex
+					'a requestIndex of -1 is <= 0'
+				);
+				st['throws'](
+					function () { ES.ValidateAtomicAccess(ta, 8); },
+					RangeError,
+					'a requestIndex === length throws'
+				);
+				st['throws'](
+					function () { ES.ValidateAtomicAccess(ta, 9); },
+					RangeError,
+					'a requestIndex > length throws'
+				);
+
+				st.equal(ES.ValidateAtomicAccess(ta, 0), 0, TypedArray + ': requestIndex of 0 gives 0');
+				st.equal(ES.ValidateAtomicAccess(ta, 1), 1, TypedArray + ': requestIndex of 1 gives 1');
+				st.equal(ES.ValidateAtomicAccess(ta, 2), 2, TypedArray + ': requestIndex of 2 gives 2');
+				st.equal(ES.ValidateAtomicAccess(ta, 3), 3, TypedArray + ': requestIndex of 3 gives 3');
+				st.equal(ES.ValidateAtomicAccess(ta, 4), 4, TypedArray + ': requestIndex of 4 gives 4');
+				st.equal(ES.ValidateAtomicAccess(ta, 5), 5, TypedArray + ': requestIndex of 5 gives 5');
+				st.equal(ES.ValidateAtomicAccess(ta, 6), 6, TypedArray + ': requestIndex of 6 gives 6');
+				st.equal(ES.ValidateAtomicAccess(ta, 7), 7, TypedArray + ': requestIndex of 7 gives 7');
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
 };
 
 var makeAsyncFromSyncIterator = function makeAsyncFromSyncIterator(ES, end, throwMethod, returnMethod) {
@@ -8298,7 +8348,8 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 		ToInteger: true,
 		UTF16DecodeString: true,
 		UTF16DecodeSurrogatePair: true,
-		UTF16Encoding: true
+		UTF16Encoding: true,
+		ValidateAtomicAccess: true
 	}));
 	var test = makeTest(ES, skips);
 
@@ -8846,6 +8897,71 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 
 		t.equal(ES.UTF16EncodeCodePoint(0xd83d), leadingPoo.charAt(0), '0xD83D is the first half of ' + wholePoo);
 		t.equal(ES.UTF16EncodeCodePoint(0xdca9), trailingPoo.charAt(0), '0xD83D is the last half of ' + wholePoo);
+
+		t.end();
+	});
+
+	test('ValidateAtomicAccess', function (t) {
+		forEach(v.primitives.concat(v.objects, [[]]), function (nonTA) {
+			t['throws'](
+				function () { ES.ValidateAtomicAccess(nonTA, 0); },
+				TypeError,
+				debug(nonTA) + ' is not a TypedArray'
+			);
+		});
+
+		t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
+			forEach(availableTypedArrays, function (TypedArray) {
+				var ta = new global[TypedArray](8);
+
+				st.doesNotThrow(
+					function () { ES.ValidateAtomicAccess(ta, 0); },
+					debug(ta) + ' is an integer TypedArray'
+				);
+
+				st['throws'](
+					function () { ES.ValidateAtomicAccess(ta, -1); },
+					RangeError, // via ToIndex
+					'a requestIndex of -1 is <= 0'
+				);
+				st['throws'](
+					function () { ES.ValidateAtomicAccess(ta, 8); },
+					RangeError,
+					'a requestIndex === length throws'
+				);
+				st['throws'](
+					function () { ES.ValidateAtomicAccess(ta, 9); },
+					RangeError,
+					'a requestIndex > length throws'
+				);
+
+				var elementSize = {
+					__proto__: null,
+					$Int8Array: 1,
+					$Uint8Array: 1,
+					$Uint8ClampedArray: 1,
+					$Int16Array: 2,
+					$Uint16Array: 2,
+					$Int32Array: 4,
+					$Uint32Array: 4,
+					$BigInt64Array: 8,
+					$BigUint64Array: 8,
+					$Float32Array: 4,
+					$Float64Array: 8
+				}['$' + TypedArray];
+
+				st.equal(ES.ValidateAtomicAccess(ta, 0), 0, TypedArray + ': requestIndex of 0 gives 0');
+				st.equal(ES.ValidateAtomicAccess(ta, 1), elementSize * 1, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 1));
+				st.equal(ES.ValidateAtomicAccess(ta, 2), elementSize * 2, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 2));
+				st.equal(ES.ValidateAtomicAccess(ta, 3), elementSize * 3, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 3));
+				st.equal(ES.ValidateAtomicAccess(ta, 4), elementSize * 4, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 4));
+				st.equal(ES.ValidateAtomicAccess(ta, 5), elementSize * 5, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 5));
+				st.equal(ES.ValidateAtomicAccess(ta, 6), elementSize * 6, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 6));
+				st.equal(ES.ValidateAtomicAccess(ta, 7), elementSize * 7, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 7));
+			});
+
+			st.end();
+		});
 
 		t.end();
 	});

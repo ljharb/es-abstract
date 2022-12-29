@@ -210,7 +210,6 @@ var expectedMissing = [
 	'UnicodeMatchPropertyValue',
 	'UpdateEmpty', // completion records
 	'UTC', // depends on LocalTZA
-	'ValidateAtomicAccess',
 	'ValueOfReadEvent',
 	'Yield' // macro
 ];

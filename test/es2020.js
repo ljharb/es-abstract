@@ -203,7 +203,6 @@ var expectedMissing = [
 	'UpdateEmpty', // completion records
 	'UTC', // depends on LocalTZA
 	'UTF16Encode',
-	'ValidateAtomicAccess',
 	'ValidateSharedIntegerTypedArray',
 	'ValueOfReadEvent',
 	'WordCharacters' // depends on Canonicalize

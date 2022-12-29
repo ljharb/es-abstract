@@ -402,6 +402,7 @@
 /2018/UTF16Decode.js	spackled linguist-generated=true
 /2018/UTF16Encoding.js	spackled linguist-generated=true
 /2018/ValidateAndApplyPropertyDescriptor.js	spackled linguist-generated=true
+/2018/ValidateAtomicAccess.js	spackled linguist-generated=true
 /2018/ValidateTypedArray.js	spackled linguist-generated=true
 /2018/WeekDay.js	spackled linguist-generated=true
 /2018/YearFromTime.js	spackled linguist-generated=true
@@ -543,6 +544,7 @@
 /2019/UTF16Encoding.js	spackled linguist-generated=true
 /2019/UnicodeEscape.js	spackled linguist-generated=true
 /2019/ValidateAndApplyPropertyDescriptor.js	spackled linguist-generated=true
+/2019/ValidateAtomicAccess.js	spackled linguist-generated=true
 /2019/ValidateTypedArray.js	spackled linguist-generated=true
 /2019/WeekDay.js	spackled linguist-generated=true
 /2019/YearFromTime.js	spackled linguist-generated=true
@@ -668,6 +670,7 @@
 /2020/TrimString.js	spackled linguist-generated=true
 /2020/UTF16Encoding.js	spackled linguist-generated=true
 /2020/ValidateAndApplyPropertyDescriptor.js	spackled linguist-generated=true
+/2020/ValidateAtomicAccess.js	spackled linguist-generated=true
 /2020/ValidateTypedArray.js	spackled linguist-generated=true
 /2020/WeekDay.js	spackled linguist-generated=true
 /2020/YearFromTime.js	spackled linguist-generated=true

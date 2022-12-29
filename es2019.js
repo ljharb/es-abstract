@@ -148,6 +148,7 @@ var ES2019 = {
 	UTF16Decode: require('./2019/UTF16Decode'),
 	UTF16Encoding: require('./2019/UTF16Encoding'),
 	ValidateAndApplyPropertyDescriptor: require('./2019/ValidateAndApplyPropertyDescriptor'),
+	ValidateAtomicAccess: require('./2019/ValidateAtomicAccess'),
 	ValidateTypedArray: require('./2019/ValidateTypedArray'),
 	WeekDay: require('./2019/WeekDay'),
 	YearFromTime: require('./2019/YearFromTime')

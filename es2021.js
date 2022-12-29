@@ -180,6 +180,7 @@ var ES2021 = {
 	UTF16EncodeCodePoint: require('./2021/UTF16EncodeCodePoint'),
 	UTF16SurrogatePairToCodePoint: require('./2021/UTF16SurrogatePairToCodePoint'),
 	ValidateAndApplyPropertyDescriptor: require('./2021/ValidateAndApplyPropertyDescriptor'),
+	ValidateAtomicAccess: require('./2021/ValidateAtomicAccess'),
 	ValidateIntegerTypedArray: require('./2021/ValidateIntegerTypedArray'),
 	ValidateTypedArray: require('./2021/ValidateTypedArray'),
 	WeakRefDeref: require('./2021/WeakRefDeref'),

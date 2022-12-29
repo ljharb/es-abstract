@@ -144,6 +144,7 @@ var ES2018 = {
 	UTF16Decode: require('./2018/UTF16Decode'),
 	UTF16Encoding: require('./2018/UTF16Encoding'),
 	ValidateAndApplyPropertyDescriptor: require('./2018/ValidateAndApplyPropertyDescriptor'),
+	ValidateAtomicAccess: require('./2018/ValidateAtomicAccess'),
 	ValidateTypedArray: require('./2018/ValidateTypedArray'),
 	WeekDay: require('./2018/WeekDay'),
 	YearFromTime: require('./2018/YearFromTime')

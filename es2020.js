@@ -171,6 +171,7 @@ var ES2020 = {
 	UTF16DecodeSurrogatePair: require('./2020/UTF16DecodeSurrogatePair'),
 	UTF16Encoding: require('./2020/UTF16Encoding'),
 	ValidateAndApplyPropertyDescriptor: require('./2020/ValidateAndApplyPropertyDescriptor'),
+	ValidateAtomicAccess: require('./2020/ValidateAtomicAccess'),
 	ValidateTypedArray: require('./2020/ValidateTypedArray'),
 	WeekDay: require('./2020/WeekDay'),
 	YearFromTime: require('./2020/YearFromTime')

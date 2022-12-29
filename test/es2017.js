@@ -183,7 +183,6 @@ var expectedMissing = [
 	'TypedArraySpeciesCreate',
 	'UpdateEmpty', // completion records
 	'UTC', // depends on LocalTZA, DaylightSavingTA
-	'ValidateAtomicAccess',
 	'ValidateSharedIntegerTypedArray',
 	'ValueOfReadEvent',
 	'WakeWaiter',

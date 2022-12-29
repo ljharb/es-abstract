@@ -200,7 +200,6 @@ var expectedMissing = [
 	'UnicodeMatchPropertyValue',
 	'UpdateEmpty', // completion records
 	'UTC', // depends on LocalTZA
-	'ValidateAtomicAccess',
 	'ValidateSharedIntegerTypedArray',
 	'ValueOfReadEvent',
 	'WakeWaiter',

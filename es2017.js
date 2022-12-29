@@ -133,6 +133,7 @@ var ES2017 = {
 	UTF16Decode: require('./2017/UTF16Decode'),
 	UTF16Encoding: require('./2017/UTF16Encoding'),
 	ValidateAndApplyPropertyDescriptor: require('./2017/ValidateAndApplyPropertyDescriptor'),
+	ValidateAtomicAccess: require('./2017/ValidateAtomicAccess'),
 	ValidateTypedArray: require('./2017/ValidateTypedArray'),
 	WeekDay: require('./2017/WeekDay'),
 	YearFromTime: require('./2017/YearFromTime')

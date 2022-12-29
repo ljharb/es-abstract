@@ -204,7 +204,6 @@ var expectedMissing = [
 	'UnicodeMatchPropertyValue',
 	'UpdateEmpty',
 	'UTC', // depends on LocalTZA
-	'ValidateAtomicAccess',
 	'ValueOfReadEvent',
 	'Yield', // macro
 
