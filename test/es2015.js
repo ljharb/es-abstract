@@ -54,7 +54,6 @@ var expectedMissing = [
 	'GeneratorYield',
 	'GetBase',
 	'GetFunctionRealm',
-	'GetGlobalObject',
 	'GetIdentifierReference',
 	'GetModuleNamespace',
 	'GetNewTarget',

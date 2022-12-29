@@ -40,6 +40,7 @@ var ES2019 = {
 	floor: require('./2019/floor'),
 	FromPropertyDescriptor: require('./2019/FromPropertyDescriptor'),
 	Get: require('./2019/Get'),
+	GetGlobalObject: require('./2019/GetGlobalObject'),
 	GetIterator: require('./2019/GetIterator'),
 	GetMethod: require('./2019/GetMethod'),
 	GetOwnPropertyKeys: require('./2019/GetOwnPropertyKeys'),

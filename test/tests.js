@@ -2252,6 +2252,12 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('GetGlobalObject', function (t) {
+		t.equal(ES.GetGlobalObject(), global, 'returns the global object');
+
+		t.end();
+	});
+
 	test('GetIterator', function (t) {
 		var arr = [1, 2];
 		testIterator(t, ES.GetIterator(arr), arr);

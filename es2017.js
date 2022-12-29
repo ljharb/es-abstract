@@ -33,6 +33,7 @@ var ES2017 = {
 	floor: require('./2017/floor'),
 	FromPropertyDescriptor: require('./2017/FromPropertyDescriptor'),
 	Get: require('./2017/Get'),
+	GetGlobalObject: require('./2017/GetGlobalObject'),
 	GetIterator: require('./2017/GetIterator'),
 	GetMethod: require('./2017/GetMethod'),
 	GetOwnPropertyKeys: require('./2017/GetOwnPropertyKeys'),

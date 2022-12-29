@@ -47,6 +47,7 @@ var ES2020 = {
 	floor: require('./2020/floor'),
 	FromPropertyDescriptor: require('./2020/FromPropertyDescriptor'),
 	Get: require('./2020/Get'),
+	GetGlobalObject: require('./2020/GetGlobalObject'),
 	GetIterator: require('./2020/GetIterator'),
 	GetMethod: require('./2020/GetMethod'),
 	GetOwnPropertyKeys: require('./2020/GetOwnPropertyKeys'),

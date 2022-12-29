@@ -52,6 +52,7 @@ var ES2022 = {
 	floor: require('./2022/floor'),
 	FromPropertyDescriptor: require('./2022/FromPropertyDescriptor'),
 	Get: require('./2022/Get'),
+	GetGlobalObject: require('./2022/GetGlobalObject'),
 	GetIterator: require('./2022/GetIterator'),
 	GetMatchIndexPair: require('./2022/GetMatchIndexPair'),
 	GetMatchString: require('./2022/GetMatchString'),

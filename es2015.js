@@ -33,6 +33,7 @@ var ES2015 = {
 	floor: require('./2015/floor'),
 	FromPropertyDescriptor: require('./2015/FromPropertyDescriptor'),
 	Get: require('./2015/Get'),
+	GetGlobalObject: require('./2015/GetGlobalObject'),
 	GetIterator: require('./2015/GetIterator'),
 	GetMethod: require('./2015/GetMethod'),
 	GetOwnPropertyKeys: require('./2015/GetOwnPropertyKeys'),

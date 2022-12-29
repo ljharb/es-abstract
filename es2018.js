@@ -37,6 +37,7 @@ var ES2018 = {
 	floor: require('./2018/floor'),
 	FromPropertyDescriptor: require('./2018/FromPropertyDescriptor'),
 	Get: require('./2018/Get'),
+	GetGlobalObject: require('./2018/GetGlobalObject'),
 	GetIterator: require('./2018/GetIterator'),
 	GetMethod: require('./2018/GetMethod'),
 	GetOwnPropertyKeys: require('./2018/GetOwnPropertyKeys'),

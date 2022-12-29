@@ -64,6 +64,7 @@
 /2016/EnumerableOwnNames.js	spackled linguist-generated=true
 /2016/FromPropertyDescriptor.js	spackled linguist-generated=true
 /2016/Get.js	spackled linguist-generated=true
+/2016/GetGlobalObject.js	spackled linguist-generated=true
 /2016/GetIterator.js	spackled linguist-generated=true
 /2016/GetMethod.js	spackled linguist-generated=true
 /2016/GetOwnPropertyKeys.js	spackled linguist-generated=true
@@ -184,6 +185,7 @@
 /2017/DeletePropertyOrThrow.js	spackled linguist-generated=true
 /2017/FromPropertyDescriptor.js	spackled linguist-generated=true
 /2017/Get.js	spackled linguist-generated=true
+/2017/GetGlobalObject.js	spackled linguist-generated=true
 /2017/GetIterator.js	spackled linguist-generated=true
 /2017/GetMethod.js	spackled linguist-generated=true
 /2017/GetOwnPropertyKeys.js	spackled linguist-generated=true
@@ -308,6 +310,7 @@
 /2018/DeletePropertyOrThrow.js	spackled linguist-generated=true
 /2018/FromPropertyDescriptor.js	spackled linguist-generated=true
 /2018/Get.js	spackled linguist-generated=true
+/2018/GetGlobalObject.js	spackled linguist-generated=true
 /2018/GetIterator.js	spackled linguist-generated=true
 /2018/GetMethod.js	spackled linguist-generated=true
 /2018/GetOwnPropertyKeys.js	spackled linguist-generated=true
@@ -439,6 +442,7 @@
 /2019/EnumerableOwnPropertyNames.js	spackled linguist-generated=true
 /2019/FromPropertyDescriptor.js	spackled linguist-generated=true
 /2019/Get.js	spackled linguist-generated=true
+/2019/GetGlobalObject.js	spackled linguist-generated=true
 /2019/GetIterator.js	spackled linguist-generated=true
 /2019/GetMethod.js	spackled linguist-generated=true
 /2019/GetOwnPropertyKeys.js	spackled linguist-generated=true
@@ -574,6 +578,7 @@
 /2020/EnumerableOwnPropertyNames.js	spackled linguist-generated=true
 /2020/FromPropertyDescriptor.js	spackled linguist-generated=true
 /2020/Get.js	spackled linguist-generated=true
+/2020/GetGlobalObject.js	spackled linguist-generated=true
 /2020/GetMethod.js	spackled linguist-generated=true
 /2020/GetOwnPropertyKeys.js	spackled linguist-generated=true
 /2020/GetPrototypeFromConstructor.js	spackled linguist-generated=true
@@ -724,6 +729,7 @@
 /2021/FlattenIntoArray.js	spackled linguist-generated=true
 /2021/FromPropertyDescriptor.js	spackled linguist-generated=true
 /2021/Get.js	spackled linguist-generated=true
+/2021/GetGlobalObject.js	spackled linguist-generated=true
 /2021/GetIterator.js	spackled linguist-generated=true
 /2021/GetMethod.js	spackled linguist-generated=true
 /2021/GetOwnPropertyKeys.js	spackled linguist-generated=true
@@ -911,6 +917,7 @@
 /2022/FlattenIntoArray.js	spackled linguist-generated=true
 /2022/FromPropertyDescriptor.js	spackled linguist-generated=true
 /2022/Get.js	spackled linguist-generated=true
+/2022/GetGlobalObject.js	spackled linguist-generated=true
 /2022/GetIterator.js	spackled linguist-generated=true
 /2022/GetMethod.js	spackled linguist-generated=true
 /2022/GetOwnPropertyKeys.js	spackled linguist-generated=true

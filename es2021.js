@@ -54,6 +54,7 @@ var ES2021 = {
 	floor: require('./2021/floor'),
 	FromPropertyDescriptor: require('./2021/FromPropertyDescriptor'),
 	Get: require('./2021/Get'),
+	GetGlobalObject: require('./2021/GetGlobalObject'),
 	GetIterator: require('./2021/GetIterator'),
 	GetMethod: require('./2021/GetMethod'),
 	GetOwnPropertyKeys: require('./2021/GetOwnPropertyKeys'),

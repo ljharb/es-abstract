@@ -61,7 +61,6 @@ var expectedMissing = [
 	'GeneratorYield',
 	'GetActiveScriptOrModule',
 	'GetFunctionRealm',
-	'GetGlobalObject',
 	'GetIdentifierReference',
 	'GetModuleNamespace',
 	'GetNewTarget',

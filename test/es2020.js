@@ -82,7 +82,6 @@ var expectedMissing = [
 	'GetBase',
 	'GetFunctionRealm',
 	'GetGeneratorKind',
-	'GetGlobalObject',
 	'GetIdentifierReference',
 	'GetModifySetValueInBuffer',
 	'GetModuleNamespace',
