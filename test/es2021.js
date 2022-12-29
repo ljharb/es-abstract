@@ -212,7 +212,6 @@ var expectedMissing = [
 	'UTC', // depends on LocalTZA
 	'ValidateAtomicAccess',
 	'ValidateIntegerTypedArray', // depends on ValidateTypedArray
-	'ValidateTypedArray',
 	'ValueOfReadEvent',
 	'Yield' // macro
 ];

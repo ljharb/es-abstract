@@ -732,6 +732,9 @@ module.exports = {
 	ValidateAndApplyPropertyDescriptor: {
 		url: 'https://262.ecma-international.org/6.0/#sec-validateandapplypropertydescriptor'
 	},
+	ValidateTypedArray: {
+		url: 'https://262.ecma-international.org/6.0/#sec-validatetypedarray'
+	},
 	WeekDay: {
 		url: 'https://262.ecma-international.org/6.0/#sec-week-day'
 	},

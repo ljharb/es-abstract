@@ -180,6 +180,7 @@ var ES2021 = {
 	UTF16EncodeCodePoint: require('./2021/UTF16EncodeCodePoint'),
 	UTF16SurrogatePairToCodePoint: require('./2021/UTF16SurrogatePairToCodePoint'),
 	ValidateAndApplyPropertyDescriptor: require('./2021/ValidateAndApplyPropertyDescriptor'),
+	ValidateTypedArray: require('./2021/ValidateTypedArray'),
 	WeakRefDeref: require('./2021/WeakRefDeref'),
 	WeekDay: require('./2021/WeekDay'),
 	YearFromTime: require('./2021/YearFromTime')

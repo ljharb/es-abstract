@@ -129,6 +129,7 @@ var ES2016 = {
 	UTF16Decode: require('./2016/UTF16Decode'),
 	UTF16Encoding: require('./2016/UTF16Encoding'),
 	ValidateAndApplyPropertyDescriptor: require('./2016/ValidateAndApplyPropertyDescriptor'),
+	ValidateTypedArray: require('./2016/ValidateTypedArray'),
 	WeekDay: require('./2016/WeekDay'),
 	YearFromTime: require('./2016/YearFromTime')
 };

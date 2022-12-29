@@ -185,7 +185,6 @@ var expectedMissing = [
 	'UTC', // depends on LocalTZA, DaylightSavingTA
 	'ValidateAtomicAccess',
 	'ValidateSharedIntegerTypedArray',
-	'ValidateTypedArray',
 	'ValueOfReadEvent',
 	'WakeWaiter',
 	'WordCharacters', // depends on Canonicalize

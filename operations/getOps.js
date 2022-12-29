@@ -155,6 +155,7 @@ async function getOps(year) {
 			['TimeWithinDay', 'https://262.ecma-international.org/6.0/#sec-day-number-and-time-within-day'],
 			['ToDateString', 'https://262.ecma-international.org/6.0/#sec-todatestring'],
 			['Type', 'https://262.ecma-international.org/6.0/#sec-ecmascript-data-types-and-values'],
+			['ValidateTypedArray', 'https://262.ecma-international.org/6.0/#sec-validatetypedarray'],
 			['WeekDay', 'https://262.ecma-international.org/6.0/#sec-week-day'],
 			['YearFromTime', 'https://262.ecma-international.org/6.0/#sec-year-number'],
 		);

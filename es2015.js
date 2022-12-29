@@ -124,6 +124,7 @@ var ES2015 = {
 	ToUint8Clamp: require('./2015/ToUint8Clamp'),
 	Type: require('./2015/Type'),
 	ValidateAndApplyPropertyDescriptor: require('./2015/ValidateAndApplyPropertyDescriptor'),
+	ValidateTypedArray: require('./2015/ValidateTypedArray'),
 	WeekDay: require('./2015/WeekDay'),
 	YearFromTime: require('./2015/YearFromTime')
 };

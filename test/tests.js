@@ -4724,6 +4724,30 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('ValidateTypedArray', function (t) {
+		forEach(v.primitives.concat(v.objects, [[]]), function (primitive) {
+			t['throws'](
+				function () { ES.ValidateTypedArray(primitive); },
+				TypeError,
+				debug(primitive) + ' is not a TypedArray'
+			);
+		});
+
+		t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
+			forEach(availableTypedArrays, function (TypedArray) {
+				var ta = new global[TypedArray](0);
+				st.doesNotThrow(
+					function () { ES.ValidateTypedArray(ta); },
+					debug(ta) + ' is a TypedArray'
+				);
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
 };
 
 var es2016 = function ES2016(ES, ops, expectedMissing, skips) {

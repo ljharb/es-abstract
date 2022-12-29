@@ -205,7 +205,6 @@ var expectedMissing = [
 	'UTF16Encode',
 	'ValidateAtomicAccess',
 	'ValidateSharedIntegerTypedArray',
-	'ValidateTypedArray',
 	'ValueOfReadEvent',
 	'WordCharacters' // depends on Canonicalize
 ];

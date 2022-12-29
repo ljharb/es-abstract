@@ -147,6 +147,7 @@
 /2016/ToUint8Clamp.js	spackled linguist-generated=true
 /2016/Type.js	spackled linguist-generated=true
 /2016/ValidateAndApplyPropertyDescriptor.js	spackled linguist-generated=true
+/2016/ValidateTypedArray.js	spackled linguist-generated=true
 /2016/WeekDay.js	spackled linguist-generated=true
 /2016/YearFromTime.js	spackled linguist-generated=true
 /2016/abs.js	spackled linguist-generated=true
@@ -273,6 +274,7 @@
 /2017/UTF16Decode.js	spackled linguist-generated=true
 /2017/UTF16Encoding.js	spackled linguist-generated=true
 /2017/ValidateAndApplyPropertyDescriptor.js	spackled linguist-generated=true
+/2017/ValidateTypedArray.js	spackled linguist-generated=true
 /2017/WeekDay.js	spackled linguist-generated=true
 /2017/YearFromTime.js	spackled linguist-generated=true
 /2017/abs.js	spackled linguist-generated=true
@@ -400,6 +402,7 @@
 /2018/UTF16Decode.js	spackled linguist-generated=true
 /2018/UTF16Encoding.js	spackled linguist-generated=true
 /2018/ValidateAndApplyPropertyDescriptor.js	spackled linguist-generated=true
+/2018/ValidateTypedArray.js	spackled linguist-generated=true
 /2018/WeekDay.js	spackled linguist-generated=true
 /2018/YearFromTime.js	spackled linguist-generated=true
 /2018/abs.js	spackled linguist-generated=true
@@ -540,6 +543,7 @@
 /2019/UTF16Encoding.js	spackled linguist-generated=true
 /2019/UnicodeEscape.js	spackled linguist-generated=true
 /2019/ValidateAndApplyPropertyDescriptor.js	spackled linguist-generated=true
+/2019/ValidateTypedArray.js	spackled linguist-generated=true
 /2019/WeekDay.js	spackled linguist-generated=true
 /2019/YearFromTime.js	spackled linguist-generated=true
 /2019/abs.js	spackled linguist-generated=true
@@ -664,6 +668,7 @@
 /2020/TrimString.js	spackled linguist-generated=true
 /2020/UTF16Encoding.js	spackled linguist-generated=true
 /2020/ValidateAndApplyPropertyDescriptor.js	spackled linguist-generated=true
+/2020/ValidateTypedArray.js	spackled linguist-generated=true
 /2020/WeekDay.js	spackled linguist-generated=true
 /2020/YearFromTime.js	spackled linguist-generated=true
 /2020/abs.js	spackled linguist-generated=true
@@ -840,6 +845,7 @@
 /2021/Type.js	spackled linguist-generated=true
 /2021/UnicodeEscape.js	spackled linguist-generated=true
 /2021/ValidateAndApplyPropertyDescriptor.js	spackled linguist-generated=true
+/2021/ValidateTypedArray.js	spackled linguist-generated=true
 /2021/WeekDay.js	spackled linguist-generated=true
 /2021/YearFromTime.js	spackled linguist-generated=true
 /2021/abs.js	spackled linguist-generated=true
@@ -1046,6 +1052,7 @@
 /2022/UTF16EncodeCodePoint.js	spackled linguist-generated=true
 /2022/UTF16SurrogatePairToCodePoint.js	spackled linguist-generated=true
 /2022/UnicodeEscape.js	spackled linguist-generated=true
+/2022/ValidateTypedArray.js	spackled linguist-generated=true
 /2022/WeakRefDeref.js	spackled linguist-generated=true
 /2022/WeekDay.js	spackled linguist-generated=true
 /2022/YearFromTime.js	spackled linguist-generated=true

@@ -146,8 +146,7 @@ var expectedMissing = [
 	'TypedArrayCreate',
 	'TypedArraySpeciesCreate',
 	'UpdateEmpty', // completion records
-	'UTC', // depends on LocalTZA, DaylightSavingTA
-	'ValidateTypedArray'
+	'UTC' // depends on LocalTZA, DaylightSavingTA
 ];
 
 require('./tests').es2016(boundES, ops, expectedMissing);

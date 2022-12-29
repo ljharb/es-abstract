@@ -71,6 +71,7 @@
 		"is-regex": "^1.1.4",
 		"is-shared-array-buffer": "^1.0.2",
 		"is-string": "^1.0.7",
+		"is-typed-array": "^1.1.10",
 		"is-weakref": "^1.0.2",
 		"object-inspect": "^1.12.2",
 		"object-keys": "^1.1.1",
