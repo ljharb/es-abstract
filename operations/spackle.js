@@ -39,5 +39,5 @@ module.exports = require('${thisSpecifier}');
 	}
 	return [];
 }).filter(Boolean);
-fs.writeFileSync(path.join(process.cwd(), '.gitattributes'), writtenFiles.map((x) => `${x}\tspackled linguist-generated=true`).join('\n'));
+fs.writeFileSync(path.join(process.cwd(), '.gitattributes'), writtenFiles.map((x) => `/${x}\tspackled linguist-generated=true`).join('\n'));
 childProcess.execSync(`git add .gitattributes ${writtenFiles.join(' ')}`);
