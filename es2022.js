@@ -192,6 +192,7 @@ var ES2022 = {
 	UTF16EncodeCodePoint: require('./2022/UTF16EncodeCodePoint'),
 	UTF16SurrogatePairToCodePoint: require('./2022/UTF16SurrogatePairToCodePoint'),
 	ValidateAndApplyPropertyDescriptor: require('./2022/ValidateAndApplyPropertyDescriptor'),
+	ValidateIntegerTypedArray: require('./2022/ValidateIntegerTypedArray'),
 	ValidateTypedArray: require('./2022/ValidateTypedArray'),
 	WeakRefDeref: require('./2022/WeakRefDeref'),
 	WeekDay: require('./2022/WeekDay'),

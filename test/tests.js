@@ -4726,11 +4726,11 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ValidateTypedArray', function (t) {
-		forEach(v.primitives.concat(v.objects, [[]]), function (primitive) {
+		forEach(v.primitives.concat(v.objects, [[]]), function (nonTA) {
 			t['throws'](
-				function () { ES.ValidateTypedArray(primitive); },
+				function () { ES.ValidateTypedArray(nonTA); },
 				TypeError,
-				debug(primitive) + ' is not a TypedArray'
+				debug(nonTA) + ' is not a TypedArray'
 			);
 		});
 
@@ -8846,6 +8846,53 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 
 		t.equal(ES.UTF16EncodeCodePoint(0xd83d), leadingPoo.charAt(0), '0xD83D is the first half of ' + wholePoo);
 		t.equal(ES.UTF16EncodeCodePoint(0xdca9), trailingPoo.charAt(0), '0xD83D is the last half of ' + wholePoo);
+
+		t.end();
+	});
+
+	test('ValidateIntegerTypedArray', function (t) {
+		forEach(v.primitives.concat(v.objects, [[]]), function (nonTA) {
+			t['throws'](
+				function () { ES.ValidateIntegerTypedArray(nonTA); },
+				TypeError,
+				debug(nonTA) + ' is not a TypedArray'
+			);
+		});
+
+		t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
+			forEach(availableTypedArrays, function (TypedArray) {
+				var ta = new global[TypedArray](0);
+				var shouldThrow = TypedArray.indexOf('Clamped') > -1 || !(/Int|Uint/).test(TypedArray);
+				if (shouldThrow) {
+					st['throws'](
+						function () { ES.ValidateIntegerTypedArray(ta); },
+						TypeError,
+						debug(ta) + ' is not an integer TypedArray'
+					);
+				} else {
+					st.doesNotThrow(
+						function () { ES.ValidateIntegerTypedArray(ta); },
+						debug(ta) + ' is an integer TypedArray'
+					);
+				}
+
+				var isWaitable = TypedArray === 'Int32Array' || TypedArray === 'BigInt64Array';
+				if (isWaitable) {
+					st.doesNotThrow(
+						function () { ES.ValidateIntegerTypedArray(ta, true); },
+						debug(ta) + ' is a waitable integer TypedArray'
+					);
+				} else {
+					st['throws'](
+						function () { ES.ValidateIntegerTypedArray(ta, true); },
+						TypeError,
+						debug(ta) + ' is not a waitable integer TypedArray'
+					);
+				}
+			});
+
+			st.end();
+		});
 
 		t.end();
 	});
