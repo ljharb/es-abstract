@@ -114,6 +114,7 @@ var ES2022 = {
 	Number: require('./2022/Number'),
 	NumberBitwiseOp: require('./2022/NumberBitwiseOp'),
 	NumberToBigInt: require('./2022/NumberToBigInt'),
+	NumericToRawBytes: require('./2022/NumericToRawBytes'),
 	ObjectDefineProperties: require('./2022/ObjectDefineProperties'),
 	OrdinaryCreateFromConstructor: require('./2022/OrdinaryCreateFromConstructor'),
 	OrdinaryDefineOwnProperty: require('./2022/OrdinaryDefineOwnProperty'),

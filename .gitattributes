@@ -796,6 +796,7 @@
 /2021/Number/toString.js	spackled linguist-generated=true
 /2021/Number/unaryMinus.js	spackled linguist-generated=true
 /2021/NumberBitwiseOp.js	spackled linguist-generated=true
+/2021/NumericToRawBytes.js	spackled linguist-generated=true
 /2021/ObjectDefineProperties.js	spackled linguist-generated=true
 /2021/OrdinaryCreateFromConstructor.js	spackled linguist-generated=true
 /2021/OrdinaryDefineOwnProperty.js	spackled linguist-generated=true
@@ -997,6 +998,7 @@
 /2022/Number/unsignedRightShift.js	spackled linguist-generated=true
 /2022/NumberBitwiseOp.js	spackled linguist-generated=true
 /2022/NumberToBigInt.js	spackled linguist-generated=true
+/2022/NumericToRawBytes.js	spackled linguist-generated=true
 /2022/ObjectDefineProperties.js	spackled linguist-generated=true
 /2022/OrdinaryCreateFromConstructor.js	spackled linguist-generated=true
 /2022/OrdinaryDefineOwnProperty.js	spackled linguist-generated=true

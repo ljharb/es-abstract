@@ -148,7 +148,6 @@ var expectedMissing = [
 	'NewPromiseReactionJob',
 	'NewPromiseResolveThenableJob',
 	'NotifyWaiter',
-	'NumericToRawBytes',
 	'OrdinaryCallBindThis',
 	'OrdinaryCallEvaluateBody',
 	'OrdinaryDelete',

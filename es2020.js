@@ -100,6 +100,7 @@ var ES2020 = {
 	Number: require('./2020/Number'),
 	NumberBitwiseOp: require('./2020/NumberBitwiseOp'),
 	NumberToBigInt: require('./2020/NumberToBigInt'),
+	NumericToRawBytes: require('./2020/NumericToRawBytes'),
 	ObjectDefineProperties: require('./2020/ObjectDefineProperties'),
 	OrdinaryCreateFromConstructor: require('./2020/OrdinaryCreateFromConstructor'),
 	OrdinaryDefineOwnProperty: require('./2020/OrdinaryDefineOwnProperty'),

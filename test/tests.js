@@ -8763,6 +8763,483 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('NumericToRawBytes', function (t) {
+		forEach(v.nonStrings.concat('', 'Byte'), function (nonTAType) {
+			t['throws'](
+				function () { ES.NumericToRawBytes(nonTAType, 0, false); },
+				TypeError,
+				debug(nonTAType) + ' is not a String, or not a TypedArray type'
+			);
+		});
+
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.NumericToRawBytes('Int8', nonNumber, false); },
+				TypeError,
+				debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		forEach(v.nonBooleans, function (nonBoolean) {
+			t['throws'](
+				function () { ES.NumericToRawBytes('Int8', [0], nonBoolean); },
+				TypeError,
+				debug(nonBoolean) + ' is not a Boolean'
+			);
+		});
+
+		t.test('Float32', function (st) {
+			forEach([
+				[0, [0, 0, 0, 0]],
+				[-0, [0, 0, 0, 128]],
+				[1, [0, 0, 128, 63]],
+				[0.75, [0, 0, 64, 63]],
+				[0.5, [0, 0, 0, 63]],
+				[-1.5, [0, 0, 192, 191]],
+				[-3.5, [0, 0, 96, 192]],
+				[16777216, [0, 0, 128, 75]], // max safe float32
+				[2147483648, [0, 0, 0, 79]], // 2147483647 isn't representable as a float32
+				[Infinity, [0, 0, 128, 127]],
+				[-Infinity, [0, 0, 128, 255]],
+				[NaN, [0, 0, 192, 127]]
+			], function (pair) {
+				var float = pair[0];
+				var bytes = pair[1];
+
+				if (availableTypedArrays.length > 0) {
+					var expectedBytes = arrayFrom(new Uint8Array(assign(new Float32Array(1), [float]).buffer));
+					st.deepEqual(
+						bytes,
+						expectedBytes,
+						'bytes for ' + debug(float) + ' are correct; got ' + debug(expectedBytes)
+					);
+				}
+
+				st.deepEqual(
+					ES.NumericToRawBytes('Float32', float, true),
+					bytes,
+					'little-endian: ' + debug(float) + ' produces bytes for it'
+				);
+				st.deepEqual(
+					ES.NumericToRawBytes('Float32', float, false),
+					bytes.slice().reverse(),
+					'big-endian: ' + debug(float) + ' produces bytes for it'
+				);
+			});
+
+			st.end();
+		});
+
+		t.test('Float64', function (st) {
+			forEach([
+				[0, [0, 0, 0, 0, 0, 0, 0, 0]],
+				[-0, [0, 0, 0, 0, 0, 0, 0, 128]],
+				[1, [0, 0, 0, 0, 0, 0, 240, 63]],
+				[0.75, [0, 0, 0, 0, 0, 0, 232, 63]],
+				[0.5, [0, 0, 0, 0, 0, 0, 224, 63]],
+				[-1.5, [0, 0, 0, 0, 0, 0, 248, 191]],
+				[-3.5, [0, 0, 0, 0, 0, 0, 12, 192]],
+				[2147483647, [0, 0, 192, 255, 255, 255, 223, 65]],
+				[9007199254740992, [0, 0, 0, 0, 0, 0, 64, 67]],
+				[Infinity, [0, 0, 0, 0, 0, 0, 240, 127]],
+				[-Infinity, [0, 0, 0, 0, 0, 0, 240, 255]],
+				[NaN, [0, 0, 0, 0, 0, 0, 248, 127]]
+			], function (pair) {
+				var float = pair[0];
+				var bytes = pair[1];
+
+				if (availableTypedArrays.length > 0) {
+					var expectedBytes = arrayFrom(new Uint8Array(assign(new Float64Array(1), [float]).buffer));
+					st.deepEqual(
+						bytes,
+						expectedBytes,
+						'bytes for ' + debug(float) + ' are correct; got ' + debug(expectedBytes)
+					);
+				}
+
+				st.deepEqual(
+					ES.NumericToRawBytes('Float64', float, true),
+					bytes,
+					'little-endian: ' + debug(float) + ' produces bytes for it'
+				);
+				st.deepEqual(
+					ES.NumericToRawBytes('Float64', float, false),
+					bytes.slice().reverse(),
+					'big-endian: ' + debug(float) + ' produces bytes for it'
+				);
+			});
+
+			st.end();
+		});
+
+		t.test('Int8', function (st) {
+			forEach([
+				[0, [0]],
+				[-1, [255]],
+				[1, [1]],
+				[127, [127]],
+				[-127, [129]]
+			], function (pair) {
+				var int = pair[0];
+				var bytes = pair[1];
+
+				if (availableTypedArrays.length > 0) {
+					var expectedBytes = arrayFrom(new Uint8Array(assign(new Int8Array(1), [int]).buffer));
+					st.deepEqual(
+						bytes,
+						expectedBytes,
+						'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
+					);
+				}
+
+				st.deepEqual(
+					ES.NumericToRawBytes('Int8', int, true),
+					bytes,
+					'little-endian: ' + debug(int) + ' produces expected bytes'
+				);
+				st.deepEqual(
+					ES.NumericToRawBytes('Int8', int, false),
+					bytes,
+					'big-endian: ' + debug(int) + ' produces expected bytes'
+				);
+			});
+
+			st.end();
+		});
+
+		t.test('Uint8', function (st) {
+			forEach([
+				[0, [0]],
+				[1, [1]],
+				[127, [127]],
+				[255, [255]]
+			], function (pair) {
+				var int = pair[0];
+				var bytes = pair[1];
+
+				st.deepEqual(
+					ES.NumericToRawBytes('Uint8', int, true),
+					bytes,
+					'little-endian: ' + debug(int) + ' produces expected bytes'
+				);
+				st.deepEqual(
+					ES.NumericToRawBytes('Uint8', int, false),
+					bytes,
+					'big-endian: ' + debug(int) + ' produces expected bytes'
+				);
+			});
+
+			st.end();
+		});
+
+		t.test('Uint8C', function (st) {
+			forEach([
+				[0, [0]],
+				[1, [1]],
+				[127, [127]],
+				[255, [255]]
+			], function (pair) {
+				var int = pair[0];
+				var bytes = pair[1];
+
+				if (availableTypedArrays.length > 0) {
+					var expectedBytes = arrayFrom(new Uint8Array(assign(new Uint8ClampedArray(1), [int]).buffer));
+					st.deepEqual(
+						bytes,
+						expectedBytes,
+						'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
+					);
+				}
+
+				st.deepEqual(
+					ES.NumericToRawBytes('Uint8C', int, true),
+					bytes,
+					'little-endian: ' + debug(int) + ' produces expected bytes'
+				);
+				st.deepEqual(
+					ES.NumericToRawBytes('Uint8C', int, false),
+					bytes,
+					'big-endian: ' + debug(int) + ' produces expected bytes'
+				);
+			});
+
+			st.end();
+		});
+
+		t.test('Int16', function (st) {
+			forEach([
+				[0, [0, 0]],
+				[-1, [255, 255]],
+				[1, [1, 0]],
+				[127, [127, 0]],
+				[-127, [129, 255]],
+				[255, [255, 0]],
+				[-255, [1, 255]]
+			], function (pair) {
+				var int = pair[0];
+				var bytes = pair[1];
+
+				if (availableTypedArrays.length > 0) {
+					var expectedBytes = arrayFrom(new Uint8Array(assign(new Int16Array(1), [int]).buffer));
+					st.deepEqual(
+						bytes,
+						expectedBytes,
+						'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
+					);
+				}
+
+				st.deepEqual(
+					ES.NumericToRawBytes('Int16', int, true),
+					bytes,
+					'little-endian: ' + debug(int) + ' produces expected bytes'
+				);
+				st.deepEqual(
+					ES.NumericToRawBytes('Int16', int, false),
+					bytes.slice().reverse(),
+					'big-endian: ' + debug(int) + ' produces expected bytes'
+				);
+			});
+
+			st.end();
+		});
+
+		t.test('Uint16', function (st) {
+			forEach([
+				[0, [0, 0]],
+				[1, [1, 0]],
+				[127, [127, 0]],
+				[255, [255, 0]],
+				[256, [0, 1]],
+				[511, [255, 1]]
+			], function (pair) {
+				var int = pair[0];
+				var bytes = pair[1];
+
+				if (availableTypedArrays.length > 0) {
+					var expectedBytes = arrayFrom(new Uint8Array(assign(new Uint16Array(1), [int]).buffer));
+					st.deepEqual(
+						bytes,
+						expectedBytes,
+						'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
+					);
+				}
+
+				st.deepEqual(
+					ES.NumericToRawBytes('Uint16', int, true),
+					bytes,
+					'little-endian: ' + debug(int) + ' produces expected bytes'
+				);
+				st.deepEqual(
+					ES.NumericToRawBytes('Uint16', int, false),
+					bytes.slice().reverse(),
+					'big-endian: ' + debug(int) + ' produces expected bytes'
+				);
+			});
+
+			st.end();
+		});
+
+		t.test('Int32', function (st) {
+			forEach([
+				[0, [0, 0, 0, 0]],
+				[1, [1, 0, 0, 0]],
+				[-1, [255, 255, 255, 255]],
+				[16777216, [0, 0, 0, 1]], // max safe float32
+				[2147483647, [255, 255, 255, 127]],
+				[-2147483647, [1, 0, 0, 128]],
+				[-2147483648, [0, 0, 0, 128]]
+			], function (pair) {
+				var int = pair[0];
+				var bytes = pair[1];
+
+				if (availableTypedArrays.length > 0) {
+					var expectedBytes = arrayFrom(new Uint8Array(assign(new Int32Array(1), [int]).buffer));
+					st.deepEqual(
+						bytes,
+						expectedBytes,
+						'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
+					);
+				}
+
+				st.deepEqual(
+					ES.NumericToRawBytes('Int32', int, true),
+					bytes,
+					'little-endian: ' + debug(int) + ' produces expected bytes'
+				);
+				st.deepEqual(
+					ES.NumericToRawBytes('Int32', int, false),
+					bytes.slice().reverse(),
+					'big-endian: ' + debug(int) + ' produces expected bytes'
+				);
+			});
+
+			st.end();
+		});
+
+		t.test('Uint32', function (st) {
+			forEach([
+				[0, [0, 0, 0, 0]],
+				[1, [1, 0, 0, 0]],
+				[16777216, [0, 0, 0, 1]], // max safe float32
+				[2147483647, [255, 255, 255, 127]],
+				[-2147483647, [1, 0, 0, 128]],
+				[-2147483648, [0, 0, 0, 128]]
+			], function (pair) {
+				var int = pair[0];
+				var bytes = pair[1];
+
+				if (availableTypedArrays.length > 0) {
+					var expectedBytes = arrayFrom(new Uint8Array(assign(new Uint32Array(1), [int]).buffer));
+					st.deepEqual(
+						bytes,
+						expectedBytes,
+						'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
+					);
+				}
+
+				st.deepEqual(
+					ES.NumericToRawBytes('Uint32', int, true),
+					bytes,
+					'little-endian: ' + debug(int) + ' produces expected bytes'
+				);
+				st.deepEqual(
+					ES.NumericToRawBytes('Uint32', int, false),
+					bytes.slice().reverse(),
+					'big-endian: ' + debug(int) + ' produces expected bytes'
+				);
+			});
+
+			st.end();
+		});
+
+		t.test('BigInt64', function (st) {
+			st['throws'](
+				function () { ES.RawBytesToNumeric('BigInt64', [0, 0, 0, 0, 0, 0, 0], false); },
+				RangeError,
+				'BigInt64 with less than 8 bytes throws a RangeError'
+			);
+			st['throws'](
+				function () { ES.RawBytesToNumeric('BigInt64', [0, 0, 0, 0, 0, 0, 0, 0, 0], false); },
+				RangeError,
+				'BigInt64 with more than 8 bytes throws a RangeError'
+			);
+
+			st.test('bigints available', { skip: !hasBigInts }, function (s2t) {
+				forEach([
+					[BigInt(0), [0, 0, 0, 0, 0, 0, 0, 0]],
+					[BigInt(1), [1, 0, 0, 0, 0, 0, 0, 0]],
+					// [BigInt(-1), [255, 255, 255, 255, 255, 255, 255, 255]],
+					[BigInt(16777216), [0, 0, 0, 1, 0, 0, 0, 0]], // max safe float32
+					[BigInt(2147483647), [255, 255, 255, 127, 0, 0, 0, 0]],
+					// [BigInt(-2147483647), [1, 0, 0, 128, 255, 255, 255, 255]],
+					[BigInt(2147483648), [0, 0, 0, 128, 0, 0, 0, 0]]
+					// [BigInt(-2147483648), [0, 0, 0, 128, 255, 255, 255, 255]]
+				], function (pair) {
+					var int = pair[0];
+					var bytes = pair[1];
+
+					if (availableTypedArrays.length > 0) {
+						var expectedBytes = arrayFrom(new Uint8Array(assign(new BigInt64Array(1), [int]).buffer));
+						s2t.deepEqual(
+							bytes,
+							expectedBytes,
+							'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
+						);
+					}
+
+					s2t.equal(
+						ES.RawBytesToNumeric('BigInt64', bytes, true),
+						int,
+						'little-endian: bytes for ' + debug(int) + ' produces it'
+					);
+					s2t.equal(
+						ES.RawBytesToNumeric('BigInt64', bytes.slice().reverse(), false),
+						int,
+						'big-endian: bytes for ' + debug(int) + ' produces it'
+					);
+				});
+
+				s2t.end();
+			});
+
+			st.test('no bigints', { skip: hasBigInts }, function (s2t) {
+				s2t['throws'](
+					function () { ES.RawBytesToNumeric('BigInt64', [0, 0, 0, 0, 0, 0, 0, 0], false); },
+					SyntaxError,
+					'BigInt64 throws a SyntaxError when BigInt is not available'
+				);
+				s2t['throws'](
+					function () { ES.RawBytesToNumeric('BigUint64', [0, 0, 0, 0, 0, 0, 0, 0], false); },
+					SyntaxError,
+					'BigUint64 throws a SyntaxError when BigInt is not available'
+				);
+
+				s2t.end();
+			});
+
+			st.end();
+		});
+
+		t.test('BigUint64', function (st) {
+			st.test('bigints available', { skip: !hasBigInts }, function (s2t) {
+				forEach([
+					[BigInt(0), [0, 0, 0, 0, 0, 0, 0, 0]],
+					[BigInt(1), [1, 0, 0, 0, 0, 0, 0, 0]],
+					// [BigInt(-1), [255, 255, 255, 255, 255, 255, 255, 255]],
+					[BigInt(16777216), [0, 0, 0, 1, 0, 0, 0, 0]], // max safe float32
+					[BigInt(2147483647), [255, 255, 255, 127, 0, 0, 0, 0]],
+					// [BigInt(-2147483647), [1, 0, 0, 128, 255, 255, 255, 255]],
+					[BigInt(2147483648), [0, 0, 0, 128, 0, 0, 0, 0]]
+					// [BigInt(-2147483648), [0, 0, 0, 128, 255, 255, 255, 255]]
+				], function (pair) {
+					var int = pair[0];
+					var bytes = pair[1];
+
+					if (availableTypedArrays.length > 0) {
+						var expectedBytes = arrayFrom(new Uint8Array(assign(new BigUint64Array(1), [int]).buffer));
+						s2t.deepEqual(
+							bytes,
+							expectedBytes,
+							'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
+						);
+					}
+
+					s2t.deepEqual(
+						ES.NumericToRawBytes('BigUint64', int, true),
+						bytes,
+						'little-endian: bytes for ' + debug(int) + ' are produced'
+					);
+					s2t.deepEqual(
+						ES.NumericToRawBytes('BigUint64', int, false),
+						bytes.slice().reverse(),
+						'big-endian: bytes for ' + debug(int) + ' are produced'
+					);
+				});
+
+				s2t.end();
+			});
+
+			st.test('no bigints', { skip: hasBigInts }, function (s2t) {
+				s2t['throws'](
+					function () { ES.NumericToRawBytes('BigUint64', 0, false); },
+					SyntaxError,
+					'BigUint64 throws a SyntaxError when BigInt is not available'
+				);
+				s2t['throws'](
+					function () { ES.NumericToRawBytes('BigUint64', 0, false); },
+					SyntaxError,
+					'BigUint64 throws a SyntaxError when BigInt is not available'
+				);
+
+				s2t.end();
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
 	test('OrdinaryObjectCreate', function (t) {
 		forEach(v.nonNullPrimitives, function (value) {
 			t['throws'](
