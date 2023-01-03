@@ -79,6 +79,7 @@ var ES2022 = {
 	IsConcatSpreadable: require('./2022/IsConcatSpreadable'),
 	IsConstructor: require('./2022/IsConstructor'),
 	IsDataDescriptor: require('./2022/IsDataDescriptor'),
+	IsDetachedBuffer: require('./2022/IsDetachedBuffer'),
 	IsExtensible: require('./2022/IsExtensible'),
 	IsGenericDescriptor: require('./2022/IsGenericDescriptor'),
 	IsIntegralNumber: require('./2022/IsIntegralNumber'),

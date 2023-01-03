@@ -36,6 +36,9 @@ var $BigInt = hasBigInts ? BigInt : null;
 
 var supportedRegexFlags = require('available-regexp-flags');
 
+/* globals postMessage */
+var canDetach = typeof structuredClone === 'function' || typeof postMessage === 'function' || isCore('worker_threads');
+
 // node v10.4-v10.8 have a bug where you can't `BigInt(x)` anything larger than MAX_SAFE_INTEGER
 var needsBigIntHack = false;
 if (hasBigInts) {
@@ -2195,9 +2198,6 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				new ArrayBuffer(420)
 			];
 
-			/* globals postMessage */
-			var canDetach = typeof structuredClone === 'function' || typeof postMessage === 'function' || isCore('worker_threads');
-
 			st.test('can detach', { skip: !canDetach }, function (s2t) {
 				forEach(buffers, function (buffer) {
 					s2t.doesNotThrow(
@@ -2912,6 +2912,64 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		} else {
 			t.equal(ES.IsConstructor(Proxy), true, 'Proxy is constructor');
 		}
+
+		t.end();
+	});
+
+	test('IsDetachedBuffer', function (t) {
+		forEach(v.primitives.concat(v.objects), function (nonArrayBuffer) {
+			t['throws'](
+				function () { ES.IsDetachedBuffer(nonArrayBuffer); },
+				TypeError,
+				debug(nonArrayBuffer) + ' is not an ArrayBuffer'
+			);
+		});
+
+		t.test('ArrayBuffers', { skip: typeof ArrayBuffer !== 'function' }, function (st) {
+			var buffers = [
+				new ArrayBuffer(),
+				new ArrayBuffer(0),
+				new ArrayBuffer(4),
+				new ArrayBuffer(420)
+			];
+
+			st.test('can detach', { skip: !canDetach }, function (s2t) {
+				forEach(buffers, function (buffer) {
+					s2t.equal(ES.IsDetachedBuffer(buffer), false, debug(buffer) + ' is not detached');
+					s2t.doesNotThrow(
+						function () { return new Float32Array(buffer); },
+						'can create a Float32Array from a non-detached ArrayBuffer'
+					);
+
+					s2t.equal(ES.DetachArrayBuffer(buffer), null, 'returns null');
+
+					s2t.equal(ES.IsDetachedBuffer(buffer), true, debug(buffer) + ' is now detached');
+					s2t['throws'](
+						function () { return new Float32Array(buffer); },
+						TypeError,
+						'can not create a Float32Array from a now detached ArrayBuffer'
+					);
+				});
+
+				s2t.end();
+			});
+
+			// throws SyntaxError in node < 11
+			st.test('can not detach', { skip: canDetach }, function (s2t) {
+				forEach(buffers, function (buffer) {
+					s2t.doesNotThrow(
+						function () { return new Float32Array(buffer); },
+						'can create a Float32Array from a non-detached ArrayBuffer'
+					);
+
+					s2t.equal(ES.IsDetachedBuffer(buffer), false, 'env does not support detaching');
+				});
+
+				s2t.end();
+			});
+
+			st.end();
+		});
 
 		t.end();
 	});

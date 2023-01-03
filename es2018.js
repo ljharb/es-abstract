@@ -58,6 +58,7 @@ var ES2018 = {
 	IsConcatSpreadable: require('./2018/IsConcatSpreadable'),
 	IsConstructor: require('./2018/IsConstructor'),
 	IsDataDescriptor: require('./2018/IsDataDescriptor'),
+	IsDetachedBuffer: require('./2018/IsDetachedBuffer'),
 	IsExtensible: require('./2018/IsExtensible'),
 	IsGenericDescriptor: require('./2018/IsGenericDescriptor'),
 	IsInteger: require('./2018/IsInteger'),

@@ -113,7 +113,6 @@ var expectedMissing = [
 	'IntegerIndexedObjectCreate',
 	'InternalizeJSONProperty',
 	'IsAnonymousFunctionDefinition',
-	'IsDetachedBuffer',
 	'IsInTailPosition',
 	'IsLabelledFunction',
 	'IsPropertyReference',

@@ -77,6 +77,7 @@ var ES2021 = {
 	IsConcatSpreadable: require('./2021/IsConcatSpreadable'),
 	IsConstructor: require('./2021/IsConstructor'),
 	IsDataDescriptor: require('./2021/IsDataDescriptor'),
+	IsDetachedBuffer: require('./2021/IsDetachedBuffer'),
 	IsExtensible: require('./2021/IsExtensible'),
 	IsGenericDescriptor: require('./2021/IsGenericDescriptor'),
 	IsIntegralNumber: require('./2021/IsIntegralNumber'),

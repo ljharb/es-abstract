@@ -81,7 +81,6 @@ var expectedMissing = [
 	'IntegerIndexedObjectCreate',
 	'InternalizeJSONProperty',
 	'IsAnonymousFunctionDefinition',
-	'IsDetachedBuffer',
 	'IsInTailPosition',
 	'IsLabelledFunction',
 	'IsWordChar', // depends on WordCharacters

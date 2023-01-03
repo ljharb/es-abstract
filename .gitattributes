@@ -85,6 +85,7 @@
 /2016/IsConcatSpreadable.js	spackled linguist-generated=true
 /2016/IsConstructor.js	spackled linguist-generated=true
 /2016/IsDataDescriptor.js	spackled linguist-generated=true
+/2016/IsDetachedBuffer.js	spackled linguist-generated=true
 /2016/IsExtensible.js	spackled linguist-generated=true
 /2016/IsGenericDescriptor.js	spackled linguist-generated=true
 /2016/IsInteger.js	spackled linguist-generated=true
@@ -207,6 +208,7 @@
 /2017/IsConcatSpreadable.js	spackled linguist-generated=true
 /2017/IsConstructor.js	spackled linguist-generated=true
 /2017/IsDataDescriptor.js	spackled linguist-generated=true
+/2017/IsDetachedBuffer.js	spackled linguist-generated=true
 /2017/IsExtensible.js	spackled linguist-generated=true
 /2017/IsGenericDescriptor.js	spackled linguist-generated=true
 /2017/IsInteger.js	spackled linguist-generated=true
@@ -332,6 +334,7 @@
 /2018/IsConcatSpreadable.js	spackled linguist-generated=true
 /2018/IsConstructor.js	spackled linguist-generated=true
 /2018/IsDataDescriptor.js	spackled linguist-generated=true
+/2018/IsDetachedBuffer.js	spackled linguist-generated=true
 /2018/IsExtensible.js	spackled linguist-generated=true
 /2018/IsGenericDescriptor.js	spackled linguist-generated=true
 /2018/IsInteger.js	spackled linguist-generated=true
@@ -470,6 +473,7 @@
 /2019/IsConcatSpreadable.js	spackled linguist-generated=true
 /2019/IsConstructor.js	spackled linguist-generated=true
 /2019/IsDataDescriptor.js	spackled linguist-generated=true
+/2019/IsDetachedBuffer.js	spackled linguist-generated=true
 /2019/IsExtensible.js	spackled linguist-generated=true
 /2019/IsGenericDescriptor.js	spackled linguist-generated=true
 /2019/IsInteger.js	spackled linguist-generated=true
@@ -610,6 +614,7 @@
 /2020/IsConcatSpreadable.js	spackled linguist-generated=true
 /2020/IsConstructor.js	spackled linguist-generated=true
 /2020/IsDataDescriptor.js	spackled linguist-generated=true
+/2020/IsDetachedBuffer.js	spackled linguist-generated=true
 /2020/IsExtensible.js	spackled linguist-generated=true
 /2020/IsGenericDescriptor.js	spackled linguist-generated=true
 /2020/IsInteger.js	spackled linguist-generated=true
@@ -765,6 +770,7 @@
 /2021/IsConcatSpreadable.js	spackled linguist-generated=true
 /2021/IsConstructor.js	spackled linguist-generated=true
 /2021/IsDataDescriptor.js	spackled linguist-generated=true
+/2021/IsDetachedBuffer.js	spackled linguist-generated=true
 /2021/IsExtensible.js	spackled linguist-generated=true
 /2021/IsGenericDescriptor.js	spackled linguist-generated=true
 /2021/IsNoTearConfiguration.js	spackled linguist-generated=true
@@ -958,6 +964,7 @@
 /2022/IsConcatSpreadable.js	spackled linguist-generated=true
 /2022/IsConstructor.js	spackled linguist-generated=true
 /2022/IsDataDescriptor.js	spackled linguist-generated=true
+/2022/IsDetachedBuffer.js	spackled linguist-generated=true
 /2022/IsExtensible.js	spackled linguist-generated=true
 /2022/IsGenericDescriptor.js	spackled linguist-generated=true
 /2022/IsIntegralNumber.js	spackled linguist-generated=true

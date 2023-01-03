@@ -54,6 +54,7 @@ var ES2015 = {
 	IsConcatSpreadable: require('./2015/IsConcatSpreadable'),
 	IsConstructor: require('./2015/IsConstructor'),
 	IsDataDescriptor: require('./2015/IsDataDescriptor'),
+	IsDetachedBuffer: require('./2015/IsDetachedBuffer'),
 	IsExtensible: require('./2015/IsExtensible'),
 	IsGenericDescriptor: require('./2015/IsGenericDescriptor'),
 	IsInteger: require('./2015/IsInteger'),

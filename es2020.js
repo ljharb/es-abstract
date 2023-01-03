@@ -69,6 +69,7 @@ var ES2020 = {
 	IsConcatSpreadable: require('./2020/IsConcatSpreadable'),
 	IsConstructor: require('./2020/IsConstructor'),
 	IsDataDescriptor: require('./2020/IsDataDescriptor'),
+	IsDetachedBuffer: require('./2020/IsDetachedBuffer'),
 	IsExtensible: require('./2020/IsExtensible'),
 	IsGenericDescriptor: require('./2020/IsGenericDescriptor'),
 	IsInteger: require('./2020/IsInteger'),
