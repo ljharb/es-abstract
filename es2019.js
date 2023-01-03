@@ -84,6 +84,7 @@ var ES2019 = {
 	MonthFromTime: require('./2019/MonthFromTime'),
 	msFromTime: require('./2019/msFromTime'),
 	NormalCompletion: require('./2019/NormalCompletion'),
+	NumberToRawBytes: require('./2019/NumberToRawBytes'),
 	NumberToString: require('./2019/NumberToString'),
 	ObjectCreate: require('./2019/ObjectCreate'),
 	ObjectDefineProperties: require('./2019/ObjectDefineProperties'),

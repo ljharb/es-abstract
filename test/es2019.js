@@ -142,7 +142,6 @@ var expectedMissing = [
 	'NewObjectEnvironment',
 	'NewPromiseCapability',
 	'NotifyWaiter',
-	'NumberToRawBytes',
 	'OrdinaryCallBindThis',
 	'OrdinaryCallEvaluateBody',
 	'OrdinaryDelete',

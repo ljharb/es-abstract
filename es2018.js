@@ -81,6 +81,7 @@ var ES2018 = {
 	MonthFromTime: require('./2018/MonthFromTime'),
 	msFromTime: require('./2018/msFromTime'),
 	NormalCompletion: require('./2018/NormalCompletion'),
+	NumberToRawBytes: require('./2018/NumberToRawBytes'),
 	NumberToString: require('./2018/NumberToString'),
 	ObjectCreate: require('./2018/ObjectCreate'),
 	ObjectDefineProperties: require('./2018/ObjectDefineProperties'),

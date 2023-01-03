@@ -350,6 +350,7 @@
 /2018/MinFromTime.js	spackled linguist-generated=true
 /2018/MonthFromTime.js	spackled linguist-generated=true
 /2018/NormalCompletion.js	spackled linguist-generated=true
+/2018/NumberToRawBytes.js	spackled linguist-generated=true
 /2018/ObjectCreate.js	spackled linguist-generated=true
 /2018/ObjectDefineProperties.js	spackled linguist-generated=true
 /2018/OrdinaryCreateFromConstructor.js	spackled linguist-generated=true
@@ -487,6 +488,7 @@
 /2019/MinFromTime.js	spackled linguist-generated=true
 /2019/MonthFromTime.js	spackled linguist-generated=true
 /2019/NormalCompletion.js	spackled linguist-generated=true
+/2019/NumberToRawBytes.js	spackled linguist-generated=true
 /2019/NumberToString.js	spackled linguist-generated=true
 /2019/ObjectCreate.js	spackled linguist-generated=true
 /2019/ObjectDefineProperties.js	spackled linguist-generated=true
