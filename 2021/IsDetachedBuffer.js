@@ -6,7 +6,8 @@ var $TypeError = GetIntrinsic('%TypeError%');
 
 var callBound = require('call-bind/callBound');
 
-var $byteLength = callBound('%ArrayBuffer.prototype.byteLength%', true);
+var $byteLength = callBound('%ArrayBuffer.prototype.byteLength%', true)
+	|| function byteLength(ab) { return ab.byteLength; }; // in node < 0.11, byteLength is an own nonconfigurable property
 
 var isArrayBuffer = require('is-array-buffer');
 
