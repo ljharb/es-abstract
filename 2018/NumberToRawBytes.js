@@ -3,7 +3,11 @@
 var GetIntrinsic = require('get-intrinsic');
 
 var $floor = GetIntrinsic('%Math.floor%');
-var $log2 = GetIntrinsic('%Math.log2%');
+var $log = GetIntrinsic('%Math.log%');
+var $log2E = GetIntrinsic('%Math.LOG2E%');
+var $log2 = GetIntrinsic('%Math.log2%', true) || function log2(x) {
+	return $log(x) * $log2E;
+};
 var $parseInt = GetIntrinsic('%parseInt%');
 var $pow = GetIntrinsic('%Math.pow%');
 var $TypeError = GetIntrinsic('%TypeError%');
