@@ -3581,7 +3581,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		});
 		forEach(v.primitives, function (primitive) {
 			t['throws'](
-				function () { ES.OrdinaryDefineOwnProperty(primitive, '', v.genericDescriptor()); },
+				function () { ES.OrdinaryDefineOwnProperty({}, '', primitive); },
 				TypeError,
 				'Desc: ' + debug(primitive) + ' is not a Property Descriptor'
 			);
@@ -4487,7 +4487,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				function () {
 					return ES.ValidateAndApplyPropertyDescriptor(
 						undefined,
-						null,
+						'',
 						nonBoolean,
 						v.genericDescriptor(),
 						v.genericDescriptor()
@@ -4504,7 +4504,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				function () {
 					return ES.ValidateAndApplyPropertyDescriptor(
 						undefined,
-						null,
+						'',
 						false,
 						primitive,
 						v.genericDescriptor()
@@ -4521,7 +4521,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				function () {
 					return ES.ValidateAndApplyPropertyDescriptor(
 						undefined,
-						null,
+						'',
 						false,
 						v.genericDescriptor(),
 						primitive
@@ -4670,6 +4670,18 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 					undefined,
 					'property key',
 					true,
+					{},
+					ES.CompletePropertyDescriptor(v.descriptors.nonConfigurable(v.dataDescriptor()))
+				),
+				true,
+				'true if Desc is generic, and lacks both [[Configurable]] and [[Enumerable]]'
+			);
+
+			st.equal(
+				ES.ValidateAndApplyPropertyDescriptor(
+					undefined,
+					'property key',
+					true,
 					v.descriptors.enumerable(v.dataDescriptor()),
 					ES.CompletePropertyDescriptor(v.descriptors.nonEnumerable(v.dataDescriptor()))
 				),
@@ -4687,6 +4699,53 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				),
 				false,
 				'false if Desc is not Enumerable and current is'
+			);
+
+			st.equal(
+				ES.ValidateAndApplyPropertyDescriptor(
+					undefined,
+					'property key',
+					true,
+					v.accessorDescriptor(),
+					ES.CompletePropertyDescriptor(v.dataDescriptor())
+				),
+				false,
+				'false if Desc is an accessor descriptor and current is a data descriptor'
+			);
+			st.equal(
+				ES.ValidateAndApplyPropertyDescriptor(
+					undefined,
+					'property key',
+					true,
+					v.descriptors.nonConfigurable(v.dataDescriptor()),
+					ES.CompletePropertyDescriptor(v.descriptors.nonConfigurable(v.accessorDescriptor()))
+				),
+				false,
+				'false if Desc is a data descriptor and current is an accessor descriptor'
+			);
+
+			st.equal(
+				ES.ValidateAndApplyPropertyDescriptor(
+					undefined,
+					'property key',
+					true,
+					v.descriptors.nonConfigurable(v.accessorDescriptor()),
+					v.descriptors.nonConfigurable(v.accessorDescriptor())
+				),
+				false,
+				'false if Desc and current are both accessors with a !== Get function'
+			);
+			var fakeGetter = function () {};
+			st.equal(
+				ES.ValidateAndApplyPropertyDescriptor(
+					undefined,
+					'property key',
+					true,
+					ES.CompletePropertyDescriptor(v.descriptors.nonConfigurable({ '[[Get]]': fakeGetter, '[[Set]]': function () {} })),
+					ES.CompletePropertyDescriptor(v.descriptors.nonConfigurable({ '[[Get]]': fakeGetter, '[[Set]]': function () {} }))
+				),
+				false,
+				'false if Desc and current are both accessors with a !== Get function'
 			);
 
 			var descLackingEnumerable = v.accessorDescriptor();
@@ -7041,7 +7100,7 @@ var es2019 = function ES2019(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('Symbol support', { skip: !v.hasSymbols }, function (st) {
-			st.plan(4);
+			st.plan(5 + v.primitives.length);
 
 			var O = {};
 			st.equal(ES.AddEntriesFromIterable(O, [], function () {}), O, 'returns the target');
@@ -7052,6 +7111,34 @@ var es2019 = function ES2019(ES, ops, expectedMissing, skips) {
 				st.equal(value, 'a', 'v is value');
 			};
 			ES.AddEntriesFromIterable(O, ['a'].entries(), adder);
+
+			forEach(v.primitives, function (primitive) {
+				var badIterator = {
+					next: function next() {
+						return {
+							done: false,
+							value: primitive
+						};
+					}
+				};
+				var badIterable = {};
+				badIterable[Symbol.iterator] = function () { return badIterator; };
+
+				st['throws'](
+					function () { ES.AddEntriesFromIterable(O, badIterable, adder); },
+					TypeError,
+					debug(primitive) + ' is not an Object'
+				);
+			});
+
+			var badder = function (key, value) {
+				throw new EvalError(key + value);
+			};
+			st['throws'](
+				function () { ES.AddEntriesFromIterable(O, [[1, 2]], badder); },
+				EvalError,
+				'bad adder throws'
+			);
 
 			st.end();
 		});
@@ -9408,6 +9495,14 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
+		forEach(v.nonArrays, function (nonArray) {
+			t['throws'](
+				function () { ES.OrdinaryObjectCreate({}, nonArray); },
+				TypeError,
+				debug(nonArray) + ' is not an Array'
+			);
+		});
+
 		t.test('proto arg', function (st) {
 			var Parent = function Parent() {};
 			Parent.prototype.foo = {};
@@ -10940,6 +11035,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 
 		t.equal(ES.UTF16EncodeCodePoint(0xd83d), leadingPoo.charAt(0), '0xD83D is the first half of ' + wholePoo);
 		t.equal(ES.UTF16EncodeCodePoint(0xdca9), trailingPoo.charAt(0), '0xD83D is the last half of ' + wholePoo);
+		t.equal(ES.UTF16EncodeCodePoint(0x10000), '𐀀', '0x10000 is "𐀀"');
 
 		t.end();
 	});
@@ -11701,6 +11797,24 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 				st.end();
 			});
 		});
+
+		t.end();
+	});
+
+	test('ValidateAndApplyPropertyDescriptor', function (t) {
+		t['throws'](
+			function () {
+				ES.ValidateAndApplyPropertyDescriptor(
+					{},
+					'property key',
+					true,
+					v.genericDescriptor(),
+					v.genericDescriptor()
+				);
+			},
+			TypeError,
+			'current must be a complete descriptor'
+		);
 
 		t.end();
 	});
