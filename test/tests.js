@@ -11748,6 +11748,14 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 	});
 
 	test('StringToNumber', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.StringToNumber(nonString); },
+				TypeError,
+				debug(nonString) + ' is not a String'
+			);
+		});
+
 		testStringToNumber(t, ES, ES.StringToNumber);
 
 		t.end();
