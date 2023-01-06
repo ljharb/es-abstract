@@ -19,6 +19,8 @@ var SLOT = require('internal-slot');
 var availableTypedArrays = require('available-typed-arrays')();
 var arrayFrom = require('array.from');
 var isCore = require('is-core-module');
+var isRegex = require('is-regex');
+var v = require('es-value-fixtures');
 
 var $getProto = require('../helpers/getProto');
 var $setProto = require('../helpers/setProto');
@@ -27,10 +29,10 @@ var getInferredName = require('../helpers/getInferredName');
 var reduce = require('../helpers/reduce');
 var fromPropertyDescriptor = require('../helpers/fromPropertyDescriptor');
 var assertRecordTests = require('./helpers/assertRecord');
-var v = require('es-value-fixtures');
 var diffOps = require('./diffOps');
 
 var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1;
+var MAX_VALUE = Number.MAX_VALUE || 1.7976931348623157e+308;
 
 var $BigInt = hasBigInts ? BigInt : null;
 
@@ -38,6 +40,9 @@ var supportedRegexFlags = require('available-regexp-flags');
 
 /* globals postMessage */
 var canDetach = typeof structuredClone === 'function' || typeof postMessage === 'function' || isCore('worker_threads');
+
+// in node < 6, RegExp.prototype is an actual regex
+var reProtoIsRegex = isRegex(RegExp.prototype);
 
 // node v10.4-v10.8 have a bug where you can't `BigInt(x)` anything larger than MAX_SAFE_INTEGER
 var needsBigIntHack = false;
@@ -852,7 +857,8 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 				[String(v.coercibleObject), v.coercibleObject],
 				[Number(String(v.coercibleObject)), v.coercibleObject],
 				[Number(v.coercibleObject), v.coercibleObject],
-				[String(Number(v.coercibleObject)), v.coercibleObject]
+				[String(Number(v.coercibleObject)), v.coercibleObject],
+				[null, {}]
 			];
 			forEach(pairs, function (pair) {
 				var a = pair[0];
@@ -1167,11 +1173,13 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 	});
 
 	test('MakeDay', function (t) {
-		forEach([NaN, Infinity, -Infinity], function (nonFiniteNumber) {
+		forEach([NaN, Infinity, -Infinity, MAX_VALUE], function (nonFiniteNumber) {
 			t.equal(ES.MakeDay(nonFiniteNumber, 0, 0), NaN, 'year: ' + debug(nonFiniteNumber) + ' is not finite');
 			t.equal(ES.MakeDay(0, nonFiniteNumber, 0), NaN, 'month: ' + debug(nonFiniteNumber) + ' is not finite');
 			t.equal(ES.MakeDay(0, 0, nonFiniteNumber), NaN, 'date: ' + debug(nonFiniteNumber) + ' is not finite');
 		});
+
+		t.equal(ES.MakeDay(MAX_VALUE, MAX_VALUE, 0), NaN, 'year: ' + debug(MAX_VALUE) + ' combined with month: ' + debug(MAX_VALUE) + ' is too large');
 
 		var day2015 = 16687;
 		t.equal(ES.MakeDay(2015, 8, 9), day2015, '2015.09.09 is day 16687');
@@ -1269,6 +1277,40 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		} catch (e) { /**/ }
 		return f;
 	};
+
+	test('Abstract Equality Comparison', { skip: !v.hasSymbols }, function (t) {
+		t.equal(
+			ES['Abstract Equality Comparison'](Symbol(), Symbol()),
+			false,
+			'Abstract Equality Comparison with two distinct Symbols with no description returns false'
+		);
+
+		t.equal(
+			ES['Abstract Equality Comparison'](Symbol('x'), Symbol('x')),
+			false,
+			'Abstract Equality Comparison with two distinct Symbols with the same description returns false'
+		);
+
+		t.equal(
+			ES['Abstract Equality Comparison'](Symbol.iterator, Symbol.iterator),
+			true,
+			'Abstract Equality Comparison with two identical Symbols returns true'
+		);
+
+		var x = Symbol('x');
+		t.equal(
+			ES['Abstract Equality Comparison']({ valueOf: function () { return x; } }, x),
+			true,
+			'Abstract Equality Comparison with an object that coerces to a Symbol, and that Symbol, returns true'
+		);
+		t.equal(
+			ES['Abstract Equality Comparison'](x, { valueOf: function () { return x; } }),
+			true,
+			'Abstract Equality Comparison with a Symbol, and an object that coerces to that Symbol, returns true'
+		);
+
+		t.end();
+	});
 
 	test('AdvanceStringIndex', function (t) {
 		forEach(v.nonStrings, function (nonString) {
@@ -1754,6 +1796,12 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			);
 		});
 
+		t['throws'](
+			function () { ES.CharacterRange('b', 'a'); },
+			TypeError,
+			'a backwards range throws'
+		);
+
 		t.deepEqual(
 			ES.CharacterRange('a', 'b'),
 			['a', 'b']
@@ -1925,6 +1973,12 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				debug(nonArray) + ' is not an Array'
 			);
 		});
+
+		t['throws'](
+			function () { ES.CreateListFromArrayLike({ length: 3, 0: 'a', 1: 'b', 2: 3 }, ['String']); },
+			TypeError,
+			'an element type not present in passed elementTypes throws'
+		);
 
 		t.deepEqual(
 			ES.CreateListFromArrayLike({ length: 2, 0: 'a', 1: 'b', 2: 'c' }),
@@ -2987,15 +3041,19 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('IsPromise', { skip: typeof Promise !== 'function' }, function (t) {
+	test('IsPromise', function (t) {
 		forEach(v.objects.concat(v.primitives), function (nonPromise) {
 			t.equal(ES.IsPromise(nonPromise), false, debug(nonPromise) + ' is not a Promise');
 		});
 
-		var thenable = { then: Promise.prototype.then };
-		t.equal(ES.IsPromise(thenable), false, 'generic thenable is not a Promise');
+		t.test('Promises supported', { skip: typeof Promise !== 'function' }, function (st) {
+			var thenable = { then: Promise.prototype.then };
+			st.equal(ES.IsPromise(thenable), false, 'generic thenable is not a Promise');
 
-		t.equal(ES.IsPromise(Promise.resolve()), true, 'Promise is a Promise');
+			st.equal(ES.IsPromise(Promise.resolve()), true, 'Promise is a Promise');
+
+			st.end();
+		});
 
 		t.end();
 	});
@@ -3614,12 +3672,22 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		});
 
 		var C = function C() {};
+		var c = new C();
 		var D = function D() {};
-		t.equal(ES.OrdinaryHasInstance(C, new C()), true, 'constructor function has an instance of itself');
+		t.equal(ES.OrdinaryHasInstance(C, c), true, 'constructor function has an instance of itself');
 		t.equal(ES.OrdinaryHasInstance(C, new D()), false, 'constructor/instance mismatch is false');
-		t.equal(ES.OrdinaryHasInstance(D, new C()), false, 'instance/constructor mismatch is false');
+		t.equal(ES.OrdinaryHasInstance(D, c), false, 'instance/constructor mismatch is false');
 		t.equal(ES.OrdinaryHasInstance(C, {}), false, 'plain object is not an instance of a constructor');
 		t.equal(ES.OrdinaryHasInstance(Object, {}), true, 'plain object is an instance of Object');
+
+		forEach(v.primitives, function (primitive) {
+			C.prototype = primitive;
+			t['throws'](
+				function () { ES.OrdinaryHasInstance(C, c); },
+				TypeError,
+				'prototype is ' + debug(primitive)
+			);
+		});
 
 		t.end();
 	});
@@ -5016,6 +5084,16 @@ var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 	});
 
 	test('OrdinarySetPrototypeOf', { skip: !$getProto || !$setProto }, function (t) {
+		forEach(v.primitives, function (primitive) {
+			if (primitive !== null) {
+				t['throws'](
+					function () { ES.OrdinarySetPrototypeOf({}, primitive); },
+					TypeError,
+					debug(primitive) + ' is not an Object or null'
+				);
+			}
+		});
+
 		var a = [];
 		var proto = {};
 
@@ -5540,6 +5618,16 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 					ES.OrdinaryToPrimitive(Object(primitive), 'number'),
 					primitive,
 					debug(Object(primitive)) + ' becomes ' + debug(primitive)
+				);
+			}
+		});
+
+		forEach(v.nonStrings, function (nonString) {
+			if (typeof nonString !== 'number') {
+				t['throws'](
+					function () { ES.OrdinaryToPrimitive({}, nonString); },
+					TypeError,
+					debug(nonString) + ' is not a String or a Number'
 				);
 			}
 		});
@@ -7223,6 +7311,12 @@ var es2019 = function ES2019(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
+		t['throws'](
+			function () { ES.TrimString('abc', 'not start, end, or start+end'); },
+			TypeError,
+			'invalid `where` value'
+		);
+
 		var string = ' \n abc  \n ';
 		t.equal(ES.TrimString(string, 'start'), string.slice(string.indexOf('a')));
 		t.equal(ES.TrimString(string, 'end'), string.slice(0, string.lastIndexOf('c') + 1));
@@ -7313,6 +7407,19 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			false,
 			debug(bigIntObject) + ' != ' + debug(BigInt(1))
 		);
+
+		forEach([NaN, Infinity, -Infinity], function (nonFinite) {
+			t.equal(
+				ES['Abstract Equality Comparison'](BigInt(1), nonFinite),
+				false,
+				debug(BigInt(1)) + ' != ' + debug(nonFinite)
+			);
+			t.equal(
+				ES['Abstract Equality Comparison'](nonFinite, BigInt(1)),
+				false,
+				debug(nonFinite) + ' != ' + debug(BigInt(1))
+			);
+		});
 
 		t.end();
 	});
@@ -7831,16 +7938,39 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigIntBitwiseOp', { skip: !hasBigInts }, function (t) {
-		t['throws'](
-			function () { ES.BigIntBitwiseOp('invalid', BigInt(0), BigInt(0)); },
-			TypeError,
-			'throws with an invalid op'
-		);
+	test('BigIntBitwiseOp', function (t) {
+		forEach(v.numbers, function (number) {
+			t['throws'](
+				function () { ES.BigIntBitwiseOp('&', number, number); },
+				TypeError,
+				debug(number) + ' is not a BigInt'
+			);
+		});
 
-		t.equal(ES.BigIntBitwiseOp('&', BigInt(1), BigInt(2)), BigInt(1) & BigInt(2));
-		t.equal(ES.BigIntBitwiseOp('|', BigInt(1), BigInt(2)), BigInt(1) | BigInt(2));
-		t.equal(ES.BigIntBitwiseOp('^', BigInt(1), BigInt(2)), BigInt(1) ^ BigInt(2));
+		t.test('BigInt support', { skip: !hasBigInts }, function (st) {
+			st['throws'](
+				function () { ES.BigIntBitwiseOp('&', 1, BigInt(1)); },
+				TypeError,
+				'x: 1 is not a BigInt'
+			);
+			st['throws'](
+				function () { ES.BigIntBitwiseOp('&', BigInt(1), 1); },
+				TypeError,
+				'y: 1 is not a BigInt'
+			);
+
+			st['throws'](
+				function () { ES.BigIntBitwiseOp('invalid', BigInt(0), BigInt(0)); },
+				TypeError,
+				'throws with an invalid op'
+			);
+
+			st.equal(ES.BigIntBitwiseOp('&', BigInt(1), BigInt(2)), BigInt(1) & BigInt(2));
+			st.equal(ES.BigIntBitwiseOp('|', BigInt(1), BigInt(2)), BigInt(1) | BigInt(2));
+			st.equal(ES.BigIntBitwiseOp('^', BigInt(1), BigInt(2)), BigInt(1) ^ BigInt(2));
+
+			st.end();
+		});
 
 		t.end();
 	});
@@ -7903,6 +8033,14 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	});
 
 	test('CodePointAt', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.CodePointAt(nonString, 0); },
+				TypeError,
+				debug(nonString) + ' is not a String'
+			);
+		});
+
 		t['throws'](
 			function () { ES.CodePointAt('abc', -1); },
 			TypeError,
@@ -8100,6 +8238,20 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
+		var resIterator = ES.CreateRegExpStringIterator(/a/, 'a', false, false);
+		forEach(v.primitives, function (nonObject) {
+			t['throws'](
+				function () { resIterator.next.call(nonObject); },
+				TypeError,
+				debug(nonObject) + ', receiver of iterator next, is not an Object'
+			);
+		});
+		t['throws'](
+			function () { resIterator.next.call({}); },
+			TypeError,
+			'iterator next receiver is not a RegExp String Iterator'
+		);
+
 		t.test('`global` matches `g` flag', function (st) {
 			st.test('non-global regex', function (s2t) {
 				var regex = /a/;
@@ -8129,6 +8281,17 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 					assign(['a'], kludgeMatch(regex, { index: 3, input: str, lastIndex: 4 }))
 				];
 				testRESIterator(ES, s2t, regex, str, true, false, expected);
+
+				var emptyRegex = /(?:)/g;
+				var abc = 'abc';
+				var expected2 = [
+					assign([''], kludgeMatch(emptyRegex, { index: 0, input: abc, lastIndex: 1 })),
+					assign([''], kludgeMatch(emptyRegex, { index: 1, input: abc, lastIndex: 2 })),
+					assign([''], kludgeMatch(emptyRegex, { index: 2, input: abc, lastIndex: 3 })),
+					assign([''], kludgeMatch(emptyRegex, { index: 3, input: abc, lastIndex: 4 }))
+				];
+				testRESIterator(ES, s2t, emptyRegex, abc, true, false, expected2);
+
 				s2t.end();
 			});
 
@@ -9077,7 +9240,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 		forEach(v.nonBooleans, function (nonBoolean) {
 			t['throws'](
-				function () { ES.NumericToRawBytes('Int8', [0], nonBoolean); },
+				function () { ES.NumericToRawBytes('Int8', 0, nonBoolean); },
 				TypeError,
 				debug(nonBoolean) + ' is not a Boolean'
 			);
@@ -10258,6 +10421,16 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
+		test('BigInt not supported', { skip: hasBigInts }, function (st) {
+			st['throws'](
+				function () { ES.StringToBigInt('0'); },
+				SyntaxError,
+				'throws a SyntaxError when BigInt is not available'
+			);
+
+			st.end();
+		});
+
 		forEach(v.nonStrings, function (nonString) {
 			t['throws'](
 				function () { ES.StringToBigInt(nonString); },
@@ -10670,6 +10843,23 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			);
 		});
 
+		t.test('BigInt support', { skip: !hasBigInts }, function (st) {
+			forEach(v.bigints, function (bigint) {
+				st['throws'](
+					function () { ES.ApplyStringOrNumericBinaryOperator(Number(bigint), '+', bigint); },
+					TypeError,
+					'Number and BigInt can not be added'
+				);
+				st['throws'](
+					function () { ES.ApplyStringOrNumericBinaryOperator(bigint, '+', Number(bigint)); },
+					TypeError,
+					'BigInt and Number can not be added'
+				);
+			});
+
+			st.end();
+		});
+
 		t.end();
 	});
 
@@ -10700,6 +10890,14 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			'byte sequences must be the same length'
 		);
 
+		forEach([1.5, -1, 256], function (nonByte) {
+			t['throws'](
+				function () { ES.ByteListBitwiseOp('&', [nonByte], [1]); },
+				TypeError,
+				debug(nonByte) + ' is not a byte value'
+			);
+		});
+
 		for (var i = 0; i <= 255; i += 1) {
 			var j = i === 0 ? 1 : i - 1;
 			t.deepEqual(ES.ByteListBitwiseOp('&', [i], [j]), [i & j], i + ' & ' + j);
@@ -10726,6 +10924,14 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 		});
 
 		t.equal(ES.ByteListEqual([0], [0, 0]), false, 'two sequences of different length are not equal');
+
+		forEach([1.5, -1, 256], function (nonByte) {
+			t['throws'](
+				function () { ES.ByteListEqual([nonByte], [1]); },
+				TypeError,
+				debug(nonByte) + ' is not a byte value'
+			);
+		});
 
 		for (var i = 0; i <= 255; i += 1) {
 			t.equal(ES.ByteListEqual([i], [i]), true, 'two equal sequences of ' + i + ' are equal');
@@ -11158,6 +11364,14 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ValidateIntegerTypedArray', function (t) {
+		forEach(v.nonBooleans, function (nonBoolean) {
+			t['throws'](
+				function () { ES.ValidateIntegerTypedArray(null, nonBoolean); },
+				TypeError,
+				debug(nonBoolean) + ' is not a Boolean'
+			);
+		});
+
 		forEach(v.primitives.concat(v.objects, [[]]), function (nonTA) {
 			t['throws'](
 				function () { ES.ValidateIntegerTypedArray(nonTA); },
@@ -11588,6 +11802,45 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 		t.equal(ES.IsLessThan(v.coercibleObject, '3', false), false, '!LeftFirst: coercible object is not less than "3"');
 		t.equal(ES.IsLessThan('3', v.coercibleObject, false), false, '!LeftFirst: "3" is not less than coercible object');
 
+		t.test('BigInts are supported', { skip: !hasBigInts }, function (st) {
+			st.equal(ES.IsLessThan($BigInt(0), '1', true), true, 'LeftFirst: 0n is less than "1"');
+			st.equal(ES.IsLessThan('1', $BigInt(0), true), false, 'LeftFirst: "1" is not less than 0n');
+			st.equal(ES.IsLessThan($BigInt(0), '1', false), true, '!LeftFirst: 0n is less than "1"');
+			st.equal(ES.IsLessThan('1', $BigInt(0), false), false, '!LeftFirst: "1" is not less than 0n');
+
+			st.equal(ES.IsLessThan($BigInt(0), 1, true), true, 'LeftFirst: 0n is less than 1');
+			st.equal(ES.IsLessThan(1, $BigInt(0), true), false, 'LeftFirst: 1 is not less than 0n');
+			st.equal(ES.IsLessThan($BigInt(0), 1, false), true, '!LeftFirst: 0n is less than 1');
+			st.equal(ES.IsLessThan(1, $BigInt(0), false), false, '!LeftFirst: 1 is not less than 0n');
+
+			st.equal(ES.IsLessThan($BigInt(0), $BigInt(1), true), true, 'LeftFirst: 0n is less than 1n');
+			st.equal(ES.IsLessThan($BigInt(1), $BigInt(0), true), false, 'LeftFirst: 1n is not less than 0n');
+			st.equal(ES.IsLessThan($BigInt(0), $BigInt(1), false), true, '!LeftFirst: 0n is less than 1n');
+			st.equal(ES.IsLessThan($BigInt(1), $BigInt(0), false), false, '!LeftFirst: 1n is not less than 0n');
+
+			st.equal(ES.IsLessThan($BigInt(0), 'NaN', true), undefined, 'LeftFirst: 0n and "NaN" produce `undefined`');
+			st.equal(ES.IsLessThan('NaN', $BigInt(0), true), undefined, 'LeftFirst: "NaN" and 0n produce `undefined`');
+			st.equal(ES.IsLessThan($BigInt(0), 'NaN', false), undefined, '!LeftFirst: 0n and "NaN" produce `undefined`');
+			st.equal(ES.IsLessThan('NaN', $BigInt(0), false), undefined, '!LeftFirst: "NaN" and 0n produce `undefined`');
+
+			st.equal(ES.IsLessThan($BigInt(0), NaN, true), undefined, 'LeftFirst: 0n and NaN produce `undefined`');
+			st.equal(ES.IsLessThan(NaN, $BigInt(0), true), undefined, 'LeftFirst: NaN and 0n produce `undefined`');
+			st.equal(ES.IsLessThan($BigInt(0), NaN, false), undefined, '!LeftFirst: 0n and NaN produce `undefined`');
+			st.equal(ES.IsLessThan(NaN, $BigInt(0), false), undefined, '!LeftFirst: NaN and 0n produce `undefined`');
+
+			st.equal(ES.IsLessThan($BigInt(0), Infinity, true), true, 'LeftFirst: 0n is less than Infinity');
+			st.equal(ES.IsLessThan(Infinity, $BigInt(0), true), false, 'LeftFirst: Infinity is not less than 0n');
+			st.equal(ES.IsLessThan($BigInt(0), Infinity, false), true, '!LeftFirst: 0n is less than Infinity');
+			st.equal(ES.IsLessThan(Infinity, $BigInt(0), false), false, '!LeftFirst: Infinity is not less than 0n');
+
+			st.equal(ES.IsLessThan($BigInt(0), -Infinity, true), false, 'LeftFirst: 0n is not less than -Infinity');
+			st.equal(ES.IsLessThan(-Infinity, $BigInt(0), true), true, 'LeftFirst: -Infinity is less than 0n');
+			st.equal(ES.IsLessThan($BigInt(0), -Infinity, false), false, '!LeftFirst: 0n is not less than -Infinity');
+			st.equal(ES.IsLessThan(-Infinity, $BigInt(0), false), true, '!LeftFirst: -Infinity is less than 0n');
+
+			st.end();
+		});
+
 		t.end();
 	});
 
@@ -11642,6 +11895,12 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 			);
 		});
 
+		t['throws'](
+			function () { ES.MakeMatchIndicesIndexPairArray('', [undefined], [undefined], true); },
+			TypeError,
+			'`indices` must contain exactly one more item than `groupNames`'
+		);
+
 		t.deepEqual(
 			ES.MakeMatchIndicesIndexPairArray(
 				'abc',
@@ -11686,6 +11945,12 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
+		t['throws'](
+			function () { ES.MakeMatchIndicesIndexPairArray('', [undefined, undefined], [''], false); },
+			TypeError,
+			'when `!hasGroups`, `groupNames` may only contain `undefined`'
+		);
+
 		t.end();
 	});
 
@@ -11705,6 +11970,18 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 				debug(nonString) + ' is not a string'
 			);
 		});
+
+		t.equal(
+			ES.RegExpHasFlag(RegExp.prototype, 'x'),
+			reProtoIsRegex ? false : undefined,
+			'RegExp.prototype yields ' + (reProtoIsRegex ? 'false' : 'undefined')
+		);
+
+		t['throws'](
+			function () { return ES.RegExpHasFlag({}, 'x'); },
+			TypeError,
+			'non-RegExp object throws TypeError'
+		);
 
 		var allFlags = new RegExp('a', supportedRegexFlags.join(''));
 		forEach(supportedRegexFlags, function (flag) {
@@ -11798,6 +12075,19 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 			o,
 			[0, 1, 2, 3],
 			'object is again sorted up to `len`'
+		);
+
+		t.equal(
+			ES.SortIndexedProperties(o, 6, function (a, b) {
+				return a - b;
+			}),
+			o,
+			'passed object is returned'
+		);
+		t.deepEqual(
+			o,
+			[0, 1, 2, 3],
+			'object is again sorted up to `len` when `len` is longer than than `o.length`'
 		);
 
 		t.end();
