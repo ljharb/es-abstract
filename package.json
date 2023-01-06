@@ -56,7 +56,7 @@
 	],
 	"dependencies": {
 		"call-bind": "^1.0.2",
-		"es-set-tostringtag": "^2.0.0",
+		"es-set-tostringtag": "^2.0.1",
 		"es-to-primitive": "^1.2.1",
 		"function-bind": "^1.1.1",
 		"function.prototype.name": "^1.1.5",
@@ -69,7 +69,7 @@
 		"has-proto": "^1.0.1",
 		"has-symbols": "^1.0.3",
 		"internal-slot": "^1.0.4",
-		"is-array-buffer": "^3.0.0",
+		"is-array-buffer": "^3.0.1",
 		"is-callable": "^1.2.7",
 		"is-negative-zero": "^2.0.2",
 		"is-regex": "^1.1.4",
