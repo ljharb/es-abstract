@@ -24,7 +24,7 @@ module.exports = function AsyncFromSyncIteratorContinuation(result) {
 	}
 
 	if (arguments.length > 1) {
-		throw new $TypeError('although AsyncFromSyncIteratorContinuation should take a second argument, it is not used in this implementation');
+		throw new $SyntaxError('although AsyncFromSyncIteratorContinuation should take a second argument, it is not used in this implementation');
 	}
 
 	if (!$Promise) {

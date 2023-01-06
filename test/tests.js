@@ -7059,6 +7059,26 @@ var es2019 = function ES2019(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('AsyncFromSyncIteratorContinuation', function (t) {
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.AsyncFromSyncIteratorContinuation(primitive); },
+				TypeError,
+				debug(primitive) + ' is not an Object'
+			);
+		});
+
+		t['throws'](
+			function () { ES.AsyncFromSyncIteratorContinuation({}, null); },
+			SyntaxError,
+			'despite the spec supporting 2 args, AsyncFromSyncIteratorContinuation only takes 1'
+		);
+
+		// TODO: test directly, instead of only implicitly via CreateAsyncFromSyncIterator
+
+		t.end();
+	});
+
 	test('FlattenIntoArray', function (t) {
 		t.test('no mapper function', function (st) {
 			var testDepth = function testDepth(tt, depth, expected) {
