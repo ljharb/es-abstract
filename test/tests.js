@@ -10213,6 +10213,9 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				);
 			});
 
+			st.equal(ES.StringToBigInt(''), BigInt(0), 'empty string becomes 0n');
+			st.equal(ES.StringToBigInt('Infinity'), NaN, 'non-finite numeric string becomes NaN');
+
 			st.end();
 		});
 
@@ -11189,7 +11192,8 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 		'Abstract Equality Comparison': true,
 		'Abstract Relational Comparison': true,
 		'Strict Equality Comparison': true,
-		SplitMatch: true
+		SplitMatch: true,
+		StringToBigInt: true
 	}));
 
 	var test = makeTest(ES, skips);
@@ -11456,7 +11460,20 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 				[Number(String(v.coercibleObject)), v.coercibleObject],
 				[Number(v.coercibleObject), v.coercibleObject],
 				[String(Number(v.coercibleObject)), v.coercibleObject]
-			];
+			].concat(hasBigInts ? [
+				[BigInt(0), 0],
+				[0, BigInt(0)],
+				[BigInt(1), 1],
+				[1, BigInt(1)],
+				[BigInt(0), '0'],
+				['0', BigInt(0)],
+				[BigInt(1), '1'],
+				['1', BigInt(1)],
+				[BigInt(0), Infinity],
+				[Infinity, BigInt(0)],
+				[BigInt(0), 'Infinity'],
+				['Infinity', BigInt(0)]
+			] : []);
 			forEach(pairs, function (pair) {
 				var a = pair[0];
 				var b = pair[1];
@@ -11743,6 +11760,60 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 			[0, 1, 2, 3],
 			'object is again sorted up to `len`'
 		);
+
+		t.end();
+	});
+
+	test('StringToBigInt', function (t) {
+		test('actual BigInts', { skip: !hasBigInts }, function (st) {
+			forEach(v.bigints, function (bigint) {
+				st.equal(
+					ES.StringToBigInt(String(bigint)),
+					bigint,
+					debug(String(bigint)) + ' becomes ' + debug(bigint)
+				);
+			});
+
+			forEach(v.integerNumbers, function (int) {
+				var bigint = safeBigInt(int);
+				st.equal(
+					ES.StringToBigInt(String(int)),
+					bigint,
+					debug(String(int)) + ' becomes ' + debug(bigint)
+				);
+			});
+
+			forEach(v.nonIntegerNumbers, function (nonInt) {
+				st.equal(
+					ES.StringToBigInt(String(nonInt)),
+					undefined,
+					debug(String(nonInt)) + ' becomes undefined'
+				);
+			});
+
+			st.equal(ES.StringToBigInt(''), BigInt(0), 'empty string becomes 0n');
+			st.equal(ES.StringToBigInt('Infinity'), undefined, 'non-finite numeric string becomes undefined');
+
+			st.end();
+		});
+
+		test('BigInt not supported', { skip: hasBigInts }, function (st) {
+			st['throws'](
+				function () { ES.StringToBigInt('0'); },
+				SyntaxError,
+				'throws a SyntaxError when BigInt is not available'
+			);
+
+			st.end();
+		});
+
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.StringToBigInt(nonString); },
+				TypeError,
+				debug(nonString) + ' is not a string'
+			);
+		});
 
 		t.end();
 	});
