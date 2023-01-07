@@ -8028,6 +8028,16 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('CreateListFromArrayLike', { skip: !hasBigInts }, function (t) {
+		t.deepEqual(
+			ES.CreateListFromArrayLike({ length: 2, 0: BigInt(1), 1: 'b', 2: 'c' }),
+			[BigInt(1), 'b'],
+			'arraylike (with BigInt) stops at the length'
+		);
+
+		t.end();
+	});
+
 	test('CreateRegExpStringIterator', function (t) {
 		forEach(v.nonStrings, function (nonString) {
 			t['throws'](
