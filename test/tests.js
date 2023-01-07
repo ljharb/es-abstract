@@ -7317,6 +7317,45 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('Abstract Relational Comparison', { skip: !hasBigInts }, function (t) {
+		t.equal(ES['Abstract Relational Comparison']($BigInt(0), '1', true), true, 'LeftFirst: 0n is less than "1"');
+		t.equal(ES['Abstract Relational Comparison']('1', $BigInt(0), true), false, 'LeftFirst: "1" is not less than 0n');
+		t.equal(ES['Abstract Relational Comparison']($BigInt(0), '1', false), true, '!LeftFirst: 0n is less than "1"');
+		t.equal(ES['Abstract Relational Comparison']('1', $BigInt(0), false), false, '!LeftFirst: "1" is not less than 0n');
+
+		t.equal(ES['Abstract Relational Comparison']($BigInt(0), 1, true), true, 'LeftFirst: 0n is less than 1');
+		t.equal(ES['Abstract Relational Comparison'](1, $BigInt(0), true), false, 'LeftFirst: 1 is not less than 0n');
+		t.equal(ES['Abstract Relational Comparison']($BigInt(0), 1, false), true, '!LeftFirst: 0n is less than 1');
+		t.equal(ES['Abstract Relational Comparison'](1, $BigInt(0), false), false, '!LeftFirst: 1 is not less than 0n');
+
+		t.equal(ES['Abstract Relational Comparison']($BigInt(0), $BigInt(1), true), true, 'LeftFirst: 0n is less than 1n');
+		t.equal(ES['Abstract Relational Comparison']($BigInt(1), $BigInt(0), true), false, 'LeftFirst: 1n is not less than 0n');
+		t.equal(ES['Abstract Relational Comparison']($BigInt(0), $BigInt(1), false), true, '!LeftFirst: 0n is less than 1n');
+		t.equal(ES['Abstract Relational Comparison']($BigInt(1), $BigInt(0), false), false, '!LeftFirst: 1n is not less than 0n');
+
+		t.equal(ES['Abstract Relational Comparison']($BigInt(0), 'NaN', true), undefined, 'LeftFirst: 0n and "NaN" produce `undefined`');
+		t.equal(ES['Abstract Relational Comparison']('NaN', $BigInt(0), true), undefined, 'LeftFirst: "NaN" and 0n produce `undefined`');
+		t.equal(ES['Abstract Relational Comparison']($BigInt(0), 'NaN', false), undefined, '!LeftFirst: 0n and "NaN" produce `undefined`');
+		t.equal(ES['Abstract Relational Comparison']('NaN', $BigInt(0), false), undefined, '!LeftFirst: "NaN" and 0n produce `undefined`');
+
+		t.equal(ES['Abstract Relational Comparison']($BigInt(0), NaN, true), undefined, 'LeftFirst: 0n and NaN produce `undefined`');
+		t.equal(ES['Abstract Relational Comparison'](NaN, $BigInt(0), true), undefined, 'LeftFirst: NaN and 0n produce `undefined`');
+		t.equal(ES['Abstract Relational Comparison']($BigInt(0), NaN, false), undefined, '!LeftFirst: 0n and NaN produce `undefined`');
+		t.equal(ES['Abstract Relational Comparison'](NaN, $BigInt(0), false), undefined, '!LeftFirst: NaN and 0n produce `undefined`');
+
+		t.equal(ES['Abstract Relational Comparison']($BigInt(0), Infinity, true), true, 'LeftFirst: 0n is less than Infinity');
+		t.equal(ES['Abstract Relational Comparison'](Infinity, $BigInt(0), true), false, 'LeftFirst: Infinity is not less than 0n');
+		t.equal(ES['Abstract Relational Comparison']($BigInt(0), Infinity, false), true, '!LeftFirst: 0n is less than Infinity');
+		t.equal(ES['Abstract Relational Comparison'](Infinity, $BigInt(0), false), false, '!LeftFirst: Infinity is not less than 0n');
+
+		t.equal(ES['Abstract Relational Comparison']($BigInt(0), -Infinity, true), false, 'LeftFirst: 0n is not less than -Infinity');
+		t.equal(ES['Abstract Relational Comparison'](-Infinity, $BigInt(0), true), true, 'LeftFirst: -Infinity is less than 0n');
+		t.equal(ES['Abstract Relational Comparison']($BigInt(0), -Infinity, false), false, '!LeftFirst: 0n is not less than -Infinity');
+		t.equal(ES['Abstract Relational Comparison'](-Infinity, $BigInt(0), false), true, '!LeftFirst: -Infinity is less than 0n');
+
+		t.end();
+	});
+
 	test('BigInt::add', { skip: !hasBigInts }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
