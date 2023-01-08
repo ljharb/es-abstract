@@ -5194,9 +5194,21 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 	});
 
 	test('EnumerableOwnProperties', function (t) {
+		t['throws'](
+			function () { ES.EnumerableOwnProperties({}, 'not key, value, or key+value'); },
+			TypeError,
+			'invalid "kind" throws'
+		);
+
 		var obj = testEnumerableOwnNames(t, function (O) {
 			return ES.EnumerableOwnProperties(O, 'key');
 		});
+
+		t.deepEqual(
+			ES.EnumerableOwnProperties(obj, 'key'),
+			['own'],
+			'returns enumerable own keys'
+		);
 
 		t.deepEqual(
 			ES.EnumerableOwnProperties(obj, 'value'),
@@ -5209,6 +5221,32 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 			[['own', obj.own]],
 			'returns enumerable own entries'
 		);
+
+		t.test('getters changing properties of unvisited entries', { skip: !defineProperty.oDP }, function (st) {
+			var o = { a: 1, b: 2, c: 3, d: 4 };
+			defineProperty(o, 'a', {
+				enumerable: true,
+				get: function () {
+					defineProperty(o, 'b', { enumerable: false });
+					return 1;
+				}
+			});
+			defineProperty(o, 'c', { enumerable: false });
+
+			st.deepEqual(
+				ES.EnumerableOwnProperties(o, 'key'),
+				['a', 'b', 'd'],
+				'`key` kind returns all initially enumerable own keys'
+			);
+
+			st.deepEqual(
+				ES.EnumerableOwnProperties(o, 'key+value'),
+				[['a', 1], ['d', 4]],
+				'key+value returns only own enumerable entries that remain enumerable at the time they are visited'
+			);
+
+			st.end();
+		});
 
 		t.end();
 	});
@@ -6185,6 +6223,14 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 
 		t.equal(ES.StringGetOwnProperty(Object(''), '0'), undefined, 'empty boxed string yields undefined');
 
+		forEach(v.symbols, function (symbol) {
+			t.equal(
+				ES.StringGetOwnProperty(Object('abc'), symbol),
+				undefined,
+				debug(symbol) + ' is not a String, and yields undefined'
+			);
+		});
+
 		forEach(v.strings, function (string) {
 			if (string) {
 				var S = Object(string);
@@ -6593,9 +6639,21 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 	});
 
 	test('EnumerableOwnPropertyNames', function (t) {
+		t['throws'](
+			function () { ES.EnumerableOwnPropertyNames({}, 'not key, value, or key+value'); },
+			TypeError,
+			'invalid "kind" throws'
+		);
+
 		var obj = testEnumerableOwnNames(t, function (O) {
 			return ES.EnumerableOwnPropertyNames(O, 'key');
 		});
+
+		t.deepEqual(
+			ES.EnumerableOwnPropertyNames(obj, 'key'),
+			['own'],
+			'returns enumerable own keys'
+		);
 
 		t.deepEqual(
 			ES.EnumerableOwnPropertyNames(obj, 'value'),
@@ -6608,6 +6666,32 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 			[['own', obj.own]],
 			'returns enumerable own entries'
 		);
+
+		t.test('getters changing properties of unvisited entries', { skip: !defineProperty.oDP }, function (st) {
+			var o = { a: 1, b: 2, c: 3, d: 4 };
+			defineProperty(o, 'a', {
+				enumerable: true,
+				get: function () {
+					defineProperty(o, 'b', { enumerable: false });
+					return 1;
+				}
+			});
+			defineProperty(o, 'c', { enumerable: false });
+
+			st.deepEqual(
+				ES.EnumerableOwnPropertyNames(o, 'key'),
+				['a', 'b', 'd'],
+				'`key` kind returns all initially enumerable own keys'
+			);
+
+			st.deepEqual(
+				ES.EnumerableOwnPropertyNames(o, 'key+value'),
+				[['a', 1], ['d', 4]],
+				'key+value returns only own enumerable entries that remain enumerable at the time they are visited'
+			);
+
+			st.end();
+		});
 
 		t.end();
 	});
@@ -6745,6 +6829,17 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 			}
 		}
 
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, 'a>$<foo><z'),
+			'a>$<oo><z',
+			'works with the named capture regex without named captures'
+		);
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, 'a>$<foo>$<z'),
+			'a>$<oo>$<',
+			'works with a mismatched $<'
+		);
+
 		t.test('named captures', function (st) {
 			var namedCaptures = {
 				foo: 'foo!'
@@ -6754,6 +6849,24 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, 'a>$<foo><z'),
 				'a>foo!<z',
 				'supports named captures'
+			);
+
+			st.equal(
+				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, 'a>$<foo>$z'),
+				'a>foo!$z',
+				'works with a $z'
+			);
+
+			st.equal(
+				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, '$<foo'),
+				'<foo',
+				'supports named captures with a mismatched <'
+			);
+
+			st.equal(
+				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, 'a>$<bar><z'),
+				'a><z',
+				'supports named captures with a missing namedCapture'
 			);
 
 			st.end();
@@ -7278,6 +7391,15 @@ var es2019 = function ES2019(ES, ops, expectedMissing, skips) {
 				ES.FlattenIntoArray(a, o, o.length, 0, 1, mapper, thisArg);
 				tt.deepEqual(a, expected);
 			};
+
+			st['throws'](
+				function () {
+					var o = [[1], 2, , [[3]], [], 4, [[[[5]]]]]; // eslint-disable-line no-sparse-arrays
+					ES.FlattenIntoArray([], o, o.length, 0, 1, function () {});
+				},
+				TypeError,
+				'missing thisArg throws'
+			);
 
 			var double = function double(x) {
 				return typeof x === 'number' ? 2 * x : x;
@@ -8397,6 +8519,16 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
+		t.test('no Symbol.asyncIterator', { skip: v.hasAsyncIterator }, function (st) {
+			st['throws'](
+				function () { ES.GetIterator(arr, 'async'); },
+				SyntaxError,
+				'async from sync iterators are not currently supported'
+			);
+
+			st.end();
+		});
+
 		t.test('Symbol.asyncIterator', { skip: !v.hasSymbols || !Symbol.asyncIterator }, function (st) {
 			try {
 				ES.GetIterator(arr, 'async');
@@ -8417,6 +8549,19 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			};
 
 			st.equal(ES.GetIterator(obj, 'async'), it);
+
+			forEach(v.primitives, function (primitive) {
+				var badObj = {};
+				badObj[Symbol.asyncIterator] = function () {
+					return primitive;
+				};
+
+				st['throws'](
+					function () { ES.GetIterator(badObj, 'async'); },
+					TypeError,
+					debug(primitive) + ' is not an Object'
+				);
+			});
 
 			st.end();
 		});
@@ -10443,6 +10588,14 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	});
 
 	test('StringPad', function (t) {
+		t['throws'](
+			function () { ES.StringPad('', 0, '', 'not start or end'); },
+			TypeError,
+			'`placement` must be "start" or "end"'
+		);
+
+		t.equal(ES.StringPad('a', 3, '', 'start'), 'a');
+		t.equal(ES.StringPad('a', 3, '', 'end'), 'a');
 		t.equal(ES.StringPad('a', 3, undefined, 'start'), '  a');
 		t.equal(ES.StringPad('a', 3, undefined, 'end'), 'a  ');
 		t.equal(ES.StringPad('a', 3, '0', 'start'), '00a');
@@ -11529,8 +11682,7 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 			v.objects,
 			{ '[[StartIndex]]': -1 },
 			{ '[[StartIndex]]': 1.2, '[[EndIndex]]': 0 },
-			{ '[[StartIndex]]': 1, '[[EndIndex]]': 0 },
-			{ '[[StartIndex]]': 0, '[[EndIndex]]': 1 }
+			{ '[[StartIndex]]': 1, '[[EndIndex]]': 0 }
 		), function (notMatchRecord) {
 			t['throws'](
 				function () { return ES.GetMatchIndexPair('', notMatchRecord); },
@@ -11538,6 +11690,20 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 				debug(notMatchRecord) + ' is not a Match Record'
 			);
 		});
+
+		var invalidStart = { '[[StartIndex]]': 1, '[[EndIndex]]': 2 };
+		t['throws'](
+			function () { return ES.GetMatchIndexPair('', invalidStart); },
+			TypeError,
+			debug(invalidStart) + ' has a [[StartIndex]] that is > the length of the string'
+		);
+
+		var invalidEnd = { '[[StartIndex]]': 0, '[[EndIndex]]': 1 };
+		t['throws'](
+			function () { return ES.GetMatchIndexPair('', invalidEnd); },
+			TypeError,
+			debug(invalidEnd) + ' has an [[EndIndex]] that is > the length of the string'
+		);
 
 		t.deepEqual(
 			ES.GetMatchIndexPair('', { '[[StartIndex]]': 0, '[[EndIndex]]': 0 }),
@@ -11564,8 +11730,7 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 			v.objects,
 			{ '[[StartIndex]]': -1 },
 			{ '[[StartIndex]]': 1.2, '[[EndIndex]]': 0 },
-			{ '[[StartIndex]]': 1, '[[EndIndex]]': 0 },
-			{ '[[StartIndex]]': 0, '[[EndIndex]]': 1 }
+			{ '[[StartIndex]]': 1, '[[EndIndex]]': 0 }
 		), function (notMatchRecord) {
 			t['throws'](
 				function () { return ES.GetMatchString('', notMatchRecord); },
@@ -11573,6 +11738,20 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 				debug(notMatchRecord) + ' is not a Match Record'
 			);
 		});
+
+		var invalidStart = { '[[StartIndex]]': 1, '[[EndIndex]]': 2 };
+		t['throws'](
+			function () { return ES.GetMatchString('', invalidStart); },
+			TypeError,
+			debug(invalidStart) + ' has a [[StartIndex]] that is > the length of the string'
+		);
+
+		var invalidEnd = { '[[StartIndex]]': 0, '[[EndIndex]]': 1 };
+		t['throws'](
+			function () { return ES.GetMatchString('', invalidEnd); },
+			TypeError,
+			debug(invalidEnd) + ' has an [[EndIndex]] that is > the length of the string'
+		);
 
 		t.equal(
 			ES.GetMatchString('', { '[[StartIndex]]': 0, '[[EndIndex]]': 0 }),
@@ -11609,13 +11788,16 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 		t.equal(ES.GetStringIndex(strWithWholePoo, 2), 3, 'index 2 yields 3');
 		t.equal(ES.GetStringIndex(strWithWholePoo, 3), 4, 'index 3 yields 4');
 
+		t.equal(ES.GetStringIndex('', 0), 0, 'index 0 yields 0 on empty string');
+		t.equal(ES.GetStringIndex('', 1), 0, 'index 1 yields 0 on empty string');
+
 		t.end();
 	});
 
 	test('InstallErrorCause', function (t) {
 		forEach(v.primitives, function (primitive) {
 			t['throws'](
-				function () { ES.CreateNonEnumerableDataPropertyOrThrow(primitive, 'key'); },
+				function () { ES.InstallErrorCause(primitive); },
 				TypeError,
 				'O must be an Object; ' + debug(primitive) + ' is not one'
 			);
