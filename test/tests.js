@@ -184,6 +184,14 @@ var testRESIterator = function testRegExpStringIterator(ES, t, regex, str, globa
 	testIterator(t, iterator, expected);
 };
 
+var makeIteratorRecord = function makeIteratorRecord(iterator) {
+	return {
+		'[[Iterator]]': iterator,
+		'[[NextMethod]]': iterator.next,
+		'[[Done]]': false
+	};
+};
+
 var hasSpecies = v.hasSymbols && Symbol.species;
 
 var hasLastIndex = 'lastIndex' in (/a/).exec('a'); // IE 8
@@ -6358,11 +6366,7 @@ var makeAsyncFromSyncIterator = function makeAsyncFromSyncIterator(ES, end, thro
 		'return': returnMethod,
 		'throw': throwMethod
 	};
-	var syncIteratorRecord = {
-		'[[Iterator]]': iterator,
-		'[[NextMethod]]': iterator.next,
-		'[[Done]]': false
-	};
+	var syncIteratorRecord = makeIteratorRecord(iterator);
 
 	return ES.CreateAsyncFromSyncIterator(syncIteratorRecord);
 };
@@ -6543,11 +6547,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 						}
 					}
 				};
-				var syncIteratorRecord = {
-					'[[Iterator]]': iterator,
-					'[[NextMethod]]': iterator.next,
-					'[[Done]]': false
-				};
+				var syncIteratorRecord = makeIteratorRecord(iterator);
 
 				var record = ES.CreateAsyncFromSyncIterator(syncIteratorRecord);
 				var it = record['[[Iterator]]'];
@@ -7174,11 +7174,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 		var iterator = {
 			next: function next() {}
 		};
-		var iteratorRecord = {
-			'[[Iterator]]': iterator,
-			'[[NextMethod]]': iterator.next,
-			'[[Done]]': false
-		};
+		var iteratorRecord = makeIteratorRecord(iterator);
 
 		forEach(v.primitives.concat(v.objects), function (nonCompletionRecord) {
 			t['throws'](
@@ -7207,11 +7203,8 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 					next: function next() {},
 					'return': null
 				};
-				var nullReturnIteratorRecord = {
-					'[[Iterator]]': nullReturnIterator,
-					'[[NextMethod]]': nullReturnIterator.next,
-					'[[Done]]': false
-				};
+				var nullReturnIteratorRecord = makeIteratorRecord(nullReturnIterator);
+
 				return Promise.all([
 					ES.AsyncIteratorClose(iteratorRecord, completionRecord).then(function (result) {
 						s2t.equal(result, completionRecord, 'returns a Promise for the original passed completion record (undefined)');
@@ -7234,11 +7227,8 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 								next: function next() {},
 								'return': nonFunction
 							};
-							var badIteratorRecord = {
-								'[[Iterator]]': badIterator,
-								'[[NextMethod]]': badIterator.next,
-								'[[Done]]': false
-							};
+							var badIteratorRecord = makeIteratorRecord(badIterator);
+
 							return ES.AsyncIteratorClose(badIteratorRecord, completionRecord).then(
 								function (x) {
 									throw debug(x) + '/' + debug(nonFunction);
@@ -7261,11 +7251,8 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 						return {};
 					}
 				};
-				var returnableRecord = {
-					'[[Iterator]]': returnableIterator,
-					'[[NextMethod]]': returnableIterator.next,
-					'[[Done]]': false
-				};
+				var returnableRecord = makeIteratorRecord(returnableIterator);
+
 				return ES.AsyncIteratorClose(returnableRecord, completionRecord);
 			});
 
@@ -7278,11 +7265,8 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 							return nonObject;
 						}
 					};
-					var returnableRecord = {
-						'[[Iterator]]': returnableIterator,
-						'[[NextMethod]]': returnableIterator.next,
-						'[[Done]]': false
-					};
+					var returnableRecord = makeIteratorRecord(returnableIterator);
+
 					return ES.AsyncIteratorClose(returnableRecord, completionRecord).then(s2t.fail, function (e) {
 						s2t.ok(e instanceof TypeError, 'throws on non-object return value');
 					});
@@ -7297,11 +7281,8 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 						throw sentinel;
 					}
 				};
-				var returnableRecord = {
-					'[[Iterator]]': returnThrowIterator,
-					'[[NextMethod]]': returnThrowIterator.next,
-					'[[Done]]': false
-				};
+				var returnableRecord = makeIteratorRecord(returnThrowIterator);
+
 				return ES.AsyncIteratorClose(returnableRecord, completionRecord).then(s2t.fail, function (e) {
 					s2t.equal(e, sentinel, 'return function exception is propagated');
 				});
@@ -7316,11 +7297,8 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 						throw 42;
 					}
 				};
-				var returnableRecord = {
-					'[[Iterator]]': returnThrowIterator,
-					'[[NextMethod]]': returnThrowIterator.next,
-					'[[Done]]': false
-				};
+				var returnableRecord = makeIteratorRecord(returnThrowIterator);
+
 				return ES.AsyncIteratorClose(returnableRecord, throwCompletion).then(s2t.fail, function (e) {
 					s2t.equal(e, sentinel, 'return function exception is overridden by throw completion value');
 				});
