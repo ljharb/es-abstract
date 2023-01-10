@@ -23,10 +23,12 @@ var $AsyncFromSyncIteratorPrototype = GetIntrinsic('%AsyncFromSyncIteratorProtot
 
 		SLOT.assert(O, '[[SyncIteratorRecord]]'); // step 2
 
+		var argsLength = arguments.length;
+
 		return new Promise(function (resolve) { // step 3
 			var syncIteratorRecord = SLOT.get(O, '[[SyncIteratorRecord]]'); // step 4
 			var result;
-			if (arguments.length > 0) {
+			if (argsLength > 0) {
 				result = IteratorNext(syncIteratorRecord['[[Iterator]]'], value); // step 5.a
 			} else { // step 6
 				result = IteratorNext(syncIteratorRecord['[[Iterator]]']);// step 6.a

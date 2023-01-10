@@ -6529,6 +6529,53 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 
 			var itNoThrow = asyncIteratorRecord['[[Iterator]]'];
 
+			st.test('.next()', function (s2t) {
+				var i = 0;
+				var iterator = {
+					next: function next(x) {
+						try {
+							return {
+								done: i > 2,
+								value: [i, arguments.length, x]
+							};
+						} finally {
+							i += 1;
+						}
+					}
+				};
+				var syncIteratorRecord = {
+					'[[Iterator]]': iterator,
+					'[[NextMethod]]': iterator.next,
+					'[[Done]]': false
+				};
+
+				var record = ES.CreateAsyncFromSyncIterator(syncIteratorRecord);
+				var it = record['[[Iterator]]'];
+				var next = record['[[NextMethod]]'];
+
+				s2t.test('no next arg', function (s3t) {
+					return next.call(it).then(function (result) {
+						s3t.deepEqual(
+							result,
+							{ value: [0, 0, undefined], done: false },
+							'result is correct'
+						);
+					});
+				});
+
+				s2t.test('no next arg', function (s3t) {
+					return next.call(it, 42).then(function (result) {
+						s3t.deepEqual(
+							result,
+							{ value: [1, 1, 42], done: false },
+							'result is correct'
+						);
+					});
+				});
+
+				s2t.end();
+			});
+
 			st.test('.throw()', function (s2t) {
 				var asyncThrows = makeAsyncFromSyncIterator(
 					ES,
