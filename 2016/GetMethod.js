@@ -10,7 +10,7 @@ var IsPropertyKey = require('./IsPropertyKey');
 
 var debug = require('object-inspect');
 
-// https://ecma-international.org/ecma-262/6.0/#sec-getmethod
+// https://262.ecma-international.org/6.0/#sec-getmethod
 
 module.exports = function GetMethod(O, P) {
 	// 7.3.9.1

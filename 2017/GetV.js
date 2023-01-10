@@ -7,7 +7,7 @@ var $TypeError = GetIntrinsic('%TypeError%');
 var IsPropertyKey = require('./IsPropertyKey');
 var ToObject = require('./ToObject');
 
-// https://ecma-international.org/ecma-262/6.0/#sec-getv
+// https://262.ecma-international.org/6.0/#sec-getv
 
 module.exports = function GetV(V, P) {
 	// 7.3.2.1

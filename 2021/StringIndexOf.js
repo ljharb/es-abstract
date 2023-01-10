@@ -10,7 +10,7 @@ var Type = require('./Type');
 
 var $slice = callBound('String.prototype.slice');
 
-// https://ecma-international.org/ecma-262/12.0/#sec-stringindexof
+// https://262.ecma-international.org/12.0/#sec-stringindexof
 
 module.exports = function StringIndexOf(string, searchValue, fromIndex) {
 	if (Type(string) !== 'String') {

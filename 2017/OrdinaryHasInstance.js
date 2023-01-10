@@ -8,7 +8,7 @@ var Get = require('./Get');
 var IsCallable = require('./IsCallable');
 var Type = require('./Type');
 
-// https://ecma-international.org/ecma-262/6.0/#sec-ordinaryhasinstance
+// https://262.ecma-international.org/6.0/#sec-ordinaryhasinstance
 
 module.exports = function OrdinaryHasInstance(C, O) {
 	if (IsCallable(C) === false) {

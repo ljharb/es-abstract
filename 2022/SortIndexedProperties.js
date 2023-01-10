@@ -18,7 +18,7 @@ var isAbstractClosure = require('../helpers/isAbstractClosure');
 var $push = callBound('Array.prototype.push');
 var $sort = callBound('Array.prototype.sort');
 
-// https://ecma-international.org/ecma-262/13.0/#sec-sortindexedproperties
+// https://262.ecma-international.org/13.0/#sec-sortindexedproperties
 
 module.exports = function SortIndexedProperties(obj, len, SortCompare) {
 	if (Type(obj) !== 'Object') {

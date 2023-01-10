@@ -33,7 +33,7 @@ var $trim = function (value) {
 
 var Type = require('./Type');
 
-// https://ecma-international.org/ecma-262/13.0/#sec-stringtonumber
+// https://262.ecma-international.org/13.0/#sec-stringtonumber
 
 module.exports = function StringToNumber(argument) {
 	if (Type(argument) !== 'String') {

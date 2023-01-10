@@ -11,7 +11,7 @@ var Type = require('./Type');
 
 var $indexOf = callBound('String.prototype.indexOf');
 
-// https://ecma-international.org/ecma-262/13.0/#sec-getstringindex
+// https://262.ecma-international.org/13.0/#sec-getstringindex
 
 module.exports = function GetStringIndex(S, e) {
 	if (Type(S) !== 'String') {

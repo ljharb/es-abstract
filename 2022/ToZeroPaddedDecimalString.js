@@ -8,7 +8,7 @@ var $RangeError = GetIntrinsic('%RangeError%');
 var IsIntegralNumber = require('./IsIntegralNumber');
 var StringPad = require('./StringPad');
 
-// https://ecma-international.org/ecma-262/13.0/#sec-tozeropaddeddecimalstring
+// https://262.ecma-international.org/13.0/#sec-tozeropaddeddecimalstring
 
 module.exports = function ToZeroPaddedDecimalString(n, minLength) {
 	if (!IsIntegralNumber(n) || n < 0) {

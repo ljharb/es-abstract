@@ -10,7 +10,7 @@ var IsExtensible = require('./IsExtensible');
 var IsIntegralNumber = require('./IsIntegralNumber');
 var Type = require('./Type');
 
-// https://ecma-international.org/ecma-262/12.0/#sec-setfunctionlength
+// https://262.ecma-international.org/12.0/#sec-setfunctionlength
 
 module.exports = function SetFunctionLength(F, length) {
 	if (typeof F !== 'function' || !IsExtensible(F) || HasOwnProperty(F, 'length')) {
