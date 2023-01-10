@@ -55,6 +55,7 @@
 		"ES7"
 	],
 	"dependencies": {
+		"available-typed-arrays": "^1.0.5",
 		"call-bind": "^1.0.2",
 		"es-set-tostringtag": "^2.0.1",
 		"es-to-primitive": "^1.2.1",
@@ -96,7 +97,6 @@
 		"array.prototype.indexof": "^1.0.5",
 		"aud": "^2.0.2",
 		"available-regexp-flags": "^1.0.0",
-		"available-typed-arrays": "^1.0.5",
 		"cheerio": "=1.0.0-rc.3",
 		"diff": "^5.1.0",
 		"eclint": "^2.8.1",
