@@ -7412,6 +7412,24 @@ var es2019 = function ES2019(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('AsyncFromSyncIteratorContinuation', function (t) {
+		forEach(v.nonObjects, function (nonObject) {
+			t['throws'](
+				function () { ES.AsyncFromSyncIteratorContinuation(nonObject); },
+				TypeError,
+				debug(nonObject) + ' is not an Object'
+			);
+		});
+
+		t['throws'](
+			function () { ES.AsyncFromSyncIteratorContinuation({}, null); },
+			SyntaxError,
+			'passing a promisecapability is not supported in es-abstract'
+		);
+
+		t.end();
+	});
+
 	test('FlattenIntoArray', function (t) {
 		t.test('no mapper function', function (st) {
 			var testDepth = function testDepth(tt, depth, expected) {
