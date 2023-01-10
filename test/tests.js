@@ -366,6 +366,39 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('IsPropertyDescriptor', function (t) {
+		forEach(v.primitives, function (primitive) {
+			t.equal(
+				ES.IsPropertyDescriptor(primitive),
+				false,
+				debug(primitive) + ' is not a Property Descriptor'
+			);
+		});
+
+		t.equal(ES.IsPropertyDescriptor({ invalid: true }), false, 'invalid keys not allowed on a Property Descriptor');
+
+		t.equal(ES.IsPropertyDescriptor({}), true, 'empty object is an incomplete Property Descriptor');
+
+		t.equal(ES.IsPropertyDescriptor(v.accessorDescriptor()), true, 'accessor descriptor is a Property Descriptor');
+		t.equal(ES.IsPropertyDescriptor(v.mutatorDescriptor()), true, 'mutator descriptor is a Property Descriptor');
+		t.equal(ES.IsPropertyDescriptor(v.dataDescriptor()), true, 'data descriptor is a Property Descriptor');
+		t.equal(ES.IsPropertyDescriptor(v.genericDescriptor()), true, 'generic descriptor is a Property Descriptor');
+
+		t['throws'](
+			function () { ES.IsPropertyDescriptor(v.bothDescriptor()); },
+			TypeError,
+			'a Property Descriptor can not be both a Data and an Accessor Descriptor'
+		);
+
+		t['throws'](
+			function () { ES.IsPropertyDescriptor(v.bothDescriptorWritable()); },
+			TypeError,
+			'a Property Descriptor can not be both a Data and an Accessor Descriptor'
+		);
+
+		t.end();
+	});
+
 	test('ToPrimitive', function (t) {
 		t.test('primitives', function (st) {
 			var testPrimitive = function (primitive) {
@@ -3054,39 +3087,6 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 			st.end();
 		});
-
-		t.end();
-	});
-
-	test('IsPropertyDescriptor', function (t) {
-		forEach(v.primitives, function (primitive) {
-			t.equal(
-				ES.IsPropertyDescriptor(primitive),
-				false,
-				debug(primitive) + ' is not a Property Descriptor'
-			);
-		});
-
-		t.equal(ES.IsPropertyDescriptor({ invalid: true }), false, 'invalid keys not allowed on a Property Descriptor');
-
-		t.equal(ES.IsPropertyDescriptor({}), true, 'empty object is an incomplete Property Descriptor');
-
-		t.equal(ES.IsPropertyDescriptor(v.accessorDescriptor()), true, 'accessor descriptor is a Property Descriptor');
-		t.equal(ES.IsPropertyDescriptor(v.mutatorDescriptor()), true, 'mutator descriptor is a Property Descriptor');
-		t.equal(ES.IsPropertyDescriptor(v.dataDescriptor()), true, 'data descriptor is a Property Descriptor');
-		t.equal(ES.IsPropertyDescriptor(v.genericDescriptor()), true, 'generic descriptor is a Property Descriptor');
-
-		t['throws'](
-			function () { ES.IsPropertyDescriptor(v.bothDescriptor()); },
-			TypeError,
-			'a Property Descriptor can not be both a Data and an Accessor Descriptor'
-		);
-
-		t['throws'](
-			function () { ES.IsPropertyDescriptor(v.bothDescriptorWritable()); },
-			TypeError,
-			'a Property Descriptor can not be both a Data and an Accessor Descriptor'
-		);
 
 		t.end();
 	});
@@ -7191,6 +7191,16 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 		var sentinel = {};
 		var completionRecord = ES.NormalCompletion(sentinel);
 
+		t.test('Promises unsupported', { skip: typeof Promise === 'function' }, function (st) {
+			st['throws'](
+				function () { ES.AsyncIteratorClose(iteratorRecord, completionRecord); },
+				SyntaxError,
+				'Promises are not supported'
+			);
+
+			st.end();
+		});
+
 		t.test('Promises supported', { skip: typeof Promise === 'undefined' }, function (st) {
 			st.test('no return method', function (s2t) {
 				var nullReturnIterator = {
@@ -8531,6 +8541,9 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			for (var key in iterator) { // eslint-disable-line no-restricted-syntax
 				t.fail(debug(key) + ' should not be an enumerable key');
 			}
+		}
+		if (v.hasSymbols) {
+			t.equal(iterator[Symbol.iterator](), iterator, 'is iterable for itself');
 		}
 
 		t.end();
