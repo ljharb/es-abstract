@@ -9410,6 +9410,16 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
+		t.test('no BigInts', { skip: hasBigInts }, function (st) {
+			st['throws'](
+				function () { ES.NumberToBigInt(0); },
+				SyntaxError,
+				'BigInt is not supported on this engine'
+			);
+
+			st.end();
+		});
+
 		t.end();
 	});
 
