@@ -1,3 +1,20 @@
+1.21.1 / 2023-01-10
+=================
+  * [Fix] move `available-typed-arrays` to runtime deps
+  * [Fix] `ES2021`+: `NumberToBigInt`: throw the proper error on an env without BigInts
+  * [Fix] `ES2018`+: `CreateAsyncFromSyncIterator`: properly check `next` method args length
+  * [Fix] `ES2020`-`ES2021`: Abstract Relational Comparison: handle BigInts properly
+  * [Fix] `ES2022`+: `StringToBigInt`: invalid BigInts should be `undefined`, not `NaN` as in previous years
+  * [Fix] `helpers/isFinite`: properly handle BigInt values
+  * [Fix] `ES2020`+: `CreateListFromArrayLike`: accept BigInts
+  * [Fix] `ES2019`+: `AsyncFromSyncIteratorContinuation`: throw a SyntaxError when > 1 arg is passed
+  * [patch] `ES2020`+: `GetIterator`: use SyntaxError for intentionally unsupported
+  * [patch] `ES2015`+: `GetPrototypeFromContructor`: use SyntaxError for intentionally unsupported
+  * [patch] `ES2022`+: `StringToNumber`: fix non-string assertion failure message
+  * [Deps] update `es-set-tostringtag`, `is-array-buffer`
+  * [Tests] increase coverage
+  * [Tests] exclude coverage from files that have been replaced by an extracted package
+
 1.21.0 / 2023-01-04
 =================
   * [New] `ES2015`+: add `IsDetachedBuffer`
