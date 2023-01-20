@@ -146,6 +146,8 @@ var ES2018 = {
 	ToUint8: require('./2018/ToUint8'),
 	ToUint8Clamp: require('./2018/ToUint8Clamp'),
 	Type: require('./2018/Type'),
+	TypedArrayCreate: require('./2018/TypedArrayCreate'),
+	TypedArraySpeciesCreate: require('./2018/TypedArraySpeciesCreate'),
 	UnicodeEscape: require('./2018/UnicodeEscape'),
 	UTF16Decode: require('./2018/UTF16Decode'),
 	UTF16Encoding: require('./2018/UTF16Encoding'),
