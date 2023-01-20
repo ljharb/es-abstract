@@ -274,6 +274,8 @@
 /2017/ToUint8.js	spackled linguist-generated=true
 /2017/ToUint8Clamp.js	spackled linguist-generated=true
 /2017/Type.js	spackled linguist-generated=true
+/2017/TypedArrayCreate.js	spackled linguist-generated=true
+/2017/TypedArraySpeciesCreate.js	spackled linguist-generated=true
 /2017/UTF16Decode.js	spackled linguist-generated=true
 /2017/UTF16Encoding.js	spackled linguist-generated=true
 /2017/ValidateAndApplyPropertyDescriptor.js	spackled linguist-generated=true
@@ -405,6 +407,8 @@
 /2018/ToUint8.js	spackled linguist-generated=true
 /2018/ToUint8Clamp.js	spackled linguist-generated=true
 /2018/Type.js	spackled linguist-generated=true
+/2018/TypedArrayCreate.js	spackled linguist-generated=true
+/2018/TypedArraySpeciesCreate.js	spackled linguist-generated=true
 /2018/UTF16Decode.js	spackled linguist-generated=true
 /2018/UTF16Encoding.js	spackled linguist-generated=true
 /2018/ValidateAndApplyPropertyDescriptor.js	spackled linguist-generated=true
@@ -550,6 +554,8 @@
 /2019/ToUint8.js	spackled linguist-generated=true
 /2019/ToUint8Clamp.js	spackled linguist-generated=true
 /2019/Type.js	spackled linguist-generated=true
+/2019/TypedArrayCreate.js	spackled linguist-generated=true
+/2019/TypedArraySpeciesCreate.js	spackled linguist-generated=true
 /2019/UTF16Decode.js	spackled linguist-generated=true
 /2019/UTF16Encoding.js	spackled linguist-generated=true
 /2019/UnicodeEscape.js	spackled linguist-generated=true
@@ -680,6 +686,8 @@
 /2020/ToUint8.js	spackled linguist-generated=true
 /2020/ToUint8Clamp.js	spackled linguist-generated=true
 /2020/TrimString.js	spackled linguist-generated=true
+/2020/TypedArrayCreate.js	spackled linguist-generated=true
+/2020/TypedArraySpeciesCreate.js	spackled linguist-generated=true
 /2020/UTF16Encoding.js	spackled linguist-generated=true
 /2020/ValidateAndApplyPropertyDescriptor.js	spackled linguist-generated=true
 /2020/ValidateAtomicAccess.js	spackled linguist-generated=true
@@ -862,6 +870,8 @@
 /2021/ToUint8Clamp.js	spackled linguist-generated=true
 /2021/TrimString.js	spackled linguist-generated=true
 /2021/Type.js	spackled linguist-generated=true
+/2021/TypedArrayCreate.js	spackled linguist-generated=true
+/2021/TypedArraySpeciesCreate.js	spackled linguist-generated=true
 /2021/UnicodeEscape.js	spackled linguist-generated=true
 /2021/ValidateAndApplyPropertyDescriptor.js	spackled linguist-generated=true
 /2021/ValidateTypedArray.js	spackled linguist-generated=true
@@ -1071,6 +1081,8 @@
 /2022/ToUint8Clamp.js	spackled linguist-generated=true
 /2022/TrimString.js	spackled linguist-generated=true
 /2022/Type.js	spackled linguist-generated=true
+/2022/TypedArrayCreate.js	spackled linguist-generated=true
+/2022/TypedArraySpeciesCreate.js	spackled linguist-generated=true
 /2022/UTF16EncodeCodePoint.js	spackled linguist-generated=true
 /2022/UTF16SurrogatePairToCodePoint.js	spackled linguist-generated=true
 /2022/UnicodeEscape.js	spackled linguist-generated=true

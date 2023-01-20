@@ -170,6 +170,8 @@ var ES2020 = {
 	ToUint8Clamp: require('./2020/ToUint8Clamp'),
 	TrimString: require('./2020/TrimString'),
 	Type: require('./2020/Type'),
+	TypedArrayCreate: require('./2020/TypedArrayCreate'),
+	TypedArraySpeciesCreate: require('./2020/TypedArraySpeciesCreate'),
 	UnicodeEscape: require('./2020/UnicodeEscape'),
 	UTF16DecodeString: require('./2020/UTF16DecodeString'),
 	UTF16DecodeSurrogatePair: require('./2020/UTF16DecodeSurrogatePair'),

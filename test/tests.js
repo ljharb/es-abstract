@@ -18,6 +18,7 @@ var hasBigInts = require('has-bigints')();
 var getOwnPropertyDescriptor = require('gopd');
 var SLOT = require('internal-slot');
 var availableTypedArrays = require('available-typed-arrays')();
+var typedArrayLength = require('typed-array-length');
 var arrayFrom = require('array.from');
 var isCore = require('is-core-module');
 var isRegex = require('is-regex');
@@ -38,6 +39,7 @@ var MAX_VALUE = Number.MAX_VALUE || 1.7976931348623157e+308;
 var $BigInt = hasBigInts ? BigInt : null;
 
 var supportedRegexFlags = require('available-regexp-flags');
+var whichTypedArray = require('which-typed-array');
 
 /* globals postMessage */
 var canDetach = typeof structuredClone === 'function' || typeof postMessage === 'function' || isCore('worker_threads');
@@ -5136,6 +5138,172 @@ var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 
 		forEach(v.objects.concat(v.nonNumberPrimitives), function (val) {
 			t.equal(val === val, ES.SameValueNonNumber(val, val), debug(val) + ' is SameValueNonNumber to itself');
+		});
+
+		t.end();
+	});
+
+	test('TypedArrayCreate', function (t) {
+		forEach(v.nonFunctions, function (nonFunction) {
+			t['throws'](
+				function () { ES.TypedArrayCreate(nonFunction, []); },
+				TypeError,
+				debug(nonFunction) + ' is not a constructor'
+			);
+		});
+
+		forEach(v.nonArrays, function (nonArray) {
+			t['throws'](
+				function () { ES.TypedArrayCreate(Array, nonArray); },
+				TypeError,
+				debug(nonArray) + ' is not an Array'
+			);
+		});
+
+		t.test('no Typed Array support', { skip: availableTypedArrays.length > 0 }, function (st) {
+			st['throws'](
+				function () { ES.TypedArrayCreate(Array, []); },
+				SyntaxError,
+				'no Typed Array support'
+			);
+
+			st.end();
+		});
+
+		t.test('Typed Array support', { skip: availableTypedArrays.length === 0 }, function (st) {
+			var expectedLengths = {
+				__proto__: null,
+				$Int8Array: 632,
+				$Uint8Array: 632,
+				$Uint8ClampedArray: 632,
+				$Int16Array: 316,
+				$Uint16Array: 316,
+				$Int32Array: 158,
+				$Uint32Array: 158,
+				$BigInt64Array: 79,
+				$BigUint64Array: 79,
+				$Float64Array: 79,
+				$Float32Array: 58
+			};
+			forEach(availableTypedArrays, function (TypedArray) {
+				var Constructor = global[TypedArray];
+
+				var typedArray = ES.TypedArrayCreate(Constructor, []);
+				st.equal(whichTypedArray(typedArray), TypedArray, 'created a ' + TypedArray);
+				st.equal(typedArray.byteOffset, 0, 'byteOffset is 0');
+				st.equal(typedArrayLength(typedArray), 0, 'created a ' + TypedArray + ' of length 42');
+
+				var taLength = ES.TypedArrayCreate(Constructor, [42]);
+				st.equal(whichTypedArray(taLength), TypedArray, 'created a ' + TypedArray);
+				st.equal(taLength.byteOffset, 0, 'byteOffset is 0');
+				st.equal(typedArrayLength(taLength), 42, 'created a ' + TypedArray + ' of length 42');
+
+				var buffer = new ArrayBuffer(640);
+
+				var taBuffer = ES.TypedArrayCreate(Constructor, [buffer, 8]);
+				st.equal(whichTypedArray(taBuffer), TypedArray, 'created a ' + TypedArray);
+				st.equal(taBuffer.byteOffset, 8, 'byteOffset is 8');
+				st.equal(typedArrayLength(taBuffer), expectedLengths[TypedArray], 'created a ' + TypedArray + ' of length ' + expectedLengths[TypedArray]);
+
+				var taBufferLength = ES.TypedArrayCreate(Constructor, [buffer, 8, 64]);
+				st.equal(whichTypedArray(taBufferLength), TypedArray, 'created a ' + TypedArray);
+				st.equal(taBufferLength.byteOffset, 8, 'byteOffset is 8');
+				st.equal(typedArrayLength(taBufferLength), 64, 'created a ' + TypedArray + ' of length 64');
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('TypedArraySpeciesCreate', function (t) {
+		t.test('no Typed Array support', { skip: availableTypedArrays.length > 0 }, function (st) {
+			forEach(v.primitives.concat(v.objects), function (nonTA) {
+				st['throws'](
+					function () { ES.TypedArraySpeciesCreate(nonTA, []); },
+					SyntaxError,
+					'no Typed Array support'
+				);
+			});
+
+			forEach(v.nonArrays, function (nonArray) {
+				st['throws'](
+					function () { ES.TypedArraySpeciesCreate(Array, nonArray); },
+					SyntaxError,
+					'no Typed Array support'
+				);
+			});
+			st.end();
+		});
+
+		t.test('Typed Array support', { skip: availableTypedArrays.length === 0 }, function (st) {
+			forEach(v.primitives.concat(v.objects), function (nonTA) {
+				st['throws'](
+					function () { ES.TypedArraySpeciesCreate(nonTA, []); },
+					TypeError,
+					debug(nonTA) + ' is not a Typed Array'
+				);
+			});
+
+			var nonArrayTA = new global[availableTypedArrays[0]]();
+			forEach(v.primitives.concat(v.nonArrays), function (nonArray) {
+				st['throws'](
+					function () { ES.TypedArraySpeciesCreate(nonArrayTA, nonArray); },
+					TypeError,
+					debug(nonArray) + ' is not an Array'
+				);
+			});
+
+			forEach(availableTypedArrays, function (TypedArray) {
+				var Constructor = global[TypedArray];
+
+				var typedArray = ES.TypedArraySpeciesCreate(new Constructor(), []);
+				st.equal(whichTypedArray(typedArray), TypedArray, 'created a ' + TypedArray);
+				st.equal(typedArrayLength(typedArray), 0, 'created a ' + TypedArray + ' of length 42');
+
+				var taLength = ES.TypedArraySpeciesCreate(new Constructor(7), [42]);
+				st.equal(whichTypedArray(taLength), TypedArray, 'created a ' + TypedArray);
+				st.equal(typedArrayLength(taLength), 42, 'created a ' + TypedArray + ' of length 42');
+			});
+
+			st.test('with Symbol.species', { skip: !hasSpecies }, function (s2t) {
+				forEach(availableTypedArrays, function (TypedArray) {
+					var Constructor = global[TypedArray];
+
+					var Bar = function Bar() {};
+					Bar[Symbol.species] = null;
+					var taBar = new Constructor();
+					taBar.constructor = Bar;
+
+					s2t.equal(
+						whichTypedArray(ES.TypedArraySpeciesCreate(taBar, [])),
+						TypedArray,
+						TypedArray + ': undefined/null Symbol.species creates with the default constructor'
+					);
+
+					var Baz = function Baz() {};
+					Baz[Symbol.species] = Bar;
+					var taBaz = new Constructor();
+					taBaz.constructor = Baz;
+					s2t['throws'](
+						function () { ES.TypedArraySpeciesCreate(taBaz, []); },
+						TypeError,
+						TypedArray + ': non-TA Symbol.species throws'
+					);
+
+					Baz[Symbol.species] = {};
+					s2t['throws'](
+						function () { ES.TypedArraySpeciesCreate(new Baz(), []); },
+						TypeError,
+						TypedArray + ': throws when non-constructor non-null non-undefined species value found'
+					);
+				});
+
+				s2t.end();
+			});
+
+			st.end();
 		});
 
 		t.end();

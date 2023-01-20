@@ -180,6 +180,8 @@ var ES2021 = {
 	ToUint8Clamp: require('./2021/ToUint8Clamp'),
 	TrimString: require('./2021/TrimString'),
 	Type: require('./2021/Type'),
+	TypedArrayCreate: require('./2021/TypedArrayCreate'),
+	TypedArraySpeciesCreate: require('./2021/TypedArraySpeciesCreate'),
 	UnicodeEscape: require('./2021/UnicodeEscape'),
 	UTF16EncodeCodePoint: require('./2021/UTF16EncodeCodePoint'),
 	UTF16SurrogatePairToCodePoint: require('./2021/UTF16SurrogatePairToCodePoint'),
