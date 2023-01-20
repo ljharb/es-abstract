@@ -131,6 +131,8 @@ var ES2016 = {
 	ToUint8: require('./2016/ToUint8'),
 	ToUint8Clamp: require('./2016/ToUint8Clamp'),
 	Type: require('./2016/Type'),
+	TypedArrayCreate: require('./2016/TypedArrayCreate'),
+	TypedArraySpeciesCreate: require('./2016/TypedArraySpeciesCreate'),
 	UTF16Decode: require('./2016/UTF16Decode'),
 	UTF16Encoding: require('./2016/UTF16Encoding'),
 	ValidateAndApplyPropertyDescriptor: require('./2016/ValidateAndApplyPropertyDescriptor'),

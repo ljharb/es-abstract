@@ -138,8 +138,6 @@ var expectedMissing = [
 	'TopLevelModuleEvaluationJob',
 	'ToString Applied to the Number Type',
 	'TriggerPromiseReactions',
-	'TypedArrayCreate',
-	'TypedArraySpeciesCreate',
 	'UpdateEmpty', // completion records
 	'UTC' // depends on LocalTZA, DaylightSavingTA
 ];

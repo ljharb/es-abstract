@@ -191,8 +191,6 @@ var expectedMissing = [
 	'synchronizes-with',
 	'TimeZoneString',
 	'TriggerPromiseReactions',
-	'TypedArrayCreate',
-	'TypedArraySpeciesCreate',
 	'UnicodeMatchProperty',
 	'UnicodeMatchPropertyValue',
 	'UpdateEmpty',

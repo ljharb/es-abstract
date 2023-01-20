@@ -151,6 +151,8 @@ var ES2019 = {
 	ToUint8Clamp: require('./2019/ToUint8Clamp'),
 	TrimString: require('./2019/TrimString'),
 	Type: require('./2019/Type'),
+	TypedArrayCreate: require('./2019/TypedArrayCreate'),
+	TypedArraySpeciesCreate: require('./2019/TypedArraySpeciesCreate'),
 	UnicodeEscape: require('./2019/UnicodeEscape'),
 	UTF16Decode: require('./2019/UTF16Decode'),
 	UTF16Encoding: require('./2019/UTF16Encoding'),

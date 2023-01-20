@@ -189,8 +189,6 @@ var expectedMissing = [
 	'synchronizes-with',
 	'TimeZoneString', // depends on LocalTZA
 	'TriggerPromiseReactions',
-	'TypedArrayCreate',
-	'TypedArraySpeciesCreate',
 	'UnicodeMatchProperty',
 	'UnicodeMatchPropertyValue',
 	'UpdateEmpty', // completion records

@@ -187,8 +187,6 @@ var expectedMissing = [
 	'TimeZoneString', // depends on LocalTZA
 	'TopLevelModuleEvaluationJob',
 	'TriggerPromiseReactions',
-	'TypedArrayCreate',
-	'TypedArraySpeciesCreate',
 	'UnicodeMatchProperty',
 	'UnicodeMatchPropertyValue',
 	'UpdateEmpty', // completion records
