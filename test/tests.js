@@ -1,6 +1,7 @@
 'use strict';
 
 var tape = require('tape');
+var Test = require('tape/lib/test');
 
 var forEach = require('for-each');
 var debug = require('object-inspect');
@@ -123,6 +124,15 @@ var makeTest = function makeTest(ES, skips) {
 			} : cb
 		);
 	};
+};
+
+Test.prototype.throwsSentinel = function throwsSentinel(fn, sentinel, message) {
+	try {
+		fn();
+		this.fail('did not throw: ' + message);
+	} catch (e) {
+		this.equal(e, sentinel, message);
+	}
 };
 
 var leadingPoo = '\uD83D';
@@ -3292,34 +3302,34 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		);
 
 		/* eslint no-throw-literal: 0 */
-		t['throws'](
+		t.throwsSentinel(
 			function () { ES.IteratorClose({ 'return': function () { throw sentinel; } }, function () {}); },
 			sentinel,
 			'`.return` that throws, when completionThunk does not, throws exception from `.return`'
 		);
-		t['throws'](
+		t.throwsSentinel(
 			function () { ES.IteratorClose({ 'return': function () { throw sentinel; } }, ES.NormalCompletion()); },
 			sentinel,
 			'`.return` that throws, when Completion Record does not, throws exception from `.return`'
 		);
 
-		t['throws'](
+		t.throwsSentinel(
 			function () { ES.IteratorClose({ 'return': function () { throw sentinel; } }, function () { throw -1; }); },
 			-1,
 			'`.return` that throws, when completionThunk does too, throws exception from completionThunk'
 		);
-		t['throws'](
+		t.throwsSentinel(
 			function () { ES.IteratorClose({ 'return': function () { throw sentinel; } }, ES.CompletionRecord('throw', -1)); },
 			-1,
 			'`.return` that throws, when completionThunk does too, throws exception from Completion Record'
 		);
 
-		t['throws'](
+		t.throwsSentinel(
 			function () { ES.IteratorClose({ 'return': function () { } }, function () { throw -1; }); },
 			-1,
 			'`.return` that does not throw, when completionThunk does, throws exception from completionThunk'
 		);
-		t['throws'](
+		t.throwsSentinel(
 			function () { ES.IteratorClose({ 'return': function () { } }, ES.CompletionRecord('throw', -1)); },
 			-1,
 			'`.return` that does not throw, when completionThunk does, throws exception from Competion Record'
