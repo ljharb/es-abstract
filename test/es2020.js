@@ -198,8 +198,7 @@ var expectedMissing = [
 	'UTC', // depends on LocalTZA
 	'UTF16Encode',
 	'ValidateSharedIntegerTypedArray',
-	'ValueOfReadEvent',
-	'WordCharacters' // depends on Canonicalize
+	'ValueOfReadEvent'
 ];
 
 require('./tests').es2020(boundES, ops, expectedMissing);

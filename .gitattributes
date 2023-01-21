@@ -420,6 +420,7 @@
 /2018/ValidateAtomicAccess.js	spackled linguist-generated=true
 /2018/ValidateTypedArray.js	spackled linguist-generated=true
 /2018/WeekDay.js	spackled linguist-generated=true
+/2018/WordCharacters.js	spackled linguist-generated=true
 /2018/YearFromTime.js	spackled linguist-generated=true
 /2018/abs.js	spackled linguist-generated=true
 /2018/floor.js	spackled linguist-generated=true
@@ -568,6 +569,7 @@
 /2019/ValidateAtomicAccess.js	spackled linguist-generated=true
 /2019/ValidateTypedArray.js	spackled linguist-generated=true
 /2019/WeekDay.js	spackled linguist-generated=true
+/2019/WordCharacters.js	spackled linguist-generated=true
 /2019/YearFromTime.js	spackled linguist-generated=true
 /2019/abs.js	spackled linguist-generated=true
 /2019/floor.js	spackled linguist-generated=true
@@ -699,6 +701,7 @@
 /2020/ValidateAtomicAccess.js	spackled linguist-generated=true
 /2020/ValidateTypedArray.js	spackled linguist-generated=true
 /2020/WeekDay.js	spackled linguist-generated=true
+/2020/WordCharacters.js	spackled linguist-generated=true
 /2020/YearFromTime.js	spackled linguist-generated=true
 /2020/abs.js	spackled linguist-generated=true
 /2020/max.js	spackled linguist-generated=true
@@ -882,6 +885,7 @@
 /2021/ValidateAndApplyPropertyDescriptor.js	spackled linguist-generated=true
 /2021/ValidateTypedArray.js	spackled linguist-generated=true
 /2021/WeekDay.js	spackled linguist-generated=true
+/2021/WordCharacters.js	spackled linguist-generated=true
 /2021/YearFromTime.js	spackled linguist-generated=true
 /2021/abs.js	spackled linguist-generated=true
 /2021/floor.js	spackled linguist-generated=true
@@ -1095,6 +1099,7 @@
 /2022/ValidateTypedArray.js	spackled linguist-generated=true
 /2022/WeakRefDeref.js	spackled linguist-generated=true
 /2022/WeekDay.js	spackled linguist-generated=true
+/2022/WordCharacters.js	spackled linguist-generated=true
 /2022/YearFromTime.js	spackled linguist-generated=true
 /2022/abs.js	spackled linguist-generated=true
 /2022/clamp.js	spackled linguist-generated=true

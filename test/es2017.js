@@ -180,7 +180,6 @@ var expectedMissing = [
 	'ValidateSharedIntegerTypedArray',
 	'ValueOfReadEvent',
 	'WakeWaiter',
-	'WordCharacters', // depends on Canonicalize
 	'AddRestrictedFunctionProperties',
 	'synchronizes-with'
 ];

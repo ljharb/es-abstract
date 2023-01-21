@@ -6005,6 +6005,30 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('WordCharacters', function (t) {
+		forEach(v.nonBooleans, function (nonBoolean) {
+			t['throws'](
+				function () { ES.WordCharacters(nonBoolean, false); },
+				TypeError,
+				'arg 1: ' + debug(nonBoolean) + ' is not a Boolean'
+			);
+
+			t['throws'](
+				function () { ES.WordCharacters(false, nonBoolean); },
+				TypeError,
+				'arg 2: ' + debug(nonBoolean) + ' is not a Boolean'
+			);
+		});
+
+		t.equal(ES.WordCharacters(false, false), 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_', 'not both true gives a-zA-Z0-9_');
+		t.equal(ES.WordCharacters(false, true), 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_', 'not both true gives a-zA-Z0-9_');
+		t.equal(ES.WordCharacters(true, false), 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_', 'not both true gives a-zA-Z0-9_');
+
+		t.equal(ES.WordCharacters(true, true), 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_', 'both true gives a-zA-Z0-9_');
+
+		t.end();
+	});
 };
 
 var makeAsyncFromSyncIterator = function makeAsyncFromSyncIterator(ES, end, throwMethod, returnMethod) {

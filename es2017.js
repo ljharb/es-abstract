@@ -142,6 +142,7 @@ var ES2017 = {
 	ValidateAtomicAccess: require('./2017/ValidateAtomicAccess'),
 	ValidateTypedArray: require('./2017/ValidateTypedArray'),
 	WeekDay: require('./2017/WeekDay'),
+	WordCharacters: require('./2017/WordCharacters'),
 	YearFromTime: require('./2017/YearFromTime')
 };
 

@@ -203,6 +203,7 @@ var ES2022 = {
 	ValidateTypedArray: require('./2022/ValidateTypedArray'),
 	WeakRefDeref: require('./2022/WeakRefDeref'),
 	WeekDay: require('./2022/WeekDay'),
+	WordCharacters: require('./2022/WordCharacters'),
 	YearFromTime: require('./2022/YearFromTime')
 };
 

@@ -180,6 +180,7 @@ var ES2020 = {
 	ValidateAtomicAccess: require('./2020/ValidateAtomicAccess'),
 	ValidateTypedArray: require('./2020/ValidateTypedArray'),
 	WeekDay: require('./2020/WeekDay'),
+	WordCharacters: require('./2020/WordCharacters'),
 	YearFromTime: require('./2020/YearFromTime')
 };
 
