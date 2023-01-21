@@ -63,6 +63,7 @@ var ES2016 = {
 	IsPropertyDescriptor: require('./2016/IsPropertyDescriptor'),
 	IsPropertyKey: require('./2016/IsPropertyKey'),
 	IsRegExp: require('./2016/IsRegExp'),
+	IsWordChar: require('./2016/IsWordChar'),
 	IterableToArrayLike: require('./2016/IterableToArrayLike'),
 	IteratorClose: require('./2016/IteratorClose'),
 	IteratorComplete: require('./2016/IteratorComplete'),

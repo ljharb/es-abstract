@@ -78,7 +78,6 @@ var expectedMissing = [
 	'IsStrictReference',
 	'IsSuperReference',
 	'IsUnresolvableReference',
-	'IsWordChar', // depends on WordCharacters
 	'LocalTime',
 	'LoopContinues', // completion records
 	'MakeArgGetter',

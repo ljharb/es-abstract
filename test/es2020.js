@@ -119,7 +119,6 @@ var expectedMissing = [
 	'IsUnresolvableReference',
 	'IsValidIntegerIndex',
 	'IsValidRegularExpressionLiteral',
-	'IsWordChar', // depends on WordCharacters
 	'LeaveCriticalSection',
 	'LocalTime',
 	'LocalTZA',

@@ -90,6 +90,7 @@ var ES2021 = {
 	IsStringPrefix: require('./2021/IsStringPrefix'),
 	IsUnclampedIntegerElementType: require('./2021/IsUnclampedIntegerElementType'),
 	IsUnsignedElementType: require('./2021/IsUnsignedElementType'),
+	IsWordChar: require('./2021/IsWordChar'),
 	IterableToList: require('./2021/IterableToList'),
 	IteratorClose: require('./2021/IteratorClose'),
 	IteratorComplete: require('./2021/IteratorComplete'),

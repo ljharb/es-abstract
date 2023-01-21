@@ -25,7 +25,7 @@ var isStringOrHole = require('../helpers/isStringOrHole');
 
 // https://262.ecma-international.org/6.0/#sec-getsubstitution
 
-// eslint-disable-next-line max-statements, max-params, max-lines-per-function
+// eslint-disable-next-line max-statements, max-lines-per-function
 module.exports = function GetSubstitution(matched, str, position, captures, replacement) {
 	if (Type(matched) !== 'String') {
 		throw new $TypeError('Assertion failed: `matched` must be a String');

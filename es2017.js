@@ -64,6 +64,7 @@ var ES2017 = {
 	IsPropertyKey: require('./2017/IsPropertyKey'),
 	IsRegExp: require('./2017/IsRegExp'),
 	IsSharedArrayBuffer: require('./2017/IsSharedArrayBuffer'),
+	IsWordChar: require('./2017/IsWordChar'),
 	IterableToList: require('./2017/IterableToList'),
 	IteratorClose: require('./2017/IteratorClose'),
 	IteratorComplete: require('./2017/IteratorComplete'),

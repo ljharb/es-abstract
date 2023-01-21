@@ -97,6 +97,7 @@
 /2016/IsPropertyDescriptor.js	spackled linguist-generated=true
 /2016/IsPropertyKey.js	spackled linguist-generated=true
 /2016/IsRegExp.js	spackled linguist-generated=true
+/2016/IsWordChar.js	spackled linguist-generated=true
 /2016/IteratorClose.js	spackled linguist-generated=true
 /2016/IteratorComplete.js	spackled linguist-generated=true
 /2016/IteratorNext.js	spackled linguist-generated=true
@@ -350,6 +351,7 @@
 /2018/IsPropertyKey.js	spackled linguist-generated=true
 /2018/IsRegExp.js	spackled linguist-generated=true
 /2018/IsSharedArrayBuffer.js	spackled linguist-generated=true
+/2018/IsWordChar.js	spackled linguist-generated=true
 /2018/IterableToList.js	spackled linguist-generated=true
 /2018/IteratorClose.js	spackled linguist-generated=true
 /2018/IteratorComplete.js	spackled linguist-generated=true
@@ -493,6 +495,7 @@
 /2019/IsRegExp.js	spackled linguist-generated=true
 /2019/IsSharedArrayBuffer.js	spackled linguist-generated=true
 /2019/IsStringPrefix.js	spackled linguist-generated=true
+/2019/IsWordChar.js	spackled linguist-generated=true
 /2019/IterableToList.js	spackled linguist-generated=true
 /2019/IteratorClose.js	spackled linguist-generated=true
 /2019/IteratorComplete.js	spackled linguist-generated=true
@@ -638,6 +641,7 @@
 /2020/IsRegExp.js	spackled linguist-generated=true
 /2020/IsSharedArrayBuffer.js	spackled linguist-generated=true
 /2020/IsStringPrefix.js	spackled linguist-generated=true
+/2020/IsWordChar.js	spackled linguist-generated=true
 /2020/IteratorClose.js	spackled linguist-generated=true
 /2020/IteratorComplete.js	spackled linguist-generated=true
 /2020/IteratorNext.js	spackled linguist-generated=true
@@ -996,6 +1000,7 @@
 /2022/IsSharedArrayBuffer.js	spackled linguist-generated=true
 /2022/IsUnclampedIntegerElementType.js	spackled linguist-generated=true
 /2022/IsUnsignedElementType.js	spackled linguist-generated=true
+/2022/IsWordChar.js	spackled linguist-generated=true
 /2022/IterableToList.js	spackled linguist-generated=true
 /2022/IteratorClose.js	spackled linguist-generated=true
 /2022/IteratorComplete.js	spackled linguist-generated=true

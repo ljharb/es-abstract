@@ -68,6 +68,7 @@ var ES2018 = {
 	IsRegExp: require('./2018/IsRegExp'),
 	IsSharedArrayBuffer: require('./2018/IsSharedArrayBuffer'),
 	IsStringPrefix: require('./2018/IsStringPrefix'),
+	IsWordChar: require('./2018/IsWordChar'),
 	IterableToList: require('./2018/IterableToList'),
 	IteratorClose: require('./2018/IteratorClose'),
 	IteratorComplete: require('./2018/IteratorComplete'),

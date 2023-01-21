@@ -19,7 +19,7 @@ var Type = require('./Type');
 // https://262.ecma-international.org/6.0/#sec-validateandapplypropertydescriptor
 // https://262.ecma-international.org/8.0/#sec-validateandapplypropertydescriptor
 
-// eslint-disable-next-line max-lines-per-function, max-statements, max-params
+// eslint-disable-next-line max-lines-per-function, max-statements
 module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, Desc, current) {
 	// this uses the ES2017+ logic, since it fixes a number of bugs in the ES2015 logic.
 	var oType = Type(O);

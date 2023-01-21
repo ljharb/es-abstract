@@ -71,6 +71,7 @@ var ES2019 = {
 	IsRegExp: require('./2019/IsRegExp'),
 	IsSharedArrayBuffer: require('./2019/IsSharedArrayBuffer'),
 	IsStringPrefix: require('./2019/IsStringPrefix'),
+	IsWordChar: require('./2019/IsWordChar'),
 	IterableToList: require('./2019/IterableToList'),
 	IteratorClose: require('./2019/IteratorClose'),
 	IteratorComplete: require('./2019/IteratorComplete'),
