@@ -3212,6 +3212,48 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('IsWordChar', function (t) {
+		forEach(v.nonIntegerNumbers, function (nonInteger) {
+			t['throws'](
+				function () { return ES.IsWordChar(nonInteger, 0, []); },
+				TypeError,
+				'arg 1: ' + debug(nonInteger) + ' is not an integer'
+			);
+
+			t['throws'](
+				function () { return ES.IsWordChar(0, nonInteger, []); },
+				TypeError,
+				'arg 2: ' + debug(nonInteger) + ' is not an integer'
+			);
+		});
+
+		forEach(v.nonArrays, function (nonArray) {
+			t['throws'](
+				function () { return ES.IsWordChar(0, 0, nonArray); },
+				TypeError,
+				'arg 3: ' + debug(nonArray) + ' is not an Array'
+			);
+		});
+
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { return ES.IsWordChar(0, 0, [nonString]); },
+				TypeError,
+				'arg 3: ' + debug(nonString) + ' is not a character'
+			);
+		});
+
+		t.equal(ES.IsWordChar(-1, 0, []), false, 'arg 1: -1 yields false');
+		t.equal(ES.IsWordChar(1, 1, []), false, 'arg 1 and 2 the same yields false');
+		t.equal(ES.IsWordChar(1, 1, ['a', '!']), false, 'arg 1 and 2 the same yields false even with non-word chars');
+		t.equal(ES.IsWordChar(1, 1, ['a', 'b']), false, 'arg 1 and 2 the same yields false even with word chars');
+
+		t.equal(ES.IsWordChar(0, 2, ['a', '!']), true, 'a is a word char');
+		t.equal(ES.IsWordChar(1, 2, ['!', 'b']), true, 'b is a word char');
+
+		t.end();
+	});
+
 	test('IsInteger', function (t) {
 		for (var i = -100; i < 100; i += 10) {
 			t.equal(true, ES.IsInteger(i), i + ' is integer');
@@ -5256,6 +5298,7 @@ var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 	es2016(ES, ops, expectedMissing, assign({}, skips, {
 		EnumerableOwnNames: true,
+		IsWordChar: true,
 		IterableToArrayLike: true
 	}));
 	var test = makeTest(ES, skips);
@@ -5330,6 +5373,77 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 			);
 
 			st.end();
+		});
+
+		t.end();
+	});
+
+	test('IsWordChar', function (t) {
+		forEach(v.nonIntegerNumbers, function (nonInteger) {
+			t['throws'](
+				function () { return ES.IsWordChar(nonInteger, 0, [], false, false); },
+				TypeError,
+				'arg 1: ' + debug(nonInteger) + ' is not an integer'
+			);
+
+			t['throws'](
+				function () { return ES.IsWordChar(0, nonInteger, [], false, false); },
+				TypeError,
+				'arg 2: ' + debug(nonInteger) + ' is not an integer'
+			);
+		});
+
+		forEach(v.nonArrays, function (nonArray) {
+			t['throws'](
+				function () { return ES.IsWordChar(0, 0, nonArray, false, false); },
+				TypeError,
+				'arg 3: ' + debug(nonArray) + ' is not an Array'
+			);
+		});
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { return ES.IsWordChar(0, 0, [nonString], false, false); },
+				TypeError,
+				'arg 3: ' + debug(nonString) + ' is not a character'
+			);
+		});
+
+		t.equal(ES.IsWordChar(-1, 0, [], false, false), false, 'arg 1: -1 yields false');
+		t.equal(ES.IsWordChar(1, 1, [], false, false), false, 'arg 1 and 2 the same yields false');
+		t.equal(ES.IsWordChar(1, 1, ['a', '!'], false, false), false, 'arg 1 and 2 the same yields false even with non-word chars');
+		t.equal(ES.IsWordChar(1, 1, ['a', 'b'], false, false), false, 'arg 1 and 2 the same yields false even with word chars');
+
+		t.equal(ES.IsWordChar(0, 2, ['a', '!'], false, false), true, 'a is a word char');
+		t.equal(ES.IsWordChar(1, 2, ['!', 'b'], false, false), true, 'b is a word char');
+
+		forEach(keys(caseFolding.C), function (input) {
+			var isBasic = (/^[a-zA-Z0-9_]$/).test(input);
+			var isFancy = (/^[a-zA-Z0-9_]$/).test(caseFolding.C[input]);
+			t.equal(
+				ES.IsWordChar(0, input.length, [input], false, true),
+				isBasic,
+				'C mapping, IgnoreCase false: ' + debug(input) + ' is a word char'
+			);
+			t.equal(
+				ES.IsWordChar(0, input.length, [input], true, true),
+				isBasic || isFancy,
+				'C mapping, IgnoreCase true: ' + debug(input) + ' is a word char'
+			);
+		});
+
+		forEach(keys(caseFolding.S), function (input) {
+			var isBasic = (/^[a-zA-Z0-9_]$/).test(input);
+			var isFancy = (/^[a-zA-Z0-9_]$/).test(caseFolding.S[input]);
+			t.equal(
+				ES.IsWordChar(0, input.length, [input], false, true),
+				isBasic,
+				'S mapping, IgnoreCase false: ' + debug(input) + ' is a word char'
+			);
+			t.equal(
+				ES.IsWordChar(0, input.length, [input], true, true),
+				isBasic || isFancy,
+				'S mapping, IgnoreCase true: ' + debug(input) + ' is a word char'
+			);
 		});
 
 		t.end();

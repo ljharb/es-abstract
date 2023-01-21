@@ -82,7 +82,6 @@ var expectedMissing = [
 	'IsAnonymousFunctionDefinition',
 	'IsInTailPosition',
 	'IsLabelledFunction',
-	'IsWordChar', // depends on WordCharacters
 	'LocalTime',
 	'LoopContinues', // completion records
 	'MakeArgGetter',

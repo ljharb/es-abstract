@@ -63,6 +63,7 @@ var ES2015 = {
 	IsPropertyDescriptor: require('./2015/IsPropertyDescriptor'),
 	IsPropertyKey: require('./2015/IsPropertyKey'),
 	IsRegExp: require('./2015/IsRegExp'),
+	IsWordChar: require('./2015/IsWordChar'),
 	IteratorClose: require('./2015/IteratorClose'),
 	IteratorComplete: require('./2015/IteratorComplete'),
 	IteratorNext: require('./2015/IteratorNext'),
