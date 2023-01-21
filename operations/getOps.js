@@ -168,6 +168,9 @@ async function getOps(year) {
 	if (year >= 2015 && year <= 2017) {
 		entries.push(['DaylightSavingTA', `https://262.ecma-international.org/${edition}.0/#sec-daylight-saving-time-adjustment`]);
 	}
+	if (year >= 2021 && year < 2023) {
+		entries.push(['WordCharacters', 'https://262.ecma-international.org/${edition}.0/#sec-runtime-semantics-wordcharacters-abstract-operation']);
+	}
 	if (year >= 2021) {
 		entries.push(
 			['clamp', `https://262.ecma-international.org/${edition}.0/#clamping`],

@@ -198,8 +198,7 @@ var expectedMissing = [
 	'UpdateEmpty', // completion records
 	'UTC', // depends on LocalTZA
 	'ValidateSharedIntegerTypedArray',
-	'ValueOfReadEvent',
-	'WordCharacters' // depends on Canonicalize
+	'ValueOfReadEvent'
 ];
 
 require('./tests').es2019(boundES, ops, expectedMissing);

@@ -152,6 +152,7 @@ var ES2018 = {
 	ValidateAtomicAccess: require('./2018/ValidateAtomicAccess'),
 	ValidateTypedArray: require('./2018/ValidateTypedArray'),
 	WeekDay: require('./2018/WeekDay'),
+	WordCharacters: require('./2018/WordCharacters'),
 	YearFromTime: require('./2018/YearFromTime')
 };
 

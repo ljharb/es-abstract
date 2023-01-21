@@ -190,6 +190,7 @@ var ES2021 = {
 	ValidateTypedArray: require('./2021/ValidateTypedArray'),
 	WeakRefDeref: require('./2021/WeakRefDeref'),
 	WeekDay: require('./2021/WeekDay'),
+	WordCharacters: require('./2021/WordCharacters'),
 	YearFromTime: require('./2021/YearFromTime')
 };
 

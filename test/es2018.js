@@ -197,8 +197,7 @@ var expectedMissing = [
 	'UTC', // depends on LocalTZA
 	'ValidateSharedIntegerTypedArray',
 	'ValueOfReadEvent',
-	'WakeWaiter',
-	'WordCharacters' // depends on Canonicalize
+	'WakeWaiter'
 ];
 
 require('./tests').es2018(boundES, ops, expectedMissing);
