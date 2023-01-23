@@ -1,3 +1,4 @@
+/helpers/caseFolding.json	linguist-generated=true
 /es2015.js	spackled linguist-generated=true
 /es2016.js	spackled linguist-generated=true
 /es2017.js	spackled linguist-generated=true
@@ -46,6 +47,7 @@
 /2016/ArraySpeciesCreate.js	spackled linguist-generated=true
 /2016/Call.js	spackled linguist-generated=true
 /2016/CanonicalNumericIndexString.js	spackled linguist-generated=true
+/2016/Canonicalize.js	spackled linguist-generated=true
 /2016/CharacterRange.js	spackled linguist-generated=true
 /2016/CompletePropertyDescriptor.js	spackled linguist-generated=true
 /2016/CreateDataProperty.js	spackled linguist-generated=true
@@ -170,6 +172,7 @@
 /2017/ArraySpeciesCreate.js	spackled linguist-generated=true
 /2017/Call.js	spackled linguist-generated=true
 /2017/CanonicalNumericIndexString.js	spackled linguist-generated=true
+/2017/Canonicalize.js	spackled linguist-generated=true
 /2017/CharacterRange.js	spackled linguist-generated=true
 /2017/CompletePropertyDescriptor.js	spackled linguist-generated=true
 /2017/CompletionRecord.js	spackled linguist-generated=true
@@ -297,6 +300,7 @@
 /2018/ArraySpeciesCreate.js	spackled linguist-generated=true
 /2018/Call.js	spackled linguist-generated=true
 /2018/CanonicalNumericIndexString.js	spackled linguist-generated=true
+/2018/Canonicalize.js	spackled linguist-generated=true
 /2018/CharacterRange.js	spackled linguist-generated=true
 /2018/CompletePropertyDescriptor.js	spackled linguist-generated=true
 /2018/CompletionRecord.js	spackled linguist-generated=true
@@ -431,6 +435,7 @@
 /2019/AsyncIteratorClose.js	spackled linguist-generated=true
 /2019/Call.js	spackled linguist-generated=true
 /2019/CanonicalNumericIndexString.js	spackled linguist-generated=true
+/2019/Canonicalize.js	spackled linguist-generated=true
 /2019/CharacterRange.js	spackled linguist-generated=true
 /2019/CompletePropertyDescriptor.js	spackled linguist-generated=true
 /2019/CompletionRecord.js	spackled linguist-generated=true
@@ -575,6 +580,7 @@
 /2020/AsyncIteratorClose.js	spackled linguist-generated=true
 /2020/Call.js	spackled linguist-generated=true
 /2020/CanonicalNumericIndexString.js	spackled linguist-generated=true
+/2020/Canonicalize.js	spackled linguist-generated=true
 /2020/CharacterRange.js	spackled linguist-generated=true
 /2020/CompletePropertyDescriptor.js	spackled linguist-generated=true
 /2020/CompletionRecord.js	spackled linguist-generated=true
@@ -726,6 +732,7 @@
 /2021/BinaryXor.js	spackled linguist-generated=true
 /2021/Call.js	spackled linguist-generated=true
 /2021/CanonicalNumericIndexString.js	spackled linguist-generated=true
+/2021/Canonicalize.js	spackled linguist-generated=true
 /2021/CharacterRange.js	spackled linguist-generated=true
 /2021/CompletePropertyDescriptor.js	spackled linguist-generated=true
 /2021/CompletionRecord.js	spackled linguist-generated=true
@@ -915,6 +922,7 @@
 /2022/ByteListEqual.js	spackled linguist-generated=true
 /2022/Call.js	spackled linguist-generated=true
 /2022/CanonicalNumericIndexString.js	spackled linguist-generated=true
+/2022/Canonicalize.js	spackled linguist-generated=true
 /2022/CharacterRange.js	spackled linguist-generated=true
 /2022/ClearKeptObjects.js	spackled linguist-generated=true
 /2022/CodePointAt.js	spackled linguist-generated=true

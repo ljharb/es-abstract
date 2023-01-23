@@ -31,6 +31,7 @@ var reduce = require('../helpers/reduce');
 var fromPropertyDescriptor = require('../helpers/fromPropertyDescriptor');
 var assertRecordTests = require('./helpers/assertRecord');
 var diffOps = require('./diffOps');
+var caseFolding = require('../helpers/caseFolding');
 
 var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1;
 var MAX_VALUE = Number.MAX_VALUE || 1.7976931348623157e+308;
@@ -85,6 +86,8 @@ var noThrowOnStrictViolation = (function () {
 	}
 	return false;
 }());
+
+var cpMap = require('@unicode/unicode-15.0.0/Case_Folding/C/code-points');
 
 var nameExceptions = {
 	IsArray: true,
@@ -380,6 +383,28 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 		t.deepEqual(diff.missing, [], 'no unexpected missing ops');
 
 		t.deepEqual(diff.extraMissing, [], 'no unexpected "expected missing" ops');
+
+		t.end();
+	});
+
+	test('Canonicalize', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.Canonicalize(nonString, false); },
+				TypeError,
+				debug(nonString) + ' is not a String'
+			);
+		});
+
+		forEach(v.nonBooleans, function (nonBoolean) {
+			t['throws'](
+				function () { ES.Canonicalize('', nonBoolean); },
+				TypeError,
+				debug(nonBoolean) + ' is not a Boolean'
+			);
+		});
+
+		t.equal(ES.Canonicalize(leadingPoo, false), leadingPoo, 'when IgnoreCase is false, ch is returned');
 
 		t.end();
 	});
@@ -1313,6 +1338,7 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 
 var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	es5(ES, ops, expectedMissing, assign(assign({}, skips), {
+		Canonicalize: true,
 		CheckObjectCoercible: true,
 		FromPropertyDescriptor: true,
 		ToNumber: true,
@@ -1740,6 +1766,46 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 			ES.Call(bad, receiver, [1, 2, 3]);
 			st.end();
+		});
+
+		t.end();
+	});
+
+	test('Canonicalize', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.Canonicalize(nonString, false, false); },
+				TypeError,
+				'arg 1: ' + debug(nonString) + ' is not a String'
+			);
+		});
+
+		forEach(v.nonBooleans, function (nonBoolean) {
+			t['throws'](
+				function () { ES.Canonicalize('', nonBoolean, false); },
+				TypeError,
+				'arg 2: ' + debug(nonBoolean) + ' is not a Boolean'
+			);
+
+			t['throws'](
+				function () { ES.Canonicalize('', false, nonBoolean); },
+				TypeError,
+				'arg 3: ' + debug(nonBoolean) + ' is not a Boolean'
+			);
+		});
+
+		t.equal(ES.Canonicalize(leadingPoo, false, false), leadingPoo, 'when IgnoreCase is false, ch is returned');
+
+		forEach(keys(caseFolding.C), function (input) {
+			var output = caseFolding.C[input];
+			t.equal(ES.Canonicalize(input, false, true), input, 'C mapping, IgnoreCase false: ' + debug(input) + ' canonicalizes to ' + debug(input));
+			t.equal(ES.Canonicalize(input, true, true), output, 'C mapping, IgnoreCase true: ' + debug(input) + ' canonicalizes to ' + debug(output));
+		});
+
+		forEach(keys(caseFolding.S), function (input) {
+			var output = caseFolding.S[input];
+			t.equal(ES.Canonicalize(input, false, true), input, 'S mapping, IgnoreCase false: ' + debug(input) + ' canonicalizes to ' + debug(input));
+			t.equal(ES.Canonicalize(input, true, true), output, 'S mapping, IgnoreCase true: ' + debug(input) + ' canonicalizes to ' + debug(output));
 		});
 
 		t.end();

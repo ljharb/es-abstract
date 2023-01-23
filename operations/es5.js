@@ -5,6 +5,7 @@ module.exports = {
 	'Abstract Relational Comparison': 'https://262.ecma-international.org/5.1/#sec-11.8.5',
 	'Strict Equality Comparison': 'https://262.ecma-international.org/5.1/#sec-11.9.6',
 	abs: 'http://262.ecma-international.org/5.1/#sec-5.2',
+	Canonicalize: 'https://262.ecma-international.org/5.1/#sec-15.10.2.8',
 	CheckObjectCoercible: 'https://262.ecma-international.org/5.1/#sec-9.10',
 	DateFromTime: 'https://262.ecma-international.org/5.1/#sec-15.9.1.5',
 	Day: 'https://262.ecma-international.org/5.1/#sec-15.9.1.2',

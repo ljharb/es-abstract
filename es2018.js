@@ -13,6 +13,7 @@ var ES2018 = {
 	ArraySpeciesCreate: require('./2018/ArraySpeciesCreate'),
 	AsyncIteratorClose: require('./2018/AsyncIteratorClose'),
 	Call: require('./2018/Call'),
+	Canonicalize: require('./2018/Canonicalize'),
 	CanonicalNumericIndexString: require('./2018/CanonicalNumericIndexString'),
 	CharacterRange: require('./2018/CharacterRange'),
 	CompletePropertyDescriptor: require('./2018/CompletePropertyDescriptor'),

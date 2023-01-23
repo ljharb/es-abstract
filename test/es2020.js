@@ -28,7 +28,6 @@ var expectedMissing = [
 	'BackreferenceMatcher',
 	'BlockDeclarationInstantiation',
 	'BoundFunctionCreate',
-	'Canonicalize',
 	'CaseClauseIsSelected',
 	'CharacterRangeOrUnion',
 	'CharacterSetMatcher',

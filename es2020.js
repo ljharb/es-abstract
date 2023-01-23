@@ -20,6 +20,7 @@ var ES2020 = {
 	BinaryOr: require('./2020/BinaryOr'),
 	BinaryXor: require('./2020/BinaryXor'),
 	Call: require('./2020/Call'),
+	Canonicalize: require('./2020/Canonicalize'),
 	CanonicalNumericIndexString: require('./2020/CanonicalNumericIndexString'),
 	CharacterRange: require('./2020/CharacterRange'),
 	CodePointAt: require('./2020/CodePointAt'),

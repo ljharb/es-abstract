@@ -21,7 +21,6 @@ var expectedMissing = [
 	'AtomicReadModifyWrite',
 	'BlockDeclarationInstantiation',
 	'BoundFunctionCreate',
-	'Canonicalize',
 	'CharacterRangeOrUnion',
 	'CharacterSetMatcher',
 	'CloneArrayBuffer',

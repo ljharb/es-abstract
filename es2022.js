@@ -21,6 +21,7 @@ var ES2022 = {
 	ByteListBitwiseOp: require('./2022/ByteListBitwiseOp'),
 	ByteListEqual: require('./2022/ByteListEqual'),
 	Call: require('./2022/Call'),
+	Canonicalize: require('./2022/Canonicalize'),
 	CanonicalNumericIndexString: require('./2022/CanonicalNumericIndexString'),
 	CharacterRange: require('./2022/CharacterRange'),
 	clamp: require('./2022/clamp'),

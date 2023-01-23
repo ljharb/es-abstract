@@ -107,6 +107,6 @@ module.exports = ES${year};
 Promise.all(writtenManifestsP).then((writtenManifests) => {
 	const writtenFiles = writtenManifests.concat(writtenOps.map(({ opFile }) => opFile));
 
-	fs.writeFileSync(path.join(process.cwd(), '.gitattributes'), writtenFiles.map((x) => `/${x}\tspackled linguist-generated=true`).join('\n'));
+	fs.writeFileSync(path.join(process.cwd(), '.gitattributes'), [].concat('/helpers/caseFolding.json\tlinguist-generated=true', writtenFiles.map((x) => `/${x}\tspackled linguist-generated=true`)).join('\n'));
 	childProcess.execSync(`git add .gitattributes ${writtenFiles.join(' ')}`);
 });
