@@ -5,7 +5,7 @@ var GetIntrinsic = require('get-intrinsic');
 var $SyntaxError = GetIntrinsic('%SyntaxError%');
 var $TypeError = GetIntrinsic('%TypeError%');
 
-var IsIntegralNumber = require('./IsIntegralNumber');
+var isInteger = require('../helpers/isInteger');
 
 var whichTypedArray = require('which-typed-array');
 
@@ -32,7 +32,7 @@ module.exports = function TypedArrayElementSize(O) {
 		throw new $TypeError('Assertion failed: `O` must be a TypedArray');
 	}
 	var size = table71['$' + type];
-	if (!IsIntegralNumber(size) || size < 0) {
+	if (!isInteger(size) || size < 0) {
 		throw new $SyntaxError('Assertion failed: Unknown TypedArray type `' + type + '`');
 	}
 

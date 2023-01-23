@@ -19,11 +19,11 @@ var inspect = require('object-inspect');
 
 var Get = require('./Get');
 var IsArray = require('./IsArray');
-var IsIntegralNumber = require('./IsIntegralNumber');
 var ToObject = require('./ToObject');
 var ToString = require('./ToString');
 var Type = require('./Type');
 
+var isInteger = require('../helpers/isInteger');
 var isStringOrHole = require('../helpers/isStringOrHole');
 
 // http://www.ecma-international.org/ecma-262/12.0/#sec-getsubstitution
@@ -40,7 +40,7 @@ module.exports = function GetSubstitution(matched, str, position, captures, name
 	}
 	var stringLength = str.length;
 
-	if (!IsIntegralNumber(position) || position < 0 || position > stringLength) {
+	if (!isInteger(position) || position < 0 || position > stringLength) {
 		throw new $TypeError('Assertion failed: `position` must be a nonnegative integer, and less than or equal to the length of `string`, got ' + inspect(position));
 	}
 

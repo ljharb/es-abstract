@@ -7,8 +7,9 @@ var $TypeError = GetIntrinsic('%TypeError%');
 var DefinePropertyOrThrow = require('./DefinePropertyOrThrow');
 var HasOwnProperty = require('./HasOwnProperty');
 var IsExtensible = require('./IsExtensible');
-var IsIntegralNumber = require('./IsIntegralNumber');
 var Type = require('./Type');
+
+var isInteger = require('../helpers/isInteger');
 
 // https://262.ecma-international.org/12.0/#sec-setfunctionlength
 
@@ -19,7 +20,7 @@ module.exports = function SetFunctionLength(F, length) {
 	if (Type(length) !== 'Number') {
 		throw new $TypeError('Assertion failed: `length` must be a Number');
 	}
-	if (length !== Infinity && (!IsIntegralNumber(length) || length < 0)) {
+	if (length !== Infinity && (!isInteger(length) || length < 0)) {
 		throw new $TypeError('Assertion failed: `length` must be ∞, or an integer >= 0');
 	}
 	return DefinePropertyOrThrow(F, 'length', {
