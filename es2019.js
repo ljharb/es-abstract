@@ -15,6 +15,7 @@ var ES2019 = {
 	AsyncFromSyncIteratorContinuation: require('./2019/AsyncFromSyncIteratorContinuation'),
 	AsyncIteratorClose: require('./2019/AsyncIteratorClose'),
 	Call: require('./2019/Call'),
+	Canonicalize: require('./2019/Canonicalize'),
 	CanonicalNumericIndexString: require('./2019/CanonicalNumericIndexString'),
 	CharacterRange: require('./2019/CharacterRange'),
 	CompletePropertyDescriptor: require('./2019/CompletePropertyDescriptor'),

@@ -24,6 +24,7 @@ var ES2021 = {
 	ByteListBitwiseOp: require('./2021/ByteListBitwiseOp'),
 	ByteListEqual: require('./2021/ByteListEqual'),
 	Call: require('./2021/Call'),
+	Canonicalize: require('./2021/Canonicalize'),
 	CanonicalNumericIndexString: require('./2021/CanonicalNumericIndexString'),
 	CharacterRange: require('./2021/CharacterRange'),
 	clamp: require('./2021/clamp'),

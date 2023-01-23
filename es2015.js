@@ -12,6 +12,7 @@ var ES2015 = {
 	ArraySetLength: require('./2015/ArraySetLength'),
 	ArraySpeciesCreate: require('./2015/ArraySpeciesCreate'),
 	Call: require('./2015/Call'),
+	Canonicalize: require('./2015/Canonicalize'),
 	CanonicalNumericIndexString: require('./2015/CanonicalNumericIndexString'),
 	CharacterRange: require('./2015/CharacterRange'),
 	CompletePropertyDescriptor: require('./2015/CompletePropertyDescriptor'),

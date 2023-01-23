@@ -12,6 +12,7 @@ var ES2017 = {
 	ArraySetLength: require('./2017/ArraySetLength'),
 	ArraySpeciesCreate: require('./2017/ArraySpeciesCreate'),
 	Call: require('./2017/Call'),
+	Canonicalize: require('./2017/Canonicalize'),
 	CanonicalNumericIndexString: require('./2017/CanonicalNumericIndexString'),
 	CharacterRange: require('./2017/CharacterRange'),
 	CompletePropertyDescriptor: require('./2017/CompletePropertyDescriptor'),

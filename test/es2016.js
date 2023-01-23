@@ -12,7 +12,6 @@ var expectedMissing = [
 	'AllocateTypedArrayBuffer',
 	'BlockDeclarationInstantiation',
 	'BoundFunctionCreate',
-	'Canonicalize',
 	'CharacterRangeOrUnion',
 	'CharacterSetMatcher',
 	'CloneArrayBuffer',
