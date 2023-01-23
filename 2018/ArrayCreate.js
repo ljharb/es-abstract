@@ -7,7 +7,7 @@ var $RangeError = GetIntrinsic('%RangeError%');
 var $SyntaxError = GetIntrinsic('%SyntaxError%');
 var $TypeError = GetIntrinsic('%TypeError%');
 
-var IsInteger = require('./IsInteger');
+var isInteger = require('../helpers/isInteger');
 
 var hasProto = require('has-proto')();
 
@@ -25,7 +25,7 @@ var $setProto = GetIntrinsic('%Object.setPrototypeOf%', true) || (
 // https://262.ecma-international.org/6.0/#sec-arraycreate
 
 module.exports = function ArrayCreate(length) {
-	if (!IsInteger(length) || length < 0) {
+	if (!isInteger(length) || length < 0) {
 		throw new $TypeError('Assertion failed: `length` must be an integer Number >= 0');
 	}
 	if (length > MAX_ARRAY_LENGTH) {

@@ -3,9 +3,9 @@
 var GetIntrinsic = require('get-intrinsic');
 
 var CodePointAt = require('./CodePointAt');
-var IsIntegralNumber = require('./IsIntegralNumber');
 var Type = require('./Type');
 
+var isInteger = require('../helpers/isInteger');
 var MAX_SAFE_INTEGER = require('../helpers/maxSafeInteger');
 
 var $TypeError = GetIntrinsic('%TypeError%');
@@ -16,7 +16,7 @@ module.exports = function AdvanceStringIndex(S, index, unicode) {
 	if (Type(S) !== 'String') {
 		throw new $TypeError('Assertion failed: `S` must be a String');
 	}
-	if (!IsIntegralNumber(index) || index < 0 || index > MAX_SAFE_INTEGER) {
+	if (!isInteger(index) || index < 0 || index > MAX_SAFE_INTEGER) {
 		throw new $TypeError('Assertion failed: `length` must be an integer >= 0 and <= 2**53');
 	}
 	if (Type(unicode) !== 'Boolean') {

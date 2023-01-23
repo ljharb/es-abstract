@@ -8,12 +8,12 @@ var $TypeError = GetIntrinsic('%TypeError%');
 var DeletePropertyOrThrow = require('./DeletePropertyOrThrow');
 var Get = require('./Get');
 var HasProperty = require('./HasProperty');
-var IsIntegralNumber = require('./IsIntegralNumber');
 var Set = require('./Set');
 var ToString = require('./ToString');
 var Type = require('./Type');
 
 var isAbstractClosure = require('../helpers/isAbstractClosure');
+var isInteger = require('../helpers/isInteger');
 
 var $push = callBound('Array.prototype.push');
 var $sort = callBound('Array.prototype.sort');
@@ -24,7 +24,7 @@ module.exports = function SortIndexedProperties(obj, len, SortCompare) {
 	if (Type(obj) !== 'Object') {
 		throw new $TypeError('Assertion failed: Type(obj) is not Object');
 	}
-	if (!IsIntegralNumber(len) || len < 0) {
+	if (!isInteger(len) || len < 0) {
 		throw new $TypeError('Assertion failed: `len` must be an integer >= 0');
 	}
 	if (!isAbstractClosure(SortCompare) || SortCompare.length !== 2) {

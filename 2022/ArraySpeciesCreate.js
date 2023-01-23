@@ -9,13 +9,14 @@ var ArrayCreate = require('./ArrayCreate');
 var Get = require('./Get');
 var IsArray = require('./IsArray');
 var IsConstructor = require('./IsConstructor');
-var IsIntegralNumber = require('./IsIntegralNumber');
 var Type = require('./Type');
+
+var isInteger = require('../helpers/isInteger');
 
 // https://262.ecma-international.org/12.0/#sec-arrayspeciescreate
 
 module.exports = function ArraySpeciesCreate(originalArray, length) {
-	if (!IsIntegralNumber(length) || length < 0) {
+	if (!isInteger(length) || length < 0) {
 		throw new $TypeError('Assertion failed: length must be an integer >= 0');
 	}
 
