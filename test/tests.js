@@ -1959,6 +1959,18 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			});
 		});
 
+		t.test('non-extensible object', { skip: !Object.preventExtensions }, function (st) {
+			var nonExtensible = Object.preventExtensions({});
+
+			st.equal(
+				ES.CreateDataProperty(nonExtensible, 'foo', {}),
+				false,
+				'can not install "foo" on non-extensible object'
+			);
+
+			st.end();
+		});
+
 		t.end();
 	});
 
@@ -2005,6 +2017,18 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 					debug(sentinel) + ' is not installed on "' + debug(propertyKey) + '" on the object'
 				);
 			}
+		});
+
+		t.test('non-extensible object', { skip: !Object.preventExtensions }, function (st) {
+			var nonExtensible = Object.preventExtensions({});
+
+			st['throws'](
+				function () { ES.CreateDataPropertyOrThrow(nonExtensible, 'foo', {}); },
+				TypeError,
+				'can not install "foo" on non-extensible object'
+			);
+
+			st.end();
 		});
 
 		t.end();

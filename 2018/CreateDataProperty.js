@@ -4,14 +4,8 @@ var GetIntrinsic = require('get-intrinsic');
 
 var $TypeError = GetIntrinsic('%TypeError%');
 
-var DefineOwnProperty = require('../helpers/DefineOwnProperty');
-
-var FromPropertyDescriptor = require('./FromPropertyDescriptor');
-var OrdinaryGetOwnProperty = require('./OrdinaryGetOwnProperty');
-var IsDataDescriptor = require('./IsDataDescriptor');
-var IsExtensible = require('./IsExtensible');
 var IsPropertyKey = require('./IsPropertyKey');
-var SameValue = require('./SameValue');
+var OrdinaryDefineOwnProperty = require('./OrdinaryDefineOwnProperty');
 var Type = require('./Type');
 
 // https://262.ecma-international.org/6.0/#sec-createdataproperty
@@ -23,23 +17,11 @@ module.exports = function CreateDataProperty(O, P, V) {
 	if (!IsPropertyKey(P)) {
 		throw new $TypeError('Assertion failed: IsPropertyKey(P) is not true');
 	}
-	var oldDesc = OrdinaryGetOwnProperty(O, P);
-	var extensible = !oldDesc || IsExtensible(O);
-	var nonConfigurable = oldDesc && !oldDesc['[[Configurable]]'];
-	if (nonConfigurable || !extensible) {
-		return false;
-	}
-	return DefineOwnProperty(
-		IsDataDescriptor,
-		SameValue,
-		FromPropertyDescriptor,
-		O,
-		P,
-		{
-			'[[Configurable]]': true,
-			'[[Enumerable]]': true,
-			'[[Value]]': V,
-			'[[Writable]]': true
-		}
-	);
+	var newDesc = {
+		'[[Configurable]]': true,
+		'[[Enumerable]]': true,
+		'[[Value]]': V,
+		'[[Writable]]': true
+	};
+	return OrdinaryDefineOwnProperty(O, P, newDesc);
 };
