@@ -1894,6 +1894,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		var sentinel = {};
 		var completion = ES.CompletionRecord('normal', sentinel);
 		t.equal(completion['!'](), sentinel, '! returns the value of a normal completion');
+		t.equal(completion['?'](), sentinel, '? returns the value of a normal completion');
 
 		t.end();
 	});
