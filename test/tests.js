@@ -10732,7 +10732,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.thisBigIntValue(nonBigInt); },
-				TypeError,
+				hasBigInts ? TypeError : SyntaxError,
 				debug(nonBigInt) + ' is not a BigInt'
 			);
 		});
