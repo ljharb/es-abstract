@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $gOPD = require('gopd');
@@ -16,6 +18,7 @@ var ToPropertyDescriptor = require('./ToPropertyDescriptor');
 
 // https://262.ecma-international.org/6.0/#sec-ordinarygetownproperty
 
+/** @type {<T extends import('../types').PropertyKey, U = unknown>(O: Record<T, U>, P: T) => undefined | import('../types').DataDescriptor<U>} */
 module.exports = function OrdinaryGetOwnProperty(O, P) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: O must be an Object');

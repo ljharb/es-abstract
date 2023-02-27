@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
@@ -14,13 +16,14 @@ var ToPrimitive = require('./ToPrimitive');
 
 // https://262.ecma-international.org/5.1/#sec-11.8.5
 
-// eslint-disable-next-line max-statements
+/** @type {(x: unknown, y: unknown, LeftFirst: boolean) => undefined | boolean} */
+
 module.exports = function AbstractRelationalComparison(x, y, LeftFirst) {
 	if (typeof LeftFirst !== 'boolean') {
 		throw new $TypeError('Assertion failed: LeftFirst argument must be a Boolean');
 	}
-	var px;
-	var py;
+	/** @type {ReturnType<typeof ToPrimitive>} */ var px;
+	/** @type {ReturnType<typeof ToPrimitive>} */ var py;
 	if (LeftFirst) {
 		px = ToPrimitive(x, $Number);
 		py = ToPrimitive(y, $Number);
@@ -28,10 +31,13 @@ module.exports = function AbstractRelationalComparison(x, y, LeftFirst) {
 		py = ToPrimitive(y, $Number);
 		px = ToPrimitive(x, $Number);
 	}
-	var bothStrings = typeof px === 'string' && typeof py === 'string';
-	if (!bothStrings) {
-		var nx = ToNumber(px);
-		var ny = ToNumber(py);
+	// var bothStrings = typeof px === 'string' && typeof py === 'string';
+	// if (!bothStrings) {
+	if (!(typeof px === 'string' && typeof py === 'string')) {
+		// eslint-disable-next-line no-extra-parens
+		var nx = ToNumber(/** @type {object | import('../types').es5Primitive} */ (px));
+		// eslint-disable-next-line no-extra-parens
+		var ny = ToNumber(/** @type {object | import('../types').es5Primitive} */ (py));
 		if ($isNaN(nx) || $isNaN(ny)) {
 			return undefined;
 		}

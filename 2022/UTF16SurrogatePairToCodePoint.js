@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
@@ -10,6 +12,7 @@ var isTrailingSurrogate = require('../helpers/isTrailingSurrogate');
 
 // https://262.ecma-international.org/12.0/#sec-utf16decodesurrogatepair
 
+/** @type {(lead: number, trail: number) => string} */
 module.exports = function UTF16SurrogatePairToCodePoint(lead, trail) {
 	if (!isLeadingSurrogate(lead) || !isTrailingSurrogate(trail)) {
 		throw new $TypeError('Assertion failed: `lead` must be a leading surrogate char code, and `trail` must be a trailing surrogate char code');

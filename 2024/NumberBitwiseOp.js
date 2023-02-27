@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -7,6 +9,7 @@ var ToUint32 = require('./ToUint32');
 
 // https://262.ecma-international.org/11.0/#sec-numberbitwiseop
 
+/** @type {(op: '&' | '|' | '^', x: number, y: number) => number} */
 module.exports = function NumberBitwiseOp(op, x, y) {
 	if (op !== '&' && op !== '|' && op !== '^') {
 		throw new $TypeError('Assertion failed: `op` must be `&`, `|`, or `^`');

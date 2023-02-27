@@ -9,7 +9,9 @@ const { ESLint } = require('eslint');
 const deltas = require('./deltas');
 const years = require('./years');
 
+/** @type {Record<import('../types').integer, Map<string, string>>} */
 const allOps = {};
+/** @type {(uear: import('../types').integer, op: string, opPath: string) => void} */
 function addOpToYear(year, op, opPath) {
 	allOps[year] ||= new Map();
 	if (op === opPath) {
@@ -32,7 +34,7 @@ const writtenOps = [5].concat(years).flatMap((year, i, arr) => {
 			return [];
 		}
 		return opFile;
-	}).map((opFile) => {
+	}).flatMap((opFile) => {
 		const op = path.basename(opFile, path.extname(opFile));
 		const opPath = op.replace('::', '/');
 		const isEntryPoint = !opPath.startsWith('tables/');
@@ -52,33 +54,37 @@ const writtenOps = [5].concat(years).flatMap((year, i, arr) => {
 				if (fs.existsSync(thisFile) && !fs.existsSync(nextFile)) {
 					if (year === 2023 && op === 'TypedArrayCreate') {
 						// this AO was renamed in ES2024, and the new one can't be implemented
-						return null;
+						return [];
 					}
 					console.log(`writing: ${nextYear}/${opPath} -> ${year}/${opPath}`);
 					const thisSpecifier = `../${year}/${opPath}`;
 					const reexport = `'use strict';
+// @ts-nocheck
 
-		module.exports = require('${thisSpecifier}');
-		`;
+module.exports = require('${thisSpecifier}');
+`;
 					const replacement = fs.readFileSync(thisFile, 'utf-8');
-					fs.writeFileSync(nextFile, process.argv[2] ? replacement : reexport);
-					return {
-						isEntryPoint,
-						op,
-						opFile: path.relative(process.cwd(), nextFile),
-						year: nextYear,
-					};
+					fs.writeFileSync(nextFile, process.argv[2] ? replacement.replace(/(?:\/\/ @ts-nocheck\n\n?)*'use strict';/g, '// @ts-nocheck\n\n\'use strict\';') : reexport);
+					return [
+						{
+							isEntryPoint,
+							op,
+							opFile: path.relative(process.cwd(), nextFile),
+							year: nextYear,
+						},
+					];
 				}
 			}
 		}
-		return null;
+		return [];
 	});
-}).filter(Boolean);
+});
 
 const exceptions = require('../test/helpers/aoMap.json');
 
 const willBeQuotedOp = (/^'[^' ]+ [^']+'/);
 
+/** @type {(a: string, b: string) => ReturnType<typeof String.prototype.localeCompare>} */
 function compareOps(a, b) {
 	const aQ = willBeQuotedOp.test(a);
 	const bQ = willBeQuotedOp.test(b);
@@ -90,7 +96,8 @@ function compareOps(a, b) {
 	return a.localeCompare(b);
 }
 
-const writtenManifestsP = years.map(async (year) => {
+/** @type {Promise<string>[]} */
+const writtenManifestsP = years.map(/** @type {(year: import('../types').integer) => Promise<string>} */ async (year) => {
 	const edition = year - 2009;
 	const contents = `'use strict';
 
@@ -105,7 +112,7 @@ module.exports = ES${year};
 	const filename = `es${String(year)}.js`;
 	const eslint = new ESLint({ fix: true });
 	await eslint.lintText(contents, { filePath: filename }).then(([{ output }]) => {
-		fs.writeFileSync(path.join(process.cwd(), filename), output);
+		fs.writeFileSync(path.join(process.cwd(), filename), `${output}`);
 	}).catch((error) => {
 		console.error(error);
 		process.exitCode = 1;
@@ -117,6 +124,13 @@ module.exports = ES${year};
 Promise.all(writtenManifestsP).then((writtenManifests) => {
 	const writtenFiles = writtenManifests.concat(writtenOps.map(({ opFile }) => opFile));
 
-	fs.writeFileSync(path.join(process.cwd(), '.gitattributes'), [].concat('/helpers/caseFolding.json\tlinguist-generated=true', writtenFiles.map((x) => `/${x}\tspackled linguist-generated=true`)).join('\n'));
+	fs.writeFileSync(
+		path.join(process.cwd(), '.gitattributes'),
+		[].concat(
+			// @ts-expect-error TS sucks with concat
+			'/helpers/caseFolding.json\tlinguist-generated=true',
+			writtenFiles.map((x) => `/${x}\tspackled linguist-generated=true`),
+		).join('\n'),
+	);
 	childProcess.execSync(`git add .gitattributes ${writtenFiles.join(' ')}`);
 });

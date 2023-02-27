@@ -6,13 +6,13 @@ var $defineProperty = require('es-define-property');
 
 var hasArrayLengthDefineBug = hasPropertyDescriptors.hasArrayLengthDefineBug();
 
-// eslint-disable-next-line global-require
-var isArray = hasArrayLengthDefineBug && require('../helpers/IsArray');
+var isArray = require('../helpers/IsArray');
 
 var callBound = require('call-bound');
 
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 
+/** @type {<T>(IsDataDescriptor: <V>(x: import('../types').DataDescriptor<V> | undefined) => x is import('../types').DataDescriptor<V>, SameValue: (x: unknown, y: unknown) => boolean, FromPropertyDescriptor: ((Desc: undefined) => undefined) & (<V>(Desc: import('../types').Descriptor<V>) => PropertyDescriptor), O: Record<string | symbol, unknown>, P: string | symbol, desc: import('../types').Descriptor<T>) => boolean} */
 // eslint-disable-next-line max-params
 module.exports = function DefineOwnProperty(IsDataDescriptor, SameValue, FromPropertyDescriptor, O, P, desc) {
 	if (!$defineProperty) {
@@ -44,7 +44,7 @@ module.exports = function DefineOwnProperty(IsDataDescriptor, SameValue, FromPro
 		&& O.length !== desc['[[Value]]']
 	) {
 		// eslint-disable-next-line no-param-reassign
-		O.length = desc['[[Value]]'];
+		O.length = /** @type {number} */ (desc['[[Value]]']);
 		return O.length === desc['[[Value]]'];
 	}
 

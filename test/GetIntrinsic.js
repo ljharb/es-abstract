@@ -69,6 +69,7 @@ test('throws', function (t) {
 
 	forEach(v.nonStrings, function (nonString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { GetIntrinsic(nonString); },
 			TypeError,
 			debug(nonString) + ' is not a String'
@@ -77,6 +78,7 @@ test('throws', function (t) {
 
 	forEach(v.nonBooleans, function (nonBoolean) {
 		t['throws'](
+			// @ts-expect-error
 			function () { GetIntrinsic('%', nonBoolean); },
 			TypeError,
 			debug(nonBoolean) + ' is not a Boolean'
@@ -124,14 +126,17 @@ test('dotted paths', function (t) {
 			'%ObjProto_toString%',
 			'ObjProto_toString'
 		], function (name) {
+			// @ts-expect-error TS is dumb
 			DefinePropertyOrThrow(Object.prototype, 'toString', {
 				'[[Value]]': function toString() {
+					// @ts-expect-error TS is dumb
 					return original.apply(this, arguments);
 				}
 			});
 			st.equal(GetIntrinsic(name), original, name + ' yields original Object.prototype.toString');
 		});
 
+		// @ts-expect-error TS is dumb
 		DefinePropertyOrThrow(Object.prototype, 'toString', { '[[Value]]': original });
 		st.end();
 	});
@@ -145,8 +150,10 @@ test('dotted paths', function (t) {
 			'%ObjectPrototype.propertyIsEnumerable%',
 			'ObjectPrototype.propertyIsEnumerable'
 		], function (name) {
+			// @ts-expect-error TS is dumb
 			var restore = mockProperty(Object.prototype, 'propertyIsEnumerable', {
 				value: function propertyIsEnumerable() {
+					// @ts-expect-error TS is dumb
 					return original.apply(this, arguments);
 				}
 			});
@@ -174,7 +181,8 @@ test('dotted paths', function (t) {
 });
 
 test('accessors', { skip: !$gOPD || typeof Map !== 'function' }, function (t) {
-	var actual = $gOPD(Map.prototype, 'size');
+	// @ts-expect-error TS is dumb
+	var actual = $gOPD(Map.prototype, 'size') || {};
 	t.ok(actual, 'Map.prototype.size has a descriptor');
 	t.equal(typeof actual.get, 'function', 'Map.prototype.size has a getter function');
 	t.equal(GetIntrinsic('%Map.prototype.size%'), actual.get, '%Map.prototype.size% yields the getter for it');

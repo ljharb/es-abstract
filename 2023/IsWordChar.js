@@ -12,12 +12,14 @@ var WordCharacters = require('./WordCharacters');
 var every = require('../helpers/every');
 var isRegExpRecord = require('../helpers/records/regexp-record');
 
+/** @type {(c: unknown) => c is string} */
 var isChar = function isChar(c) {
 	return typeof c === 'string';
 };
 
 // https://262.ecma-international.org/14.0/#sec-runtime-semantics-iswordchar-abstract-operation
 
+/** @type {(rer: import('../types').RegExpRecord, Input: string[], e: import('../types').integer) => boolean} */
 module.exports = function IsWordChar(rer, Input, e) {
 	if (!isRegExpRecord(rer)) {
 		throw new $TypeError('Assertion failed: `rer` must be a RegExp Record');

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -8,10 +10,12 @@ var hasOwn = require('hasown');
 var $charCodeAt = callBound('String.prototype.charCodeAt');
 var $toUpperCase = callBound('String.prototype.toUpperCase');
 
+/** @type {import('../helpers/caseFolding.json')} */
 var caseFolding = require('../helpers/caseFolding.json');
 
 // https://262.ecma-international.org/6.0/#sec-runtime-semantics-canonicalize-ch
 
+/** @type {(ch: string, IgnoreCase: boolean, Unicode: boolean) => string} */
 module.exports = function Canonicalize(ch, IgnoreCase, Unicode) {
 	if (typeof ch !== 'string') {
 		throw new $TypeError('Assertion failed: `ch` must be a character');

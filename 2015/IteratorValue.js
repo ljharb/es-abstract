@@ -7,6 +7,7 @@ var Get = require('./Get');
 
 // https://262.ecma-international.org/6.0/#sec-iteratorvalue
 
+/** @type {<T>(iterResult: Partial<IteratorResult<T>>) => T} */
 module.exports = function IteratorValue(iterResult) {
 	if (!isObject(iterResult)) {
 		throw new $TypeError('Assertion failed: Type(iterResult) is not Object');

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
@@ -10,6 +12,7 @@ var $isNaN = require('math-intrinsics/isNaN');
 
 // https://262.ecma-international.org/6.0/#sec-todatestring
 
+/** @type {(tv: number) => string} */
 module.exports = function ToDateString(tv) {
 	if (typeof tv !== 'number') {
 		throw new $TypeError('Assertion failed: `tv` must be a Number');

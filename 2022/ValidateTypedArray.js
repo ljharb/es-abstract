@@ -10,6 +10,7 @@ var typedArrayBuffer = require('typed-array-buffer');
 
 // https://262.ecma-international.org/13.0/#sec-validatetypedarray
 
+/** @type {(O: import('../types').TypedArray) => void} */
 module.exports = function ValidateTypedArray(O) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: `O` must be an Object'); // step 1

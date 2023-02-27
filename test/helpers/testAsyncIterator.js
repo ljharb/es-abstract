@@ -1,5 +1,6 @@
 'use strict';
 
+/** @type {<T>(t: import('tape').Test, iterator: AsyncIterator<T>, expected: unknown[], results?: unknown[]) => Promise<number>} */
 module.exports = function testAsyncIterator(t, asyncIterator, expected) {
 	var results = arguments.length > 3 ? arguments[3] : [];
 

@@ -17,6 +17,7 @@ var ToUint32 = require('./ToUint32');
 
 // https://262.ecma-international.org/6.0/#sec-arraysetlength
 
+/** @type {<T>(A: T[], Desc: Partial<import('../types').Descriptor<number>>) => boolean} */
 // eslint-disable-next-line max-statements, max-lines-per-function
 module.exports = function ArraySetLength(A, Desc) {
 	if (!IsArray(A)) {
@@ -28,6 +29,7 @@ module.exports = function ArraySetLength(A, Desc) {
 	if (!('[[Value]]' in Desc)) {
 		return OrdinaryDefineOwnProperty(A, 'length', Desc);
 	}
+	/** @type {typeof Desc} */
 	var newLenDesc = assign({}, Desc);
 	var newLen = ToUint32(Desc['[[Value]]']);
 	var numberLen = ToNumber(Desc['[[Value]]']);
@@ -39,7 +41,8 @@ module.exports = function ArraySetLength(A, Desc) {
 	if (!IsDataDescriptor(oldLenDesc)) {
 		throw new $TypeError('Assertion failed: an array had a non-data descriptor on `length`');
 	}
-	var oldLen = oldLenDesc['[[Value]]'];
+
+	var oldLen = /** @type {number} */ (oldLenDesc['[[Value]]']);
 	if (newLen >= oldLen) {
 		return OrdinaryDefineOwnProperty(A, 'length', newLenDesc);
 	}
@@ -60,7 +63,7 @@ module.exports = function ArraySetLength(A, Desc) {
 	while (newLen < oldLen) {
 		oldLen -= 1;
 		// eslint-disable-next-line no-param-reassign
-		var deleteSucceeded = delete A[ToString(oldLen)];
+		var deleteSucceeded = delete A[+ToString(oldLen)];
 		if (!deleteSucceeded) {
 			newLenDesc['[[Value]]'] = oldLen + 1;
 			if (!newWritable) {

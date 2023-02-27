@@ -6,6 +6,7 @@ var isMatchRecord = require('../helpers/records/match-record');
 
 // https://262.ecma-international.org/13.0/#sec-getmatchindexpair
 
+/** @type {(S: string, match: import('../types').MatchRecord) => [import('../types').integer, import('../types').integer]} */
 module.exports = function GetMatchIndexPair(S, match) {
 	if (typeof S !== 'string') {
 		throw new $TypeError('Assertion failed: `S` must be a String');

@@ -9,6 +9,7 @@ var $toUpperCase = callBound('String.prototype.toUpperCase');
 
 // https://262.ecma-international.org/5.1/#sec-15.10.2.8
 
+/** @type {(ch: string, IgnoreCase: boolean) => string} */
 module.exports = function Canonicalize(ch, IgnoreCase) {
 	if (typeof ch !== 'string' || ch.length !== 1) {
 		throw new $TypeError('Assertion failed: `ch` must be a character');

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -22,6 +24,7 @@ var ToObject = require('./ToObject');
 
 // https://262.ecma-international.org/12.0/#sec-copydataproperties
 
+/** @type {(target: Parameters<typeof CreateDataPropertyOrThrow>[0], source: unknown, excludedItems: unknown[]) => typeof target} */
 module.exports = function CopyDataProperties(target, source, excludedItems) {
 	if (!isObject(target)) {
 		throw new $TypeError('Assertion failed: "target" must be an Object');

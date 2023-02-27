@@ -25,6 +25,7 @@ var callBound = require('call-bound');
 
 var $then = callBound('Promise.prototype.then', true);
 
+/** @type {<T>(result: IteratorResult<unknown>) => Promise<T>} */
 var AsyncFromSyncIteratorContinuation = function AsyncFromSyncIteratorContinuation(result) {
 	if (!isObject(result)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
@@ -41,13 +42,14 @@ var AsyncFromSyncIteratorContinuation = function AsyncFromSyncIteratorContinuati
 	return new $Promise(function (resolve) {
 		var done = IteratorComplete(result); // step 2
 		var value = IteratorValue(result); // step 4
+		// @ts-expect-error this function can't even be defined if `$Promise` is undefined
 		var valueWrapper = PromiseResolve($Promise, value); // step 6
 
 		// eslint-disable-next-line no-shadow
-		var onFulfilled = function (value) { // steps 8-9
+		var onFulfilled = /** @type {(value: unknown) => ReturnType<CreateIterResultObject>} */ function (value) { // steps 8-9
 			return CreateIterResultObject(value, done); // step 8.a
 		};
-		resolve($then(valueWrapper, onFulfilled)); // step 11
+		resolve(/** @type {NonNullable<typeof $then>} */ ($then)(valueWrapper, onFulfilled)); // step 11
 	}); // step 12
 };
 
@@ -64,7 +66,7 @@ var $AsyncFromSyncIteratorPrototype = GetIntrinsic('%AsyncFromSyncIteratorProtot
 		var argsLength = arguments.length;
 
 		return new $Promise(function (resolve) { // step 3
-			var syncIteratorRecord = SLOT.get(O, '[[SyncIteratorRecord]]'); // step 4
+			var syncIteratorRecord = /** @type {import('../types').IteratorRecord2023<unknown>} */ (SLOT.get(O, '[[SyncIteratorRecord]]')); // step 4
 			var result;
 			if (argsLength > 0) {
 				result = IteratorNext(syncIteratorRecord['[[Iterator]]'], value); // step 5.a
@@ -149,6 +151,7 @@ var $AsyncFromSyncIteratorPrototype = GetIntrinsic('%AsyncFromSyncIteratorProtot
 
 // https://262.ecma-international.org/9.0/#sec-createasyncfromsynciterator
 
+/** @type {<T>(syncIteratorRecord: import('../types').IteratorRecord<T>) => import('../types').AsyncIteratorRecord<T>} */
 module.exports = function CreateAsyncFromSyncIterator(syncIteratorRecord) {
 	if (!isIteratorRecord(syncIteratorRecord)) {
 		throw new $TypeError('Assertion failed: `syncIteratorRecord` is not an Iterator Record');
@@ -162,7 +165,7 @@ module.exports = function CreateAsyncFromSyncIterator(syncIteratorRecord) {
 	var nextMethod = Get(asyncIterator, 'next'); // step 3
 
 	return { // steps 3-4
-		'[[Iterator]]': asyncIterator,
+		'[[Iterator]]': /** @type {ReturnType<CreateAsyncFromSyncIterator>['[[Iterator]]']} */ /** @type {unknown} */ asyncIterator,
 		'[[NextMethod]]': nextMethod,
 		'[[Done]]': false
 	};

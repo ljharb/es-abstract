@@ -13,6 +13,7 @@ var availableTypedArrays = require('available-typed-arrays')();
 
 // https://262.ecma-international.org/15.0/#typedarraycreatefromconstructor
 
+/** @type {(constructor: import('../types').Constructor<import('../types').TypedArray, import('../types').TypedArrayConstructor>, argumentList: [number] | unknown[]) => import('../types').TypedArray} */
 module.exports = function TypedArrayCreateFromConstructor(constructor, argumentList) {
 	if (!IsConstructor(constructor)) {
 		throw new $TypeError('Assertion failed: `constructor` must be a constructor');
@@ -25,14 +26,18 @@ module.exports = function TypedArrayCreateFromConstructor(constructor, argumentL
 	}
 
 	// var newTypedArray = Construct(constructor, argumentList); // step 1
+	/** @type {(import('../types').TypedArray)} */
 	var newTypedArray;
 	if (argumentList.length === 0) {
 		newTypedArray = new constructor();
 	} else if (argumentList.length === 1) {
+		// @ts-expect-error
 		newTypedArray = new constructor(argumentList[0]);
 	} else if (argumentList.length === 2) {
+		// @ts-expect-error
 		newTypedArray = new constructor(argumentList[0], argumentList[1]);
 	} else {
+		// @ts-expect-error
 		newTypedArray = new constructor(argumentList[0], argumentList[1], argumentList[2]);
 	}
 

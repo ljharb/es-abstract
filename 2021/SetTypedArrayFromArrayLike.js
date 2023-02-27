@@ -10,7 +10,7 @@ var typedArrayLength = require('typed-array-length');
 var whichTypedArray = require('which-typed-array');
 var isInteger = require('math-intrinsics/isInteger');
 
-var Get = require('./Get');
+// var Get = require('./Get');
 var IsBigIntElementType = require('./IsBigIntElementType');
 var IsDetachedBuffer = require('./IsDetachedBuffer');
 var LengthOfArrayLike = require('./LengthOfArrayLike');
@@ -18,12 +18,13 @@ var SetValueInBuffer = require('./SetValueInBuffer');
 var ToBigInt = require('./ToBigInt');
 var ToNumber = require('./ToNumber');
 var ToObject = require('./ToObject');
-var ToString = require('./ToString');
+// var ToString = require('./ToString');
 
 var tableTAO = require('./tables/typed-array-objects');
 
 // https://262.ecma-international.org/12.0/#sec-settypedarrayfromarraylike
 
+/** @type {import('../types').SetTypedArrayFromArrayLike} */
 module.exports = function SetTypedArrayFromArrayLike(target, targetOffset, source) {
 	var whichTarget = whichTypedArray(target);
 	if (!whichTarget) {
@@ -48,9 +49,9 @@ module.exports = function SetTypedArrayFromArrayLike(target, targetOffset, sourc
 
 	var targetName = whichTarget; // step 5
 
-	var targetType = tableTAO.name['$' + targetName]; // step 7
+	var targetType = tableTAO.name[/** @type {`$${typeof targetName}`} */ ('$' + targetName)]; // step 7
 
-	var targetElementSize = tableTAO.size['$' + targetType]; // step 6
+	var targetElementSize = tableTAO.size[/** @type {`$${typeof targetType}`} */ ('$' + targetType)]; // step 6
 
 	var targetByteOffset = typedArrayByteOffset(target); // step 8
 
@@ -73,9 +74,10 @@ module.exports = function SetTypedArrayFromArrayLike(target, targetOffset, sourc
 	var limit = targetByteIndex + (targetElementSize * srcLength); // step 15
 
 	while (targetByteIndex < limit) { // step 16
-		var Pk = ToString(k); // step 16.a
+		// var Pk = ToString(k); // step 16.a
 
-		var value = Get(src, Pk); // step 16.b
+		/** @type {number | bigint} */
+		var value = src[k]; // Get(src, Pk); // step 16.b
 
 		if (IsBigIntElementType(targetType)) {
 			value = ToBigInt(value); // step 16.c

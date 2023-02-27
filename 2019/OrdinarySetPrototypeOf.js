@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -8,6 +10,7 @@ var OrdinaryGetPrototypeOf = require('./OrdinaryGetPrototypeOf');
 
 // https://262.ecma-international.org/7.0/#sec-ordinarysetprototypeof
 
+/** @type {(O: object, V: object | null) => boolean} */
 module.exports = function OrdinarySetPrototypeOf(O, V) {
 	if (V !== null && !isObject(V)) {
 		throw new $TypeError('Assertion failed: V must be Object or Null');
@@ -23,6 +26,7 @@ module.exports = function OrdinarySetPrototypeOf(O, V) {
 	}
 	*/
 	try {
+		// @ts-expect-error
 		$setProto(O, V);
 	} catch (e) {
 		return false;

@@ -15,6 +15,7 @@ var whichTypedArray = require('which-typed-array');
 
 // https://262.ecma-international.org/13.0/#sec-integerindexedelementset
 
+/** @type {(O: import('../types').TypedArray, index: import('../types').integer, value: number | bigint) => void} */
 module.exports = function IntegerIndexedElementSet(O, index, value) {
 	var arrayTypeName = whichTypedArray(O);
 	if (!arrayTypeName) {

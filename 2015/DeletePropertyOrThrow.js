@@ -7,6 +7,7 @@ var isPropertyKey = require('../helpers/isPropertyKey');
 
 // https://262.ecma-international.org/6.0/#sec-deletepropertyorthrow
 
+/** @type {import('../types').DeletePropertyOrThrow} */
 module.exports = function DeletePropertyOrThrow(O, P) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
@@ -16,6 +17,7 @@ module.exports = function DeletePropertyOrThrow(O, P) {
 		throw new $TypeError('Assertion failed: P is not a Property Key');
 	}
 
+	// @ts-expect-error TODO: fixme
 	// eslint-disable-next-line no-param-reassign
 	var success = delete O[P];
 	if (!success) {

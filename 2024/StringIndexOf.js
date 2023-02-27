@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var callBound = require('call-bound');
@@ -9,6 +11,7 @@ var $slice = callBound('String.prototype.slice');
 
 // https://262.ecma-international.org/12.0/#sec-stringindexof
 
+/** @type {(string: string, searchValue: string, fromIndex: import('../types').nonNegativeInteger) => import('../types').integer} */
 module.exports = function StringIndexOf(string, searchValue, fromIndex) {
 	if (typeof string !== 'string') {
 		throw new $TypeError('Assertion failed: `string` must be a String');

@@ -6,6 +6,7 @@ var isNaN = require('../../helpers/isNaN');
 
 // https://262.ecma-international.org/11.0/#sec-numeric-types-number-add
 
+/** @type {(x: number, y: number) => number} */
 module.exports = function NumberAdd(x, y) {
 	if (typeof x !== 'number' || typeof y !== 'number') {
 		throw new $TypeError('Assertion failed: `x` and `y` arguments must be Numbers');

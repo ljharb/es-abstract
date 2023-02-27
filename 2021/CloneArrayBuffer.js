@@ -13,6 +13,7 @@ var arrayBufferSlice = require('arraybuffer.prototype.slice');
 
 // https://262.ecma-international.org/12.0/#sec-clonearraybuffer
 
+/** @type {<C extends ArrayBufferConstructor | import('../types').Constructor<unknown, ArrayConstructor>>(srcBuffer: ArrayBuffer, srcByteOffset: import('../types').integer, srcLength: import('../types').integer, cloneConstructor: C) => ArrayBuffer} */
 module.exports = function CloneArrayBuffer(srcBuffer, srcByteOffset, srcLength, cloneConstructor) {
 	if (!isArrayBuffer(srcBuffer)) {
 		throw new $TypeError('Assertion failed: `srcBuffer` must be an ArrayBuffer instance');

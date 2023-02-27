@@ -13,29 +13,36 @@ var msPerMinute = 60 * msPerSecond;
 var msPerHour = 60 * msPerMinute;
 var msPerDay = 24 * msPerHour;
 
-var unknowns = [].concat(
+var unknowns = /** @type {(typeof v.primitives[number] | typeof v.objects[number])[]} */ ([].concat(
+	// @ts-expect-error TS sucks with concat
 	v.primitives,
 	v.objects
-);
-var allButSyms = [].concat(
+));
+var allButSyms = /** @type {Exclude<typeof unknowns[number], symbol>[]} */ ([].concat(
+	// @ts-expect-error TS sucks with concat
 	v.objects,
 	v.nonSymbolPrimitives
-);
-var invalidTATypes = [].concat(
+));
+var invalidTATypes = /** @type {(typeof v.nonStrings[number] | 'not a valid type')[]} */ ([].concat(
+	// @ts-expect-error TS sucks with concat
 	v.nonStrings,
 	'not a valid type'
-);
-var nonFiniteNumbers = [].concat(
+));
+/** @type {number[]} */
+var nonFiniteNumbers = ([].concat(
+	// @ts-expect-error TS sucks with concat
 	v.infinities,
 	NaN
-);
-var notInts = [].concat(
+));
+/** @type {(number | Date | [])[]} */
+var notInts = ([].concat(
+	// @ts-expect-error TS sucks with concat
 	v.nonNumbers,
 	v.nonIntegerNumbers,
 	nonFiniteNumbers,
 	[],
 	new Date()
-);
+));
 
 var elementSizes = {
 	__proto__: null,
@@ -52,67 +59,88 @@ var elementSizes = {
 	$Float64Array: 8
 };
 
+/** @type {('Int8' | 'Int16' | 'Int32')[]} */
 var unclampedUnsignedIntegerTypes = [
 	'Int8',
 	'Int16',
 	'Int32'
 ];
+/** @type {('Uint8C')[]} */
 var clampedTypes = [
 	'Uint8C'
 ];
+/** @type {('Uint8' | 'Uint16' | 'Uint32')[]} */
 var unclampedSignedIntegerTypes = [
 	'Uint8',
 	'Uint16',
 	'Uint32'
 ];
+/** @type {(typeof unclampedUnsignedIntegerTypes[number] | typeof unclampedSignedIntegerTypes[number])[]} */
 var unclampedIntegerTypes = [].concat(
+	// @ts-expect-error TS sucks with concat
 	unclampedUnsignedIntegerTypes,
 	unclampedSignedIntegerTypes
 );
+/** @type {('Float32' | 'Float64')[]} */
 var floatTypes = [
 	'Float32',
 	'Float64'
 ];
+/** @type {(typeof unclampedIntegerTypes[number] | typeof clampedTypes[number] | typeof floatTypes[number])[]} */
 var integerTypes = [].concat(
+	// @ts-expect-error TS sucks with concat
 	unclampedIntegerTypes,
 	clampedTypes
 );
+/** @type {('BigInt64' | 'BigUint64')[]} */
 var bigIntTypes = [
 	'BigInt64',
 	'BigUint64'
 ];
+/** @type {(typeof floatTypes[number] | typeof integerTypes[number])[]} */
 var numberTypes = [].concat(
+	// @ts-expect-error TS sucks with concat
 	floatTypes,
 	integerTypes
 );
+/** @type {(typeof floatTypes[number] | typeof bigIntTypes[number])[]} */
 var nonUnclampedIntegerTypes = [].concat(
+	// @ts-expect-error TS sucks with concat
 	floatTypes,
 	bigIntTypes
 );
+/** @type {(typeof unclampedSignedIntegerTypes[number] | 'BigUint64')[]} */
 var unsignedElementTypes = [].concat(
+	// @ts-expect-error TS sucks with concat
 	unclampedSignedIntegerTypes,
 	hasBigInts ? 'BigUint64' : []
 );
+/** @type {(typeof unclampedUnsignedIntegerTypes[number] | typeof floatTypes[number] | 'BigInt64')[]} */
 var signedElementTypes = [].concat(
+	// @ts-expect-error TS sucks with concat
 	unclampedUnsignedIntegerTypes,
 	floatTypes,
 	hasBigInts ? 'BigInt64' : []
 );
+/** @type {(typeof numberTypes[number] | typeof bigIntTypes[number])[] | typeof numberTypes} */
 var allTypes = [].concat(
+	// @ts-expect-error TS sucks with concat
 	numberTypes,
 	hasBigInts ? bigIntTypes : []
 );
-var nonTATypes = [].concat(
+var nonTATypes = /** @type {(typeof v.nonStrings[number] | '' | 'Byte')[]} */ ([].concat(
+	// @ts-expect-error TS sucks with concat
 	v.nonStrings,
 	'',
 	'Byte'
-);
+));
 
 var canDistinguishSparseFromUndefined = 0 in [undefined]; // IE 6 - 8 have a bug where this returns false
 
 // IE 9 does not throw in strict mode when writability/configurability/extensibility is violated
 var noThrowOnStrictViolation = (function () {
 	try {
+		// @ts-expect-error most engines throw here
 		delete [].length;
 		return true;
 	} catch (e) {
@@ -120,6 +148,7 @@ var noThrowOnStrictViolation = (function () {
 	return false;
 }());
 
+/** @type {(type: string) => type is `Big${'Uint' | 'Int'}64${'Array' | ''}`} */
 var isBigIntTAType = function isBigIntTAType(type) {
 	return type.slice(0, 3) === 'Big';
 };

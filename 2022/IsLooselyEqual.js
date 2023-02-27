@@ -12,6 +12,7 @@ var isSameType = require('../helpers/isSameType');
 
 // https://262.ecma-international.org/13.0/#sec-islooselyequal
 
+/** @type {(x: unknown, y: unknown) => boolean} */
 module.exports = function IsLooselyEqual(x, y) {
 	if (isSameType(x, y)) {
 		return IsStrictlyEqual(x, y);

@@ -5,13 +5,14 @@ var isInteger = require('math-intrinsics/isInteger');
 var isObject = require('es-object-atoms/isObject');
 
 var Call = require('./Call');
-var Get = require('./Get');
+// var Get = require('./Get');
 var ToBoolean = require('./ToBoolean');
 var IsCallable = require('./IsCallable');
-var ToString = require('./ToString');
+// var ToString = require('./ToString');
 
 // https://262.ecma-international.org/14.0/#sec-findviapredicate
 
+/** @type {<Value, ThisArg>(O: Value[], len: import('../types').integer, direction: 'ascending' | 'descending', predicate: (this: ThisArg, value: Value, index: import('../types').integer, array: Value[]) => boolean, thisArg: ThisArg) => { '[[Index]]': import('../types').integer, '[[Value]]': Value | undefined }} */
 module.exports = function FindViaPredicate(O, len, direction, predicate, thisArg) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
@@ -32,8 +33,8 @@ module.exports = function FindViaPredicate(O, len, direction, predicate, thisArg
 		direction === 'ascending' ? k < len : k >= 0;
 		k += 1
 	) {
-		var Pk = ToString(k); // step 4.a
-		var kValue = Get(O, Pk); // step 4.c
+		// var Pk = ToString(k); // step 4.a
+		var kValue = O[k]; // Get(O, Pk); // step 4.c
 		var testResult = Call(predicate, thisArg, [kValue, k, O]); // step 4.d
 		if (ToBoolean(testResult)) {
 			return { '[[Index]]': k, '[[Value]]': kValue }; // step 4.e

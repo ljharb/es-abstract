@@ -8,7 +8,7 @@ var $Uint32Array = GetIntrinsic('%Uint32Array%', true);
 var typedArrayBuffer = require('typed-array-buffer');
 
 var uInt32 = $Uint32Array && new $Uint32Array([0x12345678]);
-var uInt8 = uInt32 && new $Uint8Array(typedArrayBuffer(uInt32));
+var uInt8 = uInt32 && $Uint8Array && new $Uint8Array(typedArrayBuffer(uInt32));
 
 module.exports = uInt8
 	? uInt8[0] === 0x78

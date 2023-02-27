@@ -5,11 +5,16 @@ var test = require('tape');
 var keys = require('object-keys');
 var forEach = require('for-each');
 
-var ESkeys = keys(ES).sort();
-var ES6keys = keys(ES.ES6).sort();
+// eslint-disable-next-line no-extra-parens
+var ESkeys = /** @type {(keyof typeof ES)[]} */ (keys(ES).sort());
+// eslint-disable-next-line no-extra-parens
+var ES6keys = /** @type {(keyof typeof ES.ES6)[]} */ (keys(ES.ES6).sort());
 
 test('exposed properties', function (t) {
-	t.deepEqual(ESkeys, ES6keys.concat([
+	// eslint-disable-next-line no-extra-parens
+	var props = /** @type {(keyof typeof ES | keyof typeof ES.ES6)[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
+		ES6keys,
 		'ES2024',
 		'ES2023',
 		'ES2022',
@@ -23,7 +28,8 @@ test('exposed properties', function (t) {
 		'ES6',
 		'ES2015',
 		'ES5'
-	]).sort(), 'main ES object keys match ES6 keys');
+	).sort());
+	t.deepEqual(ESkeys, props, 'main ES object keys match ES6 keys');
 	t.end();
 });
 

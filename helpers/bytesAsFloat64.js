@@ -2,6 +2,7 @@
 
 var $pow = require('math-intrinsics/pow');
 
+/** @type {(rawBytes: import('../types').ByteValue[]) => number} */
 module.exports = function bytesAsFloat64(rawBytes) {
 	// return new $Float64Array(new $Uint8Array(rawBytes).buffer)[0];
 

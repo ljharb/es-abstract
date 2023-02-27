@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -9,6 +11,7 @@ var isPropertyKey = require('../helpers/isPropertyKey');
 
 // https://262.ecma-international.org/6.0/#sec-hasownproperty
 
+/** @type {<P extends import('../types').PropertyKey>(O: Record<P, unknown>, P: P) => P is keyof typeof O} */
 module.exports = function HasOwnProperty(O, P) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: `O` must be an Object');

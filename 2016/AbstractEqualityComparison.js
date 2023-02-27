@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var ToNumber = require('./ToNumber');
@@ -9,6 +11,7 @@ var isObject = require('es-object-atoms/isObject');
 
 // https://262.ecma-international.org/6.0/#sec-abstract-equality-comparison
 
+/** @type {(x: unknown, y: unknown) => boolean} */
 module.exports = function AbstractEqualityComparison(x, y) {
 	if (isSameType(x, y)) {
 		return x === y; // ES6+ specified this shortcut anyways.

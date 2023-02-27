@@ -9,6 +9,7 @@ var IsExtensible = require('./IsExtensible');
 
 // https://262.ecma-international.org/12.0/#sec-setfunctionlength
 
+/** @type {(F: Function, length: import('../types').integer) => ReturnType<DefinePropertyOrThrow>} */
 module.exports = function SetFunctionLength(F, length) {
 	if (typeof F !== 'function' || !IsExtensible(F) || HasOwnProperty(F, 'length')) {
 		throw new $TypeError('Assertion failed: `F` must be an extensible function and lack an own `length` property');

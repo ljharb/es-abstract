@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
@@ -11,6 +13,7 @@ var $apply = GetIntrinsic('%Reflect.apply%', true) || callBound('Function.protot
 
 // https://262.ecma-international.org/6.0/#sec-call
 
+/** @type {<T, V, Args extends unknown[]>(F: (...args: Args) => T, V: V, argumentsList?: Args) => ReturnType<typeof F>} */
 module.exports = function Call(F, V) {
 	var argumentsList = arguments.length > 2 ? arguments[2] : [];
 	if (!IsArray(argumentsList)) {

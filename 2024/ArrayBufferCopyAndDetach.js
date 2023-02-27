@@ -4,13 +4,16 @@ var GetIntrinsic = require('get-intrinsic');
 
 var min = require('math-intrinsics/min');
 var $TypeError = require('es-errors/type');
-var $ArrayBuffer = GetIntrinsic('%ArrayBuffer%', true);
-var $Uint8Array = GetIntrinsic('%Uint8Array%', true);
+
+var $ArrayBuffer = /** @type {ArrayBufferConstructor} */ (GetIntrinsic('%ArrayBuffer%', true));
+
+var $Uint8Array = /** @type {Uint8ArrayConstructor} */ (GetIntrinsic('%Uint8Array%', true));
 
 var callBound = require('call-bound');
 
 var byteLength = require('array-buffer-byte-length');
 var $maxByteLength = callBound('%ArrayBuffer.prototype.maxByteLength%', true);
+/** @type {(src: ArrayBuffer, start: number, end: number) => ArrayBuffer} */
 var copy = function copyAB(src, start, end) {
 	var that = new $Uint8Array(src);
 	if (typeof end === 'undefined') {
@@ -24,7 +27,7 @@ var copy = function copyAB(src, start, end) {
 	return result;
 };
 var $abSlice = callBound('%ArrayBuffer.prototype.slice%', true)
-	|| function slice(ab, a, b) { // in node < 0.11, slice is an own nonconfigurable property
+	|| /** @type {(ab: ArrayBuffer, a: Number, b: number) => ArrayBuffer} */ function slice(ab, a, b) { // in node < 0.11, slice is an own nonconfigurable property
 		return ab.slice ? ab.slice(a, b) : copy(ab, a, b); // node 0.8 lacks `slice`
 	};
 
@@ -38,6 +41,7 @@ var isSharedArrayBuffer = require('is-shared-array-buffer');
 
 // https://262.ecma-international.org/15.0/#sec-arraybuffercopyanddetach
 
+/** @type {(arrayBuffer: ArrayBuffer, newLength: import('../types').arrayLength, preserveResizability: 'PRESERVE-RESIZABILITY' | 'FIXED-LENGTH') => ArrayBuffer} */
 module.exports = function ArrayBufferCopyAndDetach(arrayBuffer, newLength, preserveResizability) {
 	if (preserveResizability !== 'PRESERVE-RESIZABILITY' && preserveResizability !== 'FIXED-LENGTH') {
 		throw new $TypeError('`preserveResizability` must be ~PRESERVE-RESIZABILITY~ or ~FIXED-LENGTH~');
@@ -63,7 +67,7 @@ module.exports = function ArrayBufferCopyAndDetach(arrayBuffer, newLength, prese
 
 	var newMaxByteLength;
 	if (preserveResizability === 'PRESERVE-RESIZABILITY' && !IsFixedLengthArrayBuffer(arrayBuffer)) { // step 6
-		newMaxByteLength = $maxByteLength(arrayBuffer); // step 6.a
+		newMaxByteLength = /** @type {NonNullable<typeof $maxByteLength>} */ ($maxByteLength)(arrayBuffer); // step 6.a
 	} else { // step 7
 		newMaxByteLength = 'EMPTY'; // step 7.a
 	}
@@ -72,6 +76,7 @@ module.exports = function ArrayBufferCopyAndDetach(arrayBuffer, newLength, prese
 
 	// 8. If arrayBuffer.[[ArrayBufferDetachKey]] is not undefined, throw a TypeError exception.
 
+	// @ts-expect-error TS doesn't yet know about resizable ArrayBuffers
 	// 9. Let newBuffer be ? AllocateArrayBuffer(%ArrayBuffer%, newByteLength, newMaxByteLength).
 	var newBuffer = newMaxByteLength === 'EMPTY' ? new $ArrayBuffer(newByteLength) : new $ArrayBuffer(newByteLength, { maxByteLength: newMaxByteLength });
 

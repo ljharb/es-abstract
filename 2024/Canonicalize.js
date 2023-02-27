@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -9,10 +11,13 @@ var $charCodeAt = callBound('String.prototype.charCodeAt');
 var $toUpperCase = callBound('String.prototype.toUpperCase');
 
 var isRegExpRecord = require('../helpers/records/regexp-record');
+
+/** @type {{ C: { [ch: string]: string }, S: { [ch: string]: string } }} */
 var caseFolding = require('../helpers/caseFolding.json');
 
 // https://262.ecma-international.org/14.0/#sec-runtime-semantics-canonicalize-ch
 
+/** @type {(rer: import('../types').RegExpRecord, ch: string) => string} */
 module.exports = function Canonicalize(rer, ch) {
 	if (!isRegExpRecord(rer)) {
 		throw new $TypeError('Assertion failed: `rer` must be a RegExp Record');

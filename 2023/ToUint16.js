@@ -10,6 +10,7 @@ var isFinite = require('math-intrinsics/isFinite');
 
 var two16 = 0x10000; // Math.pow(2, 16)
 
+/** @type {(value: Parameters<typeof ToNumber>[0]) => import('../types').integer} */
 module.exports = function ToUint16(argument) {
 	var number = ToNumber(argument);
 	if (!isFinite(number) || number === 0) {

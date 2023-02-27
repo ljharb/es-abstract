@@ -1,9 +1,12 @@
+// @ts-nocheck
+
 'use strict';
 
 var modulo = require('./modulo');
 
 // https://262.ecma-international.org/5.1/#sec-15.9.1.3
 
+/** @type {(y: number) => number} */
 module.exports = function DaysInYear(y) {
 	if (modulo(y, 4) !== 0) {
 		return 365;

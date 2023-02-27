@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var abs = require('./abs');
@@ -10,6 +12,7 @@ var $sign = require('math-intrinsics/sign');
 
 // https://262.ecma-international.org/12.0/#sec-tointegerorinfinity
 
+/** @type {(value: unknown) => number} */
 module.exports = function ToIntegerOrInfinity(value) {
 	var number = ToNumber(value);
 	if ($isNaN(number) || number === 0) { return 0; }

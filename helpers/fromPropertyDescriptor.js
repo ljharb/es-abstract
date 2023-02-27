@@ -1,9 +1,11 @@
 'use strict';
 
+/** @type {import('../types').FromPropertyDescriptor} */
 module.exports = function fromPropertyDescriptor(Desc) {
 	if (typeof Desc === 'undefined') {
 		return Desc;
 	}
+	/** @type {PropertyDescriptor} */
 	var obj = {};
 	if ('[[Value]]' in Desc) {
 		obj.value = Desc['[[Value]]'];

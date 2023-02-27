@@ -30,7 +30,9 @@ var ES = {
 	ES2024: ES2024
 };
 assign(ES, ES5);
+// @ts-expect-error TS doesn't know that the above is basically `ES = { ...ES, ...ES2015 }`
 delete ES.CheckObjectCoercible; // renamed in ES6 to RequireObjectCoercible
 assign(ES, ES2015);
 
-module.exports = ES;
+// eslint-disable-next-line no-extra-parens
+module.exports = /** @type {typeof ES & typeof ES2015} */ (ES);

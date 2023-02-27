@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -10,6 +12,7 @@ var isNaN = require('math-intrinsics/isNaN');
 
 // https://262.ecma-international.org/14.0/#sec-comparetypedarrayelements
 
+/** @type {import('../types').CompareTypedArrayElements} */
 module.exports = function CompareTypedArrayElements(x, y, compareFn) {
 	if ((typeof x !== 'number' && typeof x !== 'bigint') || typeof x !== typeof y) {
 		throw new $TypeError('Assertion failed: `x` and `y` must be either a BigInt or a Number, and both must be the same type');
@@ -19,6 +22,7 @@ module.exports = function CompareTypedArrayElements(x, y, compareFn) {
 	}
 
 	if (typeof compareFn !== 'undefined') { // step 2
+		// @ts-expect-error TODO
 		var v = ToNumber(Call(compareFn, void undefined, [x, y])); // step 2.a
 		if (isNaN(v)) {
 			return 0; // step 2.b

@@ -7,6 +7,7 @@ var $fromCharCode = GetIntrinsic('%String.fromCharCode%');
 var $TypeError = require('es-errors/type');
 var $charCodeAt = callBound('String.prototype.charCodeAt');
 
+/** @type {(A: string, B: string) => ReturnType<typeof String.fromCharCode>[]} */
 module.exports = function CharacterRange(A, B) {
 	if (A.length !== 1 || B.length !== 1) {
 		throw new $TypeError('Assertion failed: CharSets A and B contain exactly one character');
@@ -22,6 +23,7 @@ module.exports = function CharacterRange(A, B) {
 		throw new $TypeError('Assertion failed: i is not <= j');
 	}
 
+	/** @type ReturnType<CharacterRange> */
 	var arr = [];
 	for (var k = i; k <= j; k += 1) {
 		arr[arr.length] = $fromCharCode(k);

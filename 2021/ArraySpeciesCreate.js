@@ -14,6 +14,7 @@ var IsConstructor = require('./IsConstructor');
 
 // https://262.ecma-international.org/12.0/#sec-arrayspeciescreate
 
+/** @type {<T>(originalArray: T[] & { [k: string | symbol]: unknown, constructor?: import('../types').Constructor<T[], ArrayConstructor> }, length: import('../types').integer) => T[]} */
 module.exports = function ArraySpeciesCreate(originalArray, length) {
 	if (!isInteger(length) || length < 0) {
 		throw new $TypeError('Assertion failed: length must be an integer >= 0');
@@ -21,6 +22,7 @@ module.exports = function ArraySpeciesCreate(originalArray, length) {
 
 	var isArray = IsArray(originalArray);
 	if (!isArray) {
+		// @ts-expect-error this function is weird
 		return ArrayCreate(length);
 	}
 
@@ -38,6 +40,7 @@ module.exports = function ArraySpeciesCreate(originalArray, length) {
 	}
 
 	if (typeof C === 'undefined') {
+		// @ts-expect-error this function is weird
 		return ArrayCreate(length);
 	}
 	if (!IsConstructor(C)) {

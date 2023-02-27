@@ -8,6 +8,7 @@ var $numberToString = callBound('Number.prototype.toString');
 
 // https://262.ecma-international.org/14.0/#sec-numeric-types-number-tostring
 
+/** @type {(x: number, radix: import('../../types').IntRange<2, 36>) => string} */
 module.exports = function NumberToString(x, radix) {
 	if (typeof x !== 'number') {
 		throw new $TypeError('Assertion failed: `x` must be a Number');

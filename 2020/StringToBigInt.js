@@ -8,6 +8,7 @@ var $SyntaxError = require('es-errors/syntax');
 
 // https://262.ecma-international.org/11.0/#sec-stringtobigint
 
+/** @type {(argument: string) => bigint | number} */
 module.exports = function StringToBigInt(argument) {
 	if (typeof argument !== 'string') {
 		throw new $TypeError('`argument` must be a string');

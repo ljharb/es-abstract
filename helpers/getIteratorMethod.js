@@ -11,14 +11,18 @@ var $String = GetIntrinsic('%String%');
 
 var IsArray = require('./IsArray');
 
+/** @type {import('./types').GetIteratorMethod} */
 module.exports = function getIteratorMethod(ES, iterable) {
-	var usingIterator;
+	/** @typedef {import('../types').InferIterableType<typeof iterable>} T */
+
+	/** @type {undefined | ((this:? Iterable<T>) => Iterator<T>)} */
+	var usingIterator = void undefined;
 	if (hasSymbols) {
-		usingIterator = ES.GetMethod(iterable, $iterator);
+		usingIterator = ES.GetMethod(iterable, /** @type {NonNullable<typeof $iterator>} */ ($iterator));
 	} else if (IsArray(iterable)) {
 		usingIterator = function () {
 			var i = -1;
-			var arr = this; // eslint-disable-line no-invalid-this
+			var arr = /** @type {T[]} */ (this); // eslint-disable-line no-invalid-this
 			return {
 				next: function () {
 					i += 1;
@@ -30,7 +34,7 @@ module.exports = function getIteratorMethod(ES, iterable) {
 			};
 		};
 	} else if (isString(iterable)) {
-		usingIterator = function () {
+		usingIterator = /** @type {() => Iterator<T>}} */ function () {
 			var i = 0;
 			return {
 				next: function () {

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -15,6 +17,7 @@ var $TypeError = require('es-errors/type');
 
 // https://262.ecma-international.org/11.0/#sec-bigintbitwiseop
 
+/** @type {(op: '&' | '|' | '^', x: bigint, y: bigint) => bigint} */
 module.exports = function BigIntBitwiseOp(op, x, y) {
 	if (op !== '&' && op !== '|' && op !== '^') {
 		throw new $TypeError('Assertion failed: `op` must be `&`, `|`, or `^`');

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -13,21 +15,24 @@ var $strSplit = callBound('String.prototype.split');
 
 // https://262.ecma-international.org/6.0/#sec-quotejsonstring
 
-var escapes = {
+var escapes = /** @type {const} */ ({
+	__proto__: null,
 	'\u0008': 'b',
 	'\u000C': 'f',
 	'\u000A': 'n',
 	'\u000D': 'r',
 	'\u0009': 't'
-};
+});
 
+/** @type {(value: string) => string} */
 module.exports = function QuoteJSONString(value) {
 	if (typeof value !== 'string') {
 		throw new $TypeError('Assertion failed: `value` must be a String');
 	}
 	var product = '"';
 	if (value) {
-		forEach($strSplit(value, ''), function (C) {
+
+		forEach(/** @type {string[]} */ ($strSplit(value, '')), function (C) {
 			if (C === '"' || C === '\\') {
 				product += '\u005C' + C;
 			} else if (C === '\u0008' || C === '\u000C' || C === '\u000A' || C === '\u000D' || C === '\u0009') {

@@ -22,6 +22,7 @@ var startsWithDollarDigit = regexTester(/^\$[0-9]/);
 
 // http://www.ecma-international.org/ecma-262/13.0/#sec-getsubstitution
 
+/** @type {(matched: string, str: string, position: import('../types').integer, captures: (string | undefined)[], namedCaptures: undefined | Record<string, string>, replacement: string) => string} */
 // eslint-disable-next-line max-statements, max-params, max-lines-per-function
 module.exports = function GetSubstitution(matched, str, position, captures, namedCaptures, replacementTemplate) {
 	if (typeof matched !== 'string') {
@@ -61,7 +62,10 @@ module.exports = function GetSubstitution(matched, str, position, captures, name
 	while (templateRemainder !== '') { // step 5
 		// 5.a NOTE: The following steps isolate ref (a prefix of templateRemainder), determine refReplacement (its replacement), and then append that replacement to result.
 
-		var ref, refReplacement, found, capture;
+		var ref = '';
+		var refReplacement;
+		var found;
+		var capture;
 		if (isPrefixOf('$$', templateRemainder)) { // step 5.b
 			ref = '$$'; // step 5.b.i
 			refReplacement = '$'; // step 5.b.ii

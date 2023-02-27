@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var modulo = require('./modulo');
@@ -11,6 +13,7 @@ var $sign = require('math-intrinsics/sign');
 
 // http://262.ecma-international.org/5.1/#sec-9.7
 
+/** @type {(value: Parameters<typeof ToNumber>[0]) => import('../types').integer} */
 module.exports = function ToUint16(value) {
 	var number = ToNumber(value);
 	if ($isNaN(number) || number === 0 || !$isFinite(number)) { return 0; }

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $SyntaxError = require('es-errors/syntax');
@@ -17,6 +19,7 @@ var tableTAO = require('./tables/typed-array-objects');
 
 // https://262.ecma-international.org/6.0/#sec-integerindexedelementget
 
+/** @type {(O: import('../types').TypedArray, index: import('../types').nonNegativeInteger) => undefined | ReturnType<GetValueFromBuffer>} */
 module.exports = function IntegerIndexedElementGet(O, index) {
 	if (typeof index !== 'number') {
 		throw new $TypeError('`index` must be a Number'); // step 1
@@ -47,9 +50,9 @@ module.exports = function IntegerIndexedElementGet(O, index) {
 
 	var offset = typedArrayByteOffset(O); // step 9
 
-	var elementType = tableTAO.name['$' + arrayTypeName]; // step 13
+	var elementType = tableTAO.name[/** @type {`$${typeof arrayTypeName}`} */ ('$' + arrayTypeName)]; // step 13
 
-	var elementSize = tableTAO.size['$' + elementType]; // step 11
+	var elementSize = tableTAO.size[/** @type {`$${typeof elementType}`} */ ('$' + elementType)]; // step 11
 
 	var indexedPosition = (index * elementSize) + offset; // step 12
 

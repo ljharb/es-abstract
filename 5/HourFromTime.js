@@ -9,6 +9,7 @@ var HoursPerDay = timeConstants.HoursPerDay;
 
 // https://262.ecma-international.org/5.1/#sec-15.9.1.10
 
+/** @type {(t: number) => import('../types').integer} */
 module.exports = function HourFromTime(t) {
 	return modulo(floor(t / msPerHour), HoursPerDay);
 };

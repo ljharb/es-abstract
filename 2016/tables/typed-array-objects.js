@@ -1,10 +1,12 @@
+// @ts-nocheck
+
 'use strict';
 
 // https://262.ecma-international.org/6.0/#table-49
 
 module.exports = {
 	__proto__: null,
-	name: {
+	name: /** @type {const} */ ({
 		__proto__: null,
 		$Int8Array: 'Int8',
 		$Uint8Array: 'Uint8',
@@ -15,8 +17,8 @@ module.exports = {
 		$Uint32Array: 'Uint32',
 		$Float32Array: 'Float32',
 		$Float64Array: 'Float64'
-	},
-	size: {
+	}),
+	size: /** @type {const} */ ({
 		__proto__: null,
 		$Int8: 1,
 		$Uint8: 1,
@@ -27,5 +29,5 @@ module.exports = {
 		$Uint32: 4,
 		$Float32: 4,
 		$Float64: 8
-	}
+	})
 };

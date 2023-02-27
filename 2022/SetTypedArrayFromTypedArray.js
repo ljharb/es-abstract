@@ -25,6 +25,7 @@ var TypedArrayElementType = require('./TypedArrayElementType');
 
 // https://262.ecma-international.org/13.0/#sec-settypedarrayfromtypedarray
 
+/** @type {(target: import('../types').TypedArray, targetOffset: import('../types').integer, source: import('../types').TypedArray) => void} */
 module.exports = function SetTypedArrayFromTypedArray(target, targetOffset, source) {
 	var whichTarget = whichTypedArray(target);
 	if (!whichTarget) {
@@ -94,7 +95,7 @@ module.exports = function SetTypedArrayFromTypedArray(target, targetOffset, sour
 	if (same) { // step 18
 		var srcByteLength = typedArrayByteLength(source); // step 18.a
 
-		srcBuffer = CloneArrayBuffer(srcBuffer, srcByteOffset, srcByteLength, $ArrayBuffer); // step 18.b
+		srcBuffer = CloneArrayBuffer(srcBuffer, srcByteOffset, srcByteLength, /** @type {ArrayBufferConstructor} */ ($ArrayBuffer)); // step 18.b
 
 		// c. NOTE: %ArrayBuffer% is used to clone srcBuffer because is it known to not have any observable side-effects.
 

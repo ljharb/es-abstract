@@ -12,6 +12,7 @@ var isObject = require('es-object-atoms/isObject');
 
 // https://262.ecma-international.org/6.0/#sec-isconcatspreadable
 
+/** @type {import('../types').IsConcatSpreadable} */
 module.exports = function IsConcatSpreadable(O) {
 	if (!isObject(O)) {
 		return false;

@@ -6,6 +6,7 @@ var hasOwn = require('hasown');
 
 var $assign = GetIntrinsic('%Object.assign%', true);
 
+/** @type {<T extends Record<string | symbol, unknown>, S extends {}>(target: T, source: S) => T} */
 module.exports = function assign(target, source) {
 	if ($assign) {
 		return $assign(target, source);

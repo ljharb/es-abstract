@@ -15,6 +15,7 @@ var isPropertyKey = require('../helpers/isPropertyKey');
 
 // https://262.ecma-international.org/12.0/#sec-stringgetownproperty
 
+/** @type {(S: string | object, P: import('../types').PredicateType<typeof isPropertyKey>) => undefined | import('../types').DataDescriptor<string>} */
 module.exports = function StringGetOwnProperty(S, P) {
 	var str;
 	if (isObject(S)) {

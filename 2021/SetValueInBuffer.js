@@ -24,9 +24,12 @@ var forEach = require('../helpers/forEach');
 
 /* eslint max-params: 0 */
 
+/** @typedef {import('../types').TypedArrayTypeByName<import('../types').TypedArrayName>} TypedArrayType */
+
+/** @type {(arrayBuffer: ArrayBuffer, byteIndex: import('../types').integer, type: TypedArrayType, value: number | bigint, isTypedArray: boolean, order: 'SeqCst' | 'Unordered' | 'Init') => void} */
 module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value, isTypedArray, order) {
 	var isSAB = isSharedArrayBuffer(arrayBuffer);
-	if (!isArrayBuffer(arrayBuffer) && !isSAB) {
+	if ((!isArrayBuffer(arrayBuffer) && !isSAB) || !$Uint8Array) {
 		throw new $TypeError('Assertion failed: `arrayBuffer` must be an ArrayBuffer or a SharedArrayBuffer');
 	}
 
@@ -65,7 +68,7 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value, 
 
 	// 4. Let block be arrayBuffer’s [[ArrayBufferData]] internal slot.
 
-	var elementSize = tableTAO.size['$' + type]; // step 5
+	var elementSize = tableTAO.size[/** @type {`$${typeof type}`} */ ('$' + type)]; // step 5
 
 	// 6. If isLittleEndian is not present, set isLittleEndian to either true or false. The choice is implementation dependent and should be the alternative that is most efficient for the implementation. An implementation must use the same value each time this step is executed and the same value must be used for the corresponding step in the GetValueFromBuffer abstract operation.
 	var isLittleEndian = arguments.length > 6 ? arguments[6] : defaultEndianness === 'little'; // step 6

@@ -16,8 +16,10 @@ var twoSixtyFour = $BigInt && (BigInt($pow(2, 32)) * BigInt($pow(2, 32)));
 
 // https://262.ecma-international.org/11.0/#sec-tobiguint64
 
+/** @type {(argument: unknown) => bigint} */
 module.exports = function ToBigUint64(argument) {
 	var n = ToBigInt(argument);
-	var int64bit = modBigInt(BigIntRemainder, n, twoSixtyFour);
+	// eslint-disable-next-line no-extra-parens
+	var int64bit = modBigInt(BigIntRemainder, n, /** @type {NonNullable<typeof twoSixtyFour>} */ (twoSixtyFour));
 	return int64bit;
 };

@@ -7,6 +7,7 @@ var $bigIntValueOf = callBound('BigInt.prototype.valueOf', true);
 
 // https://262.ecma-international.org/15.0/#sec-thisbigintvalue
 
+/** @type {(value: bigint | BigInt) => bigint} */
 module.exports = function ThisBigIntValue(value) {
 	if (typeof value === 'bigint') {
 		return value;

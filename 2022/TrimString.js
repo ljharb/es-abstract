@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var trimStart = require('string.prototype.trimstart');
@@ -10,6 +12,7 @@ var ToString = require('./ToString');
 
 // https://262.ecma-international.org/10.0/#sec-trimstring
 
+/** @type {(string: {}, where: 'start' | 'end' | 'start+end') => string})} */
 module.exports = function TrimString(string, where) {
 	var str = RequireObjectCoercible(string);
 	var S = ToString(str);

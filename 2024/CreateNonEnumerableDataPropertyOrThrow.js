@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -9,6 +11,7 @@ var isPropertyKey = require('../helpers/isPropertyKey');
 
 // https://262.ecma-international.org/13.0/#sec-createnonenumerabledatapropertyorthrow
 
+/** @type {(O: Record<PropertyKey, unknown>, P: string | symbol, V: unknown) => ReturnType<DefinePropertyOrThrow>} */
 module.exports = function CreateNonEnumerableDataPropertyOrThrow(O, P, V) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');

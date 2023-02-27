@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
@@ -26,6 +28,7 @@ var tableTAO = require('./tables/typed-array-objects');
 
 // https://262.ecma-international.org/11.0/#sec-rawbytestonumeric
 
+/** @type {(type: keyof TypeToSizes, rawBytes: import('../types').ByteValue[], isLittleEndian: boolean) => number | bigint} */
 module.exports = function RawBytesToNumeric(type, rawBytes, isLittleEndian) {
 	if (typeof type !== 'string' || !hasOwnProperty(tableTAO.size, '$' + type)) {
 		throw new $TypeError('Assertion failed: `type` must be a TypedArray element type');

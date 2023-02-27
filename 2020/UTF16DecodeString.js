@@ -6,10 +6,12 @@ var CodePointAt = require('./CodePointAt');
 
 // https://262.ecma-international.org/11.0/#sec-utf16decodestring
 
+/** @type {(string: string) => string[]} */
 module.exports = function UTF16DecodeString(string) {
 	if (typeof string !== 'string') {
 		throw new $TypeError('Assertion failed: `string` must be a String');
 	}
+	/** @type {string[]} */
 	var codePoints = [];
 	var size = string.length;
 	var position = 0;

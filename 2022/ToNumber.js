@@ -11,6 +11,7 @@ var StringToNumber = require('./StringToNumber');
 
 // https://262.ecma-international.org/13.0/#sec-tonumber
 
+/** @type {(argument: unknown) => number} */
 module.exports = function ToNumber(argument) {
 	var value = isPrimitive(argument) ? argument : ToPrimitive(argument, $Number);
 	if (typeof value === 'symbol') {
@@ -22,5 +23,6 @@ module.exports = function ToNumber(argument) {
 	if (typeof value === 'string') {
 		return StringToNumber(value);
 	}
+	// @ts-expect-error +null and +undefined are perfectly valid
 	return +value;
 };

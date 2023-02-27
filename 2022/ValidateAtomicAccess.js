@@ -12,6 +12,7 @@ var typedArrayLength = require('typed-array-length');
 
 // https://262.ecma-international.org/13.0/#sec-validateatomicaccess
 
+/** @type {(typedArray: import('../types').TypedArray, requestIndex: import('../types').arrayLength) => import('../types').arrayLength} */
 module.exports = function ValidateAtomicAccess(typedArray, requestIndex) {
 	if (!isTypedArray(typedArray)) {
 		throw new $TypeError('Assertion failed: `typedArray` must be a TypedArray');

@@ -9,6 +9,7 @@ var v = require('es-value-fixtures');
 
 test('isByteValue', function (t) {
 	forEach([].concat(
+		// @ts-expect-error TS sucks with concat
 		v.notNonNegativeIntegers,
 		-1,
 		-42,

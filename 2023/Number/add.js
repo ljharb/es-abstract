@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -6,6 +8,7 @@ var isNaN = require('math-intrinsics/isNaN');
 
 // https://262.ecma-international.org/12.0/#sec-numeric-types-number-add
 
+/** @type {(x: number, y: number) => number} */
 module.exports = function NumberAdd(x, y) {
 	if (typeof x !== 'number' || typeof y !== 'number') {
 		throw new $TypeError('Assertion failed: `x` and `y` arguments must be Numbers');

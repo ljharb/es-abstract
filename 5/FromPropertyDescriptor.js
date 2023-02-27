@@ -9,6 +9,7 @@ var isPropertyDescriptor = require('../helpers/records/property-descriptor');
 
 // https://262.ecma-international.org/5.1/#sec-8.10.4
 
+/** @type {import('../types').FromPropertyDescriptor} */
 module.exports = function FromPropertyDescriptor(Desc) {
 	if (typeof Desc === 'undefined') {
 		return Desc;

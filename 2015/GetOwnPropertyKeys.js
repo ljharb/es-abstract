@@ -13,6 +13,7 @@ var keys = require('object-keys');
 
 // https://262.ecma-international.org/6.0/#sec-getownpropertykeys
 
+/** @type {(O: object, Type: 'Symbol' | 'String') => symbol[] | string[]} */
 module.exports = function GetOwnPropertyKeys(O, Type) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -7,6 +9,7 @@ var Type = require('./Type');
 
 // https://262.ecma-international.org/14.0/#sec-samevaluenonnumeric
 
+/** @type {(x: import('../types').NonNumeric | bigint, y: import('../types').NonNumeric | bigint) => boolean} */
 module.exports = function SameValueNonNumber(x, y) {
 	if (typeof x === 'number') {
 		throw new $TypeError('Assertion failed: SameValueNonNumber does not accept Number values');
