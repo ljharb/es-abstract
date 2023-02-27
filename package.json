@@ -91,7 +91,7 @@
 	},
 	"devDependencies": {
 		"@ljharb/eslint-config": "^21.0.1",
-		"array.from": "^1.1.3",
+		"array.from": "^1.1.4",
 		"array.prototype.filter": "^1.0.2",
 		"array.prototype.flatmap": "^1.3.1",
 		"array.prototype.indexof": "^1.0.5",
