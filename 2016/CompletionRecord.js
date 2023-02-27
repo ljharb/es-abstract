@@ -6,7 +6,16 @@ var SLOT = require('internal-slot');
 
 // https://262.ecma-international.org/7.0/#sec-completion-record-specification-type
 
-var CompletionRecord = function CompletionRecord(type, value) {
+/**
+ * @constructor
+ * @template {import('../types').CompletionRecordType} T
+ * @param {T} type
+ * @template {unknown} V
+ * @param {V} value
+*/
+// @ts-expect-error this is a constructor, most paths shouldn't return a value
+// eslint-disable-next-line func-style
+function CompletionRecord(type, value) {
 	if (!(this instanceof CompletionRecord)) {
 		return new CompletionRecord(type, value);
 	}
@@ -16,16 +25,19 @@ var CompletionRecord = function CompletionRecord(type, value) {
 	SLOT.set(this, '[[Type]]', type);
 	SLOT.set(this, '[[Value]]', value);
 	// [[Target]] slot?
-};
+}
 
+/** @type {() => T} */
 CompletionRecord.prototype.type = function Type() {
 	return SLOT.get(this, '[[Type]]');
 };
 
+/** @type {() => V} */
 CompletionRecord.prototype.value = function Value() {
 	return SLOT.get(this, '[[Value]]');
 };
 
+/** @type {() => T | never} */
 CompletionRecord.prototype['?'] = function ReturnIfAbrupt() {
 	var type = SLOT.get(this, '[[Type]]');
 	var value = SLOT.get(this, '[[Value]]');
@@ -36,6 +48,7 @@ CompletionRecord.prototype['?'] = function ReturnIfAbrupt() {
 	return value;
 };
 
+/** @type {() => T | never} */
 CompletionRecord.prototype['!'] = function assert() {
 	var type = SLOT.get(this, '[[Type]]');
 

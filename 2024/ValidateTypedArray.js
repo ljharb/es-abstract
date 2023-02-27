@@ -10,6 +10,7 @@ var isTypedArray = require('is-typed-array');
 
 // https://262.ecma-international.org/15.0/#sec-validatetypedarray
 
+/** @type {(O: import('../types').TypedArray, order: 'SEQ-CST' | 'UNORDERED') => import('../types').TypedArrayWithBufferWitnessRecord} */
 module.exports = function ValidateTypedArray(O, order) {
 	if (order !== 'SEQ-CST' && order !== 'UNORDERED') {
 		throw new $TypeError('Assertion failed: `order` must be ~SEQ-CST~ or ~UNORDERED~');

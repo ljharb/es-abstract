@@ -7,6 +7,7 @@ var $SymbolValueOf = callBound('Symbol.prototype.valueOf', true);
 
 // https://262.ecma-international.org/9.0/#sec-thissymbolvalue
 
+/** @type {(value: symbol | Symbol) => symbol} */
 module.exports = function thisSymbolValue(value) {
 	if (typeof value === 'symbol') {
 		return value;

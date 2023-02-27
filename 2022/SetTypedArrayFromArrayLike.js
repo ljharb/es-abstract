@@ -10,7 +10,7 @@ var typedArrayByteOffset = require('typed-array-byte-offset');
 var typedArrayLength = require('typed-array-length');
 var whichTypedArray = require('which-typed-array');
 
-var Get = require('./Get');
+// var Get = require('./Get');
 var IsBigIntElementType = require('./IsBigIntElementType');
 var IsDetachedBuffer = require('./IsDetachedBuffer');
 var LengthOfArrayLike = require('./LengthOfArrayLike');
@@ -18,12 +18,13 @@ var SetValueInBuffer = require('./SetValueInBuffer');
 var ToBigInt = require('./ToBigInt');
 var ToNumber = require('./ToNumber');
 var ToObject = require('./ToObject');
-var ToString = require('./ToString');
+// var ToString = require('./ToString');
 var TypedArrayElementSize = require('./TypedArrayElementSize');
 var TypedArrayElementType = require('./TypedArrayElementType');
 
 // https://262.ecma-international.org/13.0/#sec-settypedarrayfromarraylike
 
+/** @type {import('../types').SetTypedArrayFromArrayLike} */
 module.exports = function SetTypedArrayFromArrayLike(target, targetOffset, source) {
 	var whichTarget = whichTypedArray(target);
 	if (!whichTarget) {
@@ -71,9 +72,9 @@ module.exports = function SetTypedArrayFromArrayLike(target, targetOffset, sourc
 	var limit = targetByteIndex + (targetElementSize * srcLength); // step 13
 
 	while (targetByteIndex < limit) { // step 14
-		var Pk = ToString(k); // step 14.a
+		// var Pk = ToString(k); // step 14.a
 
-		var value = Get(src, Pk); // step 14.b
+		var value = src[k]; // Get(src, Pk); // step 14.b
 
 		if (IsBigIntElementType(targetType)) {
 			value = ToBigInt(value); // step 14.c

@@ -8,6 +8,7 @@ var $strSlice = callBound('String.prototype.slice');
 
 // https://262.ecma-international.org/15.0/#sec-stringpad
 
+/** @type {(S: string, maxLength: import('../types').nonNegativeInteger, fillString: string, placement: 'start' | 'end' | 'START' | 'END') => string} */
 module.exports = function StringPad(S, maxLength, fillString, placement) {
 	if (typeof S !== 'string') {
 		throw new $TypeError('Assertion failed: `S` must be a String');

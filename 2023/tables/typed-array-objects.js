@@ -1,10 +1,12 @@
+// @ts-nocheck
+
 'use strict';
 
 // https://262.ecma-international.org/11.0/#table-the-typedarray-constructors
 
 module.exports = {
 	__proto__: null,
-	name: {
+	name: /** @type {const} */ ({
 		__proto__: null,
 		$Int8Array: 'Int8',
 		$Uint8Array: 'Uint8',
@@ -17,8 +19,8 @@ module.exports = {
 		$BigUint64Array: 'BigUint64',
 		$Float32Array: 'Float32',
 		$Float64Array: 'Float64'
-	},
-	size: {
+	}),
+	size: /** @type {const} */ ({
 		__proto__: null,
 		$Int8: 1,
 		$Uint8: 1,
@@ -31,5 +33,5 @@ module.exports = {
 		$BigUint64: 8,
 		$Float32: 4,
 		$Float64: 8
-	}
+	})
 };

@@ -13,6 +13,7 @@ var ES = {
 };
 
 test('isFullyPopulatedPropertyDescriptor', function (t) {
+	// @ts-expect-error
 	t.equal(isFullyPopulatedPropertyDescriptor(ES), false, '"no args" is not a fully populated property descriptor');
 	forEach(v.primitives, function (primitive) {
 		t.equal(isFullyPopulatedPropertyDescriptor(ES, primitive), false, inspect(primitive) + ' is not a fully populated property descriptor');

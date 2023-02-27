@@ -1,5 +1,6 @@
 'use strict';
 
+/** @type {<T>(t: import('tape').Test, iterator: Iterator<T>, expected: unknown[]) => void} */
 module.exports = function testIterator(t, iterator, expected) {
 	var resultCount = 0;
 	var result;

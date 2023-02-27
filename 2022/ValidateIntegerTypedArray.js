@@ -12,6 +12,7 @@ var typedArrayBuffer = require('typed-array-buffer');
 
 // https://262.ecma-international.org/13.0/#sec-validateintegertypedarray
 
+/** @type {(typedArray: import('../types').TypedArray, waitable?: boolean) => ArrayBuffer} */
 module.exports = function ValidateIntegerTypedArray(typedArray) {
 	var waitable = arguments.length > 1 ? arguments[1] : false; // step 1
 

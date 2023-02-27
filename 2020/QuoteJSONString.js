@@ -28,6 +28,7 @@ var escapes = {
 	'\u005c': '\\\\'
 };
 
+/** @type {(value: string) => string} */
 module.exports = function QuoteJSONString(value) {
 	if (typeof value !== 'string') {
 		throw new $TypeError('Assertion failed: `value` must be a String');

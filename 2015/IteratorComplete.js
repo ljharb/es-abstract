@@ -8,6 +8,7 @@ var ToBoolean = require('./ToBoolean');
 
 // https://262.ecma-international.org/6.0/#sec-iteratorcomplete
 
+/** @type {<T>(iterResult: Partial<IteratorResult<T>>) => boolean} */
 module.exports = function IteratorComplete(iterResult) {
 	if (!isObject(iterResult)) {
 		throw new $TypeError('Assertion failed: Type(iterResult) is not Object');

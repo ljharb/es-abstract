@@ -10,6 +10,7 @@ var isNaN = require('math-intrinsics/isNaN');
 
 // https://262.ecma-international.org/14.0/#sec-parsehexoctet
 
+/** @type {(string: string, position: number) => number | [error: SyntaxError]} */
 module.exports = function ParseHexOctet(string, position) {
 	if (typeof string !== 'string') {
 		throw new $TypeError('Assertion failed: `string` must be a String');

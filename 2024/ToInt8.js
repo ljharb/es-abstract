@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var modulo = require('./modulo');
@@ -8,6 +10,7 @@ var isFinite = require('math-intrinsics/isFinite');
 
 // https://262.ecma-international.org/14.0/#sec-toint8
 
+/** @type {(argument: unknown) => import('../types').integer} */
 module.exports = function ToInt8(argument) {
 	var number = ToNumber(argument);
 	if (!isFinite(number) || number === 0) {

@@ -6,6 +6,7 @@ var isRegExpRecord = require('../helpers/records/regexp-record');
 
 // https://262.ecma-international.org/15.0/#sec-runtime-semantics-haseitherunicodeflag-abstract-operation
 
+/** @type {(rer: import('../types').RegExpRecord) => boolean} */
 module.exports = function HasEitherUnicodeFlag(rer) {
 	if (!isRegExpRecord(rer)) {
 		throw new $TypeError('Assertion failed: `rer` must be a RegExp Record');

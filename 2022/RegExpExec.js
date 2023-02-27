@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -5,11 +7,12 @@ var isObject = require('es-object-atoms/isObject');
 var regexExec = require('call-bound')('RegExp.prototype.exec');
 
 var Call = require('./Call');
-var Get = require('./Get');
+// var Get = require('./Get');
 var IsCallable = require('./IsCallable');
 
 // https://262.ecma-international.org/6.0/#sec-regexpexec
 
+/** @type {(R: RegExp & { exec?: unknown }, S: string) => ReturnType<typeof RegExp.prototype.exec>} */
 module.exports = function RegExpExec(R, S) {
 	if (!isObject(R)) {
 		throw new $TypeError('Assertion failed: `R` must be an Object');
@@ -17,7 +20,7 @@ module.exports = function RegExpExec(R, S) {
 	if (typeof S !== 'string') {
 		throw new $TypeError('Assertion failed: `S` must be a String');
 	}
-	var exec = Get(R, 'exec');
+	var exec = R.exec; // Get(R, 'exec');
 	if (IsCallable(exec)) {
 		var result = Call(exec, R, [S]);
 		if (result === null || isObject(result)) {

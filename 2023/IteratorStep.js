@@ -9,6 +9,7 @@ var isIteratorRecord = require('../helpers/records/iterator-record-2023');
 
 // https://262.ecma-international.org/14.0/#sec-iteratorstep
 
+/** @type {<T>(iterator: import('../types').IteratorRecord2023<T>) => false | Partial<IteratorResult<T>>} */
 module.exports = function IteratorStep(iteratorRecord) {
 	if (!isIteratorRecord(iteratorRecord)) {
 		throw new $TypeError('Assertion failed: `iteratorRecord` must be an Iterator Record'); // step 1

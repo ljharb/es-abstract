@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -8,6 +10,7 @@ var truncate = require('../truncate');
 
 // https://262.ecma-international.org/14.0/#sec-numeric-types-number-remainder
 
+/** @type {(n: number, d: number) => number} */
 module.exports = function NumberRemainder(n, d) {
 	if (typeof n !== 'number' || typeof d !== 'number') {
 		throw new $TypeError('Assertion failed: `n` and `d` arguments must be Numbers');

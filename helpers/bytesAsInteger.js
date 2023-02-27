@@ -7,12 +7,15 @@ var $pow = require('math-intrinsics/pow');
 var $Number = GetIntrinsic('%Number%');
 var $BigInt = GetIntrinsic('%BigInt%', true);
 
+/** @type {import('../types').BytesAsInteger} */
 module.exports = function bytesAsInteger(rawBytes, elementSize, isUnsigned, isBigInt) {
-	var Z = isBigInt ? $BigInt : $Number;
+
+	var Z = isBigInt ? /** @type {NonNullable<typeof $BigInt>} */ ($BigInt) : $Number;
 
 	// this is common to both branches
 	var intValue = Z(0);
 	for (var i = 0; i < rawBytes.length; i++) {
+		// @ts-expect-error the types of `intValue` and the return value of `Z` are the same
 		intValue += Z(rawBytes[i] * $pow(2, 8 * i));
 	}
 	/*
@@ -24,6 +27,7 @@ module.exports = function bytesAsInteger(rawBytes, elementSize, isUnsigned, isBi
 		var bitLength = elementSize * 8;
 
 		if (rawBytes[elementSize - 1] & 0x80) {
+			// @ts-expect-error the types of `intValue` and the return value of `Z` are the same
 			intValue -= Z($pow(2, bitLength));
 		}
 	}

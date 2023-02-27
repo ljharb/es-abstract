@@ -6,6 +6,7 @@ var isNaN = require('../../helpers/isNaN');
 
 // https://262.ecma-international.org/11.0/#sec-numeric-types-number-unaryMinus
 
+/** @type {(x: number) => number} */
 module.exports = function NumberUnaryMinus(x) {
 	if (typeof x !== 'number') {
 		throw new $TypeError('Assertion failed: `x` argument must be a Number');

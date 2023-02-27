@@ -8,6 +8,7 @@ var IsConstructor = require('./IsConstructor');
 
 // https://262.ecma-international.org/12.0/#sec-getpromiseresolve
 
+/** @type {(promiseConstructor: Partial<PromiseConstructor> & Record<string | symbol, unknown>) => typeof Promise.resolve} */
 module.exports = function GetPromiseResolve(promiseConstructor) {
 	if (!IsConstructor(promiseConstructor)) {
 		throw new $TypeError('Assertion failed: `promiseConstructor` must be a constructor');

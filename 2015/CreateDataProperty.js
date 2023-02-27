@@ -8,6 +8,7 @@ var OrdinaryDefineOwnProperty = require('./OrdinaryDefineOwnProperty');
 
 // https://262.ecma-international.org/6.0/#sec-createdataproperty
 
+/** @type {(O: Record<string | symbol, unknown> | unknown[], P: string | symbol, V: unknown) => ReturnType<OrdinaryDefineOwnProperty>} */
 module.exports = function CreateDataProperty(O, P, V) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');

@@ -12,6 +12,7 @@ var isSharedArrayBuffer = require('is-shared-array-buffer');
 
 // https://262.ecma-international.org/15.0/#sec-isfixedlengtharraybuffer
 
+/** @type {(arrayBuffer: ArrayBuffer | SharedArrayBuffer) => boolean} */
 module.exports = function IsFixedLengthArrayBuffer(arrayBuffer) {
 	var isAB = isArrayBuffer(arrayBuffer);
 	var isSAB = isSharedArrayBuffer(arrayBuffer);

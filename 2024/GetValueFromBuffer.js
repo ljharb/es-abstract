@@ -19,13 +19,16 @@ var safeConcat = require('safe-array-concat');
 
 var tableTAO = require('./tables/typed-array-objects');
 
+/** @typedef {import('../types').WithoutPrefix<Exclude<keyof typeof tableTAO.size, '__proto__'>, '$'>} TypedArrayType */
+
 var defaultEndianness = require('../helpers/defaultEndianness');
 
 // https://262.ecma-international.org/15.0/#sec-getvaluefrombuffer
 
+/** @type {(arrayBuffer: ArrayBuffer, byteIndex: import('../types').integer, type: TypedArrayType, isTypedArray: boolean, order: 'SEQ-CST' | 'UNORDERED', isLittleEndian?: boolean) => number | bigint} */
 module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type, isTypedArray, order) {
 	var isSAB = isSharedArrayBuffer(arrayBuffer);
-	if (!isArrayBuffer(arrayBuffer) && !isSAB) {
+	if ((!isArrayBuffer(arrayBuffer) && !isSAB) || !$Uint8Array) {
 		throw new $TypeError('Assertion failed: `arrayBuffer` must be an ArrayBuffer or a SharedArrayBuffer');
 	}
 
@@ -33,7 +36,8 @@ module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type, isTyp
 		throw new $TypeError('Assertion failed: `byteIndex` must be an integer');
 	}
 
-	if (typeof type !== 'string' || typeof tableTAO.size['$' + type] !== 'number') {
+	// eslint-disable-next-line no-extra-parens
+	if (typeof type !== 'string' || typeof tableTAO.size[/** @type {`$${typeof type}`} */ ('$' + type)] !== 'number') {
 		throw new $TypeError('Assertion failed: `type` must be a Typed Array element type');
 	}
 
@@ -61,7 +65,8 @@ module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type, isTyp
 
 	// 4. Let block be arrayBuffer.[[ArrayBufferData]].
 
-	var elementSize = tableTAO.size['$' + type]; // step 5
+	// eslint-disable-next-line no-extra-parens
+	var elementSize = tableTAO.size[/** @type {`$${typeof type}`} */ ('$' + type)]; // step 5
 	if (!elementSize) {
 		throw new $TypeError('Assertion failed: `type` must be one of "INT8", "UINT8", "UINT8C", "INT16", "UINT16", "INT32", "UINT32", "BIGINT64", "BIGUINT64", "FLOAT32", or "FLOAT64"');
 	}

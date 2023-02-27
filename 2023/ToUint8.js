@@ -8,6 +8,7 @@ var truncate = require('./truncate');
 
 // https://262.ecma-international.org/14.0/#sec-touint8
 
+/** @type {(argument: unknown) => import('../types').integer} */
 module.exports = function ToUint8(argument) {
 	var number = ToNumber(argument);
 	if (!isFinite(number) || number === 0) {

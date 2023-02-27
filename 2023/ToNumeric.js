@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
@@ -11,6 +13,7 @@ var ToNumber = require('./ToNumber');
 
 // https://262.ecma-international.org/11.0/#sec-tonumeric
 
+/** @type {(argument: unknown) => number | bigint} */
 module.exports = function ToNumeric(argument) {
 	var primValue = isPrimitive(argument) ? argument : ToPrimitive(argument, $Number);
 	if (typeof primValue === 'bigint') {

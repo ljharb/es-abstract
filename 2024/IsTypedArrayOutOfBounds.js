@@ -14,6 +14,7 @@ var typedArrayLength = require('typed-array-length');
 
 // https://262.ecma-international.org/15.0/#sec-istypedarrayoutofbounds
 
+/** @type {(taRecord: import('../types').TypedArrayWithBufferWitnessRecord) => boolean} */
 module.exports = function IsTypedArrayOutOfBounds(taRecord) {
 	if (!isTypedArrayWithBufferWitnessRecord(taRecord)) {
 		throw new $TypeError('Assertion failed: `taRecord` must be a TypedArray With Buffer Witness Record');

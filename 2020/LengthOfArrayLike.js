@@ -8,6 +8,7 @@ var ToLength = require('./ToLength');
 
 // https://262.ecma-international.org/11.0/#sec-lengthofarraylike
 
+/** @type {(obj: { length?: unknown }) => ReturnType<ToLength>} */
 module.exports = function LengthOfArrayLike(obj) {
 	if (!isObject(obj)) {
 		throw new $TypeError('Assertion failed: `obj` must be an Object');

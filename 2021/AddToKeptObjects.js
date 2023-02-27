@@ -9,10 +9,11 @@ var ClearKeptObjects = require('./ClearKeptObjects');
 
 // https://262.ecma-international.org/12.0/#sec-addtokeptobjects
 
+/** @type {(object: object) => void} */
 module.exports = function AddToKeptObjects(object) {
 	if (!isObject(object)) {
 		throw new $TypeError('Assertion failed: `object` must be an Object');
 	}
-	var arr = SLOT.get(ClearKeptObjects, '[[es-abstract internal: KeptAlive]]');
+	var arr = /** @type {object[]} */ (SLOT.get(ClearKeptObjects, '[[es-abstract internal: KeptAlive]]'));
 	arr[arr.length] = object;
 };

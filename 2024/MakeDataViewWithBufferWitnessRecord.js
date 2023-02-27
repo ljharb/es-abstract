@@ -10,6 +10,7 @@ var isDataView = require('is-data-view');
 
 // https://262.ecma-international.org/15.0/#sec-makedataviewwithbufferwitnessrecord
 
+/** @type {(obj: DataView, order: 'SEQ-CST' | 'UNORDERED') => import('../types').DataViewWithBufferWitnessRecord} */
 module.exports = function MakeDataViewWithBufferWitnessRecord(obj, order) {
 	if (!isDataView(obj)) {
 		throw new $TypeError('MakeDataViewWithBufferWitnessRecord called with non-DataView');
@@ -20,7 +21,7 @@ module.exports = function MakeDataViewWithBufferWitnessRecord(obj, order) {
 
 	var buffer = dataViewBuffer(obj); // step 1
 
-	var byteLength = IsDetachedBuffer(buffer) ? 'DETACHED' : ArrayBufferByteLength(buffer, order); // steps 2 - 3
+	var byteLength = IsDetachedBuffer(buffer) ? /** @type {const} */ ('DETACHED') : ArrayBufferByteLength(buffer, order); // steps 2 - 3
 
 	return { '[[Object]]': obj, '[[CachedBufferByteLength]]': byteLength }; // step 4
 };

@@ -8,6 +8,7 @@ var ToString = require('./ToString');
 
 // https://262.ecma-international.org/15.0/#sec-stringpaddingbuiltinsimpl
 
+/** @type {(O: {}, maxLength: unknown, fillString: unknown, placement: 'start' | 'end' | 'START' | 'END') => ReturnType<typeof StringPad>} */
 module.exports = function StringPaddingBuiltinsImpl(O, maxLength, fillString, placement) {
 	if (placement !== 'start' && placement !== 'end' && placement !== 'START' && placement !== 'END') {
 		throw new $TypeError('Assertion failed: `placement` must be ~START~ or ~END~');

@@ -11,6 +11,7 @@ var IsExtensible = require('./IsExtensible');
 
 // https://262.ecma-international.org/6.0/#sec-setfunctionname
 
+/** @type {(F: (...args: unknown[]) => unknown, name: string | symbol, prefix?: string) => ReturnType<DefinePropertyOrThrow>} */
 module.exports = function SetFunctionName(F, name) {
 	if (typeof F !== 'function') {
 		throw new $TypeError('Assertion failed: `F` must be a function');
@@ -31,7 +32,8 @@ module.exports = function SetFunctionName(F, name) {
 		// eslint-disable-next-line no-param-reassign
 		name = prefix + ' ' + name;
 	}
-	return DefinePropertyOrThrow(F, 'name', {
+	// eslint-disable-next-line no-extra-parens
+	return DefinePropertyOrThrow(/** @type {Parameters<typeof DefinePropertyOrThrow>[0]} */ (/** @type {unknown} */ (F)), 'name', {
 		'[[Value]]': name,
 		'[[Writable]]': false,
 		'[[Enumerable]]': false,

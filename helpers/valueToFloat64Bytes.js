@@ -22,6 +22,7 @@ var elevenZeroes = '00000000000';
 var fiftyOneZeroes = elevenZeroes + elevenZeroes + elevenZeroes + elevenZeroes + '0000000';
 
 // IEEE 754-1985
+/** @type {(value: number, isLittleEndian: boolean) => import('../types').ByteValue[]} */
 module.exports = function valueToFloat64Bytes(value, isLittleEndian) {
 	var signBit = value < 0 || isNegativeZero(value) ? '1' : '0';
 	var exponentBits;
@@ -73,10 +74,12 @@ module.exports = function valueToFloat64Bytes(value, isLittleEndian) {
 	}
 
 	var bits = signBit + exponentBits + significandBits;
+	/** @type {import('../types').ByteValue[]} */
 	var rawBytes = [];
 	for (var i = 0; i < 8; i++) {
 		var targetIndex = isLittleEndian ? 8 - i - 1 : i;
-		rawBytes[targetIndex] = $parseInt($strSlice(bits, i * 8, (i + 1) * 8), 2);
+		// eslint-disable-next-line no-extra-parens
+		rawBytes[targetIndex] = /** @type {import('../types').ByteValue} */ ($parseInt($strSlice(bits, i * 8, (i + 1) * 8), 2));
 	}
 
 	return rawBytes;

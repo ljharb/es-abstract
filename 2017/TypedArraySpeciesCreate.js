@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $SyntaxError = require('es-errors/syntax');
@@ -14,6 +16,7 @@ var getConstructor = require('../helpers/typedArrayConstructors');
 
 // https://262.ecma-international.org/7.0/#typedarray-species-create
 
+/** @type {(exemplar: import('../types').TypedArray, argumentList?: unknown[]) => import('../types').TypedArray} */
 module.exports = function TypedArraySpeciesCreate(exemplar, argumentList) {
 	if (availableTypedArrays.length === 0) {
 		throw new $SyntaxError('Assertion failed: Typed Arrays are not supported in this environment');
@@ -31,7 +34,9 @@ module.exports = function TypedArraySpeciesCreate(exemplar, argumentList) {
 	if (typeof defaultConstructor !== 'function') {
 		throw new $SyntaxError('Assertion failed: `constructor` of `exemplar` (' + kind + ') must exist. Please report this!');
 	}
+
+	// @ts-expect-error TODO, not sure why this errors
 	var constructor = SpeciesConstructor(exemplar, defaultConstructor); // step 3
 
-	return TypedArrayCreate(constructor, argumentList); // step 4
+	return TypedArrayCreate(/** @type {import('../types').TypedArrayConstructor} */ (/** @type {unknown} */ (constructor)), argumentList); // step 4
 };

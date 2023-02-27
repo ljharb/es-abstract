@@ -32,7 +32,8 @@ var $AsyncFromSyncIteratorPrototype = GetIntrinsic('%AsyncFromSyncIteratorProtot
 		var argsLength = arguments.length;
 
 		return new $Promise(function (resolve) { // step 3
-			var syncIteratorRecord = SLOT.get(O, '[[SyncIteratorRecord]]'); // step 4
+
+			var syncIteratorRecord = /** @type {import('../types').IteratorRecord} */ (SLOT.get(O, '[[SyncIteratorRecord]]')); // step 4
 			var result;
 			if (argsLength > 0) {
 				result = IteratorNext(syncIteratorRecord, value); // step 5.a
@@ -55,7 +56,8 @@ var $AsyncFromSyncIteratorPrototype = GetIntrinsic('%AsyncFromSyncIteratorProtot
 		var value = valueIsPresent ? arguments[0] : void undefined;
 
 		return new $Promise(function (resolve, reject) { // step 3
-			var syncIterator = SLOT.get(O, '[[SyncIteratorRecord]]')['[[Iterator]]']; // step 4
+
+			var syncIterator = /** @type {import('../types').IteratorRecord} */ (SLOT.get(O, '[[SyncIteratorRecord]]'))['[[Iterator]]']; // step 4
 			var iteratorReturn = GetMethod(syncIterator, 'return'); // step 5
 
 			if (typeof iteratorReturn === 'undefined') { // step 7
@@ -90,7 +92,8 @@ var $AsyncFromSyncIteratorPrototype = GetIntrinsic('%AsyncFromSyncIteratorProtot
 		var value = valueIsPresent ? arguments[0] : void undefined;
 
 		return new $Promise(function (resolve, reject) { // step 3
-			var syncIterator = SLOT.get(O, '[[SyncIteratorRecord]]')['[[Iterator]]']; // step 4
+
+			var syncIterator = /** @type {import('../types').IteratorRecord} */ (SLOT.get(O, '[[SyncIteratorRecord]]'))['[[Iterator]]']; // step 4
 
 			var throwMethod = GetMethod(syncIterator, 'throw'); // step 5
 
@@ -117,6 +120,7 @@ var $AsyncFromSyncIteratorPrototype = GetIntrinsic('%AsyncFromSyncIteratorProtot
 
 // https://262.ecma-international.org/15.0/#sec-createasyncfromsynciterator
 
+/** @type {<T>(syncIteratorRecord: import('../types').IteratorRecord<T>) => import('../types').AsyncIteratorRecord<T>} */
 module.exports = function CreateAsyncFromSyncIterator(syncIteratorRecord) {
 	if (!isIteratorRecord(syncIteratorRecord)) {
 		throw new $TypeError('Assertion failed: `syncIteratorRecord` must be an Iterator Record');

@@ -1,5 +1,6 @@
 'use strict';
 
+/** @type {(x: unknown, y: unknown) => boolean} */
 module.exports = function isSameType(x, y) {
 	if (x === y) {
 		return true;

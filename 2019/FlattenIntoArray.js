@@ -14,7 +14,10 @@ var ToString = require('./ToString');
 
 // https://262.ecma-international.org/10.0/#sec-flattenintoarray
 
+/** @type {<T>(target: T[], source: T[], sourceLen: import('../types').arrayLength, start: import('../types').arrayLength, depth: import('../types').arrayLength, mapperFunction?: import('../types').Func, thisArg?: unknown) => import('../types').arrayLength} */
 module.exports = function FlattenIntoArray(target, source, sourceLen, start, depth) {
+	/** @typedef {typeof target[number]} T */
+
 	var mapperFunction;
 	if (arguments.length > 5) {
 		mapperFunction = arguments[5];
@@ -26,7 +29,7 @@ module.exports = function FlattenIntoArray(target, source, sourceLen, start, dep
 		var P = ToString(sourceIndex);
 		var exists = HasProperty(source, P);
 		if (exists === true) {
-			var element = Get(source, P);
+			var element = source[+P]; // Get(source, P);
 			if (typeof mapperFunction !== 'undefined') {
 				if (arguments.length <= 6) {
 					throw new $TypeError('Assertion failed: thisArg is required when mapperFunction is provided');
@@ -38,8 +41,8 @@ module.exports = function FlattenIntoArray(target, source, sourceLen, start, dep
 				shouldFlatten = IsArray(element);
 			}
 			if (shouldFlatten) {
-				var elementLen = ToLength(Get(element, 'length'));
-				targetIndex = FlattenIntoArray(target, element, elementLen, targetIndex, depth - 1);
+				var elementLen = ToLength(Get(/** @type {T[]} */ (element), 'length'));
+				targetIndex = FlattenIntoArray(target, /** @type {T[]} */ (element), elementLen, targetIndex, depth - 1);
 			} else {
 				if (targetIndex >= MAX_SAFE_INTEGER) {
 					throw new $TypeError('index too large');

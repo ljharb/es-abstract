@@ -9,11 +9,12 @@ var keys = require('object-keys');
 
 var aoMap = require('./aoMap.json');
 
+/** @type {(test: import('tape'), ES: Record<keyof typeof map | string, unknown>, edition: import('../../types').integer) => void} */
 module.exports = function runManifestTest(test, ES, edition) {
 	test('ES' + edition + ' manifest', { skip: !fs.readdirSync }, function (t) {
 		var files = filter(
 			fs.readdirSync(path.join(__dirname, '../../' + edition), 'utf-8'),
-			function rejectDotFile(file) { return file[0] !== '.' && file !== 'tables'; }
+			function (file) { return file[0] !== '.' && file !== 'tables'; }
 		);
 		forEach(files, function (file) {
 			var name = path.basename(file, path.extname(file));

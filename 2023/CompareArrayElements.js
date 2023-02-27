@@ -11,6 +11,7 @@ var isNaN = require('math-intrinsics/isNaN');
 
 // https://262.ecma-international.org/14.0/#sec-comparearrayelements
 
+/** @type {(x: unknown, y: unknown, compareFn: ((x: unknown, y: unknown) => unknown) | undefined) => number} */
 module.exports = function CompareArrayElements(x, y, compareFn) {
 	if (typeof compareFn !== 'function' && typeof compareFn !== 'undefined') {
 		throw new $TypeError('Assertion failed: `compareFn` must be a function or undefined');

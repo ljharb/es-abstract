@@ -9,6 +9,7 @@ var isPropertyDescriptor = require('./IsPropertyDescriptor');
 
 // https://262.ecma-international.org/5.1/#sec-8.10.3
 
+/** @type {<T>(Desc: undefined | import('../types').Descriptor<T>) => Desc is import('../types').GenericDescriptor} */
 module.exports = function IsGenericDescriptor(Desc) {
 	if (typeof Desc === 'undefined') {
 		return false;

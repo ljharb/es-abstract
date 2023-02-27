@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -7,6 +9,7 @@ var fromPropertyDescriptor = require('../helpers/fromPropertyDescriptor');
 
 // https://262.ecma-international.org/6.0/#sec-frompropertydescriptor
 
+/** @type {import('../types').FromPropertyDescriptor} */
 module.exports = function FromPropertyDescriptor(Desc) {
 	if (typeof Desc !== 'undefined' && !isPropertyDescriptor(Desc)) {
 		throw new $TypeError('Assertion failed: `Desc` must be a Property Descriptor');

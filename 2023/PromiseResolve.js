@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
@@ -9,6 +11,7 @@ var $PromiseResolve = $resolve && callBind($resolve);
 
 // https://262.ecma-international.org/9.0/#sec-promise-resolve
 
+/** @type {(C: PromiseConstructor, x: unknown) => Promise<unknown>} */
 module.exports = function PromiseResolve(C, x) {
 	if (!$PromiseResolve) {
 		throw new $SyntaxError('This environment does not support Promises.');

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
@@ -15,10 +17,12 @@ var isIteratorRecord = require('../helpers/records/iterator-record-2023');
 
 var callBound = require('call-bound');
 
+/** @type {undefined | (<T>(thisArg: Promise<T>, ...args: Parameters<typeof Promise.prototype.then>) => Promise<T>)} */
 var $then = callBound('Promise.prototype.then', true);
 
 // https://262.ecma-international.org/9.0/#sec-asynciteratorclose
 
+/** @type {<Type extends import('../types').CompletionRecordType, Value>(iteratorRecord: import('../types').IteratorRecord, completion: CompletionRecord<Type, Value>) => Promise<CompletionRecord<Type, Value>>} */
 module.exports = function AsyncIteratorClose(iteratorRecord, completion) {
 	if (!isIteratorRecord(iteratorRecord)) {
 		throw new $TypeError('Assertion failed: `iteratorRecord` must be an Iterator Record'); // step 1
@@ -28,7 +32,7 @@ module.exports = function AsyncIteratorClose(iteratorRecord, completion) {
 		throw new $TypeError('Assertion failed: completion is not a Completion Record instance'); // step 2
 	}
 
-	if (!$then) {
+	if (!$then || !$Promise) {
 		throw new $SyntaxError('This environment does not support Promises.');
 	}
 
@@ -40,10 +44,10 @@ module.exports = function AsyncIteratorClose(iteratorRecord, completion) {
 		if (typeof ret === 'undefined') {
 			resolve(completion); // step 5
 		} else {
-			resolve($then(
-				new $Promise(function (resolve2) {
-					// process.exit(42);
-					resolve2(Call(ret, iterator, [])); // step 6
+			var cb = ret; // this is because TS can't narrow properly inside a closure
+			resolve(/** @type {NonNullable<typeof $then>} */ ($then)(
+				new /** @type {NonNullable<typeof $Promise>} */ ($Promise)(function (resolve2) {
+					resolve2(Call(cb, iterator, [])); // step 6
 				}),
 				function (innerResult) {
 					if (!isObject(innerResult)) {

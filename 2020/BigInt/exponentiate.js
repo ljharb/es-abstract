@@ -1,13 +1,14 @@
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
-
-var $BigInt = GetIntrinsic('%BigInt%', true);
+// eslint-disable-next-line no-extra-parens
+var $BigInt = /** @type {typeof BigInt} */ (GetIntrinsic('%BigInt%', true));
 var $RangeError = require('es-errors/range');
 var $TypeError = require('es-errors/type');
 
 // https://262.ecma-international.org/11.0/#sec-numeric-types-bigint-exponentiate
 
+/** @type {(base: bigint, exponent: bigint) => bigint} */
 module.exports = function BigIntExponentiate(base, exponent) {
 	if (typeof base !== 'bigint' || typeof exponent !== 'bigint') {
 		throw new $TypeError('Assertion failed: `base` and `exponent` arguments must be BigInts');

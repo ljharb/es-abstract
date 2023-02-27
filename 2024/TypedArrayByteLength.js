@@ -14,6 +14,7 @@ var typedArrayByteLength = require('typed-array-byte-length');
 
 // https://262.ecma-international.org/15.0/#sec-typedarraybytelength
 
+/** @type {(taRecord: import('../types').TypedArrayWithBufferWitnessRecord) => number} */
 module.exports = function TypedArrayByteLength(taRecord) {
 	if (!isTypedArrayWithBufferWitnessRecord(taRecord)) {
 		throw new $TypeError('Assertion failed: `taRecord` must be a TypedArray With Buffer Witness Record');

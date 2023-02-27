@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
@@ -16,6 +18,7 @@ var YearFromTime = require('./YearFromTime');
 
 // https://262.ecma-international.org/5.1/#sec-15.9.1.12
 
+/** @type {(year: number, month: number, date: number) => import('../types').integer} */
 module.exports = function MakeDay(year, month, date) {
 	if (!$isFinite(year) || !$isFinite(month) || !$isFinite(date)) {
 		return NaN;

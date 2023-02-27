@@ -7,6 +7,7 @@ var ValidateIntegerTypedArray = require('./ValidateIntegerTypedArray');
 
 // https://262.ecma-international.org/15.0/#sec-availablenamedtimezoneidentifiers
 
+/** @type {(typefArray: import('../types').TypedArray, requestIndex: import('../types').integer, waitable?: boolean) => ReturnType<ValidateAtomicAccess>} */
 module.exports = function ValidateAtomicAccessOnIntegerTypedArray(typedArray, requestIndex) {
 	var waitable = arguments.length > 2 ? arguments[2] : false; // step 1
 

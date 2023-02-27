@@ -12,6 +12,7 @@ var DefinePropertyOrThrow = require('./DefinePropertyOrThrow');
 
 // https://262.ecma-international.org/6.0/#sec-stringcreate
 
+/** @type {(value: string, prototype: null | object) => String} */
 module.exports = function StringCreate(value, prototype) {
 	if (typeof value !== 'string') {
 		throw new $TypeError('Assertion failed: `S` must be a String');

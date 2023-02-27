@@ -9,6 +9,7 @@ var isSameType = require('../helpers/isSameType');
 
 // https://262.ecma-international.org/5.1/#sec-11.9.3
 
+/** @type {(x: unknown, y: unknown) => boolean} */
 module.exports = function AbstractEqualityComparison(x, y) {
 	if (isSameType(x, y)) {
 		return x === y; // ES6+ specified this shortcut anyways.

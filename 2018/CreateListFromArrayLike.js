@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var callBound = require('call-bound');
@@ -9,13 +11,16 @@ var $indexOf = callBound('Array.prototype.indexOf', true) || callBound('String.p
 var Get = require('./Get');
 var IsArray = require('./IsArray');
 var ToLength = require('./ToLength');
-var ToString = require('./ToString');
+// var ToString = require('./ToString');
 var Type = require('./Type');
 
-var defaultElementTypes = ['Undefined', 'Null', 'Boolean', 'String', 'Symbol', 'Number', 'Object'];
+var defaultElementTypes = /** @type {const} */ (['Undefined', 'Null', 'Boolean', 'String', 'Symbol', 'Number', 'Object']);
 
 // https://262.ecma-international.org/6.0/#sec-createlistfromarraylike
+
+/** @type {<V, T extends `${typeof defaultElementTypes[number]}`[]>(obj: ArrayLike<V>, elementTypes?: T) => unknown[]} */
 module.exports = function CreateListFromArrayLike(obj) {
+	/** @type {typeof defaultElementTypes} */
 	var elementTypes = arguments.length > 1
 		? arguments[1]
 		: defaultElementTypes;
@@ -26,12 +31,14 @@ module.exports = function CreateListFromArrayLike(obj) {
 	if (!IsArray(elementTypes)) {
 		throw new $TypeError('Assertion failed: `elementTypes`, if provided, must be an array');
 	}
+	/** @typedef {typeof obj[number]} V */
 	var len = ToLength(Get(obj, 'length'));
+	/** @type {V[]} */
 	var list = [];
 	var index = 0;
 	while (index < len) {
-		var indexName = ToString(index);
-		var next = Get(obj, indexName);
+		// var indexName = ToString(index);
+		var next = obj[index]; // Get(obj, indexName);
 		var nextType = Type(next);
 		if ($indexOf(elementTypes, nextType) < 0) {
 			throw new $TypeError('item type ' + nextType + ' is not a valid elementType');

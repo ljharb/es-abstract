@@ -22,6 +22,7 @@ var getIteratorMethod = require('../helpers/getIteratorMethod');
 
 // https://262.ecma-international.org/14.0/#sec-getiterator
 
+/** @type {<T>(obj: object, kind: 'SYNC' | 'ASYNC') => import('../types').IteratorRecord<T> | import('../types').AsyncIteratorRecord<T>} */
 module.exports = function GetIterator(obj, kind) {
 	if (kind !== 'SYNC' && kind !== 'ASYNC') {
 		throw new $TypeError("Assertion failed: `kind` must be one of 'sync' or 'async', got " + inspect(kind));

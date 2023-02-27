@@ -10,6 +10,7 @@ var IsCallable = require('./IsCallable');
 
 // https://262.ecma-international.org/6.0/#sec-iteratorclose
 
+/** @type {<T, C extends CompletionRecord<'throw', unknown> | CompletionRecord<'normal', T>>(iterator: Iterator<T>, completion: import('../types').Func | C) => C} */
 module.exports = function IteratorClose(iterator, completion) {
 	if (!isObject(iterator)) {
 		throw new $TypeError('Assertion failed: Type(iterator) is not Object');
@@ -33,12 +34,14 @@ module.exports = function IteratorClose(iterator, completion) {
 
 		// if the completion is of type "throw", this will throw.
 		completionThunk();
+		// @ts-expect-error TS doesn't like nulling things out
 		completionThunk = null; // ensure it's not called twice.
 
 		// if not, then return the innerResult completion
 		throw e;
 	}
 	completionRecord = completionThunk(); // if innerResult worked, then throw if the completion does
+	// @ts-expect-error TS doesn't like nulling things out
 	completionThunk = null; // ensure it's not called twice.
 
 	if (!isObject(innerResult)) {

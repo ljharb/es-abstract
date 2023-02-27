@@ -6,6 +6,7 @@ var $TypeError = require('es-errors/type');
 
 // https://262.ecma-international.org/13.0/#sec-isstringwellformedunicode
 
+/** @type {(string: string) => boolean} */
 module.exports = function IsStringWellFormedUnicode(string) {
 	if (typeof string !== 'string') {
 		throw new $TypeError('Assertion failed: `string` must be a String');

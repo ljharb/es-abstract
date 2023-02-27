@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -9,6 +11,7 @@ var SameValue = require('./SameValue');
 // IE 9 does not throw in strict mode when writability/configurability/extensibility is violated
 var noThrowOnStrictViolation = (function () {
 	try {
+		// @ts-expect-error
 		delete [].length;
 		return true;
 	} catch (e) {
@@ -18,6 +21,7 @@ var noThrowOnStrictViolation = (function () {
 
 // https://262.ecma-international.org/6.0/#sec-set-o-p-v-throw
 
+/** @type {<T extends (string | symbol) = string | symbol, U = unknown>(O: Record<T, U>, P: T, V: U, Throw: boolean) => boolean} */
 module.exports = function Set(O, P, V, Throw) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: `O` must be an Object');

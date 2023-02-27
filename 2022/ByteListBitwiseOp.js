@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -8,6 +10,7 @@ var isByteValue = require('../helpers/isByteValue');
 
 // https://262.ecma-international.org/12.0/#sec-bytelistbitwiseop
 
+/** @type {(op: '&' | '^' | '|', xBytes: import('../types').ByteValue[], yBytes: import('../types').ByteValue[]) => import('../types').ByteValue[]} */
 module.exports = function ByteListBitwiseOp(op, xBytes, yBytes) {
 	if (op !== '&' && op !== '^' && op !== '|') {
 		throw new $TypeError('Assertion failed: `op` must be `&`, `^`, or `|`');
@@ -16,6 +19,7 @@ module.exports = function ByteListBitwiseOp(op, xBytes, yBytes) {
 		throw new $TypeError('Assertion failed: `xBytes` and `yBytes` must be same-length sequences of byte values (an integer 0-255, inclusive)');
 	}
 
+	/** @type {ReturnType<typeof ByteListBitwiseOp>} */
 	var result = [];
 
 	for (var i = 0; i < xBytes.length; i += 1) {
@@ -32,7 +36,7 @@ module.exports = function ByteListBitwiseOp(op, xBytes, yBytes) {
 		} else {
 			resultByte = xByte | yByte;
 		}
-		result[result.length] = resultByte;
+		result[result.length] = /** @type {import('../types').ByteValue} */ (resultByte);
 	}
 
 	return result;

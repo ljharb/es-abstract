@@ -8,6 +8,7 @@ var $isFinite = require('math-intrinsics/isFinite');
 
 // https://262.ecma-international.org/14.0/#sec-tointegerorinfinity
 
+/** @type {(value: unknown) => number} */
 module.exports = function ToIntegerOrInfinity(value) {
 	var number = ToNumber(value);
 	if ($isNaN(number) || number === 0) { return 0; }
