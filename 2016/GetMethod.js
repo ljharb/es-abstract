@@ -8,7 +8,7 @@ var GetV = require('./GetV');
 var IsCallable = require('./IsCallable');
 var IsPropertyKey = require('./IsPropertyKey');
 
-var debug = require('object-inspect');
+var inspect = require('object-inspect');
 
 // https://262.ecma-international.org/6.0/#sec-getmethod
 
@@ -28,7 +28,7 @@ module.exports = function GetMethod(O, P) {
 
 	// 7.3.9.5
 	if (!IsCallable(func)) {
-		throw new $TypeError(P + ' is not a function: ' + debug(func));
+		throw new $TypeError(inspect(P) + ' is not a function: ' + inspect(func));
 	}
 
 	// 7.3.9.6

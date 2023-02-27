@@ -2513,13 +2513,25 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('GetMethod', function (t) {
+		forEach(v.nonPropertyKeys, function (nonPropertyKey) {
+			t['throws'](
+				function () { return ES.GetMethod({}, nonPropertyKey); },
+				TypeError,
+				debug(nonPropertyKey) + ' is not a Property Key'
+			);
+		});
+
 		t['throws'](function () { return ES.GetMethod({ 7: 7 }, 7); }, TypeError, 'Throws a TypeError if `P` is not a property key');
+
 		t.equal(ES.GetMethod({}, 'a'), undefined, 'returns undefined in property is undefined');
 		t.equal(ES.GetMethod({ a: null }, 'a'), undefined, 'returns undefined if property is null');
 		t.equal(ES.GetMethod({ a: undefined }, 'a'), undefined, 'returns undefined if property is undefined');
+
 		var obj = { a: function () {} };
 		t['throws'](function () { ES.GetMethod({ a: 'b' }, 'a'); }, TypeError, 'throws TypeError if property exists and is not callable');
+
 		t.equal(ES.GetMethod(obj, 'a'), obj.a, 'returns property if it is callable');
+
 		t.end();
 	});
 
