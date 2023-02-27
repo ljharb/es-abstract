@@ -7,7 +7,7 @@ var $TypeError = GetIntrinsic('%TypeError%');
 
 var IsArray = require('./IsArray');
 
-var $apply = GetIntrinsic('%Reflect.apply%', true) || callBound('%Function.prototype.apply%');
+var $apply = GetIntrinsic('%Reflect.apply%', true) || callBound('Function.prototype.apply');
 
 // https://262.ecma-international.org/6.0/#sec-call
 

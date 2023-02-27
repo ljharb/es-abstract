@@ -15,7 +15,7 @@ var v = require('es-value-fixtures');
 var $gOPD = require('gopd');
 var DefinePropertyOrThrow = require('../2021/DefinePropertyOrThrow');
 
-var $isProto = callBound('%Object.prototype.isPrototypeOf%');
+var $isProto = callBound('Object.prototype.isPrototypeOf');
 
 test('export', function (t) {
 	t.equal(typeof GetIntrinsic, 'function', 'it is a function');

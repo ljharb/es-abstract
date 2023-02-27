@@ -8,7 +8,7 @@ var $TypeError = GetIntrinsic('%TypeError%');
 var callBound = require('call-bind/callBound');
 
 // node 0.10 doesn't have a prototype method
-var $byteOffset = callBound('%TypedArray.prototype.byteOffset%', true) || function (x) { return x.byteOffset; };
+var $byteOffset = callBound('TypedArray.prototype.byteOffset', true) || function (x) { return x.byteOffset; };
 
 var ToIndex = require('./ToIndex');
 var TypedArrayElementSize = require('./TypedArrayElementSize');
