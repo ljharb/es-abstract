@@ -6,6 +6,7 @@ var ToNumber = require('./ToNumber');
 
 // https://262.ecma-international.org/11.0/#sec-tointeger
 
+/** @type {(value: unknown) => import('../types').integer} */
 module.exports = function ToInteger(value) {
 	var number = ToNumber(value);
 	if (number !== 0) {

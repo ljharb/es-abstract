@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -8,6 +10,7 @@ var modulo = require('../modulo');
 
 // https://262.ecma-international.org/12.0/#sec-numeric-types-number-signedRightShift
 
+/** @type {(x: number, y: number) => number} */
 module.exports = function NumberSignedRightShift(x, y) {
 	if (typeof x !== 'number' || typeof y !== 'number') {
 		throw new $TypeError('Assertion failed: `x` and `y` arguments must be Numbers');

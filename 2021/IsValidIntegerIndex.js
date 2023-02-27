@@ -10,6 +10,7 @@ var typedArrayBuffer = require('typed-array-buffer');
 
 // https://262.ecma-international.org/12.0/#sec-isvalidintegerindex
 
+/** @type {(O: import('../types').TypedArray, index: number) => boolean} */
 module.exports = function IsValidIntegerIndex(O, index) {
 	// Assert: O is an Integer-Indexed exotic object.
 	var buffer = typedArrayBuffer(O); // step 1

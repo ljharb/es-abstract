@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -9,6 +11,7 @@ var isPropertyDescriptor = require('../helpers/records/property-descriptor');
 
 // https://262.ecma-international.org/6.0/#sec-isgenericdescriptor
 
+/** @type {<T>(Desc: undefined | import('../types').Descriptor<T>) => Desc is import('../types').GenericDescriptor & { '[[Value]]': never, '[[Writable]]': never, '[[Get]]': never, '[[Set]]': never } } */
 module.exports = function IsGenericDescriptor(Desc) {
 	if (typeof Desc === 'undefined') {
 		return false;

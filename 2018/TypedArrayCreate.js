@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $SyntaxError = require('es-errors/syntax');
@@ -12,6 +14,7 @@ var typedArrayLength = require('typed-array-length');
 
 // https://262.ecma-international.org/7.0/#typedarray-create
 
+/** @type {(constructor: import('../types').TypedArrayConstructor, argumentList: unknown[]) => import('../types').TypedArray} */
 module.exports = function TypedArrayCreate(constructor, argumentList) {
 	if (!IsConstructor(constructor)) {
 		throw new $TypeError('Assertion failed: `constructor` must be a constructor');
@@ -23,6 +26,7 @@ module.exports = function TypedArrayCreate(constructor, argumentList) {
 		throw new $SyntaxError('Assertion failed: Typed Arrays are not supported in this environment');
 	}
 
+	/** @type {unknown} */
 	// var newTypedArray = Construct(constructor, argumentList); // step 1
 	var newTypedArray;
 	if (argumentList.length === 0) {
@@ -35,13 +39,14 @@ module.exports = function TypedArrayCreate(constructor, argumentList) {
 		newTypedArray = new constructor(argumentList[0], argumentList[1], argumentList[2]);
 	}
 
+	// @ts-expect-error it will throw if not a typed array (TS can't do predicate logic for non-predicates)
 	ValidateTypedArray(newTypedArray); // step 2
 
 	if (argumentList.length === 1 && typeof argumentList[0] === 'number') { // step 3
-		if (typedArrayLength(newTypedArray) < argumentList[0]) {
+		if (typedArrayLength(/** @type {import('../types').TypedArray} */ (newTypedArray)) < argumentList[0]) {
 			throw new $TypeError('Assertion failed: `argumentList[0]` must be <= `newTypedArray.length`'); // step 3.a
 		}
 	}
 
-	return newTypedArray; // step 4
+	return /** @type {import('../types').TypedArray} */ (newTypedArray); // step 4
 };

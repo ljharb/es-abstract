@@ -14,6 +14,7 @@ var $Number = Number;
 
 // http://262.ecma-international.org/5.1/#sec-9.3
 
+/** @type {(value: object | import('../types').es5Primitive) => number} */
 module.exports = function ToNumber(value) {
 	var prim = ToPrimitive(value, $Number);
 	if (typeof prim !== 'string') {

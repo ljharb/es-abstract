@@ -11,6 +11,7 @@ var ToString = require('./ToString');
 
 // https://262.ecma-international.org/6.0/#sec-createhtml
 
+/** @type {(string: {}, tag: string, attribute: string, value: unknown) => string} */
 module.exports = function CreateHTML(string, tag, attribute, value) {
 	if (typeof tag !== 'string' || typeof attribute !== 'string') {
 		throw new $TypeError('Assertion failed: `tag` and `attribute` must be strings');

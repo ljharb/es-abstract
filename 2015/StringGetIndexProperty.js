@@ -16,6 +16,7 @@ var isPropertyKey = require('../helpers/isPropertyKey');
 
 // https://262.ecma-international.org/6.0/#sec-stringgetindexproperty
 
+/** @type {(S: unknown, P: string | symbol) => undefined | import('../types').Descriptor<string>} */
 module.exports = function StringGetIndexProperty(S, P) {
 	if (typeof S === 'string' || !isString(S)) {
 		throw new $TypeError('Assertion failed: `S` must be a boxed String Object');
@@ -39,6 +40,7 @@ module.exports = function StringGetIndexProperty(S, P) {
 		return void undefined;
 	}
 
+	/** @type {string} */
 	var resultStr = $charAt(str, index);
 
 	return {

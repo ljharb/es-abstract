@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -18,7 +20,7 @@ var hasOwn = require('hasown');
 
 // https://262.ecma-international.org/12.0/#sec-quotejsonstring
 
-var escapes = {
+var escapes = /** @type {const} */ ({
 	'\u0008': '\\b',
 	'\u0009': '\\t',
 	'\u000A': '\\n',
@@ -26,8 +28,9 @@ var escapes = {
 	'\u000D': '\\r',
 	'\u0022': '\\"',
 	'\u005c': '\\\\'
-};
+});
 
+/** @type {(value: string) => string} */
 module.exports = function QuoteJSONString(value) {
 	if (typeof value !== 'string') {
 		throw new $TypeError('Assertion failed: `value` must be a String');

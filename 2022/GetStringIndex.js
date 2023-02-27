@@ -10,6 +10,7 @@ var $indexOf = callBound('String.prototype.indexOf');
 
 // https://262.ecma-international.org/13.0/#sec-getstringindex
 
+/** @type {(S: string, e: import('../types').nonNegativeInteger) => import('../types').nonNegativeInteger} */
 module.exports = function GetStringIndex(S, e) {
 	if (typeof S !== 'string') {
 		throw new $TypeError('Assertion failed: `S` must be a String');

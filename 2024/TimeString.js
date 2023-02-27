@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -11,6 +13,7 @@ var ToZeroPaddedDecimalString = require('./ToZeroPaddedDecimalString');
 
 // https://262.ecma-international.org/13.0/#sec-timestring
 
+/** @type {(tv: number) => string} */
 module.exports = function TimeString(tv) {
 	if (typeof tv !== 'number' || $isNaN(tv)) {
 		throw new $TypeError('Assertion failed: `tv` must be a non-NaN Number');

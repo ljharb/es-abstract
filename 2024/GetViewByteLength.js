@@ -13,6 +13,7 @@ var dataViewByteOffset = require('data-view-byte-offset');
 
 // https://262.ecma-international.org/15.0/#sec-getviewbytelength
 
+/** @type {(viewRecord: import('../types').DataViewWithBufferWitnessRecord) => number} */
 module.exports = function GetViewByteLength(viewRecord) {
 	if (!isDataViewWithBufferWitnessRecord(viewRecord)) {
 		throw new $TypeError('Assertion failed: `viewRecord` must be a DataView with Buffer Witness Record');

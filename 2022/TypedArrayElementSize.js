@@ -9,12 +9,19 @@ var whichTypedArray = require('which-typed-array');
 
 var tableTAO = require('./tables/typed-array-objects');
 
+/** @typedef {import('../types').TypedArrayName} TypedArrayName */
+/** @typedef {typeof tableTAO.name[`\$${TypedArrayName}`]} TypedArrayType */
+/** @typedef {Exclude<typeof tableTAO.size[keyof typeof tableTAO.size], null>} TypedArrayElementSizeValue */
+
+/** @type {(O: import('../types').TypedArray) => TypedArrayElementSizeValue} */
 module.exports = function TypedArrayElementSize(O) {
 	var type = whichTypedArray(O);
 	if (!type) {
 		throw new $TypeError('Assertion failed: `O` must be a TypedArray');
 	}
-	var size = tableTAO.size['$' + tableTAO.name['$' + type]];
+	// eslint-disable-next-line no-extra-parens
+	var size = tableTAO.size[/** @type {`\$${TypedArrayType}`} */ ('$' + tableTAO.name[/** @type {`\$${TypedArrayName}`} */ ('$' + type)])];
+
 	if (!isInteger(size) || size < 0) {
 		throw new $SyntaxError('Assertion failed: Unknown TypedArray type `' + type + '`');
 	}

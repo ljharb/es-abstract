@@ -10,6 +10,7 @@ var typedArrayBuffer = require('typed-array-buffer');
 
 // https://262.ecma-international.org/15.0/#sec-maketypedarraywithbufferwitnessrecord
 
+/** @type {(obj: import('../types').TypedArray, order: 'SEQ-CST' | 'UNORDERED') => import('../types').TypedArrayWithBufferWitnessRecord} */
 module.exports = function MakeTypedArrayWithBufferWitnessRecord(obj, order) {
 	if (!isTypedArray(obj)) {
 		throw new $TypeError('Assertion failed: `obj` must be a Typed Array');
@@ -20,6 +21,7 @@ module.exports = function MakeTypedArrayWithBufferWitnessRecord(obj, order) {
 
 	var buffer = typedArrayBuffer(obj); // step 1
 
+	/** @type {import('../types').TypedArrayWithBufferWitnessRecord['[[CachedBufferByteLength]]']} */
 	var byteLength = IsDetachedBuffer(buffer) ? 'DETACHED' : ArrayBufferByteLength(buffer, order); // steps 2 - 3
 
 	return { '[[Object]]': obj, '[[CachedBufferByteLength]]': byteLength }; // step 4

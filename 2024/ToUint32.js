@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var modulo = require('./modulo');
@@ -10,6 +12,7 @@ var isFinite = require('math-intrinsics/isFinite');
 
 var two32 = 0x100000000; // Math.pow(2, 32);
 
+/** @type {(x: Parameters<typeof ToNumber>[0]) => import('../types').integer} */
 module.exports = function ToUint32(argument) {
 	var number = ToNumber(argument);
 	if (!isFinite(number) || number === 0) {

@@ -10,6 +10,7 @@ var $sign = require('math-intrinsics/sign');
 
 // http://262.ecma-international.org/5.1/#sec-9.4
 
+/** @type {(value: Parameters<typeof ToNumber>[0]) => import('../types').integer} */
 module.exports = function ToInteger(value) {
 	var number = ToNumber(value);
 	if ($isNaN(number)) { return 0; }

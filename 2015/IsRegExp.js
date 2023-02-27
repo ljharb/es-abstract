@@ -11,12 +11,14 @@ var ToBoolean = require('./ToBoolean');
 
 // https://262.ecma-international.org/6.0/#sec-isregexp
 
+/** @type {(argument: unknown) => argument is RegExp} */
 module.exports = function IsRegExp(argument) {
 	if (!isObject(argument)) {
 		return false;
 	}
 	if ($match) {
-		var isRegExp = argument[$match];
+		// eslint-disable-next-line no-extra-parens
+		var isRegExp = /** @type {{ [Symbol.match]?: unknown }} */ (argument)[$match];
 		if (typeof isRegExp !== 'undefined') {
 			return ToBoolean(isRegExp);
 		}

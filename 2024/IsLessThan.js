@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
@@ -18,6 +20,7 @@ var NumberLessThan = require('./Number/lessThan');
 
 // https://262.ecma-international.org/14.0/#sec-islessthan
 
+/** @type {(x: unknown, y: unknown, LeftFirst: boolean) => undefined | boolean} */
 // eslint-disable-next-line max-statements, max-lines-per-function
 module.exports = function IsLessThan(x, y, LeftFirst) {
 	if (typeof LeftFirst !== 'boolean') {
@@ -78,8 +81,11 @@ module.exports = function IsLessThan(x, y, LeftFirst) {
 	nx = ToNumeric(px);
 	ny = ToNumeric(py);
 
-	if (typeof nx === typeof ny) {
-		return typeof nx === 'number' ? NumberLessThan(nx, ny) : BigIntLessThan(nx, ny);
+	if (typeof nx === 'bigint' && typeof ny === 'bigint') {
+		return BigIntLessThan(nx, ny);
+	}
+	if (typeof nx === 'number' && typeof ny === 'number') {
+		return NumberLessThan(nx, ny);
 	}
 
 	if ($isNaN(nx) || $isNaN(ny)) {

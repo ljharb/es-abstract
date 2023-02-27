@@ -10,11 +10,13 @@ var IsConstructor = require('./IsConstructor');
 
 // https://262.ecma-international.org/6.0/#sec-speciesconstructor
 
+/** @type {<C extends import('../types.js').Constructor<unknown, any>>(O: { [Symbol.species]?: C }, defaultConstructor: C) => import('../types.js').Constructor<unknown, any>} */
 module.exports = function SpeciesConstructor(O, defaultConstructor) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
 	}
-	var C = O.constructor;
+
+	var C = /** @type {undefined | typeof defaultConstructor} */ (O.constructor);
 	if (typeof C === 'undefined') {
 		return defaultConstructor;
 	}

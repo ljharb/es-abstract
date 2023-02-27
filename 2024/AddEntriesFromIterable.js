@@ -5,7 +5,7 @@ var isObject = require('es-object-atoms/isObject');
 var inspect = require('object-inspect');
 
 var Call = require('./Call');
-var Get = require('./Get');
+// var Get = require('./Get');
 var GetIterator = require('./GetIterator');
 var IsCallable = require('./IsCallable');
 var IteratorClose = require('./IteratorClose');
@@ -15,6 +15,7 @@ var ThrowCompletion = require('./ThrowCompletion');
 
 // https://262.ecma-international.org/15.0/#sec-add-entries-from-iterable
 
+/** @type {<T = unknown, U extends [unknown, unknown] = [unknown, unknown]>(target: T, iterable: Iterable<U>, adder: (this: T, key: U[0], value: U[1]) => void) => T | ReturnType<IteratorClose>} */
 module.exports = function AddEntriesFromIterable(target, iterable, adder) {
 	if (!IsCallable(adder)) {
 		throw new $TypeError('Assertion failed: `adder` is not callable');
@@ -34,8 +35,8 @@ module.exports = function AddEntriesFromIterable(target, iterable, adder) {
 			return IteratorClose(iteratorRecord, error);
 		}
 		try {
-			var k = Get(nextItem, '0');
-			var v = Get(nextItem, '1');
+			var k = /** @type {[Parameters<typeof adder>[0]]} */ (nextItem)[0]; // Get(nextItem, '0');
+			var v = /** @type {[never, Parameters<typeof adder>[1]]} */ (nextItem)[1]; // Get(nextItem, '1');
 			Call(adder, target, [k, v]);
 		} catch (e) {
 			return IteratorClose(iteratorRecord, ThrowCompletion(e));

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var ToNumber = require('./ToNumber');
@@ -7,6 +9,7 @@ var $isNaN = require('math-intrinsics/isNaN');
 
 // https://262.ecma-international.org/6.0/#sec-touint8clamp
 
+/** @type {(argument: unknown) => import('../types').integer} */
 module.exports = function ToUint8Clamp(argument) {
 	var number = ToNumber(argument);
 	if ($isNaN(number) || number <= 0) { return 0; }

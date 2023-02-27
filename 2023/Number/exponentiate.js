@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 // var isNegativeZero = require('math-intrinsics/isNegativeZero');
@@ -17,6 +19,7 @@ var IsInteger = require('math-intrinsics/isInteger');
 
 /* eslint max-lines-per-function: 0, max-statements: 0 */
 
+/** @type {(base: number, exponent: number) => number} */
 module.exports = function NumberExponentiate(base, exponent) {
 	if (typeof base !== 'number' || typeof exponent !== 'number') {
 		throw new $TypeError('Assertion failed: `base` and `exponent` arguments must be Numbers');

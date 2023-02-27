@@ -4,7 +4,7 @@
 
 module.exports = {
 	__proto__: null,
-	name: {
+	name: /** @type {const} */ ({
 		__proto__: null,
 		$Int8Array: 'INT8',
 		$Uint8Array: 'UINT8',
@@ -17,8 +17,8 @@ module.exports = {
 		$BigUint64Array: 'BIGUINT64',
 		$Float32Array: 'FLOAT32',
 		$Float64Array: 'FLOAT64'
-	},
-	size: {
+	}),
+	size: /** @type {const} */ ({
 		__proto__: null,
 		$INT8: 1,
 		$UINT8: 1,
@@ -31,5 +31,5 @@ module.exports = {
 		$BIGUINT64: 8,
 		$FLOAT32: 4,
 		$FLOAT64: 8
-	}
+	})
 };

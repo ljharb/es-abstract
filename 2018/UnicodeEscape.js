@@ -11,6 +11,7 @@ var $strSlice = callBound('String.prototype.slice');
 
 // https://262.ecma-international.org/9.0/#sec-unicodeescape
 
+/** @type {(C: `${string}`) => import('../types').UnicodeEscapeChar} */
 module.exports = function UnicodeEscape(C) {
 	if (typeof C !== 'string' || C.length !== 1) {
 		throw new $TypeError('Assertion failed: `C` must be a single code unit');
@@ -20,5 +21,6 @@ module.exports = function UnicodeEscape(C) {
 		throw new $TypeError('`Assertion failed: numeric value of `C` must be <= 0xFFFF');
 	}
 
-	return '\\u' + $strSlice('0000' + $toLowerCase($numberToString(n, 16)), -4);
+	// eslint-disable-next-line no-extra-parens
+	return /** @type {import('../types').UnicodeEscapeChar} */ ('\\u' + $strSlice('0000' + $toLowerCase($numberToString(n, 16)), -4));
 };

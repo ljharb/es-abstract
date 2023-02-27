@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
@@ -15,6 +17,7 @@ var $toTimeString = callBound('Date.prototype.toTimeString');
 
 // https://262.ecma-international.org/9.0/#sec-timezoneestring
 
+/** @type {(tv: number) => string} */
 module.exports = function TimeZoneString(tv) {
 	if (typeof tv !== 'number' || isNaN(tv)) {
 		throw new $TypeError('Assertion failed: `tv` must be a non-NaN Number'); // steps 1 - 2

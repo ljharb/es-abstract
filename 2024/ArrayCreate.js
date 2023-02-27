@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
@@ -12,6 +14,7 @@ var $setProto = require('set-proto');
 
 // https://262.ecma-international.org/12.0/#sec-arraycreate
 
+/** @type {(length: import('../types').arrayLength) => unknown[]} */
 module.exports = function ArrayCreate(length) {
 	if (!isInteger(length) || length < 0) {
 		throw new $TypeError('Assertion failed: `length` must be an integer Number >= 0');
@@ -20,6 +23,7 @@ module.exports = function ArrayCreate(length) {
 		throw new $RangeError('length is greater than (2**32 - 1)');
 	}
 	var proto = arguments.length > 1 ? arguments[1] : $ArrayPrototype;
+	/** @type {ReturnType<ArrayCreate>} */
 	var A = []; // steps 3, 5
 	if (proto !== $ArrayPrototype) { // step 4
 		if (!$setProto) {

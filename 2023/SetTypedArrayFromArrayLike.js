@@ -9,15 +9,16 @@ var typedArrayBuffer = require('typed-array-buffer');
 var typedArrayLength = require('typed-array-length');
 var whichTypedArray = require('which-typed-array');
 
-var Get = require('./Get');
+// var Get = require('./Get');
 var IntegerIndexedElementSet = require('./IntegerIndexedElementSet');
 var IsDetachedBuffer = require('./IsDetachedBuffer');
 var LengthOfArrayLike = require('./LengthOfArrayLike');
 var ToObject = require('./ToObject');
-var ToString = require('./ToString');
+// var ToString = require('./ToString');
 
 // https://262.ecma-international.org/14.0/#sec-settypedarrayfromarraylike
 
+/** @type {import('../types').SetTypedArrayFromArrayLike} */
 module.exports = function SetTypedArrayFromArrayLike(target, targetOffset, source) {
 	var whichTarget = whichTypedArray(target);
 	if (!whichTarget) {
@@ -55,9 +56,9 @@ module.exports = function SetTypedArrayFromArrayLike(target, targetOffset, sourc
 	var k = 0; // step 8
 
 	while (k < srcLength) { // step 9
-		var Pk = ToString(k); // step 9.a
+		// var Pk = ToString(k); // step 9.a
 
-		var value = Get(src, Pk); // step 9.b
+		var value = src[k]; // Get(src, Pk); // step 9.b
 
 		var targetIndex = targetOffset + k; // step 9.c
 

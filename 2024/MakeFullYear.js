@@ -8,6 +8,7 @@ var isNaN = require('math-intrinsics/isNaN');
 
 // https://262.ecma-international.org/15.0/#sec-makefullyear
 
+/** @type {(year: number) => number} */
 module.exports = function MakeFullYear(year) {
 	if (typeof year !== 'number') {
 		throw new $TypeError('Assertion failed: `year` must be a Number');

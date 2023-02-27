@@ -10,6 +10,7 @@ var ToIntegerOrInfinity = require('./ToIntegerOrInfinity');
 
 // https://262.ecma-international.org/12.0/#sec-maketime
 
+/** @type {(hour: number, min: number, sec: number, ms: number) => import('../types').integer} */
 module.exports = function MakeTime(hour, min, sec, ms) {
 	if (!$isFinite(hour) || !$isFinite(min) || !$isFinite(sec) || !$isFinite(ms)) {
 		return NaN;

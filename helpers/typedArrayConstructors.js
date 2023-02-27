@@ -2,7 +2,7 @@
 
 var GetIntrinsic = require('get-intrinsic');
 
-var constructors = {
+var constructors = /** @type {const} */ ({
 	__proto__: null,
 	$Int8Array: GetIntrinsic('%Int8Array%', true),
 	$Uint8Array: GetIntrinsic('%Uint8Array%', true),
@@ -16,8 +16,9 @@ var constructors = {
 	$Float16Array: GetIntrinsic('%Float16Array%', true),
 	$Float32Array: GetIntrinsic('%Float32Array%', true),
 	$Float64Array: GetIntrinsic('%Float64Array%', true)
-};
+});
 
+/** @type {(kind: import('../types').TypedArrayName) => typeof constructors[`$${typeof kind}`]} */
 module.exports = function getConstructor(kind) {
-	return constructors['$' + kind];
+	return constructors[/** @type {`$${import('../types').TypedArrayName}`} */ ('$' + kind)];
 };

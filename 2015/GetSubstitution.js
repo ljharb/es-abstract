@@ -23,6 +23,7 @@ var isStringOrUndefined = require('../helpers/isStringOrUndefined');
 
 // https://262.ecma-international.org/6.0/#sec-getsubstitution
 
+/** @type {(matched: string, str: string, position: import('../types').integer, captures: (string | undefined)[], replacement: string) => string} */
 // eslint-disable-next-line max-statements, max-lines-per-function
 module.exports = function GetSubstitution(matched, str, position, captures, replacement) {
 	if (typeof matched !== 'string') {

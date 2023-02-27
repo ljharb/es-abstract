@@ -11,6 +11,7 @@ var isInteger = require('math-intrinsics/isInteger');
 
 // https://262.ecma-international.org/12.0/#sec-numbertobigint
 
+/** @type {(number: number) => bigint} */
 module.exports = function NumberToBigInt(number) {
 	if (typeof number !== 'number') {
 		throw new $TypeError('Assertion failed: `number` must be a String');

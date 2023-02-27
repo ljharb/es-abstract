@@ -15,6 +15,7 @@ var whichTypedArray = require('which-typed-array');
 
 // http://www.ecma-international.org/ecma-262/15.0/#sec-typedarraysetelement
 
+/** @type {(O: import('../types').TypedArray, index: import('../types').integer, value: unknown) => void} */
 module.exports = function TypedArraySetElement(O, index, value) {
 	var which = whichTypedArray(O);
 	if (!which) {

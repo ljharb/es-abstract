@@ -10,6 +10,7 @@ var isObject = require('es-object-atoms/isObject');
 
 // https://262.ecma-international.org/6.0/#sec-get-o-p
 
+/** @type {import('../types').Get} */
 module.exports = function Get(O, P) {
 	// 7.3.1.1
 	if (!isObject(O)) {
@@ -20,5 +21,7 @@ module.exports = function Get(O, P) {
 		throw new $TypeError('Assertion failed: P is not a Property Key, got ' + inspect(P));
 	}
 	// 7.3.1.3
-	return O[P];
+
+	// eslint-disable-next-line no-extra-parens
+	return (/** @type {import('../types').ProtoResolved<typeof O>} */ (O))[P];
 };

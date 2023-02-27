@@ -12,6 +12,7 @@ var getInferredName = require('get-symbol-description/getInferredName');
 test('getSymbolDescription', function (t) {
 	t.test('no symbols', { skip: v.hasSymbols }, function (st) {
 		st['throws'](
+			// @ts-expect-error
 			getSymbolDescription,
 			SyntaxError,
 			'requires Symbol support'
@@ -20,8 +21,13 @@ test('getSymbolDescription', function (t) {
 		st.end();
 	});
 
-	forEach(v.nonSymbolPrimitives.concat(v.objects), function (nonSymbol) {
+	forEach(/** @type {Exclude<import('../../types').primitive | object, symbol>[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
+		v.nonSymbolPrimitives,
+		v.objects
+	)), function (nonSymbol) {
 		t['throws'](
+			// @ts-expect-error
 			function () { getSymbolDescription(nonSymbol); },
 			v.hasSymbols ? TypeError : SyntaxError,
 			debug(nonSymbol) + ' is not a Symbol'
@@ -30,13 +36,14 @@ test('getSymbolDescription', function (t) {
 
 	t.test('with symbols', { skip: !v.hasSymbols }, function (st) {
 		forEach(
-			[
+			/** @type {const} */ ([
 				[Symbol(), undefined],
 				[Symbol(undefined), undefined],
+				// @ts-expect-error
 				[Symbol(null), 'null'],
 				[Symbol.iterator, 'Symbol.iterator'],
 				[Symbol('foo'), 'foo']
-			],
+			]),
 			function (pair) {
 				var sym = pair[0];
 				var desc = pair[1];

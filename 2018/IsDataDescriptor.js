@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -8,6 +10,7 @@ var isPropertyDescriptor = require('../helpers/records/property-descriptor');
 
 // https://262.ecma-international.org/5.1/#sec-8.10.2
 
+/** @type {<T>(x: undefined | import('../types').Descriptor<T>) => x is import('../types').DataDescriptor<T>} */
 module.exports = function IsDataDescriptor(Desc) {
 	if (typeof Desc === 'undefined') {
 		return false;

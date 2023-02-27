@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -10,6 +12,7 @@ var isCodePoint = require('../helpers/isCodePoint');
 
 // https://262.ecma-international.org/12.0/#sec-codepointstostring
 
+/** @type {(text: number[]) => string} */
 module.exports = function CodePointsToString(text) {
 	if (!IsArray(text)) {
 		throw new $TypeError('Assertion failed: `text` must be a sequence of Unicode Code Points');

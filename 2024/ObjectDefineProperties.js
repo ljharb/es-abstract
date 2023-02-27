@@ -11,9 +11,14 @@ var OwnPropertyKeys = require('own-keys');
 
 // https://262.ecma-international.org/15.0/#sec-objectdefineproperties
 
+/** @type {<V, O extends Record<import('../types').PropertyKey, V> = {}>(O: O, Properties: object) => O} */
 module.exports = function ObjectDefineProperties(O, Properties) {
+	/** @typedef {typeof O} T */
+	/** @typedef {typeof O[keyof typeof O]} Value */
+
 	var props = ToObject(Properties); // step 1
 	var keys = OwnPropertyKeys(props); // step 2
+	/** @type {{ '[[Key]]': keyof T, '[[Descriptor]]': import('../types').Descriptor<Value> }[]} */
 	var descriptors = []; // step 3
 
 	forEach(keys, function (nextKey) { // step 4

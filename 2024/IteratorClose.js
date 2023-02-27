@@ -12,6 +12,7 @@ var isIteratorRecord = require('../helpers/records/iterator-record');
 
 // https://262.ecma-international.org/15.0/#sec-iteratorclose
 
+/** @type {<T, C extends CompletionRecord<'throw', unknown> | CompletionRecord<'normal', T>>(iterator: import('../types').IteratorRecord<T> | import('../types').AsyncIteratorRecord<T>, completion: import('../types').Func | C) => C} */
 module.exports = function IteratorClose(iteratorRecord, completion) {
 	if (!isIteratorRecord(iteratorRecord)) {
 		throw new $TypeError('Assertion failed: `iteratorRecord` must be an Iterator Record'); // step 1
@@ -32,6 +33,7 @@ module.exports = function IteratorClose(iteratorRecord, completion) {
 		iteratorReturn = GetMethod(iterator, 'return'); // step 4
 	} catch (e) {
 		completionThunk(); // throws if `completion` is a throw completion // step 6
+		// @ts-expect-error TS doesn't like nulling things out
 		completionThunk = null; // ensure it's not called twice.
 		throw e; // step 7
 	}
@@ -46,12 +48,14 @@ module.exports = function IteratorClose(iteratorRecord, completion) {
 		// if we hit here, then "e" is the innerResult completion that needs re-throwing
 
 		completionThunk(); // throws if `completion` is a throw completion // step 6
+		// @ts-expect-error TS doesn't like nulling things out
 		completionThunk = null; // ensure it's not called twice.
 
 		// if not, then return the innerResult completion
 		throw e; // step 7
 	}
 	var completionRecord = completionThunk(); // if innerResult worked, then throw if the completion does
+	// @ts-expect-error TS doesn't like nulling things out
 	completionThunk = null; // ensure it's not called twice.
 
 	if (!isObject(innerResult)) {

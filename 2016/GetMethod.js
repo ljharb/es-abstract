@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -10,6 +12,9 @@ var inspect = require('object-inspect');
 
 // https://262.ecma-international.org/6.0/#sec-getmethod
 
+/** @typedef {import('../types').Func} Func */
+
+/** @type {<P extends import('../types').PropertyKey>(O: Record<P, Func | null | undefined>, P: P) => undefined | Func} */
 module.exports = function GetMethod(O, P) {
 	// 7.3.9.1
 	if (!isPropertyKey(P)) {
@@ -17,7 +22,8 @@ module.exports = function GetMethod(O, P) {
 	}
 
 	// 7.3.9.2
-	var func = GetV(O, P);
+	// @ts-expect-error TODO, figure out the deal here with P
+	var func = /** @type {Func | null | undefined} */ (GetV(O, P));
 
 	// 7.3.9.4
 	if (func == null) {

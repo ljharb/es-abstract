@@ -21,6 +21,7 @@ var $trim = require('string.prototype.trim');
 
 // https://262.ecma-international.org/13.0/#sec-stringtonumber
 
+/** @type {(argument: string) => number} */
 module.exports = function StringToNumber(argument) {
 	if (typeof argument !== 'string') {
 		throw new $TypeError('Assertion failed: `argument` is not a String');

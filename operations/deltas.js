@@ -4,7 +4,10 @@ const diff = require('diff');
 
 const years = require('./years');
 
-const keys = ['../es5'].concat(years).map((x) => [
+/** @type {[string, string[]][]} */
+// @ts-expect-error TS sucks with concat
+// eslint-disable-next-line no-extra-parens
+const keys = /** @type {string[]} */ (['../es5'].concat(years)).map(/** @param {string} x */ (x) => [
 	x,
 	Object.keys(require(`./${x}`)).sort(), // eslint-disable-line global-require
 ]);
@@ -14,6 +17,7 @@ const results = Object.fromEntries([5].concat(years).map((y) => [
 	{ added: new Set(), removed: new Set() },
 ]));
 
+/** @type {(from: string[], to: string[], result: { added: Set<string>, removed: Set<string> }) => void} */
 function parse(from, to, result) {
 	diff.diffArrays(from, to).forEach((x) => {
 		x.value.forEach((v) => {

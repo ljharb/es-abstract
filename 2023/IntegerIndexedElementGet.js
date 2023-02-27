@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -13,6 +15,7 @@ var typedArrayByteOffset = require('typed-array-byte-offset');
 
 // https://262.ecma-international.org/13.0/#sec-integerindexedelementget
 
+/** @type {(O: import('../types').TypedArray, index: import('../types').nonNegativeInteger) => undefined | ReturnType<GetValueFromBuffer>} */
 module.exports = function IntegerIndexedElementGet(O, index) {
 	if (!isTypedArray(O)) {
 		throw new $TypeError('Assertion failed: `O` must be a TypedArray');

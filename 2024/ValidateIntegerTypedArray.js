@@ -9,6 +9,7 @@ var ValidateTypedArray = require('./ValidateTypedArray');
 
 // https://262.ecma-international.org/15.0/#sec-validateintegertypedarray
 
+/** @type {(typedArray: import('../types').TypedArray, waitable: boolean) => import('../types').TypedArrayWithBufferWitnessRecord} */
 module.exports = function ValidateIntegerTypedArray(typedArray, waitable) {
 	if (typeof waitable !== 'boolean') {
 		throw new $TypeError('Assertion failed: `waitable` must be a Boolean');

@@ -11,6 +11,7 @@ var SecFromTime = require('./SecFromTime');
 
 // https://262.ecma-international.org/9.0/#sec-timestring
 
+/** @type {(tv: number) => string} */
 module.exports = function TimeString(tv) {
 	if (typeof tv !== 'number' || $isNaN(tv)) {
 		throw new $TypeError('Assertion failed: `tv` must be a non-NaN Number');

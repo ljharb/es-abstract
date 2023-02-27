@@ -10,6 +10,7 @@ var StringPad = require('./StringPad');
 
 // https://262.ecma-international.org/13.0/#sec-tozeropaddeddecimalstring
 
+/** @type {(n: import('../types').nonNegativeInteger, minLength: import('../types').integer) => ReturnType<StringPad>} */
 module.exports = function ToZeroPaddedDecimalString(n, minLength) {
 	if (!isInteger(n) || n < 0) {
 		throw new $RangeError('Assertion failed: `q` must be a non-negative integer');

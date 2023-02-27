@@ -15,6 +15,7 @@ var tableTAO = require('./tables/typed-array-objects');
 
 // https://262.ecma-international.org/11.0/#sec-integerindexedelementget
 
+/** @type {(O: import('../types').TypedArray, index: import('../types').nonNegativeInteger) => undefined | ReturnType<GetValueFromBuffer>} */
 module.exports = function IntegerIndexedElementGet(O, index) {
 	var arrayTypeName = whichTypedArray(O); // step 7
 	if (!arrayTypeName) {
@@ -43,9 +44,11 @@ module.exports = function IntegerIndexedElementGet(O, index) {
 		return void undefined; // step 8
 	}
 
-	var elementType = tableTAO.name['$' + arrayTypeName]; // step 10
+	// eslint-disable-next-line no-extra-parens
+	var elementType = tableTAO.name[/** @type {`$${typeof arrayTypeName}`} */ ('$' + arrayTypeName)]; // step 10
 
-	var elementSize = tableTAO.size['$' + elementType]; // step 8
+	// eslint-disable-next-line no-extra-parens
+	var elementSize = tableTAO.size[/** @type {`$${typeof elementType}`} */ ('$' + elementType)]; // step 8
 
 	var indexedPosition = (index * elementSize) + offset; // step 9
 

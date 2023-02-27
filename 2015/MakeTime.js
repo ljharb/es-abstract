@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $isFinite = require('math-intrinsics/isFinite');
@@ -11,6 +13,7 @@ var ToInteger = require('./ToInteger');
 
 // https://262.ecma-international.org/5.1/#sec-15.9.1.11
 
+/** @type {(hour: number, min: number, sec: number, ms: number) => import('../types').integer} */
 module.exports = function MakeTime(hour, min, sec, ms) {
 	if (!$isFinite(hour) || !$isFinite(min) || !$isFinite(sec) || !$isFinite(ms)) {
 		return NaN;

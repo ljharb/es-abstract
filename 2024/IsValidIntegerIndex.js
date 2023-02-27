@@ -15,6 +15,7 @@ var typedArrayBuffer = require('typed-array-buffer');
 
 // https://262.ecma-international.org/15.0/#sec-isvalidintegerindex
 
+/** @type {(O: import('../types').TypedArray, index: number) => boolean} */
 module.exports = function IsValidIntegerIndex(O, index) {
 	if (!isTypedArray(O)) {
 		throw new $TypeError('Assertion failed: `O` is not a TypedArray object');

@@ -10,6 +10,7 @@ var isIteratorRecord = require('../helpers/records/iterator-record');
 
 // https://262.ecma-international.org/15.0/#sec-iteratorstepvalue
 
+/** @type {<T>(iteratorRecord: import('../types').IteratorRecord<T>) => 'DONE' | T} */
 module.exports = function IteratorStepValue(iteratorRecord) {
 	if (!isIteratorRecord(iteratorRecord)) {
 		throw new $TypeError('Assertion failed: `iteratorRecord` must be an Iterator Record');

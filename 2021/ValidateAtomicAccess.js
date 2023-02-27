@@ -14,6 +14,7 @@ var tableTAO = require('./tables/typed-array-objects');
 
 // https://262.ecma-international.org/12.0/#sec-validateatomicaccess
 
+/** @type {(typedArray: import('../types').TypedArray, requestIndex: import('../types').integer) => import('../types').arrayLength} */
 module.exports = function ValidateAtomicAccess(typedArray, requestIndex) {
 	if (!isTypedArray(typedArray)) {
 		throw new $TypeError('Assertion failed: `typedArray` must be a TypedArray'); // step 1
@@ -36,8 +37,10 @@ module.exports = function ValidateAtomicAccess(typedArray, requestIndex) {
 
 	var arrayTypeName = whichTypedArray(typedArray); // step 6
 
-	var taType = tableTAO.name['$' + arrayTypeName];
-	var elementSize = tableTAO.size['$' + taType]; // step 7
+	// eslint-disable-next-line no-extra-parens
+	var elementType = tableTAO.name[/** @type {`$${typeof arrayTypeName}`} */ ('$' + arrayTypeName)];
+	// eslint-disable-next-line no-extra-parens
+	var elementSize = tableTAO.size[/** @type {`$${typeof elementType}`} */ ('$' + elementType)]; // step 7
 
 	var offset = typedArrayByteOffset(typedArray); // step 8
 

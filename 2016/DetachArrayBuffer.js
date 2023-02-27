@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $SyntaxError = require('es-errors/syntax');
@@ -7,6 +9,7 @@ var isArrayBuffer = require('is-array-buffer');
 
 var IsDetachedBuffer = require('./IsDetachedBuffer');
 
+/** @type {undefined | typeof import('worker_threads').MessageChannel} */
 var MessageChannel;
 try {
 	// eslint-disable-next-line global-require
@@ -17,6 +20,7 @@ try {
 
 /* globals postMessage */
 
+/** @type {(arrayBuffer: ArrayBuffer) => null} */
 module.exports = function DetachArrayBuffer(arrayBuffer) {
 	if (!isArrayBuffer(arrayBuffer)) {
 		throw new $TypeError('Assertion failed: `arrayBuffer` must be an Object with an [[ArrayBufferData]] internal slot');

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
@@ -19,6 +21,7 @@ var $then = callBound('Promise.prototype.then', true);
 
 // https://262.ecma-international.org/12.0/#sec-asynciteratorclose
 
+/** @type {<T>(iteratorRecord: import('../types').IteratorRecord2023<T>, completion: typeof CompletionRecord<import('../types').CompletionRecordType, unknown>) => Promise<unknown>} */
 module.exports = function AsyncIteratorClose(iteratorRecord, completion) {
 	if (!isIteratorRecord(iteratorRecord)) {
 		throw new $TypeError('Assertion failed: `iteratorRecord` must be an Iterator Record'); // step 1
@@ -28,7 +31,7 @@ module.exports = function AsyncIteratorClose(iteratorRecord, completion) {
 		throw new $TypeError('Assertion failed: completion is not a Completion Record instance'); // step 2
 	}
 
-	if (!$then) {
+	if (!$then || !$Promise) {
 		throw new $SyntaxError('This environment does not support Promises.');
 	}
 
@@ -38,9 +41,10 @@ module.exports = function AsyncIteratorClose(iteratorRecord, completion) {
 		$then(
 			$then(
 				new $Promise(function (resolve) {
-					resolve(GetMethod(iterator, 'return')); // step 4
+					resolve(GetMethod(/** @type {Parameters<typeof GetMethod>[0]} */ (/** @type {unknown} */ (iterator)), 'return')); // step 4
 					// resolve(Call(ret, iterator, [])); // step 6
 				}),
+				/** @param {import('../types').Func} returnV */
 				function (returnV) { // step 5.a
 					if (typeof returnV === 'undefined') {
 						return completion; // step 5.b
@@ -49,6 +53,7 @@ module.exports = function AsyncIteratorClose(iteratorRecord, completion) {
 				}
 			),
 			null,
+			/** @param {unknown} e */
 			function (e) {
 				if (completion.type() === 'throw') {
 					completion['?'](); // step 6
@@ -57,6 +62,7 @@ module.exports = function AsyncIteratorClose(iteratorRecord, completion) {
 				}
 			}
 		),
+		/** @param {object} innerResult */
 		function (innerResult) { // step 8
 			if (completion.type() === 'throw') {
 				completion['?'](); // step 6

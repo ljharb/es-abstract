@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -7,6 +9,8 @@ var callBound = require('call-bound');
 var $slice = callBound('String.prototype.slice');
 
 // https://262.ecma-international.org/12.0/#substring
+
+/** @type {(S: string, inclusiveStart: import('../types').integer, exclusiveEnd?: import('../types').integer) => string} */
 module.exports = function substring(S, inclusiveStart, exclusiveEnd) {
 	if (typeof S !== 'string' || !isInteger(inclusiveStart) || (arguments.length > 2 && !isInteger(exclusiveEnd))) {
 		throw new $TypeError('`S` must be a String, and `inclusiveStart` and `exclusiveEnd` must be integers');

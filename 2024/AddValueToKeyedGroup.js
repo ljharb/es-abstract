@@ -10,6 +10,9 @@ var forEach = require('../helpers/forEach');
 
 var hasOwn = require('hasown');
 
+/** @template K @template V @typedef {{ '[[Key]]': K, '[[Elements]]': V[] }} KeyedGroup */
+
+/** @type {<K, V>(group: unknown) => group is KeyedGroup<K, V>} */
 var isKeyedGroup = function (group) {
 	return hasOwn(group, '[[Key]]')
         && hasOwn(group, '[[Elements]]')
@@ -18,6 +21,7 @@ var isKeyedGroup = function (group) {
 
 // https://262.ecma-international.org/15.0/#sec-add-value-to-keyed-group
 
+/** @type {<K, V>(groups: KeyedGroup<K, V>[], key: K, value: V) => void} */
 module.exports = function AddValueToKeyedGroup(groups, key, value) {
 	if (!IsArray(groups) || (groups.length > 0 && !every(groups, isKeyedGroup))) {
 		throw new $TypeError('Assertion failed: `groups` must be a List of Records with [[Key]] and [[Elements]]');
@@ -37,6 +41,7 @@ module.exports = function AddValueToKeyedGroup(groups, key, value) {
 	});
 
 	if (matched === 0) {
+		/** @type {typeof groups[number]} */
 		var group = { '[[Key]]': key, '[[Elements]]': [value] }; // step 2
 
 		// eslint-disable-next-line no-param-reassign

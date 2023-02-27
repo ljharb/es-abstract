@@ -14,6 +14,7 @@ var ToPropertyDescriptor = require('./ToPropertyDescriptor');
 
 // https://262.ecma-international.org/6.0/#sec-definepropertyorthrow
 
+/** @type {<T>(O: Record<PropertyKey, T>, P: string | symbol, desc: PropertyDescriptor | import('../types').Descriptor<T>) => boolean} */
 module.exports = function DefinePropertyOrThrow(O, P, desc) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');

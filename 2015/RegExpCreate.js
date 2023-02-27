@@ -10,6 +10,7 @@ var ToString = require('./ToString');
 
 // https://262.ecma-international.org/6.0/#sec-regexpcreate
 
+/** @type {(P?: Parameters<ToString>[0], F?: Parameters<ToString>[0]) => RegExp} */
 module.exports = function RegExpCreate(P, F) {
 	// var obj = RegExpAlloc($RegExp);
 	// return RegExpInitialize(obj, P, F);

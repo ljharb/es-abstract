@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
@@ -20,7 +22,15 @@ var ToString = require('./ToString');
 var SLOT = require('internal-slot');
 var setToStringTag = require('es-set-tostringtag');
 
-var RegExpStringIterator = function RegExpStringIterator(R, S, global, fullUnicode) {
+/**
+ * @constructor
+ * @param {RegExp} R
+ * @param {string} S
+ * @param {boolean} global
+ * @param {boolean} fullUnicode
+ */
+
+function RegExpStringIterator(R, S, global, fullUnicode) {
 	if (typeof S !== 'string') {
 		throw new $TypeError('`S` must be a string');
 	}
@@ -35,12 +45,13 @@ var RegExpStringIterator = function RegExpStringIterator(R, S, global, fullUnico
 	SLOT.set(this, '[[Global]]', global);
 	SLOT.set(this, '[[Unicode]]', fullUnicode);
 	SLOT.set(this, '[[Done]]', false);
-};
+}
 
 if (IteratorPrototype) {
 	RegExpStringIterator.prototype = OrdinaryObjectCreate(IteratorPrototype);
 }
 
+/** @type {(this: RegExpStringIterator) => IteratorResult<undefined | object | RegExpExecArray>} */
 var RegExpStringIteratorNext = function next() {
 	var O = this; // eslint-disable-line no-invalid-this
 	if (!isObject(O)) {
@@ -59,17 +70,19 @@ var RegExpStringIteratorNext = function next() {
 	if (SLOT.get(O, '[[Done]]')) {
 		return CreateIterResultObject(undefined, true);
 	}
-	var R = SLOT.get(O, '[[IteratingRegExp]]');
-	var S = SLOT.get(O, '[[IteratedString]]');
-	var global = SLOT.get(O, '[[Global]]');
-	var fullUnicode = SLOT.get(O, '[[Unicode]]');
+	// esllint-disable-next-line no-extra-parens
+	var R = /** @type {RegExp} */ (SLOT.get(O, '[[IteratingRegExp]]'));
+	// esllint-disable-next-line no-extra-parens
+	var S = /** @type {string} */ (SLOT.get(O, '[[IteratedString]]'));
+	var global = !!SLOT.get(O, '[[Global]]');
+	var fullUnicode = !!SLOT.get(O, '[[Unicode]]');
 	var match = RegExpExec(R, S);
 	if (match === null) {
 		SLOT.set(O, '[[Done]]', true);
 		return CreateIterResultObject(undefined, true);
 	}
 	if (global) {
-		var matchStr = ToString(Get(match, '0'));
+		var matchStr = ToString(/* Get(match, '0') */ match[0]);
 		if (matchStr === '') {
 			var thisIndex = ToLength(Get(R, 'lastIndex'));
 			var nextIndex = AdvanceStringIndex(S, thisIndex, fullUnicode);
@@ -80,20 +93,25 @@ var RegExpStringIteratorNext = function next() {
 	SLOT.set(O, '[[Done]]', true);
 	return CreateIterResultObject(match, false);
 };
-CreateMethodProperty(RegExpStringIterator.prototype, 'next', RegExpStringIteratorNext);
+// @ts-expect-error TS can't figure out that .prototype on a function is never not assigned
+var proto = RegExpStringIterator.prototype;
+CreateMethodProperty(/** @type {Parameters<typeof CreateMethodProperty>[0]} */ (proto), 'next', RegExpStringIteratorNext);
 
 if (hasSymbols) {
-	setToStringTag(RegExpStringIterator.prototype, 'RegExp String Iterator');
+	setToStringTag(proto, 'RegExp String Iterator');
 
-	if (Symbol.iterator && typeof RegExpStringIterator.prototype[Symbol.iterator] !== 'function') {
+	if (Symbol.iterator && typeof /** @type {{ [Symbol.iterator]?: unknown }} */ (proto)[Symbol.iterator] !== 'function') {
+		/** @type {<T>(this: T) => T} */
 		var iteratorFn = function SymbolIterator() {
 			return this;
 		};
-		CreateMethodProperty(RegExpStringIterator.prototype, Symbol.iterator, iteratorFn);
+		CreateMethodProperty(/** @type {Parameters<typeof CreateMethodProperty>[0]} */ (proto), Symbol.iterator, iteratorFn);
 	}
 }
 
 // https://262.ecma-international.org/11.0/#sec-createregexpstringiterator
+
+/** @type {(R: RegExp, S: string, global: boolean, fullUnicode: boolean) => RegExpStringIterator} */
 module.exports = function CreateRegExpStringIterator(R, S, global, fullUnicode) {
 	// assert R.global === global && R.unicode === fullUnicode?
 	return new RegExpStringIterator(R, S, global, fullUnicode);

@@ -14,11 +14,13 @@ var IsConstructor = require('./IsConstructor');
 
 // https://262.ecma-international.org/6.0/#sec-arrayspeciescreate
 
+/** @type {<T>(originalArray: T[] & { constructor?: import('../types').Constructor<T[], ArrayConstructor> }, length: import('../types').integer) => T[]} */
 module.exports = function ArraySpeciesCreate(originalArray, length) {
 	if (!isInteger(length) || length < 0) {
 		throw new $TypeError('Assertion failed: length must be an integer >= 0');
 	}
 	var len = length === 0 ? 0 : length;
+	/** @type {undefined | typeof originalArray.constructor} */
 	var C;
 	var isArray = IsArray(originalArray);
 	if (isArray) {

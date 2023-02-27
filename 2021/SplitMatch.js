@@ -9,6 +9,7 @@ var $charAt = callBound('String.prototype.charAt');
 
 // https://262.ecma-international.org/12.0/#sec-splitmatch
 
+/** @type {(S: string, q: import('../types').integer, R: string) => 'not-matched' | import('../types').integer} */
 module.exports = function SplitMatch(S, q, R) {
 	if (typeof S !== 'string') {
 		throw new $TypeError('Assertion failed: `S` must be a String');

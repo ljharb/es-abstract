@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var callBound = require('call-bound');
@@ -8,6 +10,7 @@ var isObject = require('es-object-atoms/isObject');
 
 // https://262.ecma-international.org/6.0/#sec-ispromise
 
+/** @type {<T>(x: unknown) => x is Promise<T>} */
 module.exports = function IsPromise(x) {
 	if (!isObject(x)) {
 		return false;

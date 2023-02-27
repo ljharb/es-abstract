@@ -7,6 +7,7 @@ var $getProto = require('get-proto');
 
 // https://262.ecma-international.org/7.0/#sec-ordinarygetprototypeof
 
+/** @type {(o: object) => object | null} */
 module.exports = function OrdinaryGetPrototypeOf(O) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: O must be an Object');

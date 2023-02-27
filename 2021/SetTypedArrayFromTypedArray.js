@@ -25,6 +25,7 @@ var tableTAO = require('./tables/typed-array-objects');
 
 // https://262.ecma-international.org/12.0/#sec-settypedarrayfromtypedarray
 
+/** @type {(target: import('../types').TypedArray, targetOffset: import('../types').integer, source: import('../types').TypedArray) => void} */
 module.exports = function SetTypedArrayFromTypedArray(target, targetOffset, source) {
 	var whichTarget = whichTypedArray(target);
 	if (!whichTarget) {
@@ -56,17 +57,17 @@ module.exports = function SetTypedArrayFromTypedArray(target, targetOffset, sour
 
 	var targetName = whichTarget; // step 7
 
-	var targetType = tableTAO.name['$' + targetName]; // step 8
+	var targetType = tableTAO.name[/** @type {`$${typeof targetName}`} */ ('$' + targetName)]; // step 8
 
-	var targetElementSize = tableTAO.size['$' + targetType]; // step 9
+	var targetElementSize = tableTAO.size[/** @type {`$${typeof targetType}`} */ ('$' + targetType)]; // step 9
 
 	var targetByteOffset = typedArrayByteOffset(target); // step 10
 
 	var srcName = whichSource; // step 11
 
-	var srcType = tableTAO.name['$' + srcName]; // step 12
+	var srcType = tableTAO.name[/** @type {`$${typeof srcName}`} */ ('$' + srcName)]; // step 12
 
-	var srcElementSize = tableTAO.size['$' + srcType]; // step 13
+	var srcElementSize = tableTAO.size[/** @type {`$${typeof srcType}`} */ ('$' + srcType)]; // step 13
 
 	var srcLength = typedArrayLength(source); // step 14
 
@@ -98,7 +99,7 @@ module.exports = function SetTypedArrayFromTypedArray(target, targetOffset, sour
 	if (same) { // step 21
 		var srcByteLength = typedArrayByteLength(source); // step 21.a
 
-		srcBuffer = CloneArrayBuffer(srcBuffer, srcByteOffset, srcByteLength, $ArrayBuffer); // step 21.b
+		srcBuffer = CloneArrayBuffer(srcBuffer, srcByteOffset, srcByteLength, /** @type {ArrayBufferConstructor} */ ($ArrayBuffer)); // step 21.b
 
 		// c. NOTE: %ArrayBuffer% is used to clone srcBuffer because is it known to not have any observable side-effects.
 

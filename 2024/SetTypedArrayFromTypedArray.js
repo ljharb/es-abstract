@@ -22,10 +22,11 @@ var whichTypedArray = require('which-typed-array');
 var GetIntrinsic = require('call-bound');
 var isInteger = require('math-intrinsics/isInteger');
 
-var $ArrayBuffer = GetIntrinsic('%ArrayBuffer%', true);
+var $ArrayBuffer = /** @type {ArrayBufferConstructor | undefined} */ (GetIntrinsic('%ArrayBuffer%', true));
 
 // https://262.ecma-international.org/15.0/#sec-settypedarrayfromtypedarray
 
+/** @type {(target: import('../types').TypedArray, targetOffset: import('../types').integer, source: import('../types').TypedArray) => void} */
 module.exports = function SetTypedArrayFromTypedArray(target, targetOffset, source) {
 	var whichTarget = whichTypedArray(target);
 	if (!whichTarget) {
@@ -96,7 +97,7 @@ module.exports = function SetTypedArrayFromTypedArray(target, targetOffset, sour
 	var srcByteIndex;
 	if (SameValue(srcBuffer, targetBuffer) || sameSharedArrayBuffer) { // step 19
 		var srcByteLength = TypedArrayByteLength(srcRecord); // step 19.a
-		srcBuffer = CloneArrayBuffer(srcBuffer, srcByteOffset, srcByteLength, $ArrayBuffer); // step 19.b
+		srcBuffer = CloneArrayBuffer(srcBuffer, srcByteOffset, srcByteLength, /** @type {NonNullable<typeof $ArrayBuffer>} */ ($ArrayBuffer)); // step 19.b
 		srcByteIndex = 0; // step 19.c
 	} else { // step 20
 		srcByteIndex = srcByteOffset; // step 20.a

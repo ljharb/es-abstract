@@ -35,6 +35,7 @@ var TypeToAO = {
 
 // https://262.ecma-international.org/15.0/#sec-numerictorawbytes
 
+/** @type {(type: Exclude<keyof typeof TypeToSizes, '__proto__'>, value: number | bigint, isLittleEndian: boolean) => number[]} */
 module.exports = function NumericToRawBytes(type, value, isLittleEndian) {
 	if (typeof type !== 'string' || !hasOwnProperty(tableTAO.size, '$' + type)) {
 		throw new $TypeError('Assertion failed: `type` must be a TypedArray element type');
@@ -47,9 +48,11 @@ module.exports = function NumericToRawBytes(type, value, isLittleEndian) {
 	}
 
 	if (type === 'FLOAT32') { // step 1
-		return valueToFloat32Bytes(value, isLittleEndian);
+
+		return valueToFloat32Bytes(/** @type {number} */ (value), isLittleEndian);
 	} else if (type === 'FLOAT64') { // step 2
-		return valueToFloat64Bytes(value, isLittleEndian);
+
+		return valueToFloat64Bytes(/** @type {number} */ (value), isLittleEndian);
 	} // step 3
 
 	var n = tableTAO.size['$' + type]; // step 3.a

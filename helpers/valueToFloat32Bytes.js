@@ -10,11 +10,13 @@ var isNegativeZero = require('math-intrinsics/isNegativeZero');
 
 var maxFiniteFloat32 = 3.4028234663852886e+38; // roughly 2 ** 128 - 1
 
+/** @type {(value: number, isLittleEndian: boolean) => import('../types').ByteValue[]} */
 module.exports = function valueToFloat32Bytes(value, isLittleEndian) {
 	if (isNaN(value)) {
 		return isLittleEndian ? [0, 0, 192, 127] : [127, 192, 0, 0]; // hardcoded
 	}
 
+	/** @type {import('../types').ByteValue} */
 	var leastSig;
 
 	if (value === 0) {
@@ -52,13 +54,17 @@ module.exports = function valueToFloat32Bytes(value, isLittleEndian) {
         | exponent
         | mantissa;
 
-	var byte0 = result & 255;
+	// eslint-disable-next-line no-extra-parens
+	var byte0 = /** @type {import('../types').ByteValue} */ (result & 255);
 	result >>= 8;
-	var byte1 = result & 255;
+	// eslint-disable-next-line no-extra-parens
+	var byte1 = /** @type {import('../types').ByteValue} */ (result & 255);
 	result >>= 8;
-	var byte2 = result & 255;
+	// eslint-disable-next-line no-extra-parens
+	var byte2 = /** @type {import('../types').ByteValue} */ (result & 255);
 	result >>= 8;
-	var byte3 = result & 255;
+	// eslint-disable-next-line no-extra-parens
+	var byte3 = /** @type {import('../types').ByteValue} */ (result & 255);
 
 	if (isLittleEndian) {
 		return [byte0, byte1, byte2, byte3];

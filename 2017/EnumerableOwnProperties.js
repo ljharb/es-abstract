@@ -13,22 +13,29 @@ var forEach = require('../helpers/forEach');
 
 // https://262.ecma-international.org/8.0/#sec-enumerableownproperties
 
+/** @type {import('../types').EnumerableOwnPropertyNames} */
 module.exports = function EnumerableOwnProperties(O, kind) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
 	}
 
+	/** @typedef {keyof typeof O} K */
+	/** @typedef {typeof O[K]} V */
+	/** @type {K[]} */
 	var keys = objectKeys(O);
 	if (kind === 'key') {
 		return keys;
 	}
 	if (kind === 'value' || kind === 'key+value') {
+
+		/** @type {(V | [K, V])[]} */
 		var results = [];
 		forEach(keys, function (key) {
 			if ($isEnumerable(O, key)) {
-				safePushApply(results, [
-					kind === 'value' ? O[key] : [key, O[key]]
-				]);
+				/** @type {V} */
+				var v = O[key];
+				var result = kind === 'value' ? v : /** @type {const} */ ([key, v]);
+				safePushApply(results, [result]);
 			}
 		});
 		return results;

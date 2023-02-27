@@ -5,10 +5,11 @@ var $TypeError = require('es-errors/type');
 var inspect = require('object-inspect');
 
 var isPropertyKey = require('../helpers/isPropertyKey');
-// var ToObject = require('./ToObject');
+var ToObject = require('./ToObject');
 
 // https://262.ecma-international.org/6.0/#sec-getv
 
+/** @type {import('../types').GetV} */
 module.exports = function GetV(V, P) {
 	// 7.3.2.1
 	if (!isPropertyKey(P)) {
@@ -16,8 +17,8 @@ module.exports = function GetV(V, P) {
 	}
 
 	// 7.3.2.2-3
-	// var O = ToObject(V);
+	var O = ToObject(V);
 
 	// 7.3.2.4
-	return V[P];
+	return O[P];
 };

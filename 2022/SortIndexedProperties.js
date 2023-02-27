@@ -7,7 +7,7 @@ var isInteger = require('math-intrinsics/isInteger');
 var isObject = require('es-object-atoms/isObject');
 
 var DeletePropertyOrThrow = require('./DeletePropertyOrThrow');
-var Get = require('./Get');
+// var Get = require('./Get');
 var HasProperty = require('./HasProperty');
 var Set = require('./Set');
 var ToString = require('./ToString');
@@ -18,6 +18,7 @@ var $sort = callBound('Array.prototype.sort');
 
 // https://262.ecma-international.org/13.0/#sec-sortindexedproperties
 
+/** @type {<V>(obj: ArrayLike<V>, len: import('../types').nonNegativeInteger, SortCompare: (a: unknown, b: unknown) => number) => ArrayLike<V>} */
 module.exports = function SortIndexedProperties(obj, len, SortCompare) {
 	if (!isObject(obj)) {
 		throw new $TypeError('Assertion failed: Type(obj) is not Object');
@@ -29,6 +30,9 @@ module.exports = function SortIndexedProperties(obj, len, SortCompare) {
 		throw new $TypeError('Assertion failed: `SortCompare` must be an abstract closure taking 2 arguments');
 	}
 
+	/** @typedef {typeof obj[number]} V */
+
+	/** @type {V[]} */
 	var items = []; // step 1
 
 	var k = 0; // step 2
@@ -37,7 +41,7 @@ module.exports = function SortIndexedProperties(obj, len, SortCompare) {
 		var Pk = ToString(k);
 		var kPresent = HasProperty(obj, Pk);
 		if (kPresent) {
-			var kValue = Get(obj, Pk);
+			var kValue = obj[k]; // Get(obj, Pk);
 			items[items.length] = kValue;
 		}
 		k += 1;
@@ -50,12 +54,12 @@ module.exports = function SortIndexedProperties(obj, len, SortCompare) {
 	var j = 0; // step 6
 
 	while (j < itemCount) { // step 7
-		Set(obj, ToString(j), items[j], true);
+		Set(/** @type {Record<string, number | V>} */ (/** @type {unknown} */ (obj)), ToString(j), items[j], true);
 		j += 1;
 	}
 
 	while (j < len) { // step 8
-		DeletePropertyOrThrow(obj, ToString(j));
+		DeletePropertyOrThrow(/** @type {Record<string, number | V>} */ (/** @type {unknown} */ (obj)), ToString(j));
 		j += 1;
 	}
 	return obj; // step 9

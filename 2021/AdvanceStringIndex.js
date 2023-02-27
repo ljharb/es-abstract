@@ -8,6 +8,7 @@ var MAX_SAFE_INTEGER = require('math-intrinsics/constants/maxSafeInteger');
 
 // https://262.ecma-international.org/12.0/#sec-advancestringindex
 
+/** @type {(S: string, index: import('../types').nonNegativeInteger, unicode: boolean) => number} */
 module.exports = function AdvanceStringIndex(S, index, unicode) {
 	if (typeof S !== 'string') {
 		throw new $TypeError('Assertion failed: `S` must be a String');

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -8,6 +10,7 @@ var IsInteger = require('./IsInteger');
 var every = require('../helpers/every');
 var regexTester = require('safe-regex-test');
 
+/** @type {(c: unknown) => c is string} */
 var isChar = function isChar(c) {
 	return typeof c === 'string' && c.length === 1;
 };
@@ -16,6 +19,7 @@ var isWordCharacter = regexTester(/^[a-zA-Z0-9_]$/);
 
 // https://262.ecma-international.org/6.0/#sec-runtime-semantics-iswordchar-abstract-operation
 
+/** @type {(e: import('../types').integer, InputLength: import('../types').integer, Input: string[]) => boolean} */
 // note: prior to ES2023, this AO erroneously omitted the latter of its arguments.
 module.exports = function IsWordChar(e, InputLength, Input) {
 	if (!IsInteger(e)) {

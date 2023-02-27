@@ -6,8 +6,10 @@ var getIteratorMethod = require('../../helpers/getIteratorMethod');
 
 var ES = require('../../es2021');
 
+/** @type {<T>(t: test.Test, iterator: Iterator<T, T, T>) => T[]} */
 var testIterator = function (t, iterator) {
 	var result = iterator.next();
+	/** @type {(typeof result.value)[]} */
 	var values = [];
 	if (!result.done) {
 		values.push(result.value);

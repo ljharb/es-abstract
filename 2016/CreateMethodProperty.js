@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -12,6 +14,7 @@ var SameValue = require('./SameValue');
 
 // https://262.ecma-international.org/6.0/#sec-createmethodproperty
 
+/** @type {<T extends import('../types').PropertyKey, V = unknown>(O: Record<T, V>, P: T, V: V) => ReturnType<DefineOwnProperty>} */
 module.exports = function CreateMethodProperty(O, P, V) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');

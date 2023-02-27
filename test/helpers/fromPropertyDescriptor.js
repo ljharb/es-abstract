@@ -18,12 +18,14 @@ test('fromPropertyDescriptor', function (t) {
 	);
 
 	t.deepEqual(
+		// @ts-expect-error
 		fromPropertyDescriptor({ enumerable: false }),
 		{},
 		'descriptor obj -> empty obj'
 	);
 
 	t.deepEqual(
+		// @ts-expect-error
 		fromPropertyDescriptor({
 			'[[Configurable]]': 'true',
 			'[[Enumerable]]': 'false',

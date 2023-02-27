@@ -23,10 +23,12 @@ var forEach = require('../helpers/forEach');
 // https://262.ecma-international.org/8.0/#sec-setvalueinbuffer
 
 /* eslint max-params: 0 */
+/** @typedef {import('../types').TypedArrayTypeByName<Exclude<import('../types').TypedArrayName, 'BigInt64Array' | 'BigUint64Array'>>} TypedArrayType */
 
+/** @type {(arrayBuffer: ArrayBuffer, byteIndex: import('../types').integer, type: TypedArrayType, value: number, isTypedArray: boolean, order: 'SeqCst' | 'Unordered' | 'Init') => void} */
 module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value, isTypedArray, order) {
 	var isSAB = isSharedArrayBuffer(arrayBuffer);
-	if (!isArrayBuffer(arrayBuffer) && !isSAB) {
+	if ((!isArrayBuffer(arrayBuffer) && !isSAB) || !$Uint8Array) {
 		throw new $TypeError('Assertion failed: `arrayBuffer` must be an ArrayBuffer or a SharedArrayBuffer');
 	}
 
@@ -67,7 +69,8 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value, 
 
 	// 5. Let block be arrayBuffer.[[ArrayBufferData]].
 
-	var elementSize = tableTAO.size['$' + type]; // step 6
+	// eslint-disable-next-line no-extra-parens
+	var elementSize = tableTAO.size[/** @type {`$${TypedArrayType}`} */ ('$' + type)]; // step 6
 
 	// 7. If isLittleEndian is not present, set isLittleEndian to to the value of the [[LittleEndian]] field of the surrounding agent's Agent Record.
 	var isLittleEndian = arguments.length > 6 ? arguments[6] : defaultEndianness === 'little'; // step 8

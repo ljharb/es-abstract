@@ -12,6 +12,7 @@ test('OwnPropertyKeys', function (t) {
 	t.deepEqual(OwnPropertyKeys({ a: 1, b: 2 }).sort(), ['a', 'b'].sort(), 'returns own string keys');
 
 	t.test('Symbols', { skip: !hasSymbols }, function (st) {
+		/** @type {Record<string | symbol, number>} */
 		var o = { a: 1 };
 		var sym = Symbol();
 		o[sym] = 2;
@@ -22,6 +23,7 @@ test('OwnPropertyKeys', function (t) {
 	});
 
 	t.test('non-enumerables', { skip: !$defineProperty }, function (st) {
+		/** @type {Record<string | symbol, number>} */
 		var o = { a: 1, b: 42, c: NaN };
 		defineDataProperty(o, 'b', { nonEnumerable: true, value: 42 });
 		defineAccessorProperty(o, 'c', { nonEnumerable: true, get: function () { return NaN; } });

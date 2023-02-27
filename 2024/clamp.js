@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -6,6 +8,7 @@ var min = require('math-intrinsics/min');
 
 // https://262.ecma-international.org/12.0/#clamping
 
+/** @type {(x: number, lower: number, upper: number) => number} */
 module.exports = function clamp(x, lower, upper) {
 	if (typeof x !== 'number' || typeof lower !== 'number' || typeof upper !== 'number' || !(lower <= upper)) {
 		throw new $TypeError('Assertion failed: all three arguments must be MVs, and `lower` must be `<= upper`');

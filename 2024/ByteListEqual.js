@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -8,6 +10,7 @@ var isByteValue = require('../helpers/isByteValue');
 
 // https://262.ecma-international.org/12.0/#sec-bytelistequal
 
+/** @type {(xByte: import('../types').ByteValue[], yBytes: import('../types').ByteValue[]) => boolean} */
 module.exports = function ByteListEqual(xBytes, yBytes) {
 	if (!IsArray(xBytes) || !IsArray(yBytes)) {
 		throw new $TypeError('Assertion failed: `xBytes` and `yBytes` must be sequences of byte values (an integer 0-255, inclusive)');

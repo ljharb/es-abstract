@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $gOPD = require('gopd');
@@ -13,6 +15,7 @@ var ToPropertyDescriptor = require('./ToPropertyDescriptor');
 
 // https://262.ecma-international.org/6.0/#sec-testintegritylevel
 
+/** @type {<T>(O: { [k: string | symbol]: T }, level: 'sealed' | 'frozen') => boolean} */
 module.exports = function TestIntegrityLevel(O, level) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
@@ -26,6 +29,7 @@ module.exports = function TestIntegrityLevel(O, level) {
 	}
 	var theKeys = OwnPropertyKeys(O);
 	return theKeys.length === 0 || every(theKeys, function (k) {
+		// @ts-expect-error TS fails to recognize narrowing inside a closure
 		var currentDesc = $gOPD(O, k);
 		if (typeof currentDesc !== 'undefined') {
 			if (currentDesc.configurable) {

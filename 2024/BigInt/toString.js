@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $SyntaxError = require('es-errors/syntax');
@@ -9,6 +11,7 @@ var $BigIntToString = callBound('BigInt.prototype.toString', true);
 
 // https://262.ecma-international.org/14.0/#sec-numeric-types-bigint-tostring
 
+/** @type {(x: bigint, radix: import('../../types').IntRange<2, 36>) => string} */
 module.exports = function BigIntToString(x, radix) {
 	if (typeof x !== 'bigint') {
 		throw new $TypeError('Assertion failed: `x` must be a BigInt');

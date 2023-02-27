@@ -18,6 +18,7 @@ var tableTAO = require('./tables/typed-array-objects');
 
 // https://262.ecma-international.org/6.0/#sec-integerindexedelementset
 
+/** @type {(O: Exclude<import('../types').TypedArray, BigInt64Array | BigUint64Array>, index: import('../types').integer, value: import('../types').integer) => boolean} */
 module.exports = function IntegerIndexedElementSet(O, index, value) {
 	if (typeof index !== 'number') {
 		throw new $TypeError('`index` must be a Number'); // step 1
@@ -50,9 +51,11 @@ module.exports = function IntegerIndexedElementSet(O, index, value) {
 
 	var offset = typedArrayByteOffset(O); // step 11
 
-	var elementType = tableTAO.name['$' + arrayTypeName]; // step 15
+	// eslint-disable-next-line no-extra-parens
+	var elementType = tableTAO.name[/** @type {`$${typeof arrayTypeName}`} */ ('$' + arrayTypeName)]; // step 15
 
-	var elementSize = tableTAO.size['$' + elementType]; // step 13
+	// eslint-disable-next-line no-extra-parens
+	var elementSize = tableTAO.size[/** @type {`$${typeof elementType}`} */ ('$' + elementType)]; // step 13
 
 	var indexedPosition = (index * elementSize) + offset; // step 14
 

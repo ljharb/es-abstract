@@ -13,12 +13,14 @@ var every = require('../helpers/every');
 
 var isInteger = require('math-intrinsics/isInteger');
 
+/** @type {(c: unknown) => c is string} */
 var isChar = function isChar(c) {
 	return typeof c === 'string';
 };
 
 // https://262.ecma-international.org/12.0/#sec-runtime-semantics-iswordchar-abstract-operation
 
+/** @type {(e: import('../types').integer, InputLength: import('../types').integer, Input: string[]) => boolean} */
 // note: prior to ES2023, this AO erroneously omitted the latter of its arguments.
 module.exports = function IsWordChar(e, InputLength, Input, IgnoreCase, Unicode) {
 	if (!isInteger(e)) {

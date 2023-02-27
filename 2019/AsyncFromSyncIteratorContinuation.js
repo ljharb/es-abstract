@@ -18,6 +18,7 @@ var $then = callBound('Promise.prototype.then', true);
 
 // https://262.ecma-international.org/10.0/#sec-asyncfromsynciteratorcontinuation
 
+/** @type {<T>(result: IteratorResult<T>) => Promise<IteratorResult<T>>} */
 module.exports = function AsyncFromSyncIteratorContinuation(result) {
 	if (!isObject(result)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
@@ -34,12 +35,14 @@ module.exports = function AsyncFromSyncIteratorContinuation(result) {
 	return new $Promise(function (resolve) {
 		var done = IteratorComplete(result); // step 2
 		var value = IteratorValue(result); // step 4
+		// @ts-expect-error TS can't narrow inside a closure
 		var valueWrapper = PromiseResolve($Promise, value); // step 6
 
+		/** @type {Parameters<typeof Promise.prototype.then>[0]} */
 		// eslint-disable-next-line no-shadow
 		var onFulfilled = function (value) { // steps 8-9
 			return CreateIterResultObject(value, done); // step 8.a
 		};
-		resolve($then(valueWrapper, onFulfilled)); // step 11
+		resolve(/** @type {NonNullable<typeof $then>} */ ($then)(valueWrapper, onFulfilled)); // step 11
 	}); // step 12
 };

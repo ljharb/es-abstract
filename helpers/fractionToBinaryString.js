@@ -3,6 +3,7 @@
 var MAX_ITER = 1075; // 1023+52 (subnormals) => BIAS+NUM_SIGNFICAND_BITS-1
 var maxBits = 54; // only 53 bits for fraction
 
+/** @type {(x: number) => string} */
 module.exports = function fractionToBitString(x) {
 	var str = '';
 	if (x === 0) {

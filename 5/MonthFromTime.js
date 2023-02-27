@@ -7,6 +7,7 @@ var InLeapYear = require('./InLeapYear');
 
 // https://262.ecma-international.org/5.1/#sec-15.9.1.4
 
+/** @type {(t: number) => import('../types').IntRange<0, 12>} */
 module.exports = function MonthFromTime(t) {
 	var day = DayWithinYear(t);
 	if (0 <= day && day < 31) {

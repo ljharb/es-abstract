@@ -11,6 +11,7 @@ var isSameType = require('../helpers/isSameType');
 
 // https://262.ecma-international.org/11.0/#sec-abstract-equality-comparison
 
+/** @type {(x: unknown, y: unknown) => boolean} */
 module.exports = function AbstractEqualityComparison(x, y) {
 	if (isSameType(x, y)) {
 		return StrictEqualityComparison(x, y);

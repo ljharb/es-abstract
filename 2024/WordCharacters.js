@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -16,6 +18,7 @@ var basicWordChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 
 // https://262.ecma-international.org/14.0/#sec-runtime-semantics-wordcharacters-abstract-operation
 
+/** @type {(rer: import('../types').RegExpRecord) => string} */
 module.exports = function WordCharacters(rer) {
 	if (!isRegExpRecord(rer)) {
 		throw new $TypeError('Assertion failed: `rer` must be a RegExp Record');

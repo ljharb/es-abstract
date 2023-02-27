@@ -8,6 +8,7 @@ var SameValueZero = require('./SameValueZero');
 
 // https://262.ecma-international.org/8.0/#sec-toindex
 
+/** @type {(value: undefined | unknown) => import('../types').arrayLength} */
 module.exports = function ToIndex(value) {
 	if (typeof value === 'undefined') {
 		return 0;

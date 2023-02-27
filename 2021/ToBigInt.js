@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
@@ -14,6 +16,7 @@ var isNaN = require('math-intrinsics/isNaN');
 
 // https://262.ecma-international.org/11.0/#sec-tobigint
 
+/** @type {(argument: unknown) => bigint} */
 module.exports = function ToBigInt(argument) {
 	if (!$BigInt) {
 		throw new $SyntaxError('BigInts are not supported in this environment');
@@ -38,7 +41,8 @@ module.exports = function ToBigInt(argument) {
 		if (isNaN(n)) {
 			throw new $TypeError('Failed to parse String to BigInt');
 		}
-		return n;
+		// eslint-disable-next-line no-extra-parens
+		return /** @type {bigint} */ (n);
 	}
 
 	if (typeof prim === 'symbol') {

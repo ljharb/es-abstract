@@ -6,6 +6,7 @@ var msPerDay = require('../helpers/timeConstants').msPerDay;
 
 // https://262.ecma-international.org/5.1/#sec-15.9.1.13
 
+/** @type {(day: number, time: number) => number} */
 module.exports = function MakeDate(day, time) {
 	if (!$isFinite(day) || !$isFinite(time)) {
 		return NaN;

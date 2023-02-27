@@ -13,6 +13,7 @@ var typedArrayByteOffset = require('typed-array-byte-offset');
 
 // https://262.ecma-international.org/15.0/#sec-typedarraygetelement
 
+/** @type {(O: import('../types').TypedArray, index: number) => unknown} */
 module.exports = function TypedArrayGetElement(O, index) {
 	if (!isTypedArray(O)) {
 		throw new $TypeError('Assertion failed: `O` must be a TypedArray instance');

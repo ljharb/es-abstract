@@ -12,13 +12,13 @@ var isTypedArray = require('is-typed-array');
 
 // https://262.ecma-international.org/15.0/#sec-isarraybufferviewoutofbounds
 
+/** @type {(O: import('../types').TypedArray | DataView) => boolean} */
 module.exports = function IsArrayBufferViewOutOfBounds(O) {
-	var isDV = isDataView(O);
-	if (!isTypedArray(O) && !isDV) {
+	if (!isTypedArray(O) && !isDataView(O)) {
 		throw new $TypeError('Assertion failed: `O` must be a TypedArray or DataView');
 	}
 
-	if (isDV) { // step 1
+	if (isDataView(O)) { // step 1
 		var viewRecord = MakeDataViewWithBufferWitnessRecord(O, 'SEQ-CST'); // step 1.a
 
 		return IsViewOutOfBounds(viewRecord); // step 1.b

@@ -17,6 +17,7 @@ var forEach = require('../helpers/forEach');
 
 // note: `reviver` was implicitly closed-over until ES2020, where it becomes a third argument
 
+/** @type {<T extends { [k: string]: unknown } | unknown[]>(holder: T, name: string, reviver: import('../types').Func) => unknown} */
 module.exports = function InternalizeJSONProperty(holder, name, reviver) {
 	if (!isObject(holder)) {
 		throw new $TypeError('Assertion failed: `holder` is not an Object');
@@ -31,8 +32,7 @@ module.exports = function InternalizeJSONProperty(holder, name, reviver) {
 	var val = Get(holder, name); // step 1
 
 	if (isObject(val)) { // step 2
-		var isArray = IsArray(val); // step 2.a
-		if (isArray) { // step 2.b
+		if (IsArray(val)) { // step 2.a, 2.b
 			var I = 0; // step 2.b.i
 
 			var len = LengthOfArrayLike(val); // step 2.b.ii

@@ -22,7 +22,9 @@ var ES = {
 
 // https://262.ecma-international.org/9.0/#sec-getiterator
 
+/** @type {<T>(obj: Iterable<T>, hint?: 'sync' | 'async', method?: (this: typeof obj) => Iterator<T>) => Iterator<T>} */
 module.exports = function GetIterator(obj, hint, method) {
+	/** @typedef {import('../types').InferIterableType<typeof obj>} T */
 	var actualHint = hint;
 	if (arguments.length < 2) {
 		actualHint = 'sync';
@@ -31,13 +33,14 @@ module.exports = function GetIterator(obj, hint, method) {
 		throw new $TypeError("Assertion failed: `hint` must be one of 'sync' or 'async', got " + inspect(hint));
 	}
 
+	/** @type {(this: T) => Iterator<T> | undefined} */
 	var actualMethod = method;
 	if (arguments.length < 3) {
 		if (actualHint === 'async') {
 			if (hasSymbols && $asyncIterator) {
-				actualMethod = GetMethod(obj, $asyncIterator);
+				actualMethod = GetMethod(/** @type {Parameters<typeof GetMethod>[0]} */ (/** @type {unknown} */ (obj)), $asyncIterator);
 			}
-			if (actualMethod === undefined) {
+			if (typeof actualMethod === 'undefined') {
 				throw new $SyntaxError("async from sync iterators aren't currently supported");
 			}
 		} else {

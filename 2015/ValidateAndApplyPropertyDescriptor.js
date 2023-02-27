@@ -17,6 +17,7 @@ var SameValue = require('./SameValue');
 // https://262.ecma-international.org/6.0/#sec-validateandapplypropertydescriptor
 // https://262.ecma-international.org/8.0/#sec-validateandapplypropertydescriptor
 
+/** @type {import('../types').ValidateAndApplyPropertyDescriptor} */
 // eslint-disable-next-line max-lines-per-function, max-statements
 module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, Desc, current) {
 	// this uses the ES2017+ logic, since it fixes a number of bugs in the ES2015 logic.
@@ -46,12 +47,13 @@ module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, D
 					SameValue,
 					FromPropertyDescriptor,
 					O,
-					P,
+
+					/** @type {NonNullable<typeof P>} */ (P), // TS can't figure out that when O is defined, P is also
 					{
-						'[[Configurable]]': Desc['[[Configurable]]'],
-						'[[Enumerable]]': Desc['[[Enumerable]]'],
+						'[[Configurable]]': !!Desc['[[Configurable]]'],
+						'[[Enumerable]]': !!Desc['[[Enumerable]]'],
 						'[[Value]]': Desc['[[Value]]'],
-						'[[Writable]]': Desc['[[Writable]]']
+						'[[Writable]]': !!Desc['[[Writable]]']
 					}
 				);
 			}
@@ -65,7 +67,8 @@ module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, D
 					SameValue,
 					FromPropertyDescriptor,
 					O,
-					P,
+
+					/** @type {NonNullable<typeof P>} */ (P), // TS can't figure out that when O is defined, P is also
 					Desc
 				);
 			}
@@ -100,10 +103,11 @@ module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, D
 					SameValue,
 					FromPropertyDescriptor,
 					O,
-					P,
+
+					/** @type {NonNullable<typeof P>} */ (P), // TS can't figure out that when O is defined, P is also
 					{
-						'[[Configurable]]': current['[[Configurable]]'],
-						'[[Enumerable]]': current['[[Enumerable]]'],
+						'[[Configurable]]': !!current['[[Configurable]]'],
+						'[[Enumerable]]': !!current['[[Enumerable]]'],
 						'[[Get]]': undefined
 					}
 				);
@@ -114,10 +118,11 @@ module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, D
 				SameValue,
 				FromPropertyDescriptor,
 				O,
-				P,
+
+				/** @type {NonNullable<typeof P>} */ (P), // TS can't figure out that when O is defined, P is also
 				{
-					'[[Configurable]]': current['[[Configurable]]'],
-					'[[Enumerable]]': current['[[Enumerable]]'],
+					'[[Configurable]]': !!current['[[Configurable]]'],
+					'[[Enumerable]]': !!current['[[Enumerable]]'],
 					'[[Value]]': undefined
 				}
 			);
@@ -151,7 +156,8 @@ module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, D
 			SameValue,
 			FromPropertyDescriptor,
 			O,
-			P,
+
+			/** @type {NonNullable<typeof P>} */ (P), // TS can't figure out that when O is defined, P is also
 			Desc
 		);
 	}

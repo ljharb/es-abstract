@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
@@ -13,6 +15,7 @@ var $toTimeString = callBound('Date.prototype.toTimeString');
 
 // https://262.ecma-international.org/14.0/#sec-timezoneestring
 
+/** @type {(tv: number) => string} */
 module.exports = function TimeZoneString(tv) {
 	if (!isInteger(tv)) {
 		throw new $TypeError('Assertion failed: `tv` must be an integral Number');

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
@@ -13,6 +15,7 @@ var ToPrimitive = require('./ToPrimitive');
 
 // https://262.ecma-international.org/9.0/#sec-abstract-relational-comparison
 
+/** @type {(x: unknown, y: unknown, LeftFirst: boolean) => undefined | boolean} */
 module.exports = function AbstractRelationalComparison(x, y, LeftFirst) {
 	if (typeof LeftFirst !== 'boolean') {
 		throw new $TypeError('Assertion failed: LeftFirst argument must be a Boolean');
@@ -34,26 +37,27 @@ module.exports = function AbstractRelationalComparison(x, y, LeftFirst) {
 			return true;
 		}
 		return px < py; // both strings, neither a prefix of the other. shortcut for steps 3 c-f
+	} else { // eslint-disable-line no-else-return
+		var nx = ToNumber(px);
+		var ny = ToNumber(py);
+		if ($isNaN(nx) || $isNaN(ny)) {
+			return undefined;
+		}
+		if ($isFinite(nx) && $isFinite(ny) && nx === ny) {
+			return false;
+		}
+		if (nx === Infinity) {
+			return false;
+		}
+		if (ny === Infinity) {
+			return true;
+		}
+		if (ny === -Infinity) {
+			return false;
+		}
+		if (nx === -Infinity) {
+			return true;
+		}
+		return nx < ny; // by now, these are both nonzero, finite, and not equal
 	}
-	var nx = ToNumber(px);
-	var ny = ToNumber(py);
-	if ($isNaN(nx) || $isNaN(ny)) {
-		return undefined;
-	}
-	if ($isFinite(nx) && $isFinite(ny) && nx === ny) {
-		return false;
-	}
-	if (nx === Infinity) {
-		return false;
-	}
-	if (ny === Infinity) {
-		return true;
-	}
-	if (ny === -Infinity) {
-		return false;
-	}
-	if (nx === -Infinity) {
-		return true;
-	}
-	return nx < ny; // by now, these are both nonzero, finite, and not equal
 };

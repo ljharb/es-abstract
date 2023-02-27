@@ -11,6 +11,7 @@ var modulo = require('math-intrinsics/mod');
 
 // https://262.ecma-international.org/6.0/#sec-touint8
 
+/** @type {(argument: unknown) => import('../types').integer} */
 module.exports = function ToUint8(argument) {
 	var number = ToNumber(argument);
 	if ($isNaN(number) || number === 0 || !$isFinite(number)) { return 0; }

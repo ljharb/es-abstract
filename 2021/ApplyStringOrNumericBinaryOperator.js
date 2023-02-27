@@ -6,7 +6,6 @@ var HasOwnProperty = require('./HasOwnProperty');
 var ToNumeric = require('./ToNumeric');
 var ToPrimitive = require('./ToPrimitive');
 var ToString = require('./ToString');
-var Type = require('./Type');
 
 var NumberAdd = require('./Number/add');
 var NumberBitwiseAND = require('./Number/bitwiseAND');
@@ -36,7 +35,8 @@ var BigIntUnsignedRightShift = require('./BigInt/unsignedRightShift');
 // https://262.ecma-international.org/12.0/#sec-applystringornumericbinaryoperator
 
 // https://262.ecma-international.org/12.0/#step-applystringornumericbinaryoperator-operations-table
-var table = {
+var table = /** @type {const} */ ({
+	__proto__: null,
 	'**': [NumberExponentiate, BigIntExponentiate],
 	'*': [NumberMultiply, BigIntMultiply],
 	'/': [NumberDivide, BigIntDivide],
@@ -49,8 +49,9 @@ var table = {
 	'&': [NumberBitwiseAND, BigIntBitwiseAND],
 	'^': [NumberBitwiseXOR, BigIntBitwiseXOR],
 	'|': [NumberBitwiseOR, BigIntBitwiseOR]
-};
+});
 
+/** @type {(lval: unknown, opText: Exclude<keyof typeof table, '__proto__'>, rval: unknown) => string | number | bigint} */
 module.exports = function ApplyStringOrNumericBinaryOperator(lval, opText, rval) {
 	if (typeof opText !== 'string' || !HasOwnProperty(table, opText)) {
 		throw new $TypeError('Assertion failed: `opText` must be a valid operation string');
@@ -59,8 +60,8 @@ module.exports = function ApplyStringOrNumericBinaryOperator(lval, opText, rval)
 		var lprim = ToPrimitive(lval);
 		var rprim = ToPrimitive(rval);
 		if (typeof lprim === 'string' || typeof rprim === 'string') {
-			var lstr = ToString(lprim);
-			var rstr = ToString(rprim);
+			var lstr = /** @type {string} */ (ToString(lprim));
+			var rstr = /** @type {string} */ (ToString(rprim));
 			return lstr + rstr;
 		}
 		/* eslint no-param-reassign: 1 */
@@ -69,9 +70,13 @@ module.exports = function ApplyStringOrNumericBinaryOperator(lval, opText, rval)
 	}
 	var lnum = ToNumeric(lval);
 	var rnum = ToNumeric(rval);
-	if (Type(lnum) !== Type(rnum)) {
-		throw new $TypeError('types of ' + lnum + ' and ' + rnum + ' differ');
+	if (typeof lnum === 'bigint' && typeof rnum === 'bigint') {
+		var OperationB = table[opText][1];
+		return OperationB(lnum, rnum);
 	}
-	var Operation = table[opText][typeof lnum === 'bigint' ? 1 : 0];
-	return Operation(lnum, rnum);
+	if (typeof lnum === 'number' && typeof rnum === 'number') {
+		var OperationN = table[opText][0];
+		return OperationN(lnum, rnum);
+	}
+	throw new $TypeError('types of ' + lnum + ' and ' + rnum + ' differ');
 };

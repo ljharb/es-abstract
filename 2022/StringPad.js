@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -11,6 +13,7 @@ var $strSlice = callBound('String.prototype.slice');
 
 // https://262.ecma-international.org/11.0/#sec-stringpad
 
+/** @type {(O: string, maxLength: import('../types').integer, fillString: string, placement: 'start' | 'end') => string} */
 module.exports = function StringPad(O, maxLength, fillString, placement) {
 	if (placement !== 'start' && placement !== 'end') {
 		throw new $TypeError('Assertion failed: `placement` must be "start" or "end"');

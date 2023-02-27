@@ -10,6 +10,7 @@ var zero = $BigInt && $BigInt(0);
 
 // https://262.ecma-international.org/11.0/#sec-numeric-types-bigint-remainder
 
+/** @type {(n: bigint, d: bigint) => bigint} */
 module.exports = function BigIntRemainder(n, d) {
 	if (typeof n !== 'bigint' || typeof d !== 'bigint') {
 		throw new $TypeError('Assertion failed: `n` and `d` arguments must be BigInts');

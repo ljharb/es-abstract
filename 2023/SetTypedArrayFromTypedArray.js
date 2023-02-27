@@ -24,6 +24,7 @@ var $ArrayBuffer = GetIntrinsic('%ArrayBuffer%', true);
 
 // https://262.ecma-international.org/14.0/#sec-settypedarrayfromtypedarray
 
+/** @type {(target: import('../types').TypedArray, targetOffset: import('../types').integer, source: import('../types').TypedArray) => void} */
 module.exports = function SetTypedArrayFromTypedArray(target, targetOffset, source) {
 	var whichTarget = whichTypedArray(target);
 	if (!whichTarget) {
@@ -91,7 +92,7 @@ module.exports = function SetTypedArrayFromTypedArray(target, targetOffset, sour
 	if (SameValue(srcBuffer, targetBuffer) || sameSharedArrayBuffer) { // step 17
 		var srcByteLength = typedArrayByteLength(source); // step 17.a
 
-		srcBuffer = CloneArrayBuffer(srcBuffer, srcByteOffset, srcByteLength, $ArrayBuffer); // step 17.b
+		srcBuffer = CloneArrayBuffer(srcBuffer, srcByteOffset, srcByteLength, /** @type {ArrayBufferConstructor} */ ($ArrayBuffer)); // step 17.b
 
 		srcByteIndex = 0; // step 17.c
 	} else {

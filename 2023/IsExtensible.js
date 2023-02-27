@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
@@ -9,10 +11,12 @@ var isPrimitive = require('../helpers/isPrimitive');
 
 // https://262.ecma-international.org/6.0/#sec-isextensible-o
 
-module.exports = $preventExtensions
-	? function IsExtensible(obj) {
-		return !isPrimitive(obj) && $isExtensible(obj);
+module.exports = $preventExtensions && $isExtensible
+	? /** @type {(obj: unknown) => boolean} */ function IsExtensible(obj) {
+		return !isPrimitive(obj)
+			// @ts-expect-error TS can't narrow properly in a closure
+			&& $isExtensible(obj);
 	}
-	: function IsExtensible(obj) {
+	: /** @type {(obj: unknown) => boolean} */ function IsExtensible(obj) {
 		return !isPrimitive(obj);
 	};

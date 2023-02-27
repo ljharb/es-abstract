@@ -12,6 +12,7 @@ var ToPrimitive = require('./ToPrimitive');
 
 // https://262.ecma-international.org/13.0/#sec-tobigint
 
+/** @type {(argument: unknown) => bigint} */
 module.exports = function ToBigInt(argument) {
 	if (!$BigInt) {
 		throw new $SyntaxError('BigInts are not supported in this environment');

@@ -24,12 +24,18 @@ var safeConcat = require('safe-array-concat');
 
 var tableTAO = require('./tables/typed-array-objects');
 
-var isUnsignedElementType = function isUnsignedElementType(type) { return $charAt(type, 0) === 'U'; };
+/** @typedef {import('../types').WithoutPrefix<Exclude<keyof typeof tableTAO.size, '__proto__'>, '$'>} TypedArrayType */
+
+/** @type {(type: TypedArrayType) => type is 'Uint8' | 'Uint8C' | 'Uint16' | 'Uint32'} */
+var isUnsignedElementType = function isUnsignedElementType(type) {
+	return $charAt(type, 0) === 'U';
+};
 
 // https://262.ecma-international.org/6.0/#sec-getvaluefrombuffer
 
+/** @type {(arrayBuffer: ArrayBuffer, byteIndex: import('../types').integer, type: TypedArrayType, isLittleEndian?: boolean) => number} */
 module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type) {
-	if (!isArrayBuffer(arrayBuffer)) {
+	if (!isArrayBuffer(arrayBuffer) || !$Uint8Array) {
 		throw new $TypeError('Assertion failed: `arrayBuffer` must be an ArrayBuffer');
 	}
 
@@ -57,7 +63,8 @@ module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type) {
 
 	// 4. Let block be arrayBuffer’s [[ArrayBufferData]] internal slot.
 
-	var elementSize = tableTAO.size['$' + type]; // step 5
+	// eslint-disable-next-line no-extra-parens
+	var elementSize = tableTAO.size[/** @type {`$${typeof type}`} */ ('$' + type)]; // step 5
 	if (!elementSize) {
 		throw new $TypeError('Assertion failed: `type` must be one of "Int8", "Uint8", "Uint8C", "Int16", "Uint16", "Int32", "Uint32", "Float32", or "Float64"');
 	}
@@ -72,6 +79,7 @@ module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type) {
 		$reverse(rawValue); // step 8
 	}
 
+	/** @type {import('../types').ByteValue[]} */
 	var bytes = $slice(safeConcat([0, 0, 0, 0, 0, 0, 0, 0], rawValue), -elementSize);
 
 	if (type === 'Float32') { // step 3

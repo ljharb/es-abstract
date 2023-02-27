@@ -12,6 +12,7 @@ const fromEntries = require('object.fromentries');
 
 const years = require('./years');
 
+/** @type {(year: import('../types').integer) => Promise<ReturnType<typeof exec>>} */
 async function getOps(year) {
 	if (year < 2015) {
 		throw new RangeError('ES2015+ only');
@@ -46,6 +47,7 @@ async function getOps(year) {
 
 	aOps = aOps.not('[type~="host-defined"]');
 
+	/** @type {string[]} */
 	const missings = [];
 
 	let entries = aOps.toArray().map((x) => {
@@ -75,9 +77,9 @@ async function getOps(year) {
 				return null;
 			}
 			if (op.parent().attr('id') === 'sec-reference-specification-type') {
-				({ groups: { aoid } } = op.find('h1').text().match(/\s(?<aoid>[a-zA-Z][a-z][a-zA-Z]+)\s/m));
+				({ groups: { aoid } } = op.find('h1').text().match(/\s(?<aoid>[a-zA-Z][a-z][a-zA-Z]+)\s/m) || {});
 			} else if ((/^sec-numeric-types-(?:number|bigint)-/).test(op.attr('id'))) {
-				({ groups: { aoid } } = op.find('h1').text().match(/\s?(?<aoid>[a-zA-Z][a-z][a-zA-Z]+(?:::[a-zA-Z][a-z][a-zA-Z]+)+)\s/m));
+				({ groups: { aoid } } = op.find('h1').text().match(/\s?(?<aoid>[a-zA-Z][a-z][a-zA-Z]+(?:::[a-zA-Z][a-z][a-zA-Z]+)+)\s/m) || {});
 			} else {
 				const match = op.text().match(/When the (?<aoid>[a-zA-Z][a-z][a-zA-Z]+) abstract operation is called/m)
 					|| op.text().match(/The (?<aoid>[a-zA-Z][a-z][a-zA-Z]+) abstract operation/m)
@@ -91,7 +93,7 @@ async function getOps(year) {
 		}
 		if (aoid && !id) {
 			missings.push(aoid);
-		} else if (!aoid) {
+		} else if (!aoid && id) {
 			missings.push(id);
 		}
 
@@ -103,7 +105,7 @@ async function getOps(year) {
 			aoid,
 			`https://262.ecma-international.org/${edition}.0/#${id}`,
 		];
-	}).filter((x) => x && x[0]);
+	}).filter(/** @type {(x: string[] | null) => x is [string, string]} */ (x) => !!x && !!x[0]);
 
 	if (missings.length > 0) {
 		throw `Missing URLs: ${missings}`;

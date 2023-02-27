@@ -2,6 +2,7 @@
 
 var makeIteratorRecord = require('./makeIteratorRecord');
 
+/** @type {(CreateAsyncFromSyncIterator<T>(syncIteratorRecord: import('../../types').IteratorRecord<T>): import('../../types').AsyncIteratorRecord<T>, end: number, throwMethod?: (...args: any[]) => never, returnMethod?: () => T) => import('../../types').AsyncIteratorRecord<T>} */
 module.exports = function makeAsyncFromSyncIterator(CreateAsyncFromSyncIterator, end, throwMethod, returnMethod) {
 	var i = 0;
 	var iterator = {

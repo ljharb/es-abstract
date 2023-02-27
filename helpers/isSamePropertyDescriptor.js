@@ -2,6 +2,7 @@
 
 var every = require('./every');
 
+/** @type {(ES: { SameValue: (x: unknown, y: unknown) => boolean }, D1: Record<PropertyKey, unknown>, D2: Record<PropertyKey, unknown>) => boolean} */
 module.exports = function isSamePropertyDescriptor(ES, D1, D2) {
 	var fields = [
 		'[[Configurable]]',

@@ -6,6 +6,7 @@ var KeyForSymbol = require('./KeyForSymbol');
 
 // https://262.ecma-international.org/14.0/#sec-canbeheldweakly
 
+/** @type {(v: unknown) => boolean} */
 module.exports = function CanBeHeldWeakly(v) {
 	if (isObject(v)) {
 		return true; // step 1

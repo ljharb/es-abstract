@@ -13,6 +13,7 @@ var typedArrayByteOffset = require('typed-array-byte-offset');
 
 // https://262.ecma-international.org/15.0/#sec-validateatomicaccess
 
+/** @type {(taRecord: import('../types').TypedArrayWithBufferWitnessRecord, requestIndex: import('../types').integer) => import('../types').arrayLength} */
 module.exports = function ValidateAtomicAccess(taRecord, requestIndex) {
 	if (!isTypedArrayWithBufferWitnessRecord(taRecord)) {
 		throw new $TypeError('Assertion failed: `taRecord` must be a TypedArray With Buffer Witness Record');

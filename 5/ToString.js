@@ -6,6 +6,7 @@ var $String = GetIntrinsic('%String%');
 
 // http://262.ecma-international.org/5.1/#sec-9.8
 
+/** @type {(value: unknown) => string} */
 module.exports = function ToString(value) {
 	return $String(value);
 };

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $EvalError = require('es-errors/eval');
@@ -7,6 +9,7 @@ var YearFromTime = require('./YearFromTime');
 
 // https://262.ecma-international.org/5.1/#sec-15.9.1.3
 
+/** @type {(t: number) => 0 | 1} */
 module.exports = function InLeapYear(t) {
 	var days = DaysInYear(YearFromTime(t));
 	if (days === 365) {

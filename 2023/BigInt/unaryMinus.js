@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
@@ -9,6 +11,7 @@ var zero = $BigInt && $BigInt(0);
 
 // https://262.ecma-international.org/11.0/#sec-numeric-types-bigint-unaryMinus
 
+/** @type {(x: bigint) => bigint} */
 module.exports = function BigIntUnaryMinus(x) {
 	if (typeof x !== 'bigint') {
 		throw new $TypeError('Assertion failed: `x` argument must be a BigInt');

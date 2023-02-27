@@ -13,6 +13,7 @@ var dataViewByteOffset = require('data-view-byte-offset');
 
 // https://262.ecma-international.org/15.0/#sec-isviewoutofbounds
 
+/** @type {(viewRecord: import('../types').DataViewWithBufferWitnessRecord) => boolean} */
 module.exports = function IsViewOutOfBounds(viewRecord) {
 	if (!isDataViewWithBufferWitnessRecord(viewRecord)) {
 		throw new $TypeError('Assertion failed: `viewRecord` must be a DataView With Buffer Witness Record');

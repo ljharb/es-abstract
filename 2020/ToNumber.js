@@ -25,6 +25,7 @@ var ToPrimitive = require('./ToPrimitive');
 
 // https://262.ecma-international.org/6.0/#sec-tonumber
 
+/** @type {(argument: unknown) => number} */
 module.exports = function ToNumber(argument) {
 	var value = isPrimitive(argument) ? argument : ToPrimitive(argument, $Number);
 	if (typeof value === 'symbol') {
@@ -47,5 +48,6 @@ module.exports = function ToNumber(argument) {
 		}
 
 	}
+	// @ts-expect-error +null and +undefined are perfectly valid
 	return +value;
 };

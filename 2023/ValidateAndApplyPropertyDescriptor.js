@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -18,6 +20,7 @@ var SameValue = require('./SameValue');
 
 // see https://github.com/tc39/ecma262/pull/2468 for ES2022 changes
 
+/** @type {import('../types').ValidateAndApplyPropertyDescriptor} */
 // eslint-disable-next-line max-lines-per-function, max-statements
 module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, Desc, current) {
 	if (typeof O !== 'undefined' && !isObject(O)) {
@@ -116,8 +119,7 @@ module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, D
 		}
 	}
 
-	// 6. If O is not undefined, then
-	if (typeof O !== 'undefined') {
+	if (typeof O !== 'undefined') { // step 6
 		var configurable;
 		var enumerable;
 		if (IsDataDescriptor(current) && IsAccessorDescriptor(Desc)) { // step 6.a

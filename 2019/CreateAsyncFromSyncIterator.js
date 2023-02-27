@@ -32,7 +32,8 @@ var $AsyncFromSyncIteratorPrototype = GetIntrinsic('%AsyncFromSyncIteratorProtot
 		var argsLength = arguments.length;
 
 		return new $Promise(function (resolve) { // step 3
-			var syncIteratorRecord = SLOT.get(O, '[[SyncIteratorRecord]]'); // step 4
+			var syncIteratorRecord = /** @type {import('../types').IteratorRecord2023<unknown>} */ (SLOT.get(O, '[[SyncIteratorRecord]]')); // step 4
+			/** @type {Partial<IteratorResult<unknown>>} */
 			var result;
 			if (argsLength > 0) {
 				result = IteratorNext(syncIteratorRecord['[[Iterator]]'], value); // step 5.a

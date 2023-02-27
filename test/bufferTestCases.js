@@ -35,6 +35,7 @@ test('buffer test cases: sanity check', { skip: availableTypedArrays.length === 
 
 		t.test(name + ': ' + value, function (st) {
 			forEach([].concat(
+				// @ts-expect-error TS sucks with concat
 				'Int8',
 				'Uint8',
 				'Uint8Clamped',
@@ -48,8 +49,9 @@ test('buffer test cases: sanity check', { skip: availableTypedArrays.length === 
 				] : [],
 				'Float32',
 				'Float64'
-			), function (type) {
-				var elementSize = elementSizes['$' + type + 'Array'];
+			), /** @param {'Uint8Clamped' | Exclude<import('../types').TypedArrayTypeByName<import('which-typed-array').TypedArrayName>, 'Uint8C'>} type */ function (type) {
+				// eslint-disable-next-line no-extra-parens
+				var elementSize = elementSizes[/** @type {`$${typeof type}Array`} */ ('$' + type + 'Array')];
 
 				var typeTest = testCase[type];
 
@@ -61,7 +63,7 @@ test('buffer test cases: sanity check', { skip: availableTypedArrays.length === 
 
 				st.test(
 					type,
-					{ skip: isBigInt && (!isFinite(value) || Math.floor(value) !== value) && '(BigInt types do not support non-integer values)' },
+					{ skip: isBigInt && typeof value === 'number' && (!isFinite(value) || Math.floor(value) !== value) && '(BigInt types do not support non-integer values)' },
 					function (s2t) {
 						if (
 							!hasBigEndian && (
@@ -87,13 +89,15 @@ test('buffer test cases: sanity check', { skip: availableTypedArrays.length === 
 							);
 							s3t.equal(
 								unserialize(results.asLittle),
-								view['get' + method](0, true),
+								// eslint-disable-next-line no-extra-parens
+								view[/** @type {`get${typeof method}`} */ ('get' + method)](0, true),
 								'get as little: has correct expected value'
 							);
 
 							s3t.equal(
 								unserialize(results.asBig),
-								view['get' + method](0, false),
+								// eslint-disable-next-line no-extra-parens
+								view[/** @type {`get${typeof method}`} */ ('get' + method)](0, false),
 								'get as big: has correct expected value',
 								{ skip: hasBigEndian ? false : '(' + type + ' only has little-endian)' }
 							);
@@ -105,7 +109,8 @@ test('buffer test cases: sanity check', { skip: availableTypedArrays.length === 
 							var results = typeTest.setAsTruncatedLittle;
 							view.setFloat64(0, 0, true); // clear the buffer
 
-							view['set' + method](0, isBigInt ? safeBigInt(valToSet) : valToSet, true);
+							// eslint-disable-next-line no-extra-parens
+							view[/** @type {`set${typeof method}`} */ ('set' + method)](0, isBigInt ? safeBigInt(valToSet) : valToSet, true);
 
 							s3t.deepEqual(
 								arrayFrom(results.bytes),
@@ -114,13 +119,15 @@ test('buffer test cases: sanity check', { skip: availableTypedArrays.length === 
 							);
 							s3t.equal(
 								unserialize(results.asLittle),
-								view['get' + method](0, true),
+								// eslint-disable-next-line no-extra-parens
+								view[/** @type {`get${typeof method}`} */ ('get' + method)](0, true),
 								'get as little: has correct expected value'
 							);
 
 							s3t.equal(
 								unserialize(results.asBig),
-								view['get' + method](0, false),
+								// eslint-disable-next-line no-extra-parens
+								view[/** @type {`get${typeof method}`} */ ('get' + method)](0, false),
 								'get as big: has correct expected value',
 								{ skip: hasBigEndian ? false : '(' + type + ' only has little-endian)' }
 							);
@@ -141,12 +148,14 @@ test('buffer test cases: sanity check', { skip: availableTypedArrays.length === 
 							);
 							s3t.equal(
 								unserialize(results.asLittle),
-								view['get' + method](0, true),
+								// eslint-disable-next-line no-extra-parens
+								view[/** @type {`get${typeof method}`} */ ('get' + method)](0, true),
 								'get as little: has correct expected value'
 							);
 							s3t.equal(
 								unserialize(results.asBig),
-								view['get' + method](0, false),
+								// eslint-disable-next-line no-extra-parens
+								view[/** @type {`get${typeof method}`} */ ('get' + method)](0, false),
 								'get as big: has correct expected value'
 							);
 
@@ -157,7 +166,8 @@ test('buffer test cases: sanity check', { skip: availableTypedArrays.length === 
 							var results = typeTest.setAsTruncatedBig;
 							view.setFloat64(0, 0, true); // clear the buffer
 
-							view['set' + method](0, isBigInt ? safeBigInt(valToSet) : valToSet, false);
+							// eslint-disable-next-line no-extra-parens
+							view[/** @type {`set${typeof method}`} */ ('set' + method)](0, isBigInt ? safeBigInt(valToSet) : valToSet, false);
 
 							s3t.deepEqual(
 								arrayFrom(results.bytes),
@@ -166,12 +176,14 @@ test('buffer test cases: sanity check', { skip: availableTypedArrays.length === 
 							);
 							s3t.equal(
 								unserialize(results.asLittle),
-								view['get' + method](0, true),
+								// eslint-disable-next-line no-extra-parens
+								view[/** @type {`get${typeof method}`} */ ('get' + method)](0, true),
 								'get as little: has correct expected value'
 							);
 							s3t.equal(
 								unserialize(results.asBig),
-								view['get' + method](0, false),
+								// eslint-disable-next-line no-extra-parens
+								view[/** @type {`get${typeof method}`} */ ('get' + method)](0, false),
 								'get as big: has correct expected value'
 							);
 

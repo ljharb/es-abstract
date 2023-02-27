@@ -21,7 +21,9 @@ var hasOwn = require('hasown');
 
 var tableTAO = require('./tables/typed-array-objects');
 
-var TypeToAO = {
+/** @typedef {import('../types').TypedArrayTypeByName<Exclude<import('../types').TypedArrayName, 'BigInt64Array' | 'BigUint64Array'>>} TypedArrayType */
+
+var TypeToAO = /** @type {const} */ ({
 	__proto__: null,
 	$Int8: ToInt8,
 	$Uint8: ToUint8,
@@ -30,7 +32,7 @@ var TypeToAO = {
 	$Uint16: ToUint16,
 	$Int32: ToInt32,
 	$Uint32: ToUint32
-};
+});
 
 var defaultEndianness = require('../helpers/defaultEndianness');
 var forEach = require('../helpers/forEach');
@@ -40,8 +42,9 @@ var valueToFloat64Bytes = require('../helpers/valueToFloat64Bytes');
 
 // https://262.ecma-international.org/6.0/#sec-setvalueinbuffer
 
+/** @type {(arrayBuffer: ArrayBuffer, byteIndex: import('../types').integer, type: TypedArrayType, value: number, isLittleEndian?: boolean) => void} */
 module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value) {
-	if (!isArrayBuffer(arrayBuffer)) {
+	if (!isArrayBuffer(arrayBuffer) || !$Uint8Array) {
 		throw new $TypeError('Assertion failed: `arrayBuffer` must be an ArrayBuffer');
 	}
 
@@ -77,7 +80,7 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value) 
 
 	// 6. Assert: block is not undefined.
 
-	var elementSize = tableTAO.size['$' + type]; // step 7
+	var elementSize = tableTAO.size[/** @type {`$${typeof type}`} */ ('$' + type)]; // step 7
 	if (!elementSize) {
 		throw new $TypeError('Assertion failed: `type` must be one of "Int8", "Uint8", "Uint8C", "Int16", "Uint16", "Int32", "Uint32", "Float32", or "Float64"');
 	}
@@ -93,7 +96,7 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value) 
 	} else {
 		var n = elementSize; // step 3.a
 
-		var convOp = TypeToAO['$' + type]; // step 3.b
+		var convOp = TypeToAO[/** @type {`$${typeof type}`} */ ('$' + type)]; // step 3.b
 
 		var intValue = convOp(value); // step 3.c
 

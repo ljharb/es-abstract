@@ -12,6 +12,7 @@ var whichTypedArray = require('which-typed-array');
 
 var tableTAO = require('./tables/typed-array-objects');
 
+/** @type {(typedArray: import('../types').TypedArray, waitable?: boolean) => ArrayBuffer} */
 module.exports = function ValidateIntegerTypedArray(typedArray) {
 	var waitable = arguments.length > 1 ? arguments[1] : false; // step 1
 
@@ -23,7 +24,8 @@ module.exports = function ValidateIntegerTypedArray(typedArray) {
 
 	var typeName = whichTypedArray(typedArray); // step 3
 
-	var type = tableTAO.name['$' + typeName]; // step 4
+	// eslint-disable-next-line no-extra-parens
+	var type = tableTAO.name[/** @type {`\$${import('../types').TypedArrayName}`} */ ('$' + typeName)]; // step 4
 
 	if (waitable) { // step 5
 		if (typeName !== 'Int32Array' && typeName !== 'BigInt64Array') {

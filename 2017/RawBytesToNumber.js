@@ -22,6 +22,7 @@ var tableTAO = require('./tables/typed-array-objects');
 
 // https://262.ecma-international.org/8.0/#sec-rawbytestonumber
 
+/** @type {(type: keyof TypeToSizes, rawBytes: import('../types').ByteValue[], isLittleEndian: boolean) => number} */
 module.exports = function RawBytesToNumber(type, rawBytes, isLittleEndian) {
 	if (typeof type !== 'string' || !hasOwnProperty(tableTAO.size, '$' + type)) {
 		throw new $TypeError('Assertion failed: `type` must be a TypedArray element type');

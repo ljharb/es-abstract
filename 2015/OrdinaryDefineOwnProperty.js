@@ -16,6 +16,7 @@ var ValidateAndApplyPropertyDescriptor = require('./ValidateAndApplyPropertyDesc
 
 // https://262.ecma-international.org/6.0/#sec-ordinarydefineownproperty
 
+/** @type {import('../types').OrdinaryDefineOwnProperty} */
 module.exports = function OrdinaryDefineOwnProperty(O, P, Desc) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: O must be an Object');
@@ -32,6 +33,7 @@ module.exports = function OrdinaryDefineOwnProperty(O, P, Desc) {
 			throw new $SyntaxError('This environment does not support accessor property descriptors.');
 		}
 		var creatingNormalDataProperty = !(P in O)
+			&& '[[Writable]]' in Desc
 			&& Desc['[[Writable]]']
 			&& Desc['[[Enumerable]]']
 			&& Desc['[[Configurable]]']
@@ -42,8 +44,9 @@ module.exports = function OrdinaryDefineOwnProperty(O, P, Desc) {
 			&& (!('[[Writable]]' in Desc) || Desc['[[Writable]]'])
 			&& '[[Value]]' in Desc;
 		if (creatingNormalDataProperty || settingExistingDataProperty) {
-			O[P] = Desc['[[Value]]']; // eslint-disable-line no-param-reassign
-			return SameValue(O[P], Desc['[[Value]]']);
+			var value = '[[Value]]' in Desc ? Desc['[[Value]]'] : void undefined;
+			O[P] = value; // eslint-disable-line no-param-reassign
+			return SameValue(O[P], value);
 		}
 		throw new $SyntaxError('This environment does not support defining non-writable, non-enumerable, or non-configurable properties');
 	}

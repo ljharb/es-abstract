@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var add = require('./add');

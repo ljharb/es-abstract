@@ -17,6 +17,7 @@ var ToPropertyKey = require('./ToPropertyKey');
 
 // https://262.ecma-international.org/15.0/#sec-groupby
 
+/** @type {<V>(items: V[], callbackfn: (value: V, key: number) => typeof keyCoercion extends 'ZERO' ? unknown : import('../types').PropertyKey, keyCoercion: 'PROPERTY' | 'ZERO') => void | unknown[]} */
 module.exports = function GroupBy(items, callbackfn, keyCoercion) {
 	if (keyCoercion !== 'PROPERTY' && keyCoercion !== 'ZERO') {
 		throw new $TypeError('Assertion failed: `keyCoercion` must be `"PROPERTY"` or `"ZERO"`');
@@ -28,9 +29,13 @@ module.exports = function GroupBy(items, callbackfn, keyCoercion) {
 		throw new $TypeError('callbackfn must be callable'); // step 2
 	}
 
+	/** @typedef {ReturnType<typeof callbackfn>} GroupName */
+	/** @typedef {Parameters<typeof callbackfn>[0]} V */
+
+	/** @type {import('./AddValueToKeyedGroup').KeyedGroup<GroupName, V>[]} */
 	var groups = []; // step 3
 
-	var iteratorRecord = GetIterator(items, 'SYNC'); // step 4
+	var iteratorRecord = /** @type {import('../types').IteratorRecord<V>} */ (GetIterator(items, 'SYNC')); // step 4
 
 	var k = 0; // step 5
 
@@ -48,6 +53,7 @@ module.exports = function GroupBy(items, callbackfn, keyCoercion) {
 
 		var value = IteratorValue(next); // step 6.dv
 
+		/** @type {GroupName} */
 		var key;
 		try {
 			key = Call(callbackfn, undefined, [value, k]); // step 6.e
@@ -68,6 +74,7 @@ module.exports = function GroupBy(items, callbackfn, keyCoercion) {
 				throw new $TypeError('keyCoercion must be ~PROPERTY~ or ~ZERO~'); // step 6.h.i
 			}
 			if (isNegativeZero(key)) {
+				// @ts-expect-error isNegativeZero can't be a predicate for `-0` because TS can't handle it
 				key = +0; // step 6.h.ii
 			}
 		}

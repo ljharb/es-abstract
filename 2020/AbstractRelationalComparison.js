@@ -19,6 +19,7 @@ var isSameType = require('../helpers/isSameType');
 
 // https://262.ecma-international.org/11.0/#sec-abstract-relational-comparison
 
+/** @type {(x: unknown, y: unknown, LeftFirst: boolean) => undefined | boolean} */
 // eslint-disable-next-line max-statements, max-lines-per-function
 module.exports = function AbstractRelationalComparison(x, y, LeftFirst) {
 	if (typeof LeftFirst !== 'boolean') {
@@ -50,20 +51,20 @@ module.exports = function AbstractRelationalComparison(x, y, LeftFirst) {
 		if ($isNaN(ny)) {
 			return void undefined;
 		}
-		return BigIntLessThan(px, ny);
+		return BigIntLessThan(px, /** @type {bigint} */ (ny));
 	}
 	if (typeof px === 'string' && typeof py === 'bigint') {
 		nx = StringToBigInt(px);
 		if ($isNaN(nx)) {
 			return void undefined;
 		}
-		return BigIntLessThan(nx, py);
+		return BigIntLessThan(/** @type {bigint} */ (nx), py);
 	}
 
 	nx = ToNumeric(px);
 	ny = ToNumeric(py);
 	if (isSameType(nx, ny)) {
-		return typeof nx === 'number' ? NumberLessThan(nx, ny) : BigIntLessThan(nx, ny);
+		return typeof nx === 'number' ? NumberLessThan(nx, /** @type {number} */ (ny)) : BigIntLessThan(nx, /** @type {bigint} */ (ny));
 	}
 
 	if ($isNaN(nx) || $isNaN(ny)) {

@@ -5,7 +5,7 @@ var isObject = require('es-object-atoms/isObject');
 var inspect = require('object-inspect');
 
 var Call = require('./Call');
-var Get = require('./Get');
+// var Get = require('./Get');
 var GetIterator = require('./GetIterator');
 var IsCallable = require('./IsCallable');
 var IteratorClose = require('./IteratorClose');
@@ -15,6 +15,7 @@ var ThrowCompletion = require('./ThrowCompletion');
 
 // https://262.ecma-international.org/14.0/#sec-add-entries-from-iterable
 
+/** @type {<T, U extends [unknown, unknown]>(target: T, iterable: Iterable<U>, adder: (this: T, key: U[0], value: U[1]) => void) => T | ReturnType<typeof IteratorClose>} */
 module.exports = function AddEntriesFromIterable(target, iterable, adder) {
 	if (!IsCallable(adder)) {
 		throw new $TypeError('Assertion failed: `adder` is not callable');
@@ -22,6 +23,8 @@ module.exports = function AddEntriesFromIterable(target, iterable, adder) {
 	if (iterable == null) {
 		throw new $TypeError('Assertion failed: `iterable` is present, and not nullish');
 	}
+	/** @typedef {Parameters<typeof adder>} U */
+
 	var iteratorRecord = GetIterator(iterable, 'sync');
 	while (true) { // eslint-disable-line no-constant-condition
 		var next = IteratorStep(iteratorRecord);
@@ -34,8 +37,8 @@ module.exports = function AddEntriesFromIterable(target, iterable, adder) {
 			return IteratorClose(iteratorRecord, error);
 		}
 		try {
-			var k = Get(nextItem, '0');
-			var v = Get(nextItem, '1');
+			var k = nextItem[0]; // Get(nextItem, '0');
+			var v = nextItem[1]; // Get(nextItem, '1');
 			Call(adder, target, [k, v]);
 		} catch (e) {
 			return IteratorClose(iteratorRecord, ThrowCompletion(e));

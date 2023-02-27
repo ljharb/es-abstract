@@ -23,6 +23,7 @@ var startsWithDollarTwoDigit = regexTester(/^\$[0-9][0-9]/);
 
 // http://www.ecma-international.org/ecma-262/14.0/#sec-getsubstitution
 
+/** @type {(matched: string, str: string, position: import('../types').integer, captures: (string | undefined)[], namedCaptures: undefined | Record<string, string>, replacement: string) => string} */
 // eslint-disable-next-line max-statements, max-params, max-lines-per-function
 module.exports = function GetSubstitution(matched, str, position, captures, namedCaptures, replacementTemplate) {
 	if (typeof matched !== 'string') {

@@ -13,6 +13,7 @@ var getConstructor = require('../helpers/typedArrayConstructors');
 
 // https://262.ecma-international.org/15.0/#sec-typedarray-create-same-type
 
+/** @type {(exemplar: import('typed-array-length').TypedArray, argumentList: unknown[]) => import('typed-array-length').TypedArray} */
 module.exports = function TypedArrayCreateSameType(exemplar, argumentList) {
 	if (availableTypedArrays.length === 0) {
 		throw new $SyntaxError('Assertion failed: Typed Arrays are not supported in this environment');
@@ -31,5 +32,5 @@ module.exports = function TypedArrayCreateSameType(exemplar, argumentList) {
 		throw new $SyntaxError('Assertion failed: `constructor` of `exemplar` (' + kind + ') must exist. Please report this!');
 	}
 
-	return TypedArrayCreateFromConstructor(constructor, argumentList); // steps 3 - 6
+	return TypedArrayCreateFromConstructor(/** @type {Parameters<typeof TypedArrayCreateFromConstructor>[0]} */ (/** @type {unknown} */ (constructor)), argumentList); // steps 3 - 6
 };

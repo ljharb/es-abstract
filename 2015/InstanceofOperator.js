@@ -15,6 +15,7 @@ var ToBoolean = require('./ToBoolean');
 
 // https://262.ecma-international.org/6.0/#sec-instanceofoperator
 
+/** @type {<Instance extends object>(O: object, C: import('../types').Constructor<Instance, any>) => O is Instance} */
 module.exports = function InstanceofOperator(O, C) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');

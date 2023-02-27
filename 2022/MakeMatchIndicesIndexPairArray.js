@@ -12,18 +12,21 @@ var ToString = require('./ToString');
 var every = require('../helpers/every');
 var isMatchRecord = require('../helpers/records/match-record');
 
+/** @type {(s: unknown) => s is undefined | string} */
 var isStringOrUndefined = function isStringOrUndefined(s) {
 	return typeof s === 'undefined' || typeof s === 'string';
 };
 
+/** @type {(m: unknown) => m is undefined | import('../types').MatchRecord} */
 var isMatchRecordOrUndefined = function isMatchRecordOrUndefined(m) {
-	return typeof m === 'undefined' || isMatchRecord(m);
+	return typeof m === 'undefined' || (!!m && isMatchRecord(m));
 };
 
 var MAX_ARRAY_LENGTH = require('math-intrinsics/constants/maxArrayLength');
 
 // https://262.ecma-international.org/13.0/#sec-getmatchindexpair
 
+/** @type {(S: string, indices: (import('../types').MatchRecord | undefined)[], groupNames: (string | undefined)[], hasGroups: boolean) => RegExpMatchArray} */
 module.exports = function MakeMatchIndicesIndexPairArray(S, indices, groupNames, hasGroups) {
 	if (typeof S !== 'string') {
 		throw new $TypeError('Assertion failed: `S` must be a String');
@@ -46,7 +49,7 @@ module.exports = function MakeMatchIndicesIndexPairArray(S, indices, groupNames,
 		throw new $TypeError('Assertion failed: `groupNames` must have exactly one fewer item than `indices`');
 	}
 
-	var A = ArrayCreate(n); // step 5
+	var A = /** @type {RegExpMatchArray} */ (ArrayCreate(n)); // step 5
 	var groups = hasGroups ? OrdinaryObjectCreate(null) : void undefined; // step 6-7
 	CreateDataPropertyOrThrow(A, 'groups', groups); // step 8
 
@@ -55,11 +58,12 @@ module.exports = function MakeMatchIndicesIndexPairArray(S, indices, groupNames,
 		// eslint-disable-next-line no-negated-condition
 		var matchIndexPair = typeof matchIndices !== 'undefined' ? GetMatchIndexPair(S, matchIndices) : void undefined; // step 9.b-9.c
 		CreateDataPropertyOrThrow(A, ToString(i), matchIndexPair); // step 9.d
-		if (i > 0 && typeof groupNames[i - 1] !== 'undefined') { // step 9.e
+		var name = groupNames[i - 1];
+		if (i > 0 && typeof name !== 'undefined') { // step 9.e
 			if (!groups) {
 				throw new $TypeError('if `hasGroups` is `false`, `groupNames` can only contain `undefined` values');
 			}
-			CreateDataPropertyOrThrow(groups, groupNames[i - 1], matchIndexPair); // step 9.e.i
+			CreateDataPropertyOrThrow(groups, name, matchIndexPair); // step 9.e.i
 		}
 	}
 	return A; // step 10

@@ -12,6 +12,7 @@ var isCodePoint = require('../helpers/isCodePoint');
 
 // https://262.ecma-international.org/7.0/#sec-utf16encoding
 
+/** @type {(cp: import('../types').integer) => string} */
 module.exports = function UTF16Encoding(cp) {
 	if (!isCodePoint(cp)) {
 		throw new $TypeError('Assertion failed: `cp` must be >= 0 and <= 0x10FFFF');

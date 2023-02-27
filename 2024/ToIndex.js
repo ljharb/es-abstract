@@ -8,6 +8,7 @@ var MAX_SAFE_INTEGER = require('math-intrinsics/constants/maxSafeInteger');
 
 // https://262.ecma-international.org/15.0/#sec-toindex
 
+/** @type {(value: undefined | unknown) => import('../types').arrayLength} */
 module.exports = function ToIndex(value) {
 	if (typeof value === 'undefined') {
 		return 0;

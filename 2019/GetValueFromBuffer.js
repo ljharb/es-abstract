@@ -19,13 +19,16 @@ var safeConcat = require('safe-array-concat');
 
 var tableTAO = require('./tables/typed-array-objects');
 
+/** @typedef {import('../types').WithoutPrefix<Exclude<keyof typeof tableTAO.size, '__proto__'>, '$'>} TypedArrayType */
+
 var defaultEndianness = require('../helpers/defaultEndianness');
 
 // https://262.ecma-international.org/10.0/#sec-getvaluefrombuffer
 
+/** @type {(arrayBuffer: ArrayBuffer, byteIndex: import('../types').integer, type: TypedArrayType, isTypedArray: boolean, order: 'SeqCst' | 'Unordered', isLittleEndian?: boolean) => number} */
 module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type, isTypedArray, order) {
 	var isSAB = isSharedArrayBuffer(arrayBuffer);
-	if (!isArrayBuffer(arrayBuffer) && !isSAB) {
+	if ((!isArrayBuffer(arrayBuffer) && !isSAB) || !$Uint8Array) {
 		throw new $TypeError('Assertion failed: `arrayBuffer` must be an ArrayBuffer or a SharedArrayBuffer');
 	}
 
@@ -61,7 +64,8 @@ module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type, isTyp
 
 	// 4. Let block be arrayBuffer.[[ArrayBufferData]].
 
-	var elementSize = tableTAO.size['$' + type]; // step 5
+	// eslint-disable-next-line no-extra-parens
+	var elementSize = tableTAO.size[/** @type {`$${typeof type}`} */ ('$' + type)]; // step 5
 	if (!elementSize) {
 		throw new $TypeError('Assertion failed: `type` must be one of "Int8", "Uint8", "Uint8C", "Int16", "Uint16", "Int32", "Uint32", "Float32", or "Float64"');
 	}

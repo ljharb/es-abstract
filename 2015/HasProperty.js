@@ -7,6 +7,7 @@ var isPropertyKey = require('../helpers/isPropertyKey');
 
 // https://262.ecma-international.org/6.0/#sec-hasproperty
 
+/** @type {(O: object, P: string | symbol) => P is keyof O} */
 module.exports = function HasProperty(O, P) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: `O` must be an Object');

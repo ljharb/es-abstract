@@ -1,5 +1,6 @@
 'use strict';
 
+/** @type {() => () => {}} */
 module.exports = function getNamelessFunction() {
 	var f = Object(function () {});
 	try {

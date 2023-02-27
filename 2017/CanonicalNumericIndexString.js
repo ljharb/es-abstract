@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -8,6 +10,7 @@ var ToString = require('./ToString');
 
 // https://262.ecma-international.org/6.0/#sec-canonicalnumericindexstring
 
+/** @type {(argument: string) => number | undefined} */
 module.exports = function CanonicalNumericIndexString(argument) {
 	if (typeof argument !== 'string') {
 		throw new $TypeError('Assertion failed: `argument` must be a String');

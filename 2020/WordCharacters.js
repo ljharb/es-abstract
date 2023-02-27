@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -15,6 +17,7 @@ var A = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'; // st
 
 // https://262.ecma-international.org/8.0/#sec-runtime-semantics-wordcharacters-abstract-operation
 
+/** @type {(IgnoreCase: boolean, Unicode: boolean) => string} */
 module.exports = function WordCharacters(IgnoreCase, Unicode) {
 	if (typeof IgnoreCase !== 'boolean' || typeof Unicode !== 'boolean') {
 		throw new $TypeError('Assertion failed: `IgnoreCase` and `Unicode` must be booleans');

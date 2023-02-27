@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
@@ -17,6 +19,7 @@ var ToPropertyDescriptor = require('./ToPropertyDescriptor');
 
 // https://262.ecma-international.org/6.0/#sec-setintegritylevel
 
+/** @type {(O: Record<string | symbol, unknown>, level: 'sealed' | 'frozen') => boolean} */
 module.exports = function SetIntegrityLevel(O, level) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
@@ -41,6 +44,7 @@ module.exports = function SetIntegrityLevel(O, level) {
 		});
 	} else if (level === 'frozen') {
 		forEach(theKeys, function (k) {
+			// @ts-expect-error TS fails to recognize narrowing inside a closure
 			var currentDesc = $gOPD(O, k);
 			if (typeof currentDesc !== 'undefined') {
 				var desc;

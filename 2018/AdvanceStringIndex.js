@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var isInteger = require('math-intrinsics/isInteger');
@@ -12,6 +14,7 @@ var $charCodeAt = require('call-bound')('String.prototype.charCodeAt');
 
 // https://262.ecma-international.org/6.0/#sec-advancestringindex
 
+/** @type {(S: string, index: import('../types').nonNegativeInteger, unicode: boolean) => import('../types').nonNegativeInteger} */
 module.exports = function AdvanceStringIndex(S, index, unicode) {
 	if (typeof S !== 'string') {
 		throw new $TypeError('Assertion failed: `S` must be a String');

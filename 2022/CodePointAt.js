@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
@@ -12,6 +14,7 @@ var $charCodeAt = callBound('String.prototype.charCodeAt');
 
 // https://262.ecma-international.org/12.0/#sec-codepointat
 
+/** @type {(string: string, position: number) => { '[[CodePoint]]': string, '[[CodeUnitCount]]': 1 | 2, '[[IsUnpairedSurrogate]]': boolean}} */
 module.exports = function CodePointAt(string, position) {
 	if (typeof string !== 'string') {
 		throw new $TypeError('Assertion failed: `string` must be a String');

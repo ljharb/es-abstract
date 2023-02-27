@@ -21,6 +21,8 @@ var predicates = {
 	'RegExp Record': isRegExpRecord
 };
 
+/** @type {(Type: (x: unknown) => string, recordType: keyof predicates, argumentName: string, value: {}) => void} */
+// @ts-expect-error unused argument is fine
 module.exports = function assertRecord(Type, recordType, argumentName, value) {
 	var predicate = predicates[recordType];
 	if (typeof predicate !== 'function') {

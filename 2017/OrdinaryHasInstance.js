@@ -1,13 +1,16 @@
+// @ts-nocheck
+
 'use strict';
 
 var $TypeError = require('es-errors/type');
 var isObject = require('es-object-atoms/isObject');
 
-var Get = require('./Get');
+// var Get = require('./Get');
 var IsCallable = require('./IsCallable');
 
 // https://262.ecma-international.org/6.0/#sec-ordinaryhasinstance
 
+/** @type {(C: unknown, O: unknown) => boolean} */
 module.exports = function OrdinaryHasInstance(C, O) {
 	if (!IsCallable(C)) {
 		return false;
@@ -15,7 +18,8 @@ module.exports = function OrdinaryHasInstance(C, O) {
 	if (!isObject(O)) {
 		return false;
 	}
-	var P = Get(C, 'prototype');
+	// var P = Get(C, 'prototype');
+	var P = C.prototype;
 	if (!isObject(P)) {
 		throw new $TypeError('OrdinaryHasInstance called on an object with an invalid prototype property.');
 	}

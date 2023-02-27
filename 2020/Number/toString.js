@@ -7,6 +7,7 @@ var $TypeError = require('es-errors/type');
 
 // https://262.ecma-international.org/11.0/#sec-numeric-types-number-tostring
 
+/** @type {(x: number) => string} */
 module.exports = function NumberToString(x) {
 	if (typeof x !== 'number') {
 		throw new $TypeError('Assertion failed: `x` must be a Number');

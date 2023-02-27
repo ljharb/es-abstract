@@ -4,6 +4,7 @@ var Type = require('./Type');
 
 // https://262.ecma-international.org/5.1/#sec-11.9.6
 
+/** @type {(x: unknown, y: unknown) => boolean} */
 module.exports = function StrictEqualityComparison(x, y) {
 	if (Type(x) !== Type(y)) {
 		return false;

@@ -8,6 +8,7 @@ var isMatchRecord = require('../helpers/records/match-record');
 
 // https://262.ecma-international.org/13.0/#sec-getmatchstring
 
+/** @type {(S: string, match: import('../types').MatchRecord) => string} */
 module.exports = function GetMatchString(S, match) {
 	if (typeof S !== 'string') {
 		throw new $TypeError('Assertion failed: `S` must be a String');
