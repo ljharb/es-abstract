@@ -14,7 +14,9 @@
 /2015/DaysInYear.js	spackled linguist-generated=true
 /2015/HourFromTime.js	spackled linguist-generated=true
 /2015/InLeapYear.js	spackled linguist-generated=true
+/2015/IsAccessorDescriptor.js	spackled linguist-generated=true
 /2015/IsCallable.js	spackled linguist-generated=true
+/2015/IsDataDescriptor.js	spackled linguist-generated=true
 /2015/IsPropertyDescriptor.js	spackled linguist-generated=true
 /2015/MakeDate.js	spackled linguist-generated=true
 /2015/MakeDay.js	spackled linguist-generated=true
