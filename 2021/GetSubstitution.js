@@ -24,11 +24,7 @@ var ToObject = require('./ToObject');
 var ToString = require('./ToString');
 var Type = require('./Type');
 
-var canDistinguishSparseFromUndefined = 0 in [undefined]; // IE 6 - 8 have a bug where this returns false
-
-var isStringOrHole = function (capture, index, arr) {
-	return Type(capture) === 'String' || (canDistinguishSparseFromUndefined ? !(index in arr) : Type(capture) === 'Undefined');
-};
+var isStringOrHole = require('../helpers/isStringOrHole');
 
 // http://www.ecma-international.org/ecma-262/12.0/#sec-getsubstitution
 

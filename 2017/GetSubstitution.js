@@ -21,11 +21,7 @@ var IsArray = require('./IsArray');
 var IsInteger = require('./IsInteger');
 var Type = require('./Type');
 
-var canDistinguishSparseFromUndefined = 0 in [undefined]; // IE 6 - 8 have a bug where this returns false
-
-var isStringOrHole = function (capture, index, arr) {
-	return Type(capture) === 'String' || (canDistinguishSparseFromUndefined ? !(index in arr) : Type(capture) === 'Undefined');
-};
+var isStringOrHole = require('../helpers/isStringOrHole');
 
 // https://262.ecma-international.org/6.0/#sec-getsubstitution
 
