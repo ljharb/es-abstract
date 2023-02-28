@@ -55,6 +55,7 @@
 		"ES7"
 	],
 	"dependencies": {
+		"array-buffer-byte-length": "^1.0.0",
 		"available-typed-arrays": "^1.0.5",
 		"call-bind": "^1.0.2",
 		"es-set-tostringtag": "^2.0.1",
