@@ -14,6 +14,9 @@ var Type = require('./Type');
 
 module.exports = function GetPrototypeFromConstructor(constructor, intrinsicDefaultProto) {
 	var intrinsic = GetIntrinsic(intrinsicDefaultProto); // throws if not a valid intrinsic
+	if (Type(intrinsic) !== 'Object') {
+		throw new $TypeError('intrinsicDefaultProto must be an object');
+	}
 	if (!IsConstructor(constructor)) {
 		throw new $TypeError('Assertion failed: `constructor` must be a constructor');
 	}

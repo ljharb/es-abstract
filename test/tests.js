@@ -2607,6 +2607,12 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			);
 		});
 
+		t['throws'](
+			function () { ES.GetPrototypeFromConstructor(function () {}, '%Number.MAX_VALUE%'); },
+			TypeError,
+			'a non-object default intrinsic throws'
+		);
+
 		var f = function () {};
 		t.equal(
 			ES.GetPrototypeFromConstructor(f, '%Array.prototype%'),
