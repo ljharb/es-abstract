@@ -4,6 +4,7 @@ var GetIntrinsic = require('get-intrinsic');
 
 var $TypeError = GetIntrinsic('%TypeError%');
 var $Date = GetIntrinsic('%Date%');
+var $String = GetIntrinsic('%String%');
 
 var $isNaN = require('../helpers/isNaN');
 
@@ -18,5 +19,5 @@ module.exports = function ToDateString(tv) {
 	if ($isNaN(tv)) {
 		return 'Invalid Date';
 	}
-	return $Date(tv);
+	return $String(new $Date(tv));
 };
