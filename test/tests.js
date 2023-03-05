@@ -1425,8 +1425,8 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('surrogate pairs', function (st) {
-			var lowestPair = String.fromCharCode('0xD800') + String.fromCharCode('0xDC00');
-			var highestPair = String.fromCharCode('0xDBFF') + String.fromCharCode('0xDFFF');
+			var lowestPair = String.fromCharCode(0xD800) + String.fromCharCode(0xDC00);
+			var highestPair = String.fromCharCode(0xDBFF) + String.fromCharCode(0xDFFF);
 
 			st.equal(ES.AdvanceStringIndex(lowestPair, 0, true), 2, 'lowest surrogate pair, 0 -> 2');
 			st.equal(ES.AdvanceStringIndex(highestPair, 0, true), 2, 'highest surrogate pair, 0 -> 2');
@@ -1552,14 +1552,13 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 	test('ArraySpeciesCreate', function (t) {
 		t.test('errors', function (st) {
-			var testNonNumber = function (nonNumber) {
+			forEach(v.nonNumbers, function (nonNumber) {
 				st['throws'](
 					function () { ES.ArraySpeciesCreate([], nonNumber); },
 					TypeError,
 					debug(nonNumber) + ' is not a number'
 				);
-			};
-			forEach(v.nonNumbers, testNonNumber);
+			});
 
 			st['throws'](
 				function () { ES.ArraySpeciesCreate([], -1); },
@@ -1572,14 +1571,13 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				'-Infinity is not >= 0'
 			);
 
-			var testNonIntegers = function (nonInteger) {
+			forEach(v.nonIntegerNumbers, function (nonInteger) {
 				st['throws'](
 					function () { ES.ArraySpeciesCreate([], nonInteger); },
 					TypeError,
 					debug(nonInteger) + ' is not an integer'
 				);
-			};
-			forEach(v.nonIntegerNumbers, testNonIntegers);
+			});
 
 			st.end();
 		});
@@ -1746,14 +1744,14 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('CanonicalNumericIndexString', function (t) {
-		var throwsOnNonString = function (notString) {
+		forEach(v.nonStrings, function (notString) {
 			t['throws'](
 				function () { return ES.CanonicalNumericIndexString(notString); },
 				TypeError,
 				debug(notString) + ' is not a string'
 			);
-		};
-		forEach(v.nonStrings, throwsOnNonString);
+		});
+
 		t.equal(ES.CanonicalNumericIndexString('-0'), -0, '"-0" returns -0');
 		for (var i = -50; i < 50; i += 10) {
 			t.equal(i, ES.CanonicalNumericIndexString(String(i)), '"' + i + '" returns ' + i);
