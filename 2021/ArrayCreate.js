@@ -22,7 +22,7 @@ var $setProto = GetIntrinsic('%Object.setPrototypeOf%', true) || (
 		: null
 );
 
-// https://www.ecma-international.org/ecma-262/12.0/#sec-arraycreate
+// https://262.ecma-international.org/12.0/#sec-arraycreate
 
 module.exports = function ArrayCreate(length) {
 	if (!IsIntegralNumber(length) || length < 0) {
