@@ -20,7 +20,7 @@ module.exports = function IsDetachedBuffer(arrayBuffer) {
 		try {
 			new global[availableTypedArrays[0]](arrayBuffer); // eslint-disable-line no-new
 		} catch (error) {
-			return error.name === 'TypeError';
+			return !!error && error.name === 'TypeError';
 		}
 	}
 	return false;
