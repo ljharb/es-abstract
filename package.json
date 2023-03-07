@@ -84,6 +84,7 @@
 		"object.assign": "^4.1.4",
 		"regexp.prototype.flags": "^1.4.3",
 		"safe-regex-test": "^1.0.0",
+		"string.prototype.trim": "^1.2.7",
 		"string.prototype.trimend": "^1.0.6",
 		"string.prototype.trimstart": "^1.0.6",
 		"typed-array-length": "^1.0.4",

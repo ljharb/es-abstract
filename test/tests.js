@@ -258,8 +258,16 @@ var testEnumerableOwnNames = function (t, enumerableOwnNames) {
 var testStringToNumber = function (t, ES, StringToNumber) {
 	// TODO: check if this applies to ES5
 	t.test('trimming of whitespace and non-whitespace characters', function (st) {
-		var whitespace = ' \t\x0b\f\xa0\ufeff\n\r\u2028\u2029\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000';
-		st.equal(0, StringToNumber(whitespace + 0 + whitespace), 'whitespace is trimmed');
+		var whitespace = ' \t\x0b\f\xa0\ufeff\n\r\u2028\u2029\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000';
+		if ((/\s/).test('\u180e')) {
+			whitespace += '\u180e'; // in node 8.3+, the mongolian vowel separator is not whitespace
+		}
+
+		forEach(whitespace, function (ws) {
+			st.equal(StringToNumber(ws + 0 + ws), 0, 'whitespace ' + debug(ws) + ' is trimmed');
+		});
+
+		st.equal(StringToNumber(whitespace + 0 + whitespace), 0, 'whitespace is trimmed');
 
 		// Zero-width space (zws), next line character (nel), and non-character (bom) are not whitespace.
 		var nonWhitespaces = {
