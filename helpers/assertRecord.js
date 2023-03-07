@@ -21,6 +21,9 @@ var predicates = {
 			'[[Writable]]': true
 		};
 
+		if (!Desc) {
+			return false;
+		}
 		for (var key in Desc) { // eslint-disable-line
 			if (has(Desc, key) && !allowed[key]) {
 				return false;
@@ -40,7 +43,7 @@ var predicates = {
 		return has(value, '[[Iterator]]') && has(value, '[[NextMethod]]') && has(value, '[[Done]]');
 	},
 	'PromiseCapability Record': function isPromiseCapabilityRecord(value) {
-		return value
+		return !!value
 			&& has(value, '[[Resolve]]')
 			&& typeof value['[[Resolve]]'] === 'function'
 			&& has(value, '[[Reject]]')
@@ -50,7 +53,7 @@ var predicates = {
 			&& typeof value['[[Promise]]'].then === 'function';
 	},
 	'AsyncGeneratorRequest Record': function isAsyncGeneratorRequestRecord(value) {
-		return value
+		return !!value
 			&& has(value, '[[Completion]]') // TODO: confirm is a completion record
 			&& has(value, '[[Capability]]')
 			&& predicates['PromiseCapability Record'](value['[[Capability]]']);

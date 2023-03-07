@@ -10,7 +10,7 @@ module.exports = function assertRecordTests(ES, test) {
 	test('Property Descriptor', function (t) {
 		var record = 'Property Descriptor';
 
-		forEach(v.nonUndefinedPrimitives, function (primitive) {
+		forEach(v.primitives, function (primitive) {
 			t['throws'](
 				function () { assertRecord(ES.Type, record, 'arg', primitive); },
 				TypeError,
