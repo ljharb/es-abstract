@@ -11,7 +11,7 @@ var Type = require('./Type');
 // https://262.ecma-international.org/6.0/#sec-ordinaryhasinstance
 
 module.exports = function OrdinaryHasInstance(C, O) {
-	if (IsCallable(C) === false) {
+	if (!IsCallable(C)) {
 		return false;
 	}
 	if (Type(O) !== 'Object') {
