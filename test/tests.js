@@ -10754,16 +10754,13 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ToBigInt', function (t) {
-		t['throws'](
-			function () { ES.ToBigInt(); },
-			hasBigInts ? TypeError : SyntaxError,
-			'undefined throws'
-		);
-		t['throws'](
-			function () { ES.ToBigInt(null); },
-			hasBigInts ? TypeError : SyntaxError,
-			'null throws'
-		);
+		forEach([null, undefined].concat(v.symbols, v.numbers), function (nonBigIntCoercible) {
+			t['throws'](
+				function () { ES.ToBigInt(nonBigIntCoercible); },
+				hasBigInts ? TypeError : SyntaxError,
+				debug(nonBigIntCoercible) + ' throws'
+			);
+		});
 
 		forEach(v.symbols, function (sym) {
 			t['throws'](
