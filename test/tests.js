@@ -10984,6 +10984,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 		IsInteger: true,
 		IsNonNegativeInteger: true,
 		SetFunctionLength: true,
+		SplitMatch: true,
 		ToInteger: true,
 		UTF16DecodeString: true,
 		UTF16DecodeSurrogatePair: true,
@@ -11388,6 +11389,48 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 
 		// TODO: ensure it works with +Infinity
 		// TODO: defines an own configurable non-enum non-write length property
+
+		t.end();
+	});
+
+	test('SplitMatch', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.SplitMatch(nonString, 0, ''); },
+				TypeError,
+				'S: ' + debug(nonString) + ' is not a String'
+			);
+			t['throws'](
+				function () { ES.SplitMatch('', 0, nonString); },
+				TypeError,
+				'R: ' + debug(nonString) + ' is not a String'
+			);
+		});
+
+		forEach(v.nonNumbers.concat(v.nonIntegerNumbers), function (nonIntegerNumber) {
+			t['throws'](
+				function () { ES.SplitMatch('', nonIntegerNumber, ''); },
+				TypeError,
+				'q: ' + debug(nonIntegerNumber) + ' is not an integer'
+			);
+		});
+
+		t.equal(ES.SplitMatch('abc', 0, 'a'), 1, '"a" is found at index 0, before index 1, in "abc"');
+		t.equal(ES.SplitMatch('abc', 1, 'a'), 'not-matched', '"a" is not found at index 1 in "abc"');
+		t.equal(ES.SplitMatch('abc', 2, 'a'), 'not-matched', '"a" is not found at index 2 in "abc"');
+
+		t.equal(ES.SplitMatch('abc', 0, 'b'), 'not-matched', '"a" is not found at index 0 in "abc"');
+		t.equal(ES.SplitMatch('abc', 1, 'b'), 2, '"b" is found at index 1, before index 2, in "abc"');
+		t.equal(ES.SplitMatch('abc', 2, 'b'), 'not-matched', '"a" is not found at index 2 in "abc"');
+
+		t.equal(ES.SplitMatch('abc', 0, 'c'), 'not-matched', '"a" is not found at index 0 in "abc"');
+		t.equal(ES.SplitMatch('abc', 1, 'c'), 'not-matched', '"a" is not found at index 1 in "abc"');
+		t.equal(ES.SplitMatch('abc', 2, 'c'), 3, '"c" is found at index 2, before index 3, in "abc"');
+
+		t.equal(ES.SplitMatch('a', 0, 'ab'), 'not-matched', 'R longer than S yields false');
+
+		var s = 'a' + wholePoo + 'c';
+		t.equal(ES.SplitMatch(s, 1, wholePoo), 3, debug(wholePoo) + ' is found at index 1, before index 3, in ' + debug(s));
 
 		t.end();
 	});
