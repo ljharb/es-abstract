@@ -1,3 +1,39 @@
+1.21.2 / 2023-03-12
+=================
+  * [Fix] `ES2015`+: `CreateDataProperty`: use `OrdinaryDefineOwnProperty`
+  * [Fix] `ES2015`+: `CreateDataProperty`: use `OrdinaryDefineOwnProperty`
+  * [Fix] `ES2015`+: `GetPrototypeFromConstructor`: add missing assertion that `intrinsicDefaultProto` is an object
+  * [Fix] `ES2015`+: `IsDetachedBuffer`: ensure a nullish error does not crash
+  * [Fix] `ES2015`+: `ToDateString`: properly handle time values that aren’t "now"
+  * [Fix] `ES2015`+: `ToUint8Clamp`: avoid an extra observable ToNumber
+  * [Fix] `ES2015`+`: `GetMethod`: when `func` is not callable and `P` is a symbol, avoid the wrong TypeError
+  * [Fix] `ES2020`+: `ToBigInt`: properly throw on anything besides string, bigint, boolean
+  * [Fix] `ES2021`+: `SplitMatch`: instead of `false`, return `'not-matched'`
+  * [Fix] `helpers/assertRecord`: handle nullish input
+  * [Fix] `helpers/isFullyPopulatedPropertyDescriptor`: handle primitive inputs
+  * [Robustness] `ES5`: `ToNumber`: avoid relying on runtime `.test` and `.replace`
+  * [Refactor] `ES2015`: mark `IsDataDescriptor` and `IsAccessorDescriptor` as spackled
+  * [Refactor] `ES2015`+: `IsDetachedBuffer`: use `array-buffer-byte-length` package
+  * [Refactor] `ES2015`+: `OrdinaryHasInstance`: rely on falsiness
+  * [Refactor] `ES2016`+: `CreateListFromArrayLike`: hoist default element types to module level
+  * [Refactor] `ES2022`+: `StringToNumber`, `ToNumber`: use `string.prototype.trim`
+  * [patch] `ES2022`+: `IsLessThan`: fix a comment
+  * [patch] `ES2022`+: `TypedArrayElementSize`, `TypedArrayElementType`: throw a SyntaxError with an unknown TA type
+  * [patch] `ES2022`+: `IsLessThan`: fix a comment
+  * [patch] `ES2020`+: `thisBigIntValue`: throw a SyntaxError, not TypeError, for unsupported features
+  * [patch] `helpers/getIteratorMethod`: `String` is always available
+  * [patch] fix commented spec URLs
+  * [patch] omit `%` for `callBound`
+  * [meta] fix spec URLs
+  * [meta] fix spackle metadata, comments
+  * [Deps] update `get-intrinsic`, `internal-slot`, `is-array-buffer`, `object-inspect`
+  * [Deps] move `function-bind` to dev deps
+  * [Tests] String.fromCharCode takes numbers, not strings
+  * [Tests] use `makeIteratorRecord` helper
+  * [Tests] increase coverage
+  * [Tests] fix tests that throw a sentinel
+  * [Dev Deps] update `array.from`, `available-regexp-flags`, `tape`
+
 1.21.1 / 2023-01-10
 =================
   * [Fix] move `available-typed-arrays` to runtime deps
