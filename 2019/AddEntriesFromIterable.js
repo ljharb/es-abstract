@@ -16,7 +16,7 @@ var IteratorValue = require('./IteratorValue');
 var ThrowCompletion = require('./ThrowCompletion');
 var Type = require('./Type');
 
-// https://262.ecma-international.org/10.0//#sec-add-entries-from-iterable
+// https://262.ecma-international.org/10.0/#sec-add-entries-from-iterable
 
 module.exports = function AddEntriesFromIterable(target, iterable, adder) {
 	if (!IsCallable(adder)) {
