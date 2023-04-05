@@ -4,6 +4,8 @@ var GetIntrinsic = require('get-intrinsic');
 
 var $TypeError = GetIntrinsic('%TypeError%');
 
+var inspect = require('object-inspect');
+
 var IsPropertyKey = require('./IsPropertyKey');
 var ToObject = require('./ToObject');
 
@@ -12,7 +14,7 @@ var ToObject = require('./ToObject');
 module.exports = function GetV(V, P) {
 	// 7.3.2.1
 	if (!IsPropertyKey(P)) {
-		throw new $TypeError('Assertion failed: IsPropertyKey(P) is not true');
+		throw new $TypeError('Assertion failed: IsPropertyKey(P) is not true, got ' + inspect(P));
 	}
 
 	// 7.3.2.2-3
