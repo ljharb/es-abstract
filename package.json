@@ -81,7 +81,7 @@
 		"object-inspect": "^1.12.3",
 		"object-keys": "^1.1.1",
 		"object.assign": "^4.1.4",
-		"regexp.prototype.flags": "^1.4.3",
+		"regexp.prototype.flags": "^1.5.0",
 		"safe-regex-test": "^1.0.0",
 		"string.prototype.trim": "^1.2.7",
 		"string.prototype.trimend": "^1.0.6",
