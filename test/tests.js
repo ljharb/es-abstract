@@ -12331,14 +12331,20 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 			'non-RegExp object throws TypeError'
 		);
 
-		var allFlags = new RegExp('a', supportedRegexFlags.join(''));
+		var allFlagsU = new RegExp('a', supportedRegexFlags.join('').replace('uv', 'u'));
+		var allFlagsV = new RegExp('a', supportedRegexFlags.join('').replace('uv', 'v'));
 		forEach(supportedRegexFlags, function (flag) {
 			t.equal(ES.RegExpHasFlag(/a/, flag), false, 'regex with no flags does not have flag ' + flag);
 
 			var r = new RegExp('a', flag);
 			t.equal(ES.RegExpHasFlag(r, flag), true, debug(r) + ' has flag ' + flag);
 
-			t.equal(ES.RegExpHasFlag(allFlags, flag), true, debug(allFlags) + ' has flag ' + flag);
+			if (allFlagsU !== allFlagsV && (flag === 'u' || flag === 'v')) {
+				var flagsSubset = flag === 'u' ? allFlagsU : allFlagsV;
+				t.equal(ES.RegExpHasFlag(flagsSubset, flag), true, debug(flagsSubset) + ' has flag ' + flag);
+			} else {
+				t.equal(ES.RegExpHasFlag(allFlagsU, flag), true, debug(allFlagsU) + ' has flag ' + flag);
+			}
 		});
 
 		t.end();
