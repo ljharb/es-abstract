@@ -7,8 +7,6 @@ permissions:
 
 jobs:
   tests:
-    permissions:
-      contents: none
     uses: ljharb/actions/.github/workflows/node.yml@main
     with:
       range: '< 10'
