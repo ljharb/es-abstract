@@ -61,7 +61,7 @@
 		"es-set-tostringtag": "^2.0.1",
 		"es-to-primitive": "^1.2.1",
 		"function.prototype.name": "^1.1.5",
-		"get-intrinsic": "^1.2.0",
+		"get-intrinsic": "^1.2.1",
 		"get-symbol-description": "^1.0.0",
 		"globalthis": "^1.0.3",
 		"gopd": "^1.0.1",
