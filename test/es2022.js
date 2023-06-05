@@ -87,7 +87,6 @@ var expectedMissing = [
 	'GetThisEnvironment',
 	'GetThisValue',
 	'GetValue',
-	'GetValueFromBuffer',
 	'GetViewValue',
 	'GetWaiterList',
 	'GlobalDeclarationInstantiation',
@@ -184,7 +183,6 @@ var expectedMissing = [
 	'SetRealmGlobalObject',
 	'SetTypedArrayFromArrayLike', // TypedArray.prototype.set
 	'SetTypedArrayFromTypedArray', // TypedArray.prototype.set
-	'SetValueInBuffer',
 	'SetViewValue',
 	'SharedDataBlockEventSet',
 	'SuspendAgent',

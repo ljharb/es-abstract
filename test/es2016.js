@@ -67,7 +67,6 @@ var expectedMissing = [
 	'GetThisEnvironment',
 	'GetThisValue',
 	'GetValue',
-	'GetValueFromBuffer',
 	'GetViewValue',
 	'GlobalDeclarationInstantiation',
 	'IfAbruptRejectPromise',
@@ -132,7 +131,6 @@ var expectedMissing = [
 	'SerializeJSONProperty',
 	'SetDefaultGlobalBindings',
 	'SetRealmGlobalObject',
-	'SetValueInBuffer',
 	'SetViewValue',
 	'SortCompare', // mystery access to `comparefn` arg
 	'TopLevelModuleEvaluationJob',

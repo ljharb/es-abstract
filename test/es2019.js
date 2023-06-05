@@ -93,7 +93,6 @@ var expectedMissing = [
 	'GetThisEnvironment',
 	'GetThisValue',
 	'GetValue',
-	'GetValueFromBuffer',
 	'GetViewValue',
 	'GetWaiterList',
 	'GlobalDeclarationInstantiation',
@@ -179,7 +178,6 @@ var expectedMissing = [
 	'SetDefaultGlobalBindings',
 	'SetImmutablePrototype',
 	'SetRealmGlobalObject',
-	'SetValueInBuffer',
 	'SetViewValue',
 	'SharedDataBlockEventSet',
 	'SortCompare', // mystery access to `comparefn` arg

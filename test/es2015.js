@@ -61,7 +61,6 @@ var expectedMissing = [
 	'GetThisEnvironment',
 	'GetThisValue',
 	'GetValue',
-	'GetValueFromBuffer',
 	'GetViewValue',
 	'HasPrimitiveBase',
 	'ImportedLocalNames',
@@ -116,7 +115,6 @@ var expectedMissing = [
 	'SerializeJSONProperty',
 	'SetDefaultGlobalBindings',
 	'SetRealmGlobalObject',
-	'SetValueInBuffer',
 	'SetViewValue',
 	'sign', // used in ES5, but not in ES2015, removed in ES2016
 	'SortCompare', // mystery access to `comparefn` arg

@@ -86,6 +86,7 @@
 		"string.prototype.trim": "^1.2.7",
 		"string.prototype.trimend": "^1.0.6",
 		"string.prototype.trimstart": "^1.0.6",
+		"typed-array-buffer": "^1.0.0",
 		"typed-array-byte-offset": "^1.0.0",
 		"typed-array-length": "^1.0.4",
 		"unbox-primitive": "^1.0.2",
