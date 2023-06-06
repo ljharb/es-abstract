@@ -148,6 +148,8 @@ var ES2022 = {
 	SetFunctionLength: require('./2022/SetFunctionLength'),
 	SetFunctionName: require('./2022/SetFunctionName'),
 	SetIntegrityLevel: require('./2022/SetIntegrityLevel'),
+	SetTypedArrayFromArrayLike: require('./2022/SetTypedArrayFromArrayLike'),
+	SetTypedArrayFromTypedArray: require('./2022/SetTypedArrayFromTypedArray'),
 	SetValueInBuffer: require('./2022/SetValueInBuffer'),
 	SortIndexedProperties: require('./2022/SortIndexedProperties'),
 	SpeciesConstructor: require('./2022/SpeciesConstructor'),

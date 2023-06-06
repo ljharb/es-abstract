@@ -4551,8 +4551,8 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 						'returns undefined'
 					);
 					st.deepEqual(
-						arrayFrom(copyBytes.slice(0, elementSize)),
-						arrayFrom(new Uint8Array(result[type === 'Float64' ? 'setAsLittle' : 'setAsTruncatedLittle'].bytes).slice(0, elementSize)),
+						arrayFrom(Array.prototype.slice.call(copyBytes, 0, elementSize)),
+						arrayFrom(Array.prototype.slice.call(new Uint8Array(result[type === 'Float64' ? 'setAsLittle' : 'setAsTruncatedLittle'].bytes), 0, elementSize)),
 						'buffer holding ' + debug(value) + ' with type ' + type + ', little endian, yields expected value'
 					);
 
@@ -4565,8 +4565,8 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 							'returns undefined'
 						);
 						st.deepEqual(
-							arrayFrom(copyBytes.slice(0, elementSize)),
-							arrayFrom(new Uint8Array(result[type === 'Float64' ? 'setAsBig' : 'setAsTruncatedBig'].bytes).slice(0, elementSize)),
+							arrayFrom(Array.prototype.slice.call(copyBytes, 0, elementSize)),
+							arrayFrom(Array.prototype.slice.call(new Uint8Array(result[type === 'Float64' ? 'setAsBig' : 'setAsTruncatedBig'].bytes), 0, elementSize)),
 							'buffer holding ' + debug(value) + ' with type ' + type + ', big endian, yields expected value'
 						);
 					}
@@ -11297,6 +11297,192 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('SetTypedArrayFromArrayLike', function (t) {
+		forEach(v.primitives.concat(v.objects, [[]]), function (nonTA) {
+			t['throws'](
+				function () { ES.SetTypedArrayFromArrayLike(nonTA, 0, []); },
+				TypeError,
+				'target: ' + debug(nonTA) + ' is not a TypedArray'
+			);
+		});
+
+		t.test('Typed Array Support', { skip: availableTypedArrays.length === 0 }, function (st) {
+			forEach(v.notNonNegativeIntegers, function (notNonNegativeInteger) {
+				if (notNonNegativeInteger !== Infinity) {
+					st['throws'](
+						function () { ES.SetTypedArrayFromArrayLike(new Uint8Array(0), notNonNegativeInteger, []); },
+						TypeError,
+						'targetOffset: ' + debug(notNonNegativeInteger) + ' is not a non-negative integer'
+					);
+				}
+			});
+
+			st['throws'](
+				function () { ES.SetTypedArrayFromArrayLike(new Uint8Array(0), Infinity, []); },
+				RangeError,
+				'targetOffset: ' + debug(Infinity) + ' is not a finite integer'
+			);
+
+			st['throws'](
+				function () { ES.SetTypedArrayFromArrayLike(new Uint8Array(0), 0, new Uint8Array(0)); },
+				TypeError,
+				'source: must not be a TypedArray'
+			);
+
+			st.test('can detach', { skip: !canDetach }, function (s2t) {
+				var arr = new Uint8Array(0);
+				ES.DetachArrayBuffer(arr.buffer);
+
+				s2t['throws'](
+					function () { ES.SetTypedArrayFromArrayLike(arr, 0, []); },
+					TypeError,
+					'target’s buffer must not be detached'
+				);
+
+				s2t.end();
+			});
+
+			forEach(availableTypedArrays, function (name) {
+				var isBigInt = name.slice(0, 3) === 'Big';
+				var Z = isBigInt ? BigInt : Number;
+				var TA = global[name];
+
+				var ta = new TA([Z(1), Z(2), Z(3)]);
+
+				st['throws'](
+					function () { ES.SetTypedArrayFromArrayLike(ta, 3, [Z(10)]); },
+					RangeError,
+					name + ': out of bounds set attempt throws'
+				);
+
+				ES.SetTypedArrayFromArrayLike(ta, 1, [Z(10)]);
+
+				st.deepEqual(ta, new TA([Z(1), Z(10), Z(3)]), name + ': target is updated');
+			});
+
+			st.test('getters are supported, and can detach', { skip: !defineProperty.oDP || !canDetach }, function (s2t) {
+				var ta = new Uint8Array([1, 2, 3]);
+				var obj = { length: 1 };
+				defineProperty.oDP(obj, '0', { get: function () { ES.DetachArrayBuffer(ta.buffer); return 10; } });
+
+				s2t['throws'](
+					function () { ES.SetTypedArrayFromArrayLike(ta, 1, obj); },
+					TypeError,
+					'when a Get detaches the buffer, it throws'
+				);
+
+				s2t.end();
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('SetTypedArrayFromTypedArray', { skip: availableTypedArrays.length === 0 }, function (t) {
+		forEach(v.primitives.concat(v.objects, [[]]), function (nonTA) {
+			t['throws'](
+				function () { ES.SetTypedArrayFromTypedArray(nonTA, 0, new Uint8Array(0)); },
+				TypeError,
+				'target: ' + debug(nonTA) + ' is not a TypedArray'
+			);
+
+			t['throws'](
+				function () { ES.SetTypedArrayFromTypedArray(new Uint8Array(0), 0, nonTA); },
+				TypeError,
+				'source: ' + debug(nonTA) + ' is not a TypedArray'
+			);
+		});
+
+		forEach(v.notNonNegativeIntegers, function (notNonNegativeInteger) {
+			if (notNonNegativeInteger !== Infinity) {
+				t['throws'](
+					function () { ES.SetTypedArrayFromTypedArray(new Uint8Array(0), notNonNegativeInteger, new Uint8Array(0)); },
+					TypeError,
+					'targetOffset: ' + debug(notNonNegativeInteger) + ' is not a non-negative integer'
+				);
+			}
+		});
+
+		t['throws'](
+			function () { ES.SetTypedArrayFromTypedArray(new Uint8Array(0), Infinity, new Uint8Array(0)); },
+			RangeError,
+			'targetOffset: ' + debug(Infinity) + ' is not a finite integer'
+		);
+
+		t.test('can detach', { skip: !canDetach }, function (st) {
+			var arr = new Uint8Array(0);
+			ES.DetachArrayBuffer(arr.buffer);
+
+			st['throws'](
+				function () { ES.SetTypedArrayFromTypedArray(arr, 0, new Uint8Array(0)); },
+				TypeError,
+				'target’s buffer must not be detached'
+			);
+
+			st['throws'](
+				function () { ES.SetTypedArrayFromTypedArray(new Uint8Array(0), 0, arr); },
+				TypeError,
+				'source’s buffer must not be detached'
+			);
+
+			st.end();
+		});
+
+		forEach(availableTypedArrays, function (name) {
+			var isBigInt = name.slice(0, 3) === 'Big';
+			var Z = isBigInt ? BigInt : Number;
+			var TA = global[name];
+
+			var ta = new TA([Z(1), Z(2), Z(3)]);
+
+			t['throws'](
+				function () { ES.SetTypedArrayFromTypedArray(ta, 3, new TA([Z(10)])); },
+				RangeError,
+				name + ': out of bounds set attempt throws'
+			);
+
+			ES.SetTypedArrayFromTypedArray(ta, 1, new TA([Z(10)]));
+
+			t.deepEqual(ta, new TA([Z(1), Z(10), Z(3)]), name + ': target is updated');
+
+			if (!isBigInt) {
+				var DiffTA = name === 'Float32Array' ? Float64Array : Float32Array;
+				var diffTypeTA = new DiffTA([10]);
+
+				ES.SetTypedArrayFromTypedArray(diffTypeTA, 0, new TA([20]));
+
+				t.deepEqual(diffTypeTA, new DiffTA([20]));
+			}
+		});
+
+		t.test('mixed content type', { skip: !hasBigInts || typeof BigInt64Array !== 'function' }, function (st) {
+			var bta = new BigInt64Array([$BigInt(0)]);
+			var nta = new Float64Array([0]);
+
+			st['throws'](
+				function () { ES.SetTypedArrayFromTypedArray(bta, 0, nta); },
+				TypeError,
+				'number into bigint throws'
+			);
+
+			st['throws'](
+				function () { ES.SetTypedArrayFromTypedArray(nta, 0, bta); },
+				TypeError,
+				'bigint into number throws'
+			);
+
+			st.end();
+		});
+
+		// TODO: add a test where source and target have the same buffer,
+		// covering that the AO uses CloneArrayBuffer,
+		// presumably so as not to overwrite the source data as the same buffer is written to
+
+		t.end();
+	});
+
 	test('SetFunctionLength', function (t) {
 		forEach(v.nonFunctions, function (nonFunction) {
 			t['throws'](
@@ -11396,20 +11582,6 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 		var s = 'a' + wholePoo + 'c';
 		t.equal(ES.SplitMatch(s, 1, wholePoo), 3, debug(wholePoo) + ' is found at index 1, before index 3, in ' + debug(s));
 
-		t.end();
-	});
-
-	test('ToIntegerOrInfinity', function (t) {
-		forEach([0, -0, NaN], function (num) {
-			t.equal(ES.ToIntegerOrInfinity(num), +0, debug(num) + ' returns +0');
-		});
-		forEach([Infinity, 42], function (num) {
-			t.equal(ES.ToIntegerOrInfinity(num), num, debug(num) + ' returns itself');
-			t.equal(ES.ToIntegerOrInfinity(-num), -num, '-' + debug(num) + ' returns itself');
-		});
-		t.equal(ES.ToIntegerOrInfinity(Math.PI), 3, 'pi returns 3');
-		t.equal(ES.ToIntegerOrInfinity(-0.1), +0, '-0.1 truncates to +0, not -0');
-		t['throws'](function () { return ES.ToIntegerOrInfinity(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 		t.end();
 	});
 
@@ -11533,6 +11705,20 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 		t.equal(ES.substring('abc', 2, 4), 'c', 'substring of S from 2 to 4 works');
 		t.equal(ES.substring('abc', 3, 4), '', 'substring of S from 3 to 4 works');
 
+		t.end();
+	});
+
+	test('ToIntegerOrInfinity', function (t) {
+		forEach([0, -0, NaN], function (num) {
+			t.equal(ES.ToIntegerOrInfinity(num), +0, debug(num) + ' returns +0');
+		});
+		forEach([Infinity, 42], function (num) {
+			t.equal(ES.ToIntegerOrInfinity(num), num, debug(num) + ' returns itself');
+			t.equal(ES.ToIntegerOrInfinity(-num), -num, '-' + debug(num) + ' returns itself');
+		});
+		t.equal(ES.ToIntegerOrInfinity(Math.PI), 3, 'pi returns 3');
+		t.equal(ES.ToIntegerOrInfinity(-0.1), +0, '-0.1 truncates to +0, not -0');
+		t['throws'](function () { return ES.ToIntegerOrInfinity(v.uncoercibleObject); }, TypeError, 'uncoercibleObject throws');
 		t.end();
 	});
 

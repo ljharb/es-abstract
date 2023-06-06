@@ -140,6 +140,8 @@ var ES2021 = {
 	SetFunctionLength: require('./2021/SetFunctionLength'),
 	SetFunctionName: require('./2021/SetFunctionName'),
 	SetIntegrityLevel: require('./2021/SetIntegrityLevel'),
+	SetTypedArrayFromArrayLike: require('./2021/SetTypedArrayFromArrayLike'),
+	SetTypedArrayFromTypedArray: require('./2021/SetTypedArrayFromTypedArray'),
 	SetValueInBuffer: require('./2021/SetValueInBuffer'),
 	SpeciesConstructor: require('./2021/SpeciesConstructor'),
 	SplitMatch: require('./2021/SplitMatch'),

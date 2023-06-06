@@ -179,8 +179,6 @@ var expectedMissing = [
 	'SetDefaultGlobalBindings',
 	'SetImmutablePrototype',
 	'SetRealmGlobalObject',
-	'SetTypedArrayFromArrayLike', // TypedArray.prototype.set
-	'SetTypedArrayFromTypedArray', // TypedArray.prototype.set
 	'SetViewValue',
 	'SharedDataBlockEventSet',
 	'SuspendAgent',
