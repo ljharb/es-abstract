@@ -67,29 +67,29 @@ module.exports = function RawBytesToNumeric(type, rawBytes, isLittleEndian) {
 	// eslint-disable-next-line no-param-reassign
 	rawBytes = $slice(rawBytes, 0, elementSize);
 	if (!isLittleEndian) {
-		// eslint-disable-next-line no-param-reassign
-		rawBytes = $reverse(rawBytes); // step 2
+		$reverse(rawBytes); // step 2
 	}
 
-	/* eslint no-redeclare: 1 */
 	if (type === 'Float32') { // step 3
+		// return new Float32Array(new Uint8Array(rawBytes).buffer)[0];
+
 		/*
         Let value be the byte elements of rawBytes concatenated and interpreted as a little-endian bit string encoding of an IEEE 754-2008 binary32 value.
 If value is an IEEE 754-2008 binary32 NaN value, return the NaN Number value.
 Return the Number value that corresponds to value.
         */
-		var sign = (rawBytes[3] & 0x80) >> 7; // first bit
-		var exponent = ((rawBytes[3] & 0x7F) << 1) // 7 bits from index 3
-			| ((rawBytes[2] & 0x80) >> 7); // 1 bit from index 2
-		var mantissa = ((rawBytes[2] & 0x7F) << 16) // 7 bits from index 2
-			| (rawBytes[1] << 8) // 8 bits from index 1
-			| rawBytes[0]; // 8 bits from index 0
+		var sign = rawBytes[3] & 0x80 ? -1 : 1; // Check the sign bit
+		var exponent = ((rawBytes[3] & 0x7F) << 1)
+			| (rawBytes[2] >> 7); // Combine bits for exponent
+		var mantissa = ((rawBytes[2] & 0x7F) << 16)
+			| (rawBytes[1] << 8)
+			| rawBytes[0]; // Combine bits for mantissa
 
 		if (exponent === 0 && mantissa === 0) {
-			return sign === 0 ? 0 : -0;
+			return sign === 1 ? 0 : -0;
 		}
 		if (exponent === 0xFF && mantissa === 0) {
-			return sign === 0 ? Infinity : -Infinity;
+			return sign === 1 ? Infinity : -Infinity;
 		}
 		if (exponent === 0xFF && mantissa !== 0) {
 			return NaN;
@@ -97,9 +97,10 @@ Return the Number value that corresponds to value.
 
 		exponent -= 127; // subtract the bias
 
-		// return $pow(-1, sign) * mantissa / $pow(2, 23) * $pow(2, exponent);
-		// return $pow(-1, sign) * (mantissa + 0x1000000) * $pow(2, exponent - 23);
-		return $pow(-1, sign) * (1 + (mantissa / $pow(2, 23))) * $pow(2, exponent);
+		if (exponent === -127) {
+			return sign * mantissa * $pow(2, -126 - 23);
+		}
+		return sign * (1 + (mantissa * $pow(2, -23))) * $pow(2, exponent);
 	}
 
 	if (type === 'Float64') { // step 4

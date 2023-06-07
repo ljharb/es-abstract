@@ -67,8 +67,14 @@
 			},
 		},
 		{
-			"files": "*/RawBytesToNum*.js",
+			"files": [
+				"*/RawBytesToNum*.js",
+				"*/Num*ToRawBytes.js",
+			],
 			"rules": {
+				"max-lines-per-function": "off",
+				"max-statements": "off",
+				"no-redeclare": "warn",
 				"operator-linebreak": [2, "before", {
 					"overrides": {
 						"=": "none"
