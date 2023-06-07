@@ -22,6 +22,7 @@ var $strSlice = callBound('String.prototype.slice');
 
 var abs = require('./abs');
 var hasOwnProperty = require('./HasOwnProperty');
+var SameValue = require('./SameValue');
 var ToBigInt64 = require('./ToBigInt64');
 var ToBigUint64 = require('./ToBigUint64');
 var ToInt16 = require('./ToInt16');
@@ -91,7 +92,7 @@ module.exports = function NumericToRawBytes(type, value, isLittleEndian) {
 		var leastSig;
 
 		if (value === 0) {
-			leastSig = Object.is(value, -0) ? 0x80 : 0;
+			leastSig = SameValue(value, -0) ? 0x80 : 0;
 			return isLittleEndian ? [0, 0, 0, leastSig] : [leastSig, 0, 0, 0];
 		}
 
