@@ -91,6 +91,22 @@ var float32TestCases = [
 	[4.602845065767727e-41, 4294967296, [79, 128, 0, 0]]
 ];
 
+var float64TestCases = [
+	[0, 0, [0, 0, 0, 0, 0, 0, 0, 0]],
+	[-0, 6.3e-322, [0, 0, 0, 0, 0, 0, 0, 128]],
+	[1, 3.03865e-319, [0, 0, 0, 0, 0, 0, 240, 63]],
+	[0.75, 2.93747e-319, [0, 0, 0, 0, 0, 0, 232, 63]],
+	[0.5, 2.8363e-319, [0, 0, 0, 0, 0, 0, 224, 63]],
+	[-1.5, 3.14616e-319, [0, 0, 0, 0, 0, 0, 248, 191]],
+	[-3.5, 1.6126e-320, [0, 0, 0, 0, 0, 0, 12, 192]],
+	[2147483647, 1.048435680358704e-309, [0, 0, 192, 255, 255, 255, 223, 65]],
+	[9007199254740992, 8.128e-320, [0, 0, 0, 0, 0, 0, 64, 67]],
+	[Infinity, 3.0418e-319, [0, 0, 0, 0, 0, 0, 240, 127]],
+	[-Infinity, 3.04814e-319, [0, 0, 0, 0, 0, 0, 240, 255]],
+	[NaN, 3.143e-319, [0, 0, 0, 0, 0, 0, 248, 127]],
+	[6.97011957458363e-310, 6.589791616e-315, [0, 0, 0, 0, 79, 128, 0, 0]]
+];
+
 var canDistinguishSparseFromUndefined = 0 in [undefined]; // IE 6 - 8 have a bug where this returns false
 
 // IE 9 does not throw in strict mode when writability/configurability/extensibility is violated
@@ -5934,29 +5950,34 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 				'Float64 with more than 8 bytes throws a RangeError'
 			);
 
-			forEach([
-				[0, [0, 0, 0, 0, 0, 0, 0, 0]],
-				[-0, [0, 0, 0, 0, 0, 0, 0, 128]],
-				[1, [0, 0, 0, 0, 0, 0, 240, 63]],
-				[0.75, [0, 0, 0, 0, 0, 0, 232, 63]],
-				[0.5, [0, 0, 0, 0, 0, 0, 224, 63]],
-				[-1.5, [0, 0, 0, 0, 0, 0, 248, 191]],
-				[-3.5, [0, 0, 0, 0, 0, 0, 12, 192]],
-				[2147483647, [0, 0, 192, 255, 255, 255, 223, 65]],
-				[9007199254740992, [0, 0, 0, 0, 0, 0, 64, 67]],
-				[Infinity, [0, 0, 0, 0, 0, 0, 240, 127]],
-				[-Infinity, [0, 0, 0, 0, 0, 0, 240, 255]],
-				[NaN, [0, 0, 0, 0, 0, 0, 248, 127]]
-			], function (pair) {
+			forEach(float64TestCases, function (pair) {
 				var float = pair[0];
-				var bytes = pair[1];
+				var floatBig = pair[1];
+				var bytes = pair[2];
+				var reverseBytes = bytes.slice().reverse();
 
 				if (availableTypedArrays.length > 0) {
-					var expectedBytes = arrayFrom(new Uint8Array(assign(new Float64Array(1), [float]).buffer));
+					var buffer = new Float64Array(1).buffer;
+					var view = new DataView(buffer);
+
+					view.setFloat64(0, float, true);
+
+					var actual = view.getFloat64(0, false);
+					st.equal(actual, floatBig, 'big-endian value for ' + debug(float) + ' is correct; got ' + debug(actual));
+
+					var expectedBytesLE = arrayFrom(new Uint8Array(buffer));
 					st.deepEqual(
 						bytes,
-						expectedBytes,
-						'bytes for ' + debug(float) + ' are correct; got ' + debug(expectedBytes)
+						expectedBytesLE,
+						'little-endian bytes for ' + debug(float) + ' are correct; got ' + debug(expectedBytesLE)
+					);
+
+					view.setFloat64(0, floatBig, false);
+					var expectedBytesBE = arrayFrom(new Uint8Array(buffer)).reverse();
+					st.deepEqual(
+						reverseBytes,
+						expectedBytesBE,
+						'big-endian bytes for ' + debug(floatBig) + ' are correct; got ' + debug(expectedBytesBE)
 					);
 				}
 
@@ -5966,7 +5987,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 					'little-endian: bytes for ' + debug(float) + ' produces it'
 				);
 				st.equal(
-					ES.RawBytesToNumber('Float64', bytes.slice().reverse(), false),
+					ES.RawBytesToNumber('Float64', reverseBytes, false),
 					float,
 					'big-endian: bytes for ' + debug(float) + ' produces it'
 				);
@@ -10119,29 +10140,34 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				'Float64 with more than 8 bytes throws a RangeError'
 			);
 
-			forEach([
-				[0, [0, 0, 0, 0, 0, 0, 0, 0]],
-				[-0, [0, 0, 0, 0, 0, 0, 0, 128]],
-				[1, [0, 0, 0, 0, 0, 0, 240, 63]],
-				[0.75, [0, 0, 0, 0, 0, 0, 232, 63]],
-				[0.5, [0, 0, 0, 0, 0, 0, 224, 63]],
-				[-1.5, [0, 0, 0, 0, 0, 0, 248, 191]],
-				[-3.5, [0, 0, 0, 0, 0, 0, 12, 192]],
-				[2147483647, [0, 0, 192, 255, 255, 255, 223, 65]],
-				[9007199254740992, [0, 0, 0, 0, 0, 0, 64, 67]],
-				[Infinity, [0, 0, 0, 0, 0, 0, 240, 127]],
-				[-Infinity, [0, 0, 0, 0, 0, 0, 240, 255]],
-				[NaN, [0, 0, 0, 0, 0, 0, 248, 127]]
-			], function (pair) {
+			forEach(float64TestCases, function (pair) {
 				var float = pair[0];
-				var bytes = pair[1];
+				var floatBig = pair[1];
+				var bytes = pair[2];
+				var reverseBytes = bytes.slice().reverse();
 
 				if (availableTypedArrays.length > 0) {
-					var expectedBytes = arrayFrom(new Uint8Array(assign(new Float64Array(1), [float]).buffer));
+					var buffer = new Float64Array(1).buffer;
+					var view = new DataView(buffer);
+
+					view.setFloat64(0, float, true);
+
+					var actual = view.getFloat64(0, false);
+					st.equal(actual, floatBig, 'big-endian value for ' + debug(float) + ' is correct; got ' + debug(actual));
+
+					var expectedBytesLE = arrayFrom(new Uint8Array(buffer));
 					st.deepEqual(
 						bytes,
-						expectedBytes,
-						'bytes for ' + debug(float) + ' are correct; got ' + debug(expectedBytes)
+						expectedBytesLE,
+						'little-endian bytes for ' + debug(float) + ' are correct; got ' + debug(expectedBytesLE)
+					);
+
+					view.setFloat64(0, floatBig, false);
+					var expectedBytesBE = arrayFrom(new Uint8Array(buffer)).reverse();
+					st.deepEqual(
+						reverseBytes,
+						expectedBytesBE,
+						'big-endian bytes for ' + debug(floatBig) + ' are correct; got ' + debug(expectedBytesBE)
 					);
 				}
 
@@ -10151,7 +10177,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 					'little-endian: bytes for ' + debug(float) + ' produces it'
 				);
 				st.equal(
-					ES.RawBytesToNumeric('Float64', bytes.slice().reverse(), false),
+					ES.RawBytesToNumeric('Float64', reverseBytes, false),
 					float,
 					'big-endian: bytes for ' + debug(float) + ' produces it'
 				);

@@ -104,6 +104,8 @@ Return the Number value that corresponds to value.
 	}
 
 	if (type === 'Float64') { // step 4
+		// return new Float64Array(new Uint8Array(rawBytes).buffer)[0];
+
 		/*
         Let value be the byte elements of rawBytes concatenated and interpreted as a little-endian bit string encoding of an IEEE 754-2008 binary64 value.
 If value is an IEEE 754-2008 binary64 NaN value, return the NaN Number value.
@@ -132,7 +134,12 @@ Return the Number value that corresponds to value.
 
 		exponent -= 1023; // subtract the bias
 
-		return sign * (mantissa + 0x10000000000000) * $pow(2, exponent - 52);
+		// Handle subnormal numbers
+		if (exponent === -1023) {
+			return sign * mantissa * 5e-324; // $pow(2, -1022 - 52)
+		}
+
+		return sign * (1 + (mantissa / 0x10000000000000)) * $pow(2, exponent);
 	}
 
 	// this is common to both branches
