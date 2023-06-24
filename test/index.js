@@ -35,6 +35,7 @@ test('methods match', function (t) {
 require('./GetIntrinsic');
 
 require('./helpers');
+require('./bufferTestCases');
 
 require('./es5');
 require('./es6');

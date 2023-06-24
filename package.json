@@ -35,7 +35,7 @@
 		"test": "npm run tests-only && npm run test:ses",
 		"test:ses": "node test/ses-compat",
 		"posttest": "aud --production",
-		"tests-only": "nyc node test",
+		"tests-only": "nyc node --stack-size=5120 test",
 		"lint": "eslint .",
 		"eccheck": "eclint check $(git ls-files | xargs find 2> /dev/null | grep -vE 'node_modules|\\.git')"
 	},

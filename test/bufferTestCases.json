@@ -1,0 +1,3144 @@
+{
+    "near max64": {
+        "value": 8.988465674311578e+307,
+        "Int8": {
+            "setAsLittle": {
+                "asLittle": -2,
+				"bytes": [254]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Uint8": {
+            "setAsLittle": {
+                "asLittle": 254,
+                "bytes": [254]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Uint8Clamped": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 255,
+                "bytes": [255]
+            }
+        },
+        "Int16": {
+            "setAsLittle": {
+                "asLittle": -2,
+                "asBig": -257,
+                "bytes": [254, 255]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asLittle": -8321,
+                "asBig": 32735,
+                "bytes": [127, 223]
+            },
+            "setAsTruncatedBig": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            }
+        },
+        "Uint16": {
+            "setAsLittle": {
+                "asLittle": 65534,
+                "asBig": 65279,
+                "bytes": [254, 255]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asLittle": 57215,
+                "asBig": 32735,
+                "bytes": [127, 223]
+            },
+            "setAsTruncatedBig": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            }
+        },
+        "Int32": {
+            "setAsLittle": {
+                "asLittle": -2,
+                "asBig": -16777217,
+                "bytes": [254, 255, 255, 255]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": -8321,
+                "asBig": 2145386495,
+                "bytes": [127, 223, 255, 255]
+            },
+            "setAsTruncatedBig": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            }
+        },
+        "Uint32": {
+            "setAsLittle": {
+                "asLittle": 4294967294,
+                "asBig": 4278190079,
+                "bytes": [254, 255, 255, 255]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": 4294958975,
+                "asBig": 2145386495,
+                "bytes": [127, 223, 255, 255]
+            },
+            "setAsTruncatedBig": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            }
+        },
+        "BigInt64": {
+            "setAsLittle": {
+                "asLittle": "9214364837600034814n",
+                "asBig": "-72057594037936257n",
+                "bytes": [254, 255, 255, 255, 255, 255, 223, 127]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "-72057594037936257n",
+                "asBig": "9214364837600034814n",
+                "bytes": [127, 223, 255, 255, 255, 255, 255, 254],
+                "truncatedLittle": "0n",
+                "truncatedBig": "0n"
+            },
+            "setAsTruncatedBig": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "BigUint64": {
+            "setAsLittle": {
+                "asLittle": "9214364837600034814n",
+                "asBig": "18374686479671615359n",
+                "bytes": [254, 255, 255, 255, 255, 255, 223, 127]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "18374686479671615359n",
+                "asBig": "9214364837600034814n",
+                "bytes": [127, 223, 255, 255, 255, 255, 255, 254]
+            },
+            "setAsTruncatedBig": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "Float32": {
+            "setAsLittle": {
+                "asLittle": "NaN",
+                "asBig": -1.7014117331926443e+38,
+                "bytes": [254, 255, 255, 255]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": "Infinity",
+                "asBig": 4.609571298396486e-41,
+                "bytes": [0, 0, 128, 127]
+            },
+            "setAsBig": {
+                "asLittle": "NaN",
+                "asBig": "NaN",
+                "bytes": [127, 223, 255, 255]
+            },
+            "setAsTruncatedBig": {
+                "asLittle": 4.609571298396486e-41,
+                "asBig": "Infinity",
+                "bytes": [127, 128, 0, 0]
+            }
+        },
+        "Float64": {
+            "setAsLittle": {
+                "asLittle": 8.988465674311578e+307,
+                "asBig": -5.4861240687886205e+303,
+                "bytes": [254, 255, 255, 255, 255, 255, 223, 127]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 8.988465674311578e+307,
+                "asBig": -5.4861240687886205e+303,
+                "bytes": [254, 255, 255, 255, 255, 255, 223, 127]
+            },
+            "setAsBig": {
+                "asLittle": -5.4861240687886205e+303,
+                "asBig": 8.988465674311578e+307,
+                "bytes": [127, 223, 255, 255, 255, 255, 255, 254]
+            },
+            "setAsTruncatedBig": {
+                "asLittle": -5.4861240687886205e+303,
+                "asBig": 8.988465674311578e+307,
+                "bytes": [127, 223, 255, 255, 255, 255, 255, 254]
+            }
+        }
+    },
+    "max64": {
+        "value": 1.7976931348623157e+308,
+        "Int8": {
+            "setAsLittle": {
+                "asLittle": -1,
+				"bytes": [255]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Uint8": {
+            "setAsLittle": {
+                "asLittle": 255,
+                "bytes": [255]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Uint8Clamped": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 255,
+                "bytes": [255]
+            }
+        },
+        "Int16": {
+            "setAsLittle": {
+                "asLittle": -1,
+                "asBig": -1,
+                "bytes": [255, 255]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asLittle": -4225,
+                "asBig": 32751,
+                "bytes": [127, 239]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            }
+        },
+        "Uint16": {
+            "setAsLittle": {
+                "asLittle": 65535,
+                "asBig": 65535,
+                "bytes": [255, 255]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asLittle": 61311,
+                "asBig": 32751,
+                "bytes": [127, 239]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            }
+        },
+        "Int32": {
+            "setAsLittle": {
+                "asLittle": -1,
+                "asBig": -1,
+                "bytes": [255, 255, 255, 255]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": -4225,
+                "asBig": 2146435071,
+                "bytes": [127, 239, 255, 255]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            }
+        },
+        "Uint32": {
+            "setAsLittle": {
+                "asLittle": 4294967295,
+                "asBig": 4294967295,
+                "bytes": [255, 255, 255, 255]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": 4294963071,
+                "asBig": 2146435071,
+                "bytes": [127, 239, 255, 255]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            }
+        },
+        "BigInt64": {
+            "setAsLittle": {
+                "asLittle": "9218868437227405311n",
+                "asBig": "-4225n",
+                "bytes": [255, 255, 255, 255, 255, 255, 239, 127]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "-4225n",
+                "asBig": "9218868437227405311n",
+                "bytes": [127, 239, 255, 255, 255, 255, 255, 255]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "BigUint64": {
+            "setAsLittle": {
+                "asLittle": "9218868437227405311n",
+                "asBig": "18446744073709547391n",
+                "bytes": [255, 255, 255, 255, 255, 255, 239, 127]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "18446744073709547391n",
+                "asBig": "9218868437227405311n",
+                "bytes": [127, 239, 255, 255, 255, 255, 255, 255]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "Float32": {
+            "setAsLittle": {
+                "asLittle": "NaN",
+                "asBig": "NaN",
+                "bytes": [255, 255, 255, 255]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 4.609571298396486e-41,
+                "asLittle": "Infinity",
+                "bytes": [0, 0, 128, 127]
+            },
+            "setAsBig": {
+                "asLittle": "NaN",
+                "asBig": "NaN",
+                "bytes": [127, 239, 255, 255]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "Infinity",
+                "asLittle": 4.609571298396486e-41,
+                "bytes": [127, 128, 0, 0]
+            }
+        },
+        "Float64": {
+            "setAsLittle": {
+                "asLittle": 1.7976931348623157e+308,
+                "asBig": "NaN",
+                "bytes": [255, 255, 255, 255, 255, 255, 239, 127]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "NaN",
+                "asLittle": 1.7976931348623157e+308,
+                "bytes": [255, 255, 255, 255, 255, 255, 239, 127]
+            },
+            "setAsBig": {
+                "asBig": 1.7976931348623157e+308,
+                "asLittle": "NaN",
+                "bytes": [127, 239, 255, 255, 255, 255, 255, 255]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 1.7976931348623157e+308,
+                "asLittle": "NaN",
+                "bytes": [127, 239, 255, 255, 255, 255, 255, 255]
+            }
+        }
+    },
+    "max32": {
+        "value": 4294967295,
+        "Int8": {
+            "setAsLittle": {
+                "asLittle": 0,
+				"bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": -1,
+                "bytes": [255]
+            }
+        },
+        "Uint8": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0],
+                "truncatedLittle": 255
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 255,
+                "bytes": [255]
+            }
+        },
+        "Uint8Clamped": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 255,
+                "bytes": [255]
+            }
+        },
+        "Int16": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0],
+                "truncatedLittle": -1,
+                "truncatedBig": -1
+            },
+            "setAsTruncatedLittle": {
+                "asBig": -1,
+                "asLittle": -1,
+                "bytes": [255, 255]
+            },
+            "setAsBig": {
+                "asLittle": -4287,
+                "asBig": 16879,
+                "bytes": [65, 239]
+            },
+            "setAsTruncatedBig": {
+                "asBig": -1,
+                "asLittle": -1,
+                "bytes": [255, 255]
+            }
+        },
+        "Uint16": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 65535,
+                "asLittle": 65535,
+                "bytes": [255, 255]
+            },
+            "setAsBig": {
+                "asLittle": 61249,
+                "asBig": 16879,
+                "bytes": [65, 239]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 65535,
+                "asLittle": 65535,
+                "bytes": [255, 255]
+            }
+        },
+        "Int32": {
+            "setAsLittle": {
+                "asLittle": -2097152,
+                "asBig": 57599,
+                "bytes": [0, 0, 224, 255]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": -1,
+                "asLittle": -1,
+                "bytes": [255, 255, 255, 255]
+            },
+            "setAsBig": {
+                "asLittle": -4287,
+                "asBig": 1106247679,
+                "bytes": [65, 239, 255, 255]
+            },
+            "setAsTruncatedBig": {
+                "asBig": -1,
+                "asLittle": -1,
+                "bytes": [255, 255, 255, 255]
+            }
+        },
+        "Uint32": {
+            "setAsLittle": {
+                "asLittle": 4292870144,
+                "asBig": 57599,
+                "bytes": [0, 0, 224, 255]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 4294967295,
+                "asLittle": 4294967295,
+                "bytes": [255, 255, 255, 255]
+            },
+            "setAsBig": {
+                "asLittle": 4294963009,
+                "asBig": 1106247679,
+                "bytes": [65, 239, 255, 255]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 4294967295,
+                "asLittle": 4294967295,
+                "bytes": [255, 255, 255, 255]
+            }
+        },
+        "BigInt64": {
+            "setAsLittle": {
+                "asLittle": "4751297606873776128n",
+                "asBig": "247390116245313n",
+                "bytes": [0, 0, 224, 255, 255, 255, 239, 65]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "-4294967296n",
+                "asLittle": "4294967295n",
+                "bytes": [255, 255, 255, 255, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "247390116245313n",
+                "asBig": "4751297606873776128n",
+                "bytes": [65, 239, 255, 255, 255, 224, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "4294967295n",
+                "asLittle": "-4294967296n",
+                "bytes": [0, 0, 0, 0, 255, 255, 255, 255]
+            }
+        },
+        "BigUint64": {
+            "setAsLittle": {
+                "asLittle": "4751297606873776128n",
+                "asBig": "247390116245313n",
+                "bytes": [0, 0, 224, 255, 255, 255, 239, 65]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "18446744069414584320n",
+                "asLittle": "4294967295n",
+                "bytes": [255, 255, 255, 255, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "247390116245313n",
+                "asBig": "4751297606873776128n",
+                "bytes": [65, 239, 255, 255, 255, 224, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "4294967295n",
+                "asLittle": "18446744069414584320n",
+                "bytes": [0, 0, 0, 0, 255, 255, 255, 255]
+            }
+        },
+        "Float32": {
+            "setAsLittle": {
+                "asLittle": "NaN",
+                "asBig": 8.071339024664514e-41,
+                "bytes": [0, 0, 224, 255],
+                "truncatedLittle": 4294967296,
+                "truncatedBig": 4.602845065767727e-41
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 4.602845065767727e-41,
+                "asLittle": 4294967296,
+                "bytes": [0, 0, 128, 79]
+            },
+            "setAsBig": {
+                "asLittle": "NaN",
+                "asBig": 29.999998092651367,
+                "bytes": [65, 239, 255, 255]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 4294967296,
+                "asLittle": 4.602845065767727e-41,
+                "bytes": [79, 128, 0, 0]
+            }
+        },
+        "Float64": {
+            "setAsLittle": {
+                "asLittle": 4294967295,
+                "asBig": 1.222269575574816e-309,
+                "bytes": [0, 0, 224, 255, 255, 255, 239, 65]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 1.222269575574816e-309,
+                "asLittle": 4294967295,
+                "bytes": [0, 0, 224, 255, 255, 255, 239, 65]
+            },
+            "setAsBig": {
+                "asLittle": 1.222269575574816e-309,
+                "asBig": 4294967295,
+                "bytes": [65, 239, 255, 255, 255, 224, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 4294967295,
+                "asLittle": 1.222269575574816e-309,
+                "bytes": [65, 239, 255, 255, 255, 224, 0, 0]
+            }
+        }
+    },
+    "zero": {
+        "value": 0,
+        "Int8": {
+            "setAsLittle": {
+                "asLittle": 0,
+				"bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Uint8": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Uint8Clamped": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Int16": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            }
+        },
+        "Uint16": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            }
+        },
+        "Int32": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            }
+        },
+        "Uint32": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            }
+        },
+        "BigInt64": {
+            "setAsLittle": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "BigUint64": {
+            "setAsLittle": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "Float32": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            }
+        },
+        "Float64": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        }
+    },
+    "neg zero": {
+        "value": "-0",
+        "Int8": {
+            "setAsLittle": {
+                "asLittle": 0,
+				"bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Uint8": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Uint8Clamped": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Int16": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asBig": -32768,
+                "asLittle": 128,
+                "bytes": [128, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            }
+        },
+        "Uint16": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asBig": 32768,
+                "asLittle": 128,
+                "bytes": [128, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            }
+        },
+        "Int32": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": 128,
+                "asBig": -2147483648,
+                "bytes": [128, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            }
+        },
+        "Uint32": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asBig": 2147483648,
+                "asLittle": 128,
+                "bytes": [128, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            }
+        },
+        "BigInt64": {
+            "setAsLittle": {
+                "asLittle": "-9223372036854775808n",
+                "asBig": "128n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 128]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "128n",
+                "asBig": "-9223372036854775808n",
+                "bytes": [128, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "BigUint64": {
+            "setAsLittle": {
+                "asBig": "128n",
+                "asLittle": "9223372036854775808n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 128]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asBig": "9223372036854775808n",
+                "asLittle": "128n",
+                "bytes": [128, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "Float32": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 1.793662034335766e-43,
+                "asLittle": "-0",
+                "bytes": [0, 0, 0, 128]
+            },
+            "setAsBig": {
+                "asBig": "-0",
+                "asLittle": 1.793662034335766e-43,
+                "bytes": [128, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "-0",
+                "asLittle": 1.793662034335766e-43,
+                "bytes": [128, 0, 0, 0]
+            }
+        },
+        "Float64": {
+            "setAsLittle": {
+                "asBig": 6.3e-322,
+                "asLittle": "-0",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 128]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 6.3e-322,
+                "asLittle": "-0",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 128]
+            },
+            "setAsBig": {
+                "asBig": "-0",
+                "asLittle": 6.3e-322,
+                "bytes": [128, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "-0",
+                "asLittle": 6.3e-322,
+                "bytes": [128, 0, 0, 0, 0, 0, 0, 0]
+            }
+        }
+    },
+    "one": {
+        "value": 1,
+        "Int8": {
+            "setAsLittle": {
+                "asLittle": 0,
+				"bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 1,
+                "bytes": [1]
+            }
+        },
+        "Uint8": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 1,
+                "bytes": [1]
+            }
+        },
+        "Uint8Clamped": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 1,
+                "bytes": [1]
+            }
+        },
+        "Int16": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 256,
+                "asLittle": 1,
+                "bytes": [1, 0]
+            },
+            "setAsBig": {
+                "asBig": 16368,
+                "asLittle": -4033,
+                "bytes": [63, 240]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 1,
+                "asLittle": 256,
+                "bytes": [0, 1]
+            }
+        },
+        "Uint16": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 256,
+                "asLittle": 1,
+                "bytes": [1, 0]
+            },
+            "setAsBig": {
+                "asBig": 16368,
+                "asLittle": 61503,
+                "bytes": [63, 240]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 1,
+                "asLittle": 256,
+                "bytes": [0, 1]
+            }
+        },
+        "Int32": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 16777216,
+                "asLittle": 1,
+                "bytes": [1, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asBig": 1072693248,
+                "asLittle": 61503,
+                "bytes": [63, 240, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 1,
+                "asLittle": 16777216,
+                "bytes": [0, 0, 0, 1]
+            }
+        },
+        "Uint32": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 16777216,
+                "asLittle": 1,
+                "bytes": [1, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asBig": 1072693248,
+                "asLittle": 61503,
+                "bytes": [63, 240, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 1,
+                "asLittle": 16777216,
+                "bytes": [0, 0, 0, 1]
+            }
+        },
+        "BigInt64": {
+            "setAsLittle": {
+                "asBig": "61503n",
+                "asLittle": "4607182418800017408n",
+                "bytes": [0, 0, 0, 0, 0, 0, 240, 63]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "72057594037927936n",
+                "asLittle": "1n",
+                "bytes": [1, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asBig": "4607182418800017408n",
+                "asLittle": "61503n",
+                "bytes": [63, 240, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "1n",
+                "asLittle": "72057594037927936n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 1]
+            }
+        },
+        "BigUint64": {
+            "setAsLittle": {
+                "asBig": "61503n",
+                "asLittle": "4607182418800017408n",
+                "bytes": [0, 0, 0, 0, 0, 0, 240, 63]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "72057594037927936n",
+                "asLittle": "1n",
+                "bytes": [1, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asBig": "4607182418800017408n",
+                "asLittle": "61503n",
+                "bytes": [63, 240, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "1n",
+                "asLittle": "72057594037927936n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 1]
+            }
+        },
+        "Float32": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 4.600602988224807e-41,
+                "asLittle": 1,
+                "bytes": [0, 0, 128, 63]
+            },
+            "setAsBig": {
+                "asBig": 1.875,
+                "asLittle": 8.618405945136922e-41,
+                "bytes": [63, 240, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 1,
+                "asLittle": 4.600602988224807e-41,
+                "bytes": [63, 128, 0, 0]
+            }
+        },
+        "Float64": {
+            "setAsLittle": {
+                "asBig": 3.03865e-319,
+                "asLittle": 1,
+                "bytes": [0, 0, 0, 0, 0, 0, 240, 63]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 3.03865e-319,
+                "asLittle": 1,
+                "bytes": [0, 0, 0, 0, 0, 0, 240, 63]
+            },
+            "setAsBig": {
+                "asBig": 1,
+                "asLittle": 3.03865e-319,
+                "bytes": [63, 240, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 1,
+                "asLittle": 3.03865e-319,
+                "bytes": [63, 240, 0, 0, 0, 0, 0, 0]
+            }
+        }
+    },
+    "0.75": {
+        "value": 0.75,
+        "Int8": {
+            "setAsLittle": {
+                "asLittle": 0,
+				"bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Uint8": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Uint8Clamped": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 1,
+                "bytes": [1]
+            }
+        },
+        "Int16": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asBig": 16360,
+                "asLittle": -6081,
+                "bytes": [63, 232]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            }
+        },
+        "Uint16": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asBig": 16360,
+                "asLittle": 59455,
+                "bytes": [63, 232]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            }
+        },
+        "Int32": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asBig": 1072168960,
+                "asLittle": 59455,
+                "bytes": [63, 232, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            }
+        },
+        "Uint32": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asBig": 1072168960,
+                "asLittle": 59455,
+                "bytes": [63, 232, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            }
+        },
+        "BigInt64": {
+            "setAsLittle": {
+                "asBig": "59455n",
+                "asLittle": "4604930618986332160n",
+                "bytes": [0, 0, 0, 0, 0, 0, 232, 63]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "BigUint64": {
+            "setAsLittle": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "Float32": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 2.3047155842750266e-41,
+                "asLittle": 0.75,
+                "bytes": [0, 0, 64, 63]
+            },
+            "setAsBig": {
+                "asBig": 1.8125,
+                "asLittle": 8.3314200196432e-41,
+                "bytes": [63, 232, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0.75,
+                "asLittle": 2.3047155842750266e-41,
+                "bytes": [63, 64, 0, 0]
+            }
+        },
+        "Float64": {
+            "setAsLittle": {
+                "asBig": 2.93747e-319,
+                "asLittle": 0.75,
+                "bytes": [0, 0, 0, 0, 0, 0, 232, 63]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 2.93747e-319,
+                "asLittle": 0.75,
+                "bytes": [0, 0, 0, 0, 0, 0, 232, 63]
+            },
+            "setAsBig": {
+                "asBig": 0.75,
+                "asLittle": 2.93747e-319,
+                "bytes": [63, 232, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0.75,
+                "asLittle": 2.93747e-319,
+                "bytes": [63, 232, 0, 0, 0, 0, 0, 0]
+            }
+        }
+    },
+    "0.5": {
+        "value": 0.5,
+        "Int8": {
+            "setAsLittle": {
+                "asLittle": 0,
+				"bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Uint8": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Uint8Clamped": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Int16": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asBig": 16352,
+                "asLittle": -8129,
+                "bytes": [63, 224]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            }
+        },
+        "Uint16": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asBig": 16352,
+                "asLittle": 57407,
+                "bytes": [63, 224]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            }
+        },
+        "Int32": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asBig": 1071644672,
+                "asLittle": 57407,
+                "bytes": [63, 224, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            }
+        },
+        "Uint32": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asBig": 1071644672,
+                "asLittle": 57407,
+                "bytes": [63, 224, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            }
+        },
+        "BigInt64": {
+            "setAsLittle": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "BigUint64": {
+            "setAsLittle": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "Float32": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 8.828180325246348e-44,
+                "asLittle": 0.5,
+                "bytes": [0, 0, 0, 63]
+            },
+            "setAsBig": {
+                "asBig": 1.75,
+                "asLittle": 8.044434094149477e-41,
+                "bytes": [63, 224, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0.5,
+                "asLittle": 8.828180325246348e-44,
+                "bytes": [63, 0, 0, 0]
+            }
+        },
+        "Float64": {
+            "setAsLittle": {
+                "asBig": 2.8363e-319,
+                "asLittle": 0.5,
+                "bytes": [0, 0, 0, 0, 0, 0, 224, 63]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 2.8363e-319,
+                "asLittle": 0.5,
+                "bytes": [0, 0, 0, 0, 0, 0, 224, 63]
+            },
+            "setAsBig": {
+                "asBig": 0.5,
+                "asLittle": 2.8363e-319,
+                "bytes": [63, 224, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0.5,
+                "asLittle": 2.8363e-319,
+                "bytes": [63, 224, 0, 0, 0, 0, 0, 0]
+            }
+        }
+    },
+    "-1.5": {
+        "value": -1.5,
+        "Int8": {
+            "setAsLittle": {
+                "asLittle": 0,
+				"bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": -1,
+                "bytes": [255]
+            }
+        },
+        "Uint8": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 255,
+                "bytes": [255]
+            }
+        },
+        "Uint8Clamped": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Int16": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": -1,
+                "asLittle": -1,
+                "bytes": [255, 255]
+            },
+            "setAsBig": {
+                "asBig": -16392,
+                "asLittle": -1857,
+                "bytes": [191, 248]
+            },
+            "setAsTruncatedBig": {
+                "asBig": -1,
+                "asLittle": -1,
+                "bytes": [255, 255]
+            }
+        },
+        "Uint16": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 65535,
+                "asLittle": 65535,
+                "bytes": [255, 255]
+            },
+            "setAsBig": {
+                "asBig": 49144,
+                "asLittle": 63679,
+                "bytes": [191, 248]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 65535,
+                "asLittle": 65535,
+                "bytes": [255, 255]
+            }
+        },
+        "Int32": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": -1,
+                "asLittle": -1,
+                "bytes": [255, 255, 255, 255]
+            },
+            "setAsBig": {
+                "asBig": -1074266112,
+                "asLittle": 63679,
+                "bytes": [191, 248, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": -1,
+                "asLittle": -1,
+                "bytes": [255, 255, 255, 255]
+            }
+        },
+        "Uint32": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 4294967295,
+                "asLittle": 4294967295,
+                "bytes": [255, 255, 255, 255]
+            },
+            "setAsBig": {
+                "asBig": 3220701184,
+                "asLittle": 63679,
+                "bytes": [191, 248, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 4294967295,
+                "asLittle": 4294967295,
+                "bytes": [255, 255, 255, 255]
+            }
+        },
+        "BigInt64": {
+            "setAsLittle": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "BigUint64": {
+            "setAsLittle": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "Float32": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 6.914427012517945e-41,
+                "asLittle": -1.5,
+                "bytes": [0, 0, 192, 191]
+            },
+            "setAsBig": {
+                "asBig": -1.9375,
+                "asLittle": 8.923328490974003e-41,
+                "bytes": [191, 248, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": -1.5,
+                "asLittle": 6.914427012517945e-41,
+                "bytes": [191, 192, 0, 0]
+            }
+        },
+        "Float64": {
+            "setAsLittle": {
+                "asBig": 3.14616e-319,
+                "asLittle": -1.5,
+                "bytes": [0, 0, 0, 0, 0, 0, 248, 191]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 3.14616e-319,
+                "asLittle": -1.5,
+                "bytes": [0, 0, 0, 0, 0, 0, 248, 191]
+            },
+            "setAsBig": {
+                "asBig": -1.5,
+                "asLittle": 3.14616e-319,
+                "bytes": [191, 248, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": -1.5,
+                "asLittle": 3.14616e-319,
+                "bytes": [191, 248, 0, 0, 0, 0, 0, 0]
+            }
+        }
+    },
+    "-3.5": {
+        "value": -3.5,
+        "Int8": {
+            "setAsLittle": {
+                "asLittle": 0,
+				"bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": -3,
+                "bytes": [253]
+            }
+        },
+        "Uint8": {
+            "setAsLittle": {
+                "asLittle": 0,
+				"bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 253,
+                "bytes": [253]
+            }
+        },
+        "Uint8Clamped": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Int16": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": -513,
+                "asLittle": -3,
+                "bytes": [253, 255]
+            },
+            "setAsBig": {
+                "asBig": -16372,
+                "asLittle": 3264,
+                "bytes": [192, 12]
+            },
+            "setAsTruncatedBig": {
+                "asBig": -3,
+                "asLittle": -513,
+                "bytes": [255, 253]
+            }
+        },
+        "Uint16": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 65023,
+                "asLittle": 65533,
+                "bytes": [253, 255]
+            },
+            "setAsBig": {
+                "asBig": 49164,
+                "asLittle": 3264,
+                "bytes": [192, 12]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 65533,
+                "asLittle": 65023,
+                "bytes": [255, 253]
+            }
+        },
+        "Int32": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": -33554433,
+                "asLittle": -3,
+                "bytes": [253, 255, 255, 255]
+            },
+            "setAsBig": {
+                "asBig": -1072955392,
+                "asLittle": 3264,
+                "bytes": [192, 12, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": -3,
+                "asLittle": -33554433,
+                "bytes": [255, 255, 255, 253]
+            }
+        },
+        "Uint32": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 4261412863,
+                "asLittle": 4294967293,
+                "bytes": [253, 255, 255, 255]
+            },
+            "setAsBig": {
+                "asBig": 3222011904,
+                "asLittle": 3264,
+                "bytes": [192, 12, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 4294967293,
+                "asLittle": 4261412863,
+                "bytes": [255, 255, 255, 253]
+            }
+        },
+        "BigInt64": {
+            "setAsLittle": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "BigUint64": {
+            "setAsLittle": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "Float32": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 3.470736036439707e-41,
+                "asLittle": -3.5,
+                "bytes": [0, 0, 96, 192]
+            },
+            "setAsBig": {
+                "asBig": -2.1875,
+                "asLittle": 4.573838187556203e-42,
+                "bytes": [192, 12, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": -3.5,
+                "asLittle": 3.470736036439707e-41,
+                "bytes": [192, 96, 0, 0]
+            }
+        },
+        "Float64": {
+            "setAsLittle": {
+                "asBig": 1.6126e-320,
+                "asLittle": -3.5,
+                "bytes": [0, 0, 0, 0, 0, 0, 12, 192]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 1.6126e-320,
+                "asLittle": -3.5,
+                "bytes": [0, 0, 0, 0, 0, 0, 12, 192]
+            },
+            "setAsBig": {
+                "asBig": -3.5,
+                "asLittle": 1.6126e-320,
+                "bytes": [192, 12, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": -3.5,
+                "asLittle": 1.6126e-320,
+                "bytes": [192, 12, 0, 0, 0, 0, 0, 0]
+            }
+        }
+    },
+    "max safe float32": {
+        "value": 16777216,
+        "Int8": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+				"bytes": [0]
+            }
+        },
+        "Uint8": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Uint8Clamped": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 255,
+                "bytes": [255]
+            }
+        },
+        "Int16": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asBig": 16752,
+                "asLittle": 28737,
+                "bytes": [65, 112]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            }
+        },
+        "Uint16": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asBig": 16752,
+                "asLittle": 28737,
+                "bytes": [65, 112]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            }
+        },
+        "Int32": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 1,
+                "asLittle": 16777216,
+                "bytes": [0, 0, 0, 1]
+            },
+            "setAsBig": {
+                "asBig": 1097859072,
+                "asLittle": 28737,
+                "bytes": [65, 112, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 16777216,
+                "asLittle": 1,
+                "bytes": [1, 0, 0, 0]
+            }
+        },
+        "Uint32": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 1,
+                "asLittle": 16777216,
+                "bytes": [0, 0, 0, 1]
+            },
+            "setAsBig": {
+                "asBig": 1097859072,
+                "asLittle": 28737,
+                "bytes": [65, 112, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 16777216,
+                "asLittle": 1,
+                "bytes": [1, 0, 0, 0]
+            }
+        },
+        "BigInt64": {
+            "setAsLittle": {
+                "asBig": "28737n",
+                "asLittle": "4715268809856909312n",
+                "bytes": [0, 0, 0, 0, 0, 0, 112, 65]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "4294967296n",
+                "asLittle": "16777216n",
+                "bytes": [0, 0, 0, 1, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asBig": "4715268809856909312n",
+                "asLittle": "28737n",
+                "bytes": [65, 112, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "16777216n",
+                "asLittle": "4294967296n",
+                "bytes": [0, 0, 0, 0, 1, 0, 0, 0]
+            }
+        },
+        "BigUint64": {
+            "setAsLittle": {
+                "asBig": "28737n",
+                "asLittle": "4715268809856909312n",
+                "bytes": [0, 0, 0, 0, 0, 0, 112, 65]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "4294967296n",
+                "asLittle": "16777216n",
+                "bytes": [0, 0, 0, 1, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asBig": "4715268809856909312n",
+                "asLittle": "28737n",
+                "bytes": [65, 112, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "16777216n",
+                "asLittle": "4294967296n",
+                "bytes": [0, 0, 0, 0, 1, 0, 0, 0]
+            }
+        },
+        "Float32": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 4.602284546381997e-41,
+                "asLittle": 16777216,
+                "bytes": [0, 0, 128, 75]
+            },
+            "setAsBig": {
+                "asBig": 15,
+                "asLittle": 4.026911396930227e-41,
+                "bytes": [65, 112, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 16777216,
+                "asLittle": 4.602284546381997e-41,
+                "bytes": [75, 128, 0, 0]
+            }
+        },
+        "Float64": {
+            "setAsLittle": {
+                "asBig": 1.4198e-319,
+                "asLittle": 16777216,
+                "bytes": [0, 0, 0, 0, 0, 0, 112, 65]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 1.4198e-319,
+                "asLittle": 16777216,
+                "bytes": [0, 0, 0, 0, 0, 0, 112, 65]
+            },
+            "setAsBig": {
+                "asBig": 16777216,
+                "asLittle": 1.4198e-319,
+                "bytes": [65, 112, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 16777216,
+                "asLittle": 1.4198e-319,
+                "bytes": [65, 112, 0, 0, 0, 0, 0, 0]
+            }
+        }
+    },
+    "nonrepresentable float32, +1": {
+        "value": 2147483648,
+        "Int8": {
+            "setAsLittle": {
+                "asLittle": 0,
+				"bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Uint8": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Uint8Clamped": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 255,
+                "bytes": [255]
+            }
+        },
+        "Int16": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asBig": 16864,
+                "asLittle": -8127,
+                "bytes": [65, 224]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            }
+        },
+        "Uint16": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asBig": 16864,
+                "asLittle": 57409,
+                "bytes": [65, 224]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            }
+        },
+        "Int32": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 128,
+                "asLittle": -2147483648,
+                "bytes": [0, 0, 0, 128]
+            },
+            "setAsBig": {
+                "asBig": 1105199104,
+                "asLittle": 57409,
+                "bytes": [65, 224, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": -2147483648,
+                "asLittle": 128,
+                "bytes": [128, 0, 0, 0]
+            }
+        },
+        "Uint32": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 128,
+                "asLittle": 2147483648,
+                "bytes": [0, 0, 0, 128]
+            },
+            "setAsBig": {
+                "asBig": 1105199104,
+                "asLittle": 57409,
+                "bytes": [65, 224, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 2147483648,
+                "asLittle": 128,
+                "bytes": [128, 0, 0, 0]
+            }
+        },
+        "BigInt64": {
+            "setAsLittle": {
+                "asBig": "57409n",
+                "asLittle": "4746794007248502784n",
+                "bytes": [0, 0, 0, 0, 0, 0, 224, 65]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "549755813888n",
+                "asLittle": "2147483648n",
+                "bytes": [0, 0, 0, 128, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asBig": "4746794007248502784n",
+                "asLittle": "57409n",
+                "bytes": [65, 224, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "2147483648n",
+                "asLittle": "549755813888n",
+                "bytes": [0, 0, 0, 0, 128, 0, 0, 0]
+            }
+        },
+        "BigUint64": {
+            "setAsLittle": {
+                "asBig": "57409n",
+                "asLittle": "4746794007248502784n",
+                "bytes": [0, 0, 0, 0, 0, 0, 224, 65]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "549755813888n",
+                "asLittle": "2147483648n",
+                "bytes": [0, 0, 0, 128, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asBig": "4746794007248502784n",
+                "asLittle": "57409n",
+                "bytes": [65, 224, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "2147483648n",
+                "asLittle": "549755813888n",
+                "bytes": [0, 0, 0, 0, 128, 0, 0, 0]
+            }
+        },
+        "Float32": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 1.1070257868166055e-43,
+                "asLittle": 2147483648,
+                "bytes": [0, 0, 0, 79]
+            },
+            "setAsBig": {
+                "asBig": 28,
+                "asLittle": 8.044714353842342e-41,
+                "bytes": [65, 224, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 2147483648,
+                "asLittle": 1.1070257868166055e-43,
+                "bytes": [79, 0, 0, 0]
+            }
+        },
+        "Float64": {
+            "setAsLittle": {
+                "asBig": 2.8364e-319,
+                "asLittle": 2147483648,
+                "bytes": [0, 0, 0, 0, 0, 0, 224, 65]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 2.8364e-319,
+                "asLittle": 2147483648,
+                "bytes": [0, 0, 0, 0, 0, 0, 224, 65]
+            },
+            "setAsBig": {
+                "asBig": 2147483648,
+                "asLittle": 2.8364e-319,
+                "bytes": [65, 224, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 2147483648,
+                "asLittle": 2.8364e-319,
+                "bytes": [65, 224, 0, 0, 0, 0, 0, 0]
+            }
+        }
+    },
+    "Infinity": {
+        "value": "Infinity",
+        "Int8": {
+            "setAsLittle": {
+                "asLittle": 0,
+				"bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Uint8": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Uint8Clamped": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 255,
+                "bytes": [255]
+            }
+        },
+        "Int16": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asBig": 32752,
+                "asLittle": -3969,
+                "bytes": [127, 240]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            }
+        },
+        "Uint16": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asBig": 32752,
+                "asLittle": 61567,
+                "bytes": [127, 240]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            }
+        },
+        "Int32": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asBig": 2146435072,
+                "asLittle": 61567,
+                "bytes": [127, 240, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            }
+        },
+        "Uint32": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asBig": 2146435072,
+                "asLittle": 61567,
+                "bytes": [127, 240, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            }
+        },
+        "BigInt64": {
+            "setAsLittle": {
+                "asBig": "61567n",
+                "asLittle": "9218868437227405312n",
+                "bytes": [0, 0, 0, 0, 0, 0, 240, 127]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "BigUint64": {
+            "setAsLittle": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "Float32": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 4.609571298396486e-41,
+                "asLittle": "Infinity",
+                "bytes": [0, 0, 128, 127]
+            },
+            "setAsBig": {
+                "asBig": "NaN",
+                "asLittle": 8.627374255308601e-41,
+                "bytes": [127, 240, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "Infinity",
+                "asLittle": 4.609571298396486e-41,
+                "bytes": [127, 128, 0, 0]
+            }
+        },
+        "Float64": {
+            "setAsLittle": {
+                "asBig": 3.0418e-319,
+                "asLittle": "Infinity",
+                "bytes": [0, 0, 0, 0, 0, 0, 240, 127]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 3.0418e-319,
+                "asLittle": "Infinity",
+                "bytes": [0, 0, 0, 0, 0, 0, 240, 127]
+            },
+            "setAsBig": {
+                "asBig": "Infinity",
+                "asLittle": 3.0418e-319,
+                "bytes": [127, 240, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "Infinity",
+                "asLittle": 3.0418e-319,
+                "bytes": [127, 240, 0, 0, 0, 0, 0, 0]
+            }
+        }
+    },
+    "-Infinity": {
+        "value": "-Infinity",
+        "Int8": {
+            "setAsLittle": {
+                "asLittle": 0,
+				"bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Uint8": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Uint8Clamped": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Int16": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asBig": -16,
+                "asLittle": -3841,
+                "bytes": [255, 240]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            }
+        },
+        "Uint16": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asBig": 65520,
+                "asLittle": 61695,
+                "bytes": [255, 240]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            }
+        },
+        "Int32": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asBig": -1048576,
+                "asLittle": 61695,
+                "bytes": [255, 240, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            }
+        },
+        "Uint32": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": 61695,
+                "asBig": 4293918720,
+                "bytes": [255, 240, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            }
+        },
+        "BigInt64": {
+            "setAsLittle": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "BigUint64": {
+            "setAsLittle": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "Float32": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 4.627507918739843e-41,
+                "asLittle": "-Infinity",
+                "bytes": [0, 0, 128, 255]
+            },
+            "setAsBig": {
+                "asBig": "NaN",
+                "asLittle": 8.645310875651959e-41,
+                "bytes": [255, 240, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "-Infinity",
+                "asLittle": 4.627507918739843e-41,
+                "bytes": [255, 128, 0, 0]
+            }
+        },
+        "Float64": {
+            "setAsLittle": {
+                "asBig": 3.04814e-319,
+                "asLittle": "-Infinity",
+                "bytes": [0, 0, 0, 0, 0, 0, 240, 255]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 3.04814e-319,
+                "asLittle": "-Infinity",
+                "bytes": [0, 0, 0, 0, 0, 0, 240, 255]
+            },
+            "setAsBig": {
+                "asBig": "-Infinity",
+                "asLittle": 3.04814e-319,
+                "bytes": [255, 240, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "-Infinity",
+                "asLittle": 3.04814e-319,
+                "bytes": [255, 240, 0, 0, 0, 0, 0, 0]
+            }
+        }
+    },
+    "NaN": {
+        "value": "NaN",
+        "Int8": {
+            "setAsLittle": {
+                "asLittle": 0,
+				"bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Uint8": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Uint8Clamped": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": 0,
+                "bytes": [0]
+            }
+        },
+        "Int16": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asBig": 32760,
+                "asLittle": -1921,
+                "bytes": [127, 248]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            }
+        },
+        "Uint16": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asBig": 32760,
+                "asLittle": 63615,
+                "bytes": [127, 248]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            }
+        },
+        "Int32": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asBig": 2146959360,
+                "asLittle": 63615,
+                "bytes": [127, 248, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            }
+        },
+        "Uint32": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asBig": 2146959360,
+                "asLittle": 63615,
+                "bytes": [127, 248, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0, 0, 0]
+            }
+        },
+        "BigInt64": {
+            "setAsLittle": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "BigUint64": {
+            "setAsLittle": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsBig": {
+                "asLittle": "0n",
+                "asBig": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "0n",
+                "asLittle": "0n",
+                "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "Float32": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0, 0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 6.905458702346266e-41,
+                "asLittle": "NaN",
+                "bytes": [0, 0, 192, 127]
+            },
+            "setAsBig": {
+                "asBig": "NaN",
+                "asLittle": 8.914360180802324e-41,
+                "bytes": [127, 248, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "NaN",
+                "asLittle": 6.905458702346266e-41,
+                "bytes": [127, 192, 0, 0]
+            }
+        },
+        "Float64": {
+            "setAsLittle": {
+                "asBig": 3.143e-319,
+                "asLittle": "NaN",
+                "bytes": [0, 0, 0, 0, 0, 0, 248, 127]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 3.143e-319,
+                "asLittle": "NaN",
+                "bytes": [0, 0, 0, 0, 0, 0, 248, 127]
+            },
+            "setAsBig": {
+                "asBig": "NaN",
+                "asLittle": 3.143e-319,
+                "bytes": [127, 248, 0, 0, 0, 0, 0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "NaN",
+                "asLittle": 3.143e-319,
+                "bytes": [127, 248, 0, 0, 0, 0, 0, 0]
+            }
+        }
+    }
+}

@@ -107,6 +107,20 @@ var float64TestCases = [
 	[NaN, 3.143e-319, [0, 0, 0, 0, 0, 0, 248, 127]],
 	[6.97011957458363e-310, 6.589791616e-315, [0, 0, 0, 0, 79, 128, 0, 0]]
 ];
+var elementSizes = {
+	__proto__: null,
+	$Int8Array: 1,
+	$Uint8Array: 1,
+	$Uint8ClampedArray: 1,
+	$Int16Array: 2,
+	$Uint16Array: 2,
+	$Int32Array: 4,
+	$Uint32Array: 4,
+	$BigInt64Array: 8,
+	$BigUint64Array: 8,
+	$Float32Array: 4,
+	$Float64Array: 8
+};
 
 var canDistinguishSparseFromUndefined = 0 in [undefined]; // IE 6 - 8 have a bug where this returns false
 
@@ -4591,6 +4605,9 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.equal(2, ES.ToUint8Clamp(2.49), '2.49 coerces to 2');
 		t.equal(2, ES.ToUint8Clamp(2.5), '2.5 coerces to 2, because 2 is even');
 		t.equal(3, ES.ToUint8Clamp(2.51), '2.51 coerces to 3');
+
+		t.equal(ES.ToUint8Clamp(0.75), 1, '0.75 coerces to 1');
+
 		t.end();
 	});
 
@@ -11682,20 +11699,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 					'a requestIndex > length throws'
 				);
 
-				var elementSize = {
-					__proto__: null,
-					$Int8Array: 1,
-					$Uint8Array: 1,
-					$Uint8ClampedArray: 1,
-					$Int16Array: 2,
-					$Uint16Array: 2,
-					$Int32Array: 4,
-					$Uint32Array: 4,
-					$BigInt64Array: 8,
-					$BigUint64Array: 8,
-					$Float32Array: 4,
-					$Float64Array: 8
-				}['$' + TypedArray];
+				var elementSize = elementSizes['$' + TypedArray];
 
 				st.equal(ES.ValidateAtomicAccess(ta, 0), 0, TypedArray + ': requestIndex of 0 gives 0');
 				st.equal(ES.ValidateAtomicAccess(ta, 1), elementSize * 1, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 1));
@@ -12572,8 +12576,18 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 		});
 
 		forEach(availableTypedArrays, function (TA) {
+			var elementSize = elementSizes['$' + TA];
+
 			var ta = new global[TA](0);
-			t.equal(ES.TypedArrayElementSize(ta), ta.BYTES_PER_ELEMENT, debug(TA) + ' (which should be a ' + TA + ') has correct element size');
+
+			t.equal(
+				elementSize,
+				ta.BYTES_PER_ELEMENT,
+				'element size table matches BYTES_PER_ELEMENT property',
+				{ skip: !('BYTES_PER_ELEMENT' in ta) }
+			);
+
+			t.equal(ES.TypedArrayElementSize(ta), elementSize, debug(TA) + ' (which should be a ' + TA + ') has correct element size');
 		});
 
 		t.end();
