@@ -36,7 +36,8 @@ module.exports = function QuoteJSONString(value) {
 	}
 	var product = '"';
 	if (value) {
-		forEach(UTF16DecodeString(value), function (C) {
+		forEach(UTF16DecodeString(value), function (CP) {
+			var C = UTF16Encoding(CP);
 			if (has(escapes, C)) {
 				product += escapes[C];
 			} else {

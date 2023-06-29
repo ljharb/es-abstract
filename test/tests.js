@@ -171,6 +171,15 @@ Test.prototype.throwsSentinel = function throwsSentinel(fn, sentinel, message) {
 var leadingPoo = '\uD83D';
 var trailingPoo = '\uDCA9';
 var wholePoo = leadingPoo + trailingPoo;
+var codePoints = {
+	a: 97,
+	b: 98,
+	c: 99,
+	d: 100,
+	leadingPoo: 55357,
+	trailingPoo: 56489,
+	wholePoo: 128169
+};
 
 var getArraySubclassWithSpeciesConstructor = function getArraySubclass(speciesConstructor) {
 	var Bar = function Bar() {
@@ -5264,7 +5273,7 @@ var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 			'"b" is not a trailing surrogate'
 		);
 
-		t.equal(ES.UTF16Decode(leadingPoo.charCodeAt(0), trailingPoo.charCodeAt(0)), wholePoo);
+		t.equal(ES.UTF16Decode(leadingPoo.charCodeAt(0), trailingPoo.charCodeAt(0)), codePoints.wholePoo);
 
 		t.end();
 	});
@@ -8331,17 +8340,17 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		);
 
 		t.deepEqual(ES.CodePointAt('abc', 0), {
-			'[[CodePoint]]': 'a',
+			'[[CodePoint]]': codePoints.a,
 			'[[CodeUnitCount]]': 1,
 			'[[IsUnpairedSurrogate]]': false
 		});
 		t.deepEqual(ES.CodePointAt('abc', 1), {
-			'[[CodePoint]]': 'b',
+			'[[CodePoint]]': codePoints.b,
 			'[[CodeUnitCount]]': 1,
 			'[[IsUnpairedSurrogate]]': false
 		});
 		t.deepEqual(ES.CodePointAt('abc', 2), {
-			'[[CodePoint]]': 'c',
+			'[[CodePoint]]': codePoints.c,
 			'[[CodeUnitCount]]': 1,
 			'[[IsUnpairedSurrogate]]': false
 		});
@@ -8350,38 +8359,38 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		var strWithWholePoo = 'a' + wholePoo + 'd';
 
 		t.deepEqual(ES.CodePointAt(strWithHalfPoo, 0), {
-			'[[CodePoint]]': 'a',
+			'[[CodePoint]]': codePoints.a,
 			'[[CodeUnitCount]]': 1,
 			'[[IsUnpairedSurrogate]]': false
 		});
 		t.deepEqual(ES.CodePointAt(strWithHalfPoo, 1), {
-			'[[CodePoint]]': leadingPoo,
+			'[[CodePoint]]': codePoints.leadingPoo,
 			'[[CodeUnitCount]]': 1,
 			'[[IsUnpairedSurrogate]]': true
 		});
 		t.deepEqual(ES.CodePointAt(strWithHalfPoo, 2), {
-			'[[CodePoint]]': 'c',
+			'[[CodePoint]]': codePoints.c,
 			'[[CodeUnitCount]]': 1,
 			'[[IsUnpairedSurrogate]]': false
 		});
 
 		t.deepEqual(ES.CodePointAt(strWithWholePoo, 0), {
-			'[[CodePoint]]': 'a',
+			'[[CodePoint]]': codePoints.a,
 			'[[CodeUnitCount]]': 1,
 			'[[IsUnpairedSurrogate]]': false
 		});
 		t.deepEqual(ES.CodePointAt(strWithWholePoo, 1), {
-			'[[CodePoint]]': wholePoo,
+			'[[CodePoint]]': codePoints.wholePoo,
 			'[[CodeUnitCount]]': 2,
 			'[[IsUnpairedSurrogate]]': false
 		});
 		t.deepEqual(ES.CodePointAt(strWithWholePoo, 2), {
-			'[[CodePoint]]': trailingPoo,
+			'[[CodePoint]]': codePoints.trailingPoo,
 			'[[CodeUnitCount]]': 1,
 			'[[IsUnpairedSurrogate]]': true
 		});
 		t.deepEqual(ES.CodePointAt(strWithWholePoo, 3), {
-			'[[CodePoint]]': 'd',
+			'[[CodePoint]]': codePoints.d,
 			'[[CodeUnitCount]]': 1,
 			'[[IsUnpairedSurrogate]]': false
 		});
@@ -10922,7 +10931,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			'"b" is not a trailing surrogate'
 		);
 
-		t.equal(ES.UTF16DecodeSurrogatePair(leadingPoo.charCodeAt(0), trailingPoo.charCodeAt(0)), wholePoo);
+		t.equal(ES.UTF16DecodeSurrogatePair(leadingPoo.charCodeAt(0), trailingPoo.charCodeAt(0)), codePoints.wholePoo);
 
 		t.end();
 	});
@@ -10984,8 +10993,8 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.deepEqual(ES.UTF16DecodeString('abc'), ['a', 'b', 'c'], 'code units get split');
-		t.deepEqual(ES.UTF16DecodeString('a' + wholePoo + 'c'), ['a', wholePoo, 'c'], 'code points get split too');
+		t.deepEqual(ES.UTF16DecodeString('abc'), [codePoints.a, codePoints.b, codePoints.c], 'code units get split');
+		t.deepEqual(ES.UTF16DecodeString('a' + wholePoo + 'c'), [codePoints.a, codePoints.wholePoo, codePoints.c], 'code points get split too');
 
 		t.end();
 	});
@@ -11521,8 +11530,8 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.deepEqual(ES.StringToCodePoints('abc'), ['a', 'b', 'c'], 'code units get split');
-		t.deepEqual(ES.StringToCodePoints('a' + wholePoo + 'c'), ['a', wholePoo, 'c'], 'code points get split too');
+		t.deepEqual(ES.StringToCodePoints('abc'), [codePoints.a, codePoints.b, codePoints.c], 'code units get split');
+		t.deepEqual(ES.StringToCodePoints('a' + wholePoo + 'c'), [codePoints.a, codePoints.wholePoo, codePoints.c], 'code points get split too');
 
 		t.end();
 	});
@@ -11596,7 +11605,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			'"b" is not a trailing surrogate'
 		);
 
-		t.equal(ES.UTF16SurrogatePairToCodePoint(leadingPoo.charCodeAt(0), trailingPoo.charCodeAt(0)), wholePoo);
+		t.equal(ES.UTF16SurrogatePairToCodePoint(leadingPoo.charCodeAt(0), trailingPoo.charCodeAt(0)), codePoints.wholePoo);
 
 		t.end();
 	});

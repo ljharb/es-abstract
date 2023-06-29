@@ -8,6 +8,7 @@ var $TypeError = GetIntrinsic('%TypeError%');
 var IsIntegralNumber = require('./IsIntegralNumber');
 var StringToCodePoints = require('./StringToCodePoints');
 var Type = require('./Type');
+var UTF16EncodeCodePoint = require('./UTF16EncodeCodePoint');
 
 var $indexOf = callBound('String.prototype.indexOf');
 
@@ -25,6 +26,6 @@ module.exports = function GetStringIndex(S, e) {
 		return 0;
 	}
 	var codepoints = StringToCodePoints(S);
-	var eUTF = e >= codepoints.length ? S.length : $indexOf(S, codepoints[e]);
+	var eUTF = e >= codepoints.length ? S.length : $indexOf(S, UTF16EncodeCodePoint(codepoints[e]));
 	return eUTF;
 };
