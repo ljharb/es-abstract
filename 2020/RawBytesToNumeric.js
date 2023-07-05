@@ -7,6 +7,7 @@ var $pow = GetIntrinsic('%Math.pow%');
 var $RangeError = GetIntrinsic('%RangeError%');
 var $SyntaxError = GetIntrinsic('%SyntaxError%');
 var $TypeError = GetIntrinsic('%TypeError%');
+var $Number = GetIntrinsic('%Number%');
 var $BigInt = GetIntrinsic('%BigInt%', true);
 
 var hasOwnProperty = require('./HasOwnProperty');
@@ -142,10 +143,12 @@ Return the Number value that corresponds to value.
 		return sign * (1 + (mantissa / 0x10000000000000)) * $pow(2, exponent);
 	}
 
+	var Z = isBigInt ? $BigInt : $Number;
+
 	// this is common to both branches
-	var intValue = isBigInt ? $BigInt(0) : 0;
+	var intValue = Z(0);
 	for (var i = 0; i < rawBytes.length; i++) {
-		intValue |= isBigInt ? $BigInt(rawBytes[i]) << $BigInt(8 * i) : rawBytes[i] << (8 * i);
+		intValue += Z(rawBytes[i]) * Z($pow(2, 8 * i));
 	}
 	/*
 	Let intValue be the byte elements of rawBytes concatenated and interpreted as a bit string encoding of an unsigned little-endian binary number.
@@ -154,9 +157,9 @@ Return the Number value that corresponds to value.
 	if (!IsUnsignedElementType(type)) { // steps 5-6
 		// Let intValue be the byte elements of rawBytes concatenated and interpreted as a bit string encoding of a binary little-endian 2's complement number of bit length elementSize × 8.
 		var bitLength = elementSize * 8;
-		if (bitLength < 32) {
-			var x = isBigInt ? $BigInt(32 - bitLength) : 32 - bitLength;
-			intValue = (intValue << x) >> x;
+
+		if (rawBytes[elementSize - 1] & 0x80) {
+			intValue -= Z($pow(2, bitLength));
 		}
 	}
 

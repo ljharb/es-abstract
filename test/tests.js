@@ -31,7 +31,9 @@ var getInferredName = require('../helpers/getInferredName');
 var reduce = require('../helpers/reduce');
 var fromPropertyDescriptor = require('../helpers/fromPropertyDescriptor');
 var assertRecordTests = require('./helpers/assertRecord');
+var unserialize = require('./helpers/unserializeNumeric');
 var diffOps = require('./diffOps');
+var bufferTestCases = require('./bufferTestCases.json');
 
 var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1;
 var MAX_VALUE = Number.MAX_VALUE || 1.7976931348623157e+308;
@@ -5916,7 +5918,44 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.test('Float32', function (st) {
+		forEach(bufferTestCases, function (testCase, name) {
+			var value = unserialize(testCase.value);
+			t.test(name + ': ' + value, function (st) {
+				forEach([].concat(
+					'Int8',
+					'Uint8',
+					'Uint8C',
+					'Int16',
+					'Uint16',
+					'Int32',
+					'Uint32',
+					'Float32',
+					'Float64'
+				), function (type) {
+					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
+					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
+
+					var littleLittle = unserialize(result.setAsLittle.asLittle);
+					st.equal(
+						ES.RawBytesToNumber(type, result.setAsLittle.bytes, true),
+						littleLittle,
+						type + ', little-endian: bytes (' + debug(result.setAsLittle.bytes) + ') for ' + debug(littleLittle) + ' produces it'
+					);
+					if (hasBigEndian) {
+						var bigBig = unserialize(result.setAsBig.asBig);
+						st.equal(
+							ES.RawBytesToNumber(type, result.setAsBig.bytes, false),
+							bigBig,
+							type + ', big-endian: bytes (' + debug(result.setAsBig.bytes) + ') for ' + debug(bigBig) + ' produces it'
+						);
+					}
+				});
+
+				st.end();
+			});
+		});
+
+		t.test('incorrect byte counts', function (st) {
 			st['throws'](
 				function () { ES.RawBytesToNumber('Float32', [0, 0, 0], false); },
 				RangeError,
@@ -5928,53 +5967,6 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 				'Float32 with more than 4 bytes throws a RangeError'
 			);
 
-			forEach(float32TestCases, function (pair) {
-				var float = pair[0];
-				var floatBig = pair[1];
-				var bytes = pair[2];
-				var reverseBytes = bytes.slice().reverse();
-
-				if (availableTypedArrays.length > 0) {
-					var buffer = new Float32Array(1).buffer;
-					var view = new DataView(buffer);
-
-					view.setFloat32(0, float, true);
-
-					var actual = view.getFloat32(0, false);
-					st.equal(actual, floatBig, 'big-endian value for ' + debug(float) + ' is correct; got ' + debug(actual));
-
-					var expectedBytesLE = arrayFrom(new Uint8Array(buffer));
-					st.deepEqual(
-						bytes,
-						expectedBytesLE,
-						'little-endian bytes for ' + debug(float) + ' are correct; got ' + debug(expectedBytesLE)
-					);
-
-					view.setFloat32(0, floatBig, false);
-					var expectedBytesBE = arrayFrom(new Uint8Array(buffer)).reverse();
-					st.deepEqual(
-						reverseBytes,
-						expectedBytesBE,
-						'big-endian bytes for ' + debug(floatBig) + ' are correct; got ' + debug(expectedBytesBE)
-					);
-				}
-
-				st.equal(
-					ES.RawBytesToNumber('Float32', bytes, true),
-					float,
-					'little-endian: bytes (' + debug(bytes) + ') for ' + debug(float) + ' produces it'
-				);
-				st.equal(
-					ES.RawBytesToNumber('Float32', bytes, false),
-					floatBig,
-					'big-endian: bytes (' + debug(bytes) + ') for ' + debug(floatBig) + ' produces it'
-				);
-			});
-
-			st.end();
-		});
-
-		t.test('Float64', function (st) {
 			st['throws'](
 				function () { ES.RawBytesToNumber('Float64', [0, 0, 0, 0, 0, 0, 0], false); },
 				RangeError,
@@ -5986,53 +5978,6 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 				'Float64 with more than 8 bytes throws a RangeError'
 			);
 
-			forEach(float64TestCases, function (pair) {
-				var float = pair[0];
-				var floatBig = pair[1];
-				var bytes = pair[2];
-				var reverseBytes = bytes.slice().reverse();
-
-				if (availableTypedArrays.length > 0) {
-					var buffer = new Float64Array(1).buffer;
-					var view = new DataView(buffer);
-
-					view.setFloat64(0, float, true);
-
-					var actual = view.getFloat64(0, false);
-					st.equal(actual, floatBig, 'big-endian value for ' + debug(float) + ' is correct; got ' + debug(actual));
-
-					var expectedBytesLE = arrayFrom(new Uint8Array(buffer));
-					st.deepEqual(
-						bytes,
-						expectedBytesLE,
-						'little-endian bytes for ' + debug(float) + ' are correct; got ' + debug(expectedBytesLE)
-					);
-
-					view.setFloat64(0, floatBig, false);
-					var expectedBytesBE = arrayFrom(new Uint8Array(buffer)).reverse();
-					st.deepEqual(
-						reverseBytes,
-						expectedBytesBE,
-						'big-endian bytes for ' + debug(floatBig) + ' are correct; got ' + debug(expectedBytesBE)
-					);
-				}
-
-				st.equal(
-					ES.RawBytesToNumber('Float64', bytes, true),
-					float,
-					'little-endian: bytes for ' + debug(float) + ' produces it'
-				);
-				st.equal(
-					ES.RawBytesToNumber('Float64', reverseBytes, false),
-					float,
-					'big-endian: bytes for ' + debug(float) + ' produces it'
-				);
-			});
-
-			st.end();
-		});
-
-		t.test('Int8', function (st) {
 			st['throws'](
 				function () { ES.RawBytesToNumber('Int8', [], false); },
 				RangeError,
@@ -6044,41 +5989,6 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 				'Int8 with more than 1 byte throws a RangeError'
 			);
 
-			forEach([
-				[0, [0]],
-				[-1, [255]],
-				[1, [1]],
-				[127, [127]],
-				[-127, [129]]
-			], function (pair) {
-				var int = pair[0];
-				var bytes = pair[1];
-
-				if (availableTypedArrays.length > 0) {
-					var expectedBytes = arrayFrom(new Uint8Array(assign(new Int8Array(1), [int]).buffer));
-					st.deepEqual(
-						bytes,
-						expectedBytes,
-						'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
-					);
-				}
-
-				st.equal(
-					ES.RawBytesToNumber('Int8', bytes, true),
-					int,
-					'little-endian: bytes for ' + debug(int) + ' produces it'
-				);
-				st.equal(
-					ES.RawBytesToNumber('Int8', bytes.slice().reverse(), false),
-					int,
-					'big-endian: bytes for ' + debug(int) + ' produces it'
-				);
-			});
-
-			st.end();
-		});
-
-		t.test('Uint8', function (st) {
 			st['throws'](
 				function () { ES.RawBytesToNumber('Uint8', [], false); },
 				RangeError,
@@ -6090,31 +6000,6 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 				'Uint8 with more than 1 byte throws a RangeError'
 			);
 
-			forEach([
-				[0, [0]],
-				[1, [1]],
-				[127, [127]],
-				[255, [255]]
-			], function (pair) {
-				var int = pair[0];
-				var bytes = pair[1];
-
-				st.equal(
-					ES.RawBytesToNumber('Uint8', bytes, true),
-					int,
-					'little-endian: bytes for ' + debug(int) + ' produces it'
-				);
-				st.equal(
-					ES.RawBytesToNumber('Uint8', bytes, false),
-					int,
-					'big-endian: bytes for ' + debug(int) + ' produces it'
-				);
-			});
-
-			st.end();
-		});
-
-		t.test('Uint8C', function (st) {
 			st['throws'](
 				function () { ES.RawBytesToNumber('Uint8C', [], false); },
 				RangeError,
@@ -6126,40 +6011,6 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 				'Uint8C with more than 1 byte throws a RangeError'
 			);
 
-			forEach([
-				[0, [0]],
-				[1, [1]],
-				[127, [127]],
-				[255, [255]]
-			], function (pair) {
-				var int = pair[0];
-				var bytes = pair[1];
-
-				if (availableTypedArrays.length > 0) {
-					var expectedBytes = arrayFrom(new Uint8Array(assign(new Uint8ClampedArray(1), [int]).buffer));
-					st.deepEqual(
-						bytes,
-						expectedBytes,
-						'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
-					);
-				}
-
-				st.equal(
-					ES.RawBytesToNumber('Uint8C', bytes, true),
-					int,
-					'little-endian: bytes for ' + debug(int) + ' produces it'
-				);
-				st.equal(
-					ES.RawBytesToNumber('Uint8C', bytes, false),
-					int,
-					'big-endian: bytes for ' + debug(int) + ' produces it'
-				);
-			});
-
-			st.end();
-		});
-
-		t.test('Int16', function (st) {
 			st['throws'](
 				function () { ES.RawBytesToNumber('Int16', [0], false); },
 				RangeError,
@@ -6171,43 +6022,6 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 				'Int16 with more than 2 bytes throws a RangeError'
 			);
 
-			forEach([
-				[0, [0, 0]],
-				[-1, [255, 255]],
-				[1, [1, 0]],
-				[127, [127, 0]],
-				[-127, [129, 255]],
-				[255, [255, 0]],
-				[-255, [1, 255]]
-			], function (pair) {
-				var int = pair[0];
-				var bytes = pair[1];
-
-				if (availableTypedArrays.length > 0) {
-					var expectedBytes = arrayFrom(new Uint8Array(assign(new Int16Array(1), [int]).buffer));
-					st.deepEqual(
-						bytes,
-						expectedBytes,
-						'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
-					);
-				}
-
-				st.equal(
-					ES.RawBytesToNumber('Int16', bytes, true),
-					int,
-					'little-endian: bytes for ' + debug(int) + ' produces it'
-				);
-				st.equal(
-					ES.RawBytesToNumber('Int16', bytes.slice().reverse(), false),
-					int,
-					'big-endian: bytes for ' + debug(int) + ' produces it'
-				);
-			});
-
-			st.end();
-		});
-
-		t.test('Uint16', function (st) {
 			st['throws'](
 				function () { ES.RawBytesToNumber('Uint16', [0], false); },
 				RangeError,
@@ -6219,42 +6033,6 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 				'Uint16 with more than 2 bytes throws a RangeError'
 			);
 
-			forEach([
-				[0, [0, 0]],
-				[1, [1, 0]],
-				[127, [127, 0]],
-				[255, [255, 0]],
-				[256, [0, 1]],
-				[511, [255, 1]]
-			], function (pair) {
-				var int = pair[0];
-				var bytes = pair[1];
-
-				if (availableTypedArrays.length > 0) {
-					var expectedBytes = arrayFrom(new Uint8Array(assign(new Uint16Array(1), [int]).buffer));
-					st.deepEqual(
-						bytes,
-						expectedBytes,
-						'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
-					);
-				}
-
-				st.equal(
-					ES.RawBytesToNumber('Uint16', bytes, true),
-					int,
-					'little-endian: bytes for ' + debug(int) + ' produces it'
-				);
-				st.equal(
-					ES.RawBytesToNumber('Uint16', bytes.slice().reverse(), false),
-					int,
-					'big-endian: bytes for ' + debug(int) + ' produces it'
-				);
-			});
-
-			st.end();
-		});
-
-		t.test('Int32', function (st) {
 			st['throws'](
 				function () { ES.RawBytesToNumber('Uint16', [0, 0, 0], false); },
 				RangeError,
@@ -6266,43 +6044,6 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 				'Uint16 with more than 4 bytes throws a RangeError'
 			);
 
-			forEach([
-				[0, [0, 0, 0, 0]],
-				[1, [1, 0, 0, 0]],
-				[-1, [255, 255, 255, 255]],
-				[16777216, [0, 0, 0, 1]], // max safe float32
-				[2147483647, [255, 255, 255, 127]],
-				[-2147483647, [1, 0, 0, 128]],
-				[-2147483648, [0, 0, 0, 128]]
-			], function (pair) {
-				var int = pair[0];
-				var bytes = pair[1];
-
-				if (availableTypedArrays.length > 0) {
-					var expectedBytes = arrayFrom(new Uint8Array(assign(new Int32Array(1), [int]).buffer));
-					st.deepEqual(
-						bytes,
-						expectedBytes,
-						'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
-					);
-				}
-
-				st.equal(
-					ES.RawBytesToNumber('Int32', bytes, true),
-					int,
-					'little-endian: bytes for ' + debug(int) + ' produces it'
-				);
-				st.equal(
-					ES.RawBytesToNumber('Int32', bytes.slice().reverse(), false),
-					int,
-					'big-endian: bytes for ' + debug(int) + ' produces it'
-				);
-			});
-
-			st.end();
-		});
-
-		t.test('Uint32', function (st) {
 			st['throws'](
 				function () { ES.RawBytesToNumber('Uint32', [0, 0, 0], false); },
 				RangeError,
@@ -6313,38 +6054,6 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 				RangeError,
 				'Uint32 with more than 4 bytes throws a RangeError'
 			);
-
-			forEach([
-				[0, [0, 0, 0, 0]],
-				[1, [1, 0, 0, 0]],
-				[16777216, [0, 0, 0, 1]], // max safe float32
-				[2147483647, [255, 255, 255, 127]],
-				[-2147483647, [1, 0, 0, 128]],
-				[-2147483648, [0, 0, 0, 128]]
-			], function (pair) {
-				var int = pair[0];
-				var bytes = pair[1];
-
-				if (availableTypedArrays.length > 0) {
-					var expectedBytes = arrayFrom(new Uint8Array(assign(new Uint32Array(1), [int]).buffer));
-					st.deepEqual(
-						bytes,
-						expectedBytes,
-						'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
-					);
-				}
-
-				st.equal(
-					ES.RawBytesToNumber('Uint32', bytes, true),
-					int,
-					'little-endian: bytes for ' + debug(int) + ' produces it'
-				);
-				st.equal(
-					ES.RawBytesToNumber('Uint32', bytes.slice().reverse(), false),
-					int,
-					'big-endian: bytes for ' + debug(int) + ' produces it'
-				);
-			});
 
 			st.end();
 		});
@@ -10106,7 +9815,45 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.test('Float32', function (st) {
+		forEach(bufferTestCases, function (testCase, name) {
+			var value = unserialize(testCase.value);
+			t.test(name + ': ' + value, function (st) {
+				forEach([].concat(
+					'Int8',
+					'Uint8',
+					'Uint8C',
+					'Int16',
+					'Uint16',
+					'Int32',
+					'Uint32',
+					hasBigInts ? bigIntTypes : [],
+					'Float32',
+					'Float64'
+				), function (type) {
+					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
+					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
+
+					var littleLittle = unserialize(result.setAsLittle.asLittle);
+					st.equal(
+						ES.RawBytesToNumeric(type, result.setAsLittle.bytes, true),
+						littleLittle,
+						type + ', little-endian: bytes (' + debug(result.setAsLittle.bytes) + ') for ' + debug(littleLittle) + ' produces it'
+					);
+					if (hasBigEndian) {
+						var bigBig = unserialize(result.setAsBig.asBig);
+						st.equal(
+							ES.RawBytesToNumeric(type, result.setAsBig.bytes, false),
+							bigBig,
+							type + ', big-endian: bytes (' + debug(result.setAsBig.bytes) + ') for ' + debug(bigBig) + ' produces it'
+						);
+					}
+				});
+
+				st.end();
+			});
+		});
+
+		t.test('incorrect byte counts', function (st) {
 			st['throws'](
 				function () { ES.RawBytesToNumeric('Float32', [0, 0, 0], false); },
 				RangeError,
@@ -10118,53 +9865,6 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				'Float32 with more than 4 bytes throws a RangeError'
 			);
 
-			forEach(float32TestCases, function (pair) {
-				var float = pair[0];
-				var floatBig = pair[1];
-				var bytes = pair[2];
-				var reverseBytes = bytes.slice().reverse();
-
-				if (availableTypedArrays.length > 0) {
-					var buffer = new Float32Array(1).buffer;
-					var view = new DataView(buffer);
-
-					view.setFloat32(0, float, true);
-
-					var actual = view.getFloat32(0, false);
-					st.equal(actual, floatBig, 'big-endian value for ' + debug(float) + ' is correct; got ' + debug(actual));
-
-					var expectedBytesLE = arrayFrom(new Uint8Array(buffer));
-					st.deepEqual(
-						bytes,
-						expectedBytesLE,
-						'little-endian bytes for ' + debug(float) + ' are correct; got ' + debug(expectedBytesLE)
-					);
-
-					view.setFloat32(0, floatBig, false);
-					var expectedBytesBE = arrayFrom(new Uint8Array(buffer)).reverse();
-					st.deepEqual(
-						reverseBytes,
-						expectedBytesBE,
-						'big-endian bytes for ' + debug(floatBig) + ' are correct; got ' + debug(expectedBytesBE)
-					);
-				}
-
-				st.equal(
-					ES.RawBytesToNumeric('Float32', bytes, true),
-					float,
-					'little-endian: bytes (' + debug(bytes) + ') for ' + debug(float) + ' produces it'
-				);
-				st.equal(
-					ES.RawBytesToNumeric('Float32', bytes, false),
-					floatBig,
-					'big-endian: bytes (' + debug(bytes) + ') for ' + debug(floatBig) + ' produces it'
-				);
-			});
-
-			st.end();
-		});
-
-		t.test('Float64', function (st) {
 			st['throws'](
 				function () { ES.RawBytesToNumeric('Float64', [0, 0, 0, 0, 0, 0, 0], false); },
 				RangeError,
@@ -10176,53 +9876,6 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				'Float64 with more than 8 bytes throws a RangeError'
 			);
 
-			forEach(float64TestCases, function (pair) {
-				var float = pair[0];
-				var floatBig = pair[1];
-				var bytes = pair[2];
-				var reverseBytes = bytes.slice().reverse();
-
-				if (availableTypedArrays.length > 0) {
-					var buffer = new Float64Array(1).buffer;
-					var view = new DataView(buffer);
-
-					view.setFloat64(0, float, true);
-
-					var actual = view.getFloat64(0, false);
-					st.equal(actual, floatBig, 'big-endian value for ' + debug(float) + ' is correct; got ' + debug(actual));
-
-					var expectedBytesLE = arrayFrom(new Uint8Array(buffer));
-					st.deepEqual(
-						bytes,
-						expectedBytesLE,
-						'little-endian bytes for ' + debug(float) + ' are correct; got ' + debug(expectedBytesLE)
-					);
-
-					view.setFloat64(0, floatBig, false);
-					var expectedBytesBE = arrayFrom(new Uint8Array(buffer)).reverse();
-					st.deepEqual(
-						reverseBytes,
-						expectedBytesBE,
-						'big-endian bytes for ' + debug(floatBig) + ' are correct; got ' + debug(expectedBytesBE)
-					);
-				}
-
-				st.equal(
-					ES.RawBytesToNumeric('Float64', bytes, true),
-					float,
-					'little-endian: bytes for ' + debug(float) + ' produces it'
-				);
-				st.equal(
-					ES.RawBytesToNumeric('Float64', reverseBytes, false),
-					float,
-					'big-endian: bytes for ' + debug(float) + ' produces it'
-				);
-			});
-
-			st.end();
-		});
-
-		t.test('Int8', function (st) {
 			st['throws'](
 				function () { ES.RawBytesToNumeric('Int8', [], false); },
 				RangeError,
@@ -10234,41 +9887,6 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				'Int8 with more than 1 byte throws a RangeError'
 			);
 
-			forEach([
-				[0, [0]],
-				[-1, [255]],
-				[1, [1]],
-				[127, [127]],
-				[-127, [129]]
-			], function (pair) {
-				var int = pair[0];
-				var bytes = pair[1];
-
-				if (availableTypedArrays.length > 0) {
-					var expectedBytes = arrayFrom(new Uint8Array(assign(new Int8Array(1), [int]).buffer));
-					st.deepEqual(
-						bytes,
-						expectedBytes,
-						'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
-					);
-				}
-
-				st.equal(
-					ES.RawBytesToNumeric('Int8', bytes, true),
-					int,
-					'little-endian: bytes for ' + debug(int) + ' produces it'
-				);
-				st.equal(
-					ES.RawBytesToNumeric('Int8', bytes.slice().reverse(), false),
-					int,
-					'big-endian: bytes for ' + debug(int) + ' produces it'
-				);
-			});
-
-			st.end();
-		});
-
-		t.test('Uint8', function (st) {
 			st['throws'](
 				function () { ES.RawBytesToNumeric('Uint8', [], false); },
 				RangeError,
@@ -10280,31 +9898,6 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				'Uint8 with more than 1 byte throws a RangeError'
 			);
 
-			forEach([
-				[0, [0]],
-				[1, [1]],
-				[127, [127]],
-				[255, [255]]
-			], function (pair) {
-				var int = pair[0];
-				var bytes = pair[1];
-
-				st.equal(
-					ES.RawBytesToNumeric('Uint8', bytes, true),
-					int,
-					'little-endian: bytes for ' + debug(int) + ' produces it'
-				);
-				st.equal(
-					ES.RawBytesToNumeric('Uint8', bytes, false),
-					int,
-					'big-endian: bytes for ' + debug(int) + ' produces it'
-				);
-			});
-
-			st.end();
-		});
-
-		t.test('Uint8C', function (st) {
 			st['throws'](
 				function () { ES.RawBytesToNumeric('Uint8C', [], false); },
 				RangeError,
@@ -10316,40 +9909,6 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				'Uint8C with more than 1 byte throws a RangeError'
 			);
 
-			forEach([
-				[0, [0]],
-				[1, [1]],
-				[127, [127]],
-				[255, [255]]
-			], function (pair) {
-				var int = pair[0];
-				var bytes = pair[1];
-
-				if (availableTypedArrays.length > 0) {
-					var expectedBytes = arrayFrom(new Uint8Array(assign(new Uint8ClampedArray(1), [int]).buffer));
-					st.deepEqual(
-						bytes,
-						expectedBytes,
-						'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
-					);
-				}
-
-				st.equal(
-					ES.RawBytesToNumeric('Uint8C', bytes, true),
-					int,
-					'little-endian: bytes for ' + debug(int) + ' produces it'
-				);
-				st.equal(
-					ES.RawBytesToNumeric('Uint8C', bytes, false),
-					int,
-					'big-endian: bytes for ' + debug(int) + ' produces it'
-				);
-			});
-
-			st.end();
-		});
-
-		t.test('Int16', function (st) {
 			st['throws'](
 				function () { ES.RawBytesToNumeric('Int16', [0], false); },
 				RangeError,
@@ -10361,43 +9920,6 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				'Int16 with more than 2 bytes throws a RangeError'
 			);
 
-			forEach([
-				[0, [0, 0]],
-				[-1, [255, 255]],
-				[1, [1, 0]],
-				[127, [127, 0]],
-				[-127, [129, 255]],
-				[255, [255, 0]],
-				[-255, [1, 255]]
-			], function (pair) {
-				var int = pair[0];
-				var bytes = pair[1];
-
-				if (availableTypedArrays.length > 0) {
-					var expectedBytes = arrayFrom(new Uint8Array(assign(new Int16Array(1), [int]).buffer));
-					st.deepEqual(
-						bytes,
-						expectedBytes,
-						'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
-					);
-				}
-
-				st.equal(
-					ES.RawBytesToNumeric('Int16', bytes, true),
-					int,
-					'little-endian: bytes for ' + debug(int) + ' produces it'
-				);
-				st.equal(
-					ES.RawBytesToNumeric('Int16', bytes.slice().reverse(), false),
-					int,
-					'big-endian: bytes for ' + debug(int) + ' produces it'
-				);
-			});
-
-			st.end();
-		});
-
-		t.test('Uint16', function (st) {
 			st['throws'](
 				function () { ES.RawBytesToNumeric('Uint16', [0], false); },
 				RangeError,
@@ -10409,42 +9931,6 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				'Uint16 with more than 2 bytes throws a RangeError'
 			);
 
-			forEach([
-				[0, [0, 0]],
-				[1, [1, 0]],
-				[127, [127, 0]],
-				[255, [255, 0]],
-				[256, [0, 1]],
-				[511, [255, 1]]
-			], function (pair) {
-				var int = pair[0];
-				var bytes = pair[1];
-
-				if (availableTypedArrays.length > 0) {
-					var expectedBytes = arrayFrom(new Uint8Array(assign(new Uint16Array(1), [int]).buffer));
-					st.deepEqual(
-						bytes,
-						expectedBytes,
-						'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
-					);
-				}
-
-				st.equal(
-					ES.RawBytesToNumeric('Uint16', bytes, true),
-					int,
-					'little-endian: bytes for ' + debug(int) + ' produces it'
-				);
-				st.equal(
-					ES.RawBytesToNumeric('Uint16', bytes.slice().reverse(), false),
-					int,
-					'big-endian: bytes for ' + debug(int) + ' produces it'
-				);
-			});
-
-			st.end();
-		});
-
-		t.test('Int32', function (st) {
 			st['throws'](
 				function () { ES.RawBytesToNumeric('Uint16', [0, 0, 0], false); },
 				RangeError,
@@ -10456,43 +9942,6 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				'Uint16 with more than 4 bytes throws a RangeError'
 			);
 
-			forEach([
-				[0, [0, 0, 0, 0]],
-				[1, [1, 0, 0, 0]],
-				[-1, [255, 255, 255, 255]],
-				[16777216, [0, 0, 0, 1]], // max safe float32
-				[2147483647, [255, 255, 255, 127]],
-				[-2147483647, [1, 0, 0, 128]],
-				[-2147483648, [0, 0, 0, 128]]
-			], function (pair) {
-				var int = pair[0];
-				var bytes = pair[1];
-
-				if (availableTypedArrays.length > 0) {
-					var expectedBytes = arrayFrom(new Uint8Array(assign(new Int32Array(1), [int]).buffer));
-					st.deepEqual(
-						bytes,
-						expectedBytes,
-						'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
-					);
-				}
-
-				st.equal(
-					ES.RawBytesToNumeric('Int32', bytes, true),
-					int,
-					'little-endian: bytes for ' + debug(int) + ' produces it'
-				);
-				st.equal(
-					ES.RawBytesToNumeric('Int32', bytes.slice().reverse(), false),
-					int,
-					'big-endian: bytes for ' + debug(int) + ' produces it'
-				);
-			});
-
-			st.end();
-		});
-
-		t.test('Uint32', function (st) {
 			st['throws'](
 				function () { ES.RawBytesToNumeric('Uint32', [0, 0, 0], false); },
 				RangeError,
@@ -10504,42 +9953,6 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				'Uint32 with more than 4 bytes throws a RangeError'
 			);
 
-			forEach([
-				[0, [0, 0, 0, 0]],
-				[1, [1, 0, 0, 0]],
-				[16777216, [0, 0, 0, 1]], // max safe float32
-				[2147483647, [255, 255, 255, 127]],
-				[-2147483647, [1, 0, 0, 128]],
-				[-2147483648, [0, 0, 0, 128]]
-			], function (pair) {
-				var int = pair[0];
-				var bytes = pair[1];
-
-				if (availableTypedArrays.length > 0) {
-					var expectedBytes = arrayFrom(new Uint8Array(assign(new Uint32Array(1), [int]).buffer));
-					st.deepEqual(
-						bytes,
-						expectedBytes,
-						'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
-					);
-				}
-
-				st.equal(
-					ES.RawBytesToNumeric('Uint32', bytes, true),
-					int,
-					'little-endian: bytes for ' + debug(int) + ' produces it'
-				);
-				st.equal(
-					ES.RawBytesToNumeric('Uint32', bytes.slice().reverse(), false),
-					int,
-					'big-endian: bytes for ' + debug(int) + ' produces it'
-				);
-			});
-
-			st.end();
-		});
-
-		t.test('BigInt64', function (st) {
 			st['throws'](
 				function () { ES.RawBytesToNumeric('BigInt64', [0, 0, 0, 0, 0, 0, 0], false); },
 				RangeError,
@@ -10551,126 +9964,31 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				'BigInt64 with more than 8 bytes throws a RangeError'
 			);
 
-			st.test('bigints available', { skip: !hasBigInts }, function (s2t) {
-				forEach([
-					[BigInt(0), [0, 0, 0, 0, 0, 0, 0, 0]],
-					[BigInt(1), [1, 0, 0, 0, 0, 0, 0, 0]],
-					// [BigInt(-1), [255, 255, 255, 255, 255, 255, 255, 255]],
-					[BigInt(16777216), [0, 0, 0, 1, 0, 0, 0, 0]], // max safe float32
-					[BigInt(2147483647), [255, 255, 255, 127, 0, 0, 0, 0]],
-					// [BigInt(-2147483647), [1, 0, 0, 128, 255, 255, 255, 255]],
-					[BigInt(2147483648), [0, 0, 0, 128, 0, 0, 0, 0]]
-					// [BigInt(-2147483648), [0, 0, 0, 128, 255, 255, 255, 255]]
-				], function (pair) {
-					var int = pair[0];
-					var bytes = pair[1];
-
-					if (availableTypedArrays.length > 0) {
-						var expectedBytes = arrayFrom(new Uint8Array(assign(new BigInt64Array(1), [int]).buffer));
-						s2t.deepEqual(
-							bytes,
-							expectedBytes,
-							'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
-						);
-					}
-
-					s2t.equal(
-						ES.RawBytesToNumeric('BigInt64', bytes, true),
-						int,
-						'little-endian: bytes for ' + debug(int) + ' produces it'
-					);
-					s2t.equal(
-						ES.RawBytesToNumeric('BigInt64', bytes.slice().reverse(), false),
-						int,
-						'big-endian: bytes for ' + debug(int) + ' produces it'
-					);
-				});
-
-				s2t.end();
-			});
-
-			st.test('no bigints', { skip: hasBigInts }, function (s2t) {
-				s2t['throws'](
-					function () { ES.RawBytesToNumeric('BigInt64', [0, 0, 0, 0, 0, 0, 0, 0], false); },
-					SyntaxError,
-					'BigInt64 throws a SyntaxError when BigInt is not available'
-				);
-				s2t['throws'](
-					function () { ES.RawBytesToNumeric('BigUint64', [0, 0, 0, 0, 0, 0, 0, 0], false); },
-					SyntaxError,
-					'BigUint64 throws a SyntaxError when BigInt is not available'
-				);
-
-				s2t.end();
-			});
-
-			st.end();
-		});
-
-		t.test('BigUint64', function (st) {
 			st['throws'](
 				function () { ES.RawBytesToNumeric('BigUint64', [0, 0, 0, 0, 0, 0, 0], false); },
 				RangeError,
-				'BigInt64 with less than 8 bytes throws a RangeError'
+				'BigUint64 with less than 8 bytes throws a RangeError'
 			);
 			st['throws'](
 				function () { ES.RawBytesToNumeric('BigUint64', [0, 0, 0, 0, 0, 0, 0, 0, 0], false); },
 				RangeError,
-				'BigInt64 with more than 8 bytes throws a RangeError'
+				'BigUint64 with more than 8 bytes throws a RangeError'
 			);
 
-			st.test('bigints available', { skip: !hasBigInts }, function (s2t) {
-				forEach([
-					[BigInt(0), [0, 0, 0, 0, 0, 0, 0, 0]],
-					[BigInt(1), [1, 0, 0, 0, 0, 0, 0, 0]],
-					// [BigInt(-1), [255, 255, 255, 255, 255, 255, 255, 255]],
-					[BigInt(16777216), [0, 0, 0, 1, 0, 0, 0, 0]], // max safe float32
-					[BigInt(2147483647), [255, 255, 255, 127, 0, 0, 0, 0]],
-					// [BigInt(-2147483647), [1, 0, 0, 128, 255, 255, 255, 255]],
-					[BigInt(2147483648), [0, 0, 0, 128, 0, 0, 0, 0]]
-					// [BigInt(-2147483648), [0, 0, 0, 128, 255, 255, 255, 255]]
-				], function (pair) {
-					var int = pair[0];
-					var bytes = pair[1];
+			st.end();
+		});
 
-					if (availableTypedArrays.length > 0) {
-						var expectedBytes = arrayFrom(new Uint8Array(assign(new BigUint64Array(1), [int]).buffer));
-						s2t.deepEqual(
-							bytes,
-							expectedBytes,
-							'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
-						);
-					}
-
-					s2t.equal(
-						ES.RawBytesToNumeric('BigUint64', bytes, true),
-						int,
-						'little-endian: bytes for ' + debug(int) + ' produces it'
-					);
-					s2t.equal(
-						ES.RawBytesToNumeric('BigUint64', bytes.slice().reverse(), false),
-						int,
-						'big-endian: bytes for ' + debug(int) + ' produces it'
-					);
-				});
-
-				s2t.end();
-			});
-
-			st.test('no bigints', { skip: hasBigInts }, function (s2t) {
-				s2t['throws'](
-					function () { ES.RawBytesToNumeric('BigInt64', [0, 0, 0, 0, 0, 0, 0, 0], false); },
-					SyntaxError,
-					'BigInt64 throws a SyntaxError when BigInt is not available'
-				);
-				s2t['throws'](
-					function () { ES.RawBytesToNumeric('BigUint64', [0, 0, 0, 0, 0, 0, 0, 0], false); },
-					SyntaxError,
-					'BigUint64 throws a SyntaxError when BigInt is not available'
-				);
-
-				s2t.end();
-			});
+		t.test('bigint types, no bigints', { skip: hasBigInts }, function (st) {
+			st['throws'](
+				function () { ES.RawBytesToNumeric('BigInt64', [0, 0, 0, 0, 0, 0, 0, 0], false); },
+				SyntaxError,
+				'BigInt64 throws a SyntaxError when BigInt is not available'
+			);
+			st['throws'](
+				function () { ES.RawBytesToNumeric('BigUint64', [0, 0, 0, 0, 0, 0, 0, 0], false); },
+				SyntaxError,
+				'BigUint64 throws a SyntaxError when BigInt is not available'
+			);
 
 			st.end();
 		});

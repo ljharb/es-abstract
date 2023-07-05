@@ -135,7 +135,7 @@ Return the Number value that corresponds to value.
 	// this is common to both branches
 	var intValue = 0;
 	for (var i = 0; i < rawBytes.length; i++) {
-		intValue |= rawBytes[i] << (8 * i);
+		intValue += rawBytes[i] * $pow(2, 8 * i);
 	}
 	/*
 	Let intValue be the byte elements of rawBytes concatenated and interpreted as a bit string encoding of an unsigned little-endian binary number.
@@ -144,8 +144,8 @@ Return the Number value that corresponds to value.
 	if ($charAt(type, 0) !== 'U') { // steps 5-6
 		// Let intValue be the byte elements of rawBytes concatenated and interpreted as a bit string encoding of a binary little-endian 2's complement number of bit length elementSize × 8.
 		var bitLength = elementSize * 8;
-		if (bitLength < 32) {
-			intValue = (intValue << (32 - bitLength)) >> (32 - bitLength);
+		if (rawBytes[elementSize - 1] & 0x80) {
+			intValue -= $pow(2, bitLength);
 		}
 	}
 
