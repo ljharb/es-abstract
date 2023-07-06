@@ -70,6 +70,7 @@
 			"files": [
 				"*/RawBytesToNum*.js",
 				"*/Num*ToRawBytes.js",
+				"./helpers/valueToFloat*.js",
 			],
 			"rules": {
 				"max-lines-per-function": "off",
