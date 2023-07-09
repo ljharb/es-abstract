@@ -3,11 +3,9 @@
 var GetIntrinsic = require('get-intrinsic');
 var callBound = require('call-bind/callBound');
 
-var $pow = GetIntrinsic('%Math.pow%');
 var $RangeError = GetIntrinsic('%RangeError%');
 var $SyntaxError = GetIntrinsic('%SyntaxError%');
 var $TypeError = GetIntrinsic('%TypeError%');
-var $Number = GetIntrinsic('%Number%');
 var $BigInt = GetIntrinsic('%BigInt%', true);
 
 var hasOwnProperty = require('./HasOwnProperty');
@@ -16,6 +14,9 @@ var IsBigIntElementType = require('./IsBigIntElementType');
 var IsUnsignedElementType = require('./IsUnsignedElementType');
 var Type = require('./Type');
 
+var bytesAsFloat32 = require('../helpers/bytesAsFloat32');
+var bytesAsFloat64 = require('../helpers/bytesAsFloat64');
+var bytesAsInteger = require('../helpers/bytesAsInteger');
 var every = require('../helpers/every');
 var isByteValue = require('../helpers/isByteValue');
 
@@ -72,96 +73,12 @@ module.exports = function RawBytesToNumeric(type, rawBytes, isLittleEndian) {
 	}
 
 	if (type === 'Float32') { // step 3
-		// return new Float32Array(new Uint8Array(rawBytes).buffer)[0];
-
-		/*
-        Let value be the byte elements of rawBytes concatenated and interpreted as a little-endian bit string encoding of an IEEE 754-2008 binary32 value.
-If value is an IEEE 754-2008 binary32 NaN value, return the NaN Number value.
-Return the Number value that corresponds to value.
-        */
-		var sign = rawBytes[3] & 0x80 ? -1 : 1; // Check the sign bit
-		var exponent = ((rawBytes[3] & 0x7F) << 1)
-			| (rawBytes[2] >> 7); // Combine bits for exponent
-		var mantissa = ((rawBytes[2] & 0x7F) << 16)
-			| (rawBytes[1] << 8)
-			| rawBytes[0]; // Combine bits for mantissa
-
-		if (exponent === 0 && mantissa === 0) {
-			return sign === 1 ? 0 : -0;
-		}
-		if (exponent === 0xFF && mantissa === 0) {
-			return sign === 1 ? Infinity : -Infinity;
-		}
-		if (exponent === 0xFF && mantissa !== 0) {
-			return NaN;
-		}
-
-		exponent -= 127; // subtract the bias
-
-		if (exponent === -127) {
-			return sign * mantissa * $pow(2, -126 - 23);
-		}
-		return sign * (1 + (mantissa * $pow(2, -23))) * $pow(2, exponent);
+		return bytesAsFloat32(rawBytes);
 	}
 
 	if (type === 'Float64') { // step 4
-		// return new Float64Array(new Uint8Array(rawBytes).buffer)[0];
-
-		/*
-        Let value be the byte elements of rawBytes concatenated and interpreted as a little-endian bit string encoding of an IEEE 754-2008 binary64 value.
-If value is an IEEE 754-2008 binary64 NaN value, return the NaN Number value.
-Return the Number value that corresponds to value.
-        */
-		var sign = rawBytes[7] & 0x80 ? -1 : 1; // first bit
-		var exponent = ((rawBytes[7] & 0x7F) << 4) // 7 bits from index 7
-			| ((rawBytes[6] & 0xF0) >> 4); // 4 bits from index 6
-		var mantissa = ((rawBytes[6] & 0x0F) * 0x1000000000000) // 4 bits from index 6
-			+ (rawBytes[5] * 0x10000000000) // 8 bits from index 5
-			+ (rawBytes[4] * 0x100000000) // 8 bits from index 4
-			+ (rawBytes[3] * 0x1000000) // 8 bits from index 3
-			+ (rawBytes[2] * 0x10000) // 8 bits from index 2
-			+ (rawBytes[1] * 0x100) // 8 bits from index 1
-			+ rawBytes[0]; // 8 bits from index 0
-
-		if (exponent === 0 && mantissa === 0) {
-			return sign * 0;
-		}
-		if (exponent === 0x7FF && mantissa !== 0) {
-			return NaN;
-		}
-		if (exponent === 0x7FF && mantissa === 0) {
-			return sign * Infinity;
-		}
-
-		exponent -= 1023; // subtract the bias
-
-		// Handle subnormal numbers
-		if (exponent === -1023) {
-			return sign * mantissa * 5e-324; // $pow(2, -1022 - 52)
-		}
-
-		return sign * (1 + (mantissa / 0x10000000000000)) * $pow(2, exponent);
+		return bytesAsFloat64(rawBytes);
 	}
 
-	var Z = isBigInt ? $BigInt : $Number;
-
-	// this is common to both branches
-	var intValue = Z(0);
-	for (var i = 0; i < rawBytes.length; i++) {
-		intValue += Z(rawBytes[i]) * Z($pow(2, 8 * i));
-	}
-	/*
-	Let intValue be the byte elements of rawBytes concatenated and interpreted as a bit string encoding of an unsigned little-endian binary number.
-	*/
-
-	if (!IsUnsignedElementType(type)) { // steps 5-6
-		// Let intValue be the byte elements of rawBytes concatenated and interpreted as a bit string encoding of a binary little-endian 2's complement number of bit length elementSize × 8.
-		var bitLength = elementSize * 8;
-
-		if (rawBytes[elementSize - 1] & 0x80) {
-			intValue -= Z($pow(2, bitLength));
-		}
-	}
-
-	return intValue; // step 7
+	return bytesAsInteger(rawBytes, elementSize, IsUnsignedElementType(type), isBigInt);
 };

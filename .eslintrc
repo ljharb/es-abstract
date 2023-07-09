@@ -68,9 +68,10 @@
 		},
 		{
 			"files": [
-				"*/RawBytesToNum*.js",
 				"*/Num*ToRawBytes.js",
-				"./helpers/valueToFloat*.js",
+				"*/RawBytesToNum*.js",
+				"helpers/bytesAs*.js",
+				"helpers/valueToFloat*.js",
 			],
 			"rules": {
 				"max-lines-per-function": "off",
