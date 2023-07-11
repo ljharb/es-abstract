@@ -2825,7 +2825,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.equal(ES.GetV(obj, 'a'), obj.a, 'returns property if it exists');
 		t.equal(ES.GetV(obj, 'b'), undefined, 'returns undefiend if property does not exist');
 
-		t.test('getter observability of the receiver', { skip: !defineProperty.oDP }, function (st) {
+		t.test('getter observability of the receiver', { skip: !defineProperty.oDP || !Object.isExtensible(Number.prototype) }, function (st) {
 			var receivers = [];
 
 			st.teardown(mockProperty(Number.prototype, 'foo', {
