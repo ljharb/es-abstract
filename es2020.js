@@ -98,6 +98,7 @@ var ES2020 = {
 	modulo: require('./2020/modulo'),
 	MonthFromTime: require('./2020/MonthFromTime'),
 	msFromTime: require('./2020/msFromTime'),
+	NewPromiseCapability: require('./2020/NewPromiseCapability'),
 	NormalCompletion: require('./2020/NormalCompletion'),
 	Number: require('./2020/Number'),
 	NumberBitwiseOp: require('./2020/NumberBitwiseOp'),

@@ -30,6 +30,7 @@ var defineProperty = require('./helpers/defineProperty');
 var getInferredName = require('../helpers/getInferredName');
 var reduce = require('../helpers/reduce');
 var fromPropertyDescriptor = require('../helpers/fromPropertyDescriptor');
+var assertRecord = require('../helpers/assertRecord');
 var assertRecordTests = require('./helpers/assertRecord');
 var unserialize = require('./helpers/unserializeNumeric');
 var diffOps = require('./diffOps');
@@ -3448,6 +3449,48 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 	test('min', function (t) {
 		t.equal(ES.min.apply(null, v.numbers), Math.min.apply(null, v.numbers), 'works with numbers');
+
+		t.end();
+	});
+
+	test('NewPromiseCapability', function (t) {
+		forEach(v.nonFunctions.concat(v.nonConstructorFunctions), function (nonConstructor) {
+			t['throws'](
+				function () { ES.NewPromiseCapability(nonConstructor); },
+				TypeError,
+				debug(nonConstructor) + ' is not a constructor'
+			);
+		});
+
+		var calls = [];
+
+		var C = function C(executor) {
+			calls.push('constructor');
+			t.equal(arguments.length, 1, 'is passed one argument');
+			t.equal(typeof executor, 'function', 'is passed a function');
+
+			executor(
+				function resolve() { calls.push('resolve'); },
+				function reject() { calls.push('reject'); }
+			);
+		};
+		C.prototype.then = function () {};
+
+		var record = ES.NewPromiseCapability(C);
+		t.doesNotThrow(function () {
+			assertRecord(ES.Type, 'PromiseCapability Record', 'return value', record);
+		});
+		t.ok(record['[[Promise]]'] instanceof C, 'is an instance of the passed constructor');
+
+		t.deepEqual(calls, ['constructor']);
+
+		record['[[Resolve]]']();
+
+		t.deepEqual(calls, ['constructor', 'resolve']);
+
+		record['[[Reject]]']();
+
+		t.deepEqual(calls, ['constructor', 'resolve', 'reject']);
 
 		t.end();
 	});

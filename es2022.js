@@ -112,6 +112,7 @@ var ES2022 = {
 	modulo: require('./2022/modulo'),
 	MonthFromTime: require('./2022/MonthFromTime'),
 	msFromTime: require('./2022/msFromTime'),
+	NewPromiseCapability: require('./2022/NewPromiseCapability'),
 	NormalCompletion: require('./2022/NormalCompletion'),
 	Number: require('./2022/Number'),
 	NumberBitwiseOp: require('./2022/NumberBitwiseOp'),

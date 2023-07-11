@@ -105,6 +105,7 @@ var ES2021 = {
 	modulo: require('./2021/modulo'),
 	MonthFromTime: require('./2021/MonthFromTime'),
 	msFromTime: require('./2021/msFromTime'),
+	NewPromiseCapability: require('./2021/NewPromiseCapability'),
 	NormalCompletion: require('./2021/NormalCompletion'),
 	Number: require('./2021/Number'),
 	NumberBitwiseOp: require('./2021/NumberBitwiseOp'),

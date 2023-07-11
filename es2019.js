@@ -85,6 +85,7 @@ var ES2019 = {
 	modulo: require('./2019/modulo'),
 	MonthFromTime: require('./2019/MonthFromTime'),
 	msFromTime: require('./2019/msFromTime'),
+	NewPromiseCapability: require('./2019/NewPromiseCapability'),
 	NormalCompletion: require('./2019/NormalCompletion'),
 	NumberToRawBytes: require('./2019/NumberToRawBytes'),
 	NumberToString: require('./2019/NumberToString'),

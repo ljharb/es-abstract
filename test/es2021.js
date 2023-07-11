@@ -142,7 +142,6 @@ var expectedMissing = [
 	'NewGlobalEnvironment',
 	'NewModuleEnvironment',
 	'NewObjectEnvironment',
-	'NewPromiseCapability',
 	'NewPromiseReactionJob',
 	'NewPromiseResolveThenableJob',
 	'NotifyWaiter',

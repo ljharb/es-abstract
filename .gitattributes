@@ -105,6 +105,7 @@
 /2016/MakeTime.js	spackled linguist-generated=true
 /2016/MinFromTime.js	spackled linguist-generated=true
 /2016/MonthFromTime.js	spackled linguist-generated=true
+/2016/NewPromiseCapability.js	spackled linguist-generated=true
 /2016/NormalCompletion.js	spackled linguist-generated=true
 /2016/ObjectCreate.js	spackled linguist-generated=true
 /2016/ObjectDefineProperties.js	spackled linguist-generated=true
@@ -228,6 +229,7 @@
 /2017/MakeTime.js	spackled linguist-generated=true
 /2017/MinFromTime.js	spackled linguist-generated=true
 /2017/MonthFromTime.js	spackled linguist-generated=true
+/2017/NewPromiseCapability.js	spackled linguist-generated=true
 /2017/NormalCompletion.js	spackled linguist-generated=true
 /2017/ObjectCreate.js	spackled linguist-generated=true
 /2017/ObjectDefineProperties.js	spackled linguist-generated=true
@@ -355,6 +357,7 @@
 /2018/MakeTime.js	spackled linguist-generated=true
 /2018/MinFromTime.js	spackled linguist-generated=true
 /2018/MonthFromTime.js	spackled linguist-generated=true
+/2018/NewPromiseCapability.js	spackled linguist-generated=true
 /2018/NormalCompletion.js	spackled linguist-generated=true
 /2018/NumberToRawBytes.js	spackled linguist-generated=true
 /2018/ObjectCreate.js	spackled linguist-generated=true
@@ -495,6 +498,7 @@
 /2019/MakeTime.js	spackled linguist-generated=true
 /2019/MinFromTime.js	spackled linguist-generated=true
 /2019/MonthFromTime.js	spackled linguist-generated=true
+/2019/NewPromiseCapability.js	spackled linguist-generated=true
 /2019/NormalCompletion.js	spackled linguist-generated=true
 /2019/NumberToRawBytes.js	spackled linguist-generated=true
 /2019/NumberToString.js	spackled linguist-generated=true
@@ -636,6 +640,7 @@
 /2020/MakeTime.js	spackled linguist-generated=true
 /2020/MinFromTime.js	spackled linguist-generated=true
 /2020/MonthFromTime.js	spackled linguist-generated=true
+/2020/NewPromiseCapability.js	spackled linguist-generated=true
 /2020/NormalCompletion.js	spackled linguist-generated=true
 /2020/ObjectDefineProperties.js	spackled linguist-generated=true
 /2020/OrdinaryDefineOwnProperty.js	spackled linguist-generated=true
@@ -793,6 +798,7 @@
 /2021/MakeDate.js	spackled linguist-generated=true
 /2021/MinFromTime.js	spackled linguist-generated=true
 /2021/MonthFromTime.js	spackled linguist-generated=true
+/2021/NewPromiseCapability.js	spackled linguist-generated=true
 /2021/NormalCompletion.js	spackled linguist-generated=true
 /2021/Number/bitwiseAND.js	spackled linguist-generated=true
 /2021/Number/bitwiseNOT.js	spackled linguist-generated=true
@@ -990,6 +996,7 @@
 /2022/MakeTime.js	spackled linguist-generated=true
 /2022/MinFromTime.js	spackled linguist-generated=true
 /2022/MonthFromTime.js	spackled linguist-generated=true
+/2022/NewPromiseCapability.js	spackled linguist-generated=true
 /2022/NormalCompletion.js	spackled linguist-generated=true
 /2022/Number/add.js	spackled linguist-generated=true
 /2022/Number/bitwiseAND.js	spackled linguist-generated=true

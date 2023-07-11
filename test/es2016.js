@@ -98,7 +98,6 @@ var expectedMissing = [
 	'NewGlobalEnvironment',
 	'NewModuleEnvironment',
 	'NewObjectEnvironment',
-	'NewPromiseCapability',
 	'NextJob',
 	'OrdinaryCallBindThis',
 	'OrdinaryCallEvaluateBody',

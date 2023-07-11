@@ -78,6 +78,7 @@ var ES2017 = {
 	modulo: require('./2017/modulo'),
 	MonthFromTime: require('./2017/MonthFromTime'),
 	msFromTime: require('./2017/msFromTime'),
+	NewPromiseCapability: require('./2017/NewPromiseCapability'),
 	NormalCompletion: require('./2017/NormalCompletion'),
 	NumberToRawBytes: require('./2017/NumberToRawBytes'),
 	ObjectCreate: require('./2017/ObjectCreate'),

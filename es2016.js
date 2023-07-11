@@ -77,6 +77,7 @@ var ES2016 = {
 	modulo: require('./2016/modulo'),
 	MonthFromTime: require('./2016/MonthFromTime'),
 	msFromTime: require('./2016/msFromTime'),
+	NewPromiseCapability: require('./2016/NewPromiseCapability'),
 	NormalCompletion: require('./2016/NormalCompletion'),
 	ObjectCreate: require('./2016/ObjectCreate'),
 	ObjectDefineProperties: require('./2016/ObjectDefineProperties'),
