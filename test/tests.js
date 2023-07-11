@@ -22,6 +22,7 @@ var arrayFrom = require('array.from');
 var isCore = require('is-core-module');
 var isRegex = require('is-regex');
 var v = require('es-value-fixtures');
+var mockProperty = require('mock-property');
 
 var $getProto = require('../helpers/getProto');
 var $setProto = require('../helpers/setProto');
@@ -2823,6 +2824,24 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		var obj = { a: function () {} };
 		t.equal(ES.GetV(obj, 'a'), obj.a, 'returns property if it exists');
 		t.equal(ES.GetV(obj, 'b'), undefined, 'returns undefiend if property does not exist');
+
+		t.test('getter observability of the receiver', { skip: !defineProperty.oDP }, function (st) {
+			var receivers = [];
+
+			st.teardown(mockProperty(Number.prototype, 'foo', {
+				get: function () {
+					receivers.push(this);
+				}
+			}));
+
+			ES.GetV(42, 'foo');
+			ES.GetV(Object(42), 'foo');
+
+			st.deepEqual(receivers, [42, Object(42)]);
+
+			st.end();
+		});
+
 		t.end();
 	});
 
