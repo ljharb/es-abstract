@@ -89,7 +89,7 @@
 		"typed-array-byte-offset": "^1.0.0",
 		"typed-array-length": "^1.0.4",
 		"unbox-primitive": "^1.0.2",
-		"which-typed-array": "^1.1.9"
+		"which-typed-array": "^1.1.10"
 	},
 	"devDependencies": {
 		"@ljharb/eslint-config": "^21.1.0",
