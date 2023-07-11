@@ -26,6 +26,7 @@ var ES2022 = {
 	CharacterRange: require('./2022/CharacterRange'),
 	clamp: require('./2022/clamp'),
 	ClearKeptObjects: require('./2022/ClearKeptObjects'),
+	CloneArrayBuffer: require('./2022/CloneArrayBuffer'),
 	CodePointAt: require('./2022/CodePointAt'),
 	CodePointsToString: require('./2022/CodePointsToString'),
 	CompletePropertyDescriptor: require('./2022/CompletePropertyDescriptor'),

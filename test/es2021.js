@@ -32,7 +32,6 @@ var expectedMissing = [
 	'CharacterRangeOrUnion',
 	'CharacterSetMatcher',
 	'CleanupFinalizationRegistry',
-	'CloneArrayBuffer',
 	'Completion',
 	'ComposeWriteEventBytes',
 	'Construct',

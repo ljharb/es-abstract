@@ -11159,6 +11159,62 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('CloneArrayBuffer', function (t) {
+		forEach(v.primitives.concat(v.objects), function (nonArrayBuffer) {
+			t['throws'](
+				function () { ES.CloneArrayBuffer(nonArrayBuffer, 0, 0, Object); },
+				TypeError,
+				debug(nonArrayBuffer) + ' is not an ArrayBuffer'
+			);
+		});
+
+		t.test('ArrayBuffers supported', { skip: typeof ArrayBuffer !== 'function' }, function (st) {
+			var emptyBuffer = new ArrayBuffer(0);
+
+			forEach(v.notNonNegativeIntegers, function (notNonNegativeInteger) {
+				st['throws'](
+					function () { ES.CloneArrayBuffer(emptyBuffer, notNonNegativeInteger, 0, ArrayBuffer); },
+					TypeError,
+					'srcByteOffset: ' + debug(notNonNegativeInteger) + ' is not a non-negative integer'
+				);
+
+				st['throws'](
+					function () { ES.CloneArrayBuffer(emptyBuffer, 0, notNonNegativeInteger, ArrayBuffer); },
+					TypeError,
+					'srcLength: ' + debug(notNonNegativeInteger) + ' is not a non-negative integer'
+				);
+			});
+
+			// node < 6 lacks Reflect.construct, so `v.nonConstructorFunctions` can't be detected
+			forEach(v.nonFunctions.concat(typeof Reflect === 'object' ? v.nonConstructorFunctions : []), function (nonConstructor) {
+				st['throws'](
+					function () { ES.CloneArrayBuffer(emptyBuffer, 0, 0, nonConstructor); },
+					TypeError,
+					debug(nonConstructor) + ' is not a constructor'
+				);
+			});
+
+			var a = new ArrayBuffer(8);
+			var arrA = new Uint8Array(a);
+			var eightInts = [1, 2, 3, 4, 5, 6, 7, 8];
+			assign(arrA, eightInts);
+			st.deepEqual(arrA, new Uint8Array(eightInts), 'initial buffer setup is correct');
+
+			var b = ES.CloneArrayBuffer(a, 1, 4, ArrayBuffer);
+			st.notEqual(b, a, 'cloned buffer is !== original buffer');
+			var arrB = new Uint8Array(b);
+			st.deepEqual(
+				arrB,
+				new Uint8Array([2, 3, 4, 5]),
+				'cloned buffer follows the source byte offset and length'
+			);
+
+			st.end();
+		});
+
+		t.end();
+	});
+
 	test('CodePointsToString', function (t) {
 		forEach(v.nonArrays, function (nonArray) {
 			t['throws'](

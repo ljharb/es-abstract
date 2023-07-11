@@ -29,6 +29,7 @@ var ES2021 = {
 	CharacterRange: require('./2021/CharacterRange'),
 	clamp: require('./2021/clamp'),
 	ClearKeptObjects: require('./2021/ClearKeptObjects'),
+	CloneArrayBuffer: require('./2021/CloneArrayBuffer'),
 	CodePointAt: require('./2021/CodePointAt'),
 	CodePointsToString: require('./2021/CodePointsToString'),
 	CompletePropertyDescriptor: require('./2021/CompletePropertyDescriptor'),
