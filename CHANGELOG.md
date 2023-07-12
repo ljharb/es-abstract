@@ -1,3 +1,23 @@
+1.21.3 / 2023-07-12
+=================
+  * [Fix] `ES2017+`: `RawBytesToNumber`, `RawBytesToNumeric`: properly handle some scenarios
+  * [Fix] `ES2015`+: `GetV`: the receiver is `V`, not `O`
+  * [Fix] `ES2017`+: `RawBytesToNumber`, `RawBytesToNumeric`: fix exponent calculation for Float64, improve tests
+  * [Fix] `ES2017`+: `RawBytesToNumber`, `RawBytesToNumeric`: fix logic, improve tests
+  * [Fix] `ES2019`+: `thisTimeValue`: fix spackling
+  * [Robustness] `ES2017`+: `NumberToRawBytes`, `NumericToRawBytes`: use `SameValue` instead of `Object.is`
+  * [Refactor] `ES2021`+: `ValidateAtomicAccess`: use `typed-array-byte-offset`
+  * [Refactor] `ES2019`+: `AddEntriesFromIterable`: use `ThrowCompletion`
+  * [patch] `ES2015`+: `ObjectDefineProperties`: satisfy TODO
+  * [patch] `ES2015`+: `GetV`: improve error message
+  * [patch] fix spec URLs
+  * [Deps] update `get-intrinsic`, `regexp.prototype.flags`, `which-typed-array`
+  * [actions] fix permissions
+  * [Tests] add buffer test case fixtures + tests
+  * [Tests] skip test that modifies the env in SES
+  * [Tests] fix regex flags tests for node 20
+  * [Dev Deps] update `@ljharb/eslint-config`, `aud`, `available-regexp-flags`, `is-core-module`, `tape`
+
 1.21.2 / 2023-03-12
 =================
   * [Fix] `ES2015`+: `CreateDataProperty`: use `OrdinaryDefineOwnProperty`
