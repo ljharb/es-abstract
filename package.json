@@ -121,7 +121,7 @@
 		"object.fromentries": "^2.0.6",
 		"safe-publish-latest": "^2.0.0",
 		"ses": "^0.10.4",
-		"tape": "^5.6.4"
+		"tape": "^5.6.5"
 	},
 	"testling": {
 		"files": "test/index.js",
