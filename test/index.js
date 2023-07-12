@@ -10,6 +10,7 @@ var ES6keys = keys(ES.ES6).sort();
 
 test('exposed properties', function (t) {
 	t.deepEqual(ESkeys, ES6keys.concat([
+		'ES2024',
 		'ES2023',
 		'ES2022',
 		'ES2021',
@@ -50,3 +51,4 @@ require('./es2020');
 require('./es2021');
 require('./es2022');
 require('./es2023');
+require('./es2024');

@@ -27,6 +27,10 @@ const writtenOps = [5].concat(years).flatMap((year, i, arr) => {
 		if (fs.statSync(maybeDirPath).isDirectory()) {
 			return fs.readdirSync(maybeDirPath).map((x) => `${opFile}::${path.basename(x, path.extname(x))}`);
 		}
+
+		if (year === 2023 && opFile === 'TypedArrayCreate.js') {
+			return [];
+		}
 		return opFile;
 	}).map((opFile) => {
 		const op = path.basename(opFile, path.extname(opFile));
@@ -46,6 +50,10 @@ const writtenOps = [5].concat(years).flatMap((year, i, arr) => {
 				}
 
 				if (fs.existsSync(thisFile) && !fs.existsSync(nextFile)) {
+					if (year === 2023 && op === 'TypedArrayCreate') {
+						// this AO was renamed in ES2024, and the new one can't be implemented
+						return null;
+					}
 					console.log(`writing: ${nextYear}/${opPath} -> ${year}/${opPath}`);
 					const thisSpecifier = `../${year}/${opPath}`;
 					const reexport = `'use strict';

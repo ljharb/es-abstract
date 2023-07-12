@@ -167,7 +167,7 @@ var makeTest = function makeTest(ES, skips) {
 		return tape(
 			opName,
 			opts,
-			ES[opName] ? function (t) {
+			ES[opName] && typeof cb === 'function' ? function (t) {
 				var expectedName = opName.replace(/ /g, '');
 				t.match(
 					ES[opName].name,
@@ -7528,6 +7528,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 
 		var tv = Date.UTC(2019, 8, 10, 7, 8, 9);
 		t.equal(ES.TimeString(tv), '07:08:09 GMT');
+
 		t.end();
 	});
 
@@ -11919,7 +11920,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 
 				var elementSize = elementSizes['$' + TypedArray];
 
-				st.equal(ES.ValidateAtomicAccess(ta, 0), 0, TypedArray + ': requestIndex of 0 gives 0');
+				st.equal(ES.ValidateAtomicAccess(ta, 0), elementSize * 0, TypedArray + ': requestIndex of 0 gives 0');
 				st.equal(ES.ValidateAtomicAccess(ta, 1), elementSize * 1, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 1));
 				st.equal(ES.ValidateAtomicAccess(ta, 2), elementSize * 2, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 2));
 				st.equal(ES.ValidateAtomicAccess(ta, 3), elementSize * 3, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 3));
@@ -14811,6 +14812,2130 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 	});
 };
 
+var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
+	es2023(ES, ops, expectedMissing, assign({}, skips, {
+		CreateMethodProperty: true,
+		DefaultTimeZone: true,
+		GetSubstitution: true,
+		GetValueFromBuffer: true,
+		IntegerIndexedElementGet: true,
+		IntegerIndexedElementSet: true,
+		IsBigIntElementType: true,
+		IsNoTearConfiguration: true,
+		IsUnclampedIntegerElementType: true,
+		IsUnsignedElementType: true,
+		NumericToRawBytes: true,
+		RawBytesToNumeric: true,
+		SetValueInBuffer: true,
+		StringPad: true,
+		thisBigIntValue: true,
+		thisBooleanValue: true,
+		thisNumberValue: true,
+		thisStringValue: true,
+		thisSymbolValue: true,
+		thisTimeValue: true,
+		TypedArrayCreate: true,
+		TypedArrayElementType: true,
+		ValidateAtomicAccess: true,
+		ValidateIntegerTypedArray: true,
+		ValidateTypedArray: true
+	}));
+
+	var test = makeTest(ES, skips);
+
+	test('GetSubstitution', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.GetSubstitution(nonString, '', 0, [], undefined, ''); },
+				TypeError,
+				'`matched`: ' + debug(nonString) + ' is not a String'
+			);
+
+			t['throws'](
+				function () { ES.GetSubstitution('', nonString, 0, [], undefined, ''); },
+				TypeError,
+				'`str`: ' + debug(nonString) + ' is not a String'
+			);
+
+			t['throws'](
+				function () { ES.GetSubstitution('', '', 0, [], undefined, nonString); },
+				TypeError,
+				'`replacement`: ' + debug(nonString) + ' is not a String'
+			);
+
+			if (typeof nonString !== 'undefined') {
+				t['throws'](
+					function () { ES.GetSubstitution('', '', 0, [nonString], undefined, ''); },
+					TypeError,
+					'`captures`: ' + debug([nonString]) + ' is not an Array of strings'
+				);
+			}
+		});
+
+		forEach(v.notNonNegativeIntegers, function (nonNonNegativeInteger) {
+			t['throws'](
+				function () { ES.GetSubstitution('', '', nonNonNegativeInteger, [], undefined, ''); },
+				TypeError,
+				'`position`: ' + debug(nonNonNegativeInteger) + ' is not a non-negative integer'
+			);
+		});
+
+		forEach(v.nonArrays, function (nonArray) {
+			t['throws'](
+				function () { ES.GetSubstitution('', '', 0, nonArray, undefined, ''); },
+				TypeError,
+				'`captures`: ' + debug(nonArray) + ' is not an Array'
+			);
+		});
+
+		forEach(v.nonUndefinedPrimitives, function (nonUndefinedPrimitive) {
+			t['throws'](
+				function () { ES.GetSubstitution('', '', 0, [], nonUndefinedPrimitive, ''); },
+				TypeError,
+				'`namedCaptures`: must be `undefined` or an Object'
+			);
+		});
+
+		t.equal(
+			ES.GetSubstitution('def', 'abcdefghi', 3, [], undefined, '123'),
+			'123',
+			'returns the substitution'
+		);
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '$$2$'),
+			'$2$',
+			'supports $$, and trailing $'
+		);
+
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$&<'),
+			'>abcdef<',
+			'supports $&'
+		);
+
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$`<'),
+			'><',
+			'supports $` at position 0'
+		);
+		t.equal(
+			ES.GetSubstitution('def', 'abcdefghi', 3, [], undefined, '>$`<'),
+			'>abc<',
+			'supports $` at position > 0'
+		);
+
+		t.equal(
+			ES.GetSubstitution('def', 'abcdefghi', 7, [], undefined, ">$'<"),
+			'><',
+			"supports $' at a position where there's less than `matched.length` chars left"
+		);
+		t.equal(
+			ES.GetSubstitution('def', 'abcdefghi', 3, [], undefined, ">$'<"),
+			'>ghi<',
+			"supports $' at a position where there's more than `matched.length` chars left"
+		);
+
+		for (var i = 1; i < 100; i += 1) {
+			var captures = [];
+			captures[i] = 'test';
+			t.equal(
+				ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$' + i + '<'),
+				'>$' + i + '<',
+				'supports $' + i + ' with no captures'
+			);
+			t.equal(
+				ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$' + i),
+				'>$' + i,
+				'supports $' + i + ' at the end of the replacement, with no captures'
+			);
+			t.equal(
+				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, '>$' + i + '<'),
+				'><',
+				'supports $' + i + ' with a capture at that index'
+			);
+			t.equal(
+				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, '>$' + i),
+				'>',
+				'supports $' + i + ' at the end of the replacement, with a capture at that index'
+			);
+
+			if (i < 10) {
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$0' + i + '<'),
+					'>$0' + i + '<',
+					'supports $0' + i + ' with no captures'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$0' + i),
+					'>$0' + i,
+					'supports $0' + i + ' at the end of the replacement, with no captures'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, '>$0' + i + '<'),
+					'><',
+					'supports $0' + i + ' with a capture at that index'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, '>$0' + i),
+					'>',
+					'supports $0' + i + ' at the end of the replacement, with a capture at that index'
+				);
+			}
+		}
+
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, 'a>$<foo><z'),
+			'a>$<foo><z',
+			'works with the named capture regex without named captures'
+		);
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, 'a>$<foo>$<z'),
+			'a>$<foo>$<z',
+			'ignores named capture with a mismatched $<'
+		);
+
+		t.test('named captures', function (st) {
+			var namedCaptures = {
+				foo: 'foo!'
+			};
+
+			st.equal(
+				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, 'a>$<foo><z'),
+				'a>foo!<z',
+				'supports named captures'
+			);
+
+			st.equal(
+				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, 'a>$<foo>$z'),
+				'a>foo!$z',
+				'works with a $z'
+			);
+
+			st.equal(
+				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, '$<foo'),
+				'$<foo',
+				'ignores named captures with a mismatched <'
+			);
+
+			st.equal(
+				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, 'a>$<bar><z'),
+				'a><z',
+				'supports named captures with a missing namedCapture'
+			);
+
+			st.end();
+		});
+
+		t.test('test262: test/built-ins/String/prototype/replace/regexp-capture-by-index.js', function (st) {
+			var str = 'foo-x-bar';
+
+			var re0 = /x/;
+			var re0Caps = [];
+			var re1 = /(x)/;
+			var re1Caps = ['x'];
+			var re1x = /(x)($^)?/;
+			var re1xCaps = ['x', undefined];
+			var re10 = /((((((((((x))))))))))/;
+			var re10Caps = ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'];
+
+			var matched = 'x';
+			var pos = 4;
+
+			var msg = function getSubMsg(token, isItem, thing, before0) {
+				return '`' + token + '`' + (before0 ? ' before `0`' : ' is') + (isItem === false ? ' a failed' : isItem ? ' a' : ' not a') + ' capture index ' + (typeof thing === 'string' ? 'for string ' : 'in ') + debug(thing);
+			};
+			var expect = function getExpected(isItem, replacement, before0) {
+				if (isItem) {
+					return '|' + matched + (before0 ? '0' : '') + '|';
+				}
+				if (isItem === false) {
+					return '|' + (before0 ? '0' : '') + '|';
+				}
+				return replacement;
+			};
+			var testGetSub = function testGetSub(token, is, is0) {
+				var replacement = '|' + token + '|';
+
+				st.equal(
+					ES.GetSubstitution(matched, str, pos, [], [], replacement),
+					expect(is[0], replacement),
+					msg(token, is[0], matched)
+				);
+				st.equal(
+					ES.GetSubstitution(matched, str, pos, re0Caps, [], replacement),
+					expect(is[1], replacement),
+					msg(token, is[1], re0)
+				);
+				st.equal(
+					ES.GetSubstitution(matched, str, pos, re1Caps, [], replacement),
+					expect(is[2], replacement),
+					msg(token, is[2], re1)
+				);
+				st.equal(
+					ES.GetSubstitution(matched, str, pos, re1xCaps, [], replacement),
+					expect(is[3], replacement),
+					msg(token, is[3], re1x)
+				);
+				st.equal(
+					ES.GetSubstitution(matched, str, pos, re10Caps, [], replacement),
+					expect(is[4], replacement),
+					msg(token, is[4], re10)
+				);
+
+				if (is0) {
+					replacement = '|' + token + '0|';
+					st.equal(
+						ES.GetSubstitution(matched, str, pos, [], [], replacement),
+						expect(is0[0], replacement, true),
+						msg(token, is0[0], matched, true)
+					);
+					st.equal(
+						ES.GetSubstitution(matched, str, pos, re0Caps, [], replacement),
+						expect(is0[1], replacement, true),
+						msg(token, is0[1], re0, true)
+					);
+					st.equal(
+						ES.GetSubstitution(matched, str, pos, re1Caps, [], replacement),
+						expect(is0[2], replacement, true),
+						msg(token, is0[2], re1, true)
+					);
+					st.equal(
+						ES.GetSubstitution(matched, str, pos, re1xCaps, [], replacement),
+						expect(is0[3], replacement, true),
+						msg(token, is0[3], re1x, true)
+					);
+					st.equal(
+						ES.GetSubstitution(matched, str, pos, re10Caps, [], replacement),
+						expect(is0[4], replacement, true),
+						msg(token, is0[4], re10, true)
+					);
+				}
+			};
+
+			testGetSub('$0', {});
+			testGetSub('$00', {}, {});
+			testGetSub('$1', { 2: true, 3: true, 4: true });
+			testGetSub('$01', { 2: true, 3: true, 4: true }, { 2: true, 3: true, 4: true });
+			testGetSub('$2', { 3: false, 4: true });
+			testGetSub('$02', { 3: false, 4: true }, { 3: false, 4: true });
+
+			var replacement = '|$10|';
+			st.equal(
+				ES.GetSubstitution(matched, str, pos, [], [], replacement),
+				replacement,
+				'`$10` is not a capture index (nor is `$1`) for string ' + debug(matched)
+			);
+			st.equal(
+				ES.GetSubstitution(matched, str, pos, re0Caps, [], replacement),
+				replacement,
+				'`$10` is not a capture index (nor is `$1`) in ' + debug(re0)
+			);
+			st.equal(
+				ES.GetSubstitution(matched, str, pos, re1Caps, [], replacement),
+				'|x0|',
+				'`$10` is not a capture index (but `$1` is) in ' + debug(re1)
+			);
+			st.equal(
+				ES.GetSubstitution(matched, str, pos, re1xCaps, [], replacement),
+				'|x0|',
+				'`$10` is not a capture index (but `$1` is) in ' + debug(re1x)
+			);
+			st.equal(
+				ES.GetSubstitution(matched, str, pos, re10Caps, [], replacement),
+				'|x|',
+				'`$10` is a capture index in ' + debug(re10)
+			);
+
+			replacement = '|$100|';
+			st.equal(
+				ES.GetSubstitution(matched, str, pos, [], [], replacement),
+				replacement,
+				'`$10` before `0` is not a capture index (nor is `$1`) for string ' + debug(matched)
+			);
+			st.equal(
+				ES.GetSubstitution(matched, str, pos, re0Caps, [], replacement),
+				replacement,
+				'`$10` is not a capture index (nor is `$1`) in ' + debug(re0)
+			);
+			st.equal(
+				ES.GetSubstitution(matched, str, pos, re1Caps, [], replacement),
+				'|x00|',
+				'`$10` before `0` is not a capture index (but `$1` is) in ' + debug(re1)
+			);
+			st.equal(
+				ES.GetSubstitution(matched, str, pos, re1xCaps, [], replacement),
+				'|x00|',
+				'`$10` before `0` is not a capture index (but `$1` is) in ' + debug(re1x)
+			);
+			st.equal(
+				ES.GetSubstitution(matched, str, pos, re10Caps, [], replacement),
+				'|x0|',
+				'`$10` before `0` is a capture index in ' + debug(re10)
+			);
+
+			replacement = '|$20|';
+			st.equal(
+				ES.GetSubstitution(matched, str, pos, [], [], replacement),
+				replacement,
+				'`$20` is not a capture index (nor is `$2`) for string ' + debug(matched)
+			);
+			st.equal(
+				ES.GetSubstitution(matched, str, pos, re0Caps, [], replacement),
+				replacement,
+				'`$20` is not a capture index (nor is `$2`) in ' + debug(re0)
+			);
+			st.equal(
+				ES.GetSubstitution(matched, str, pos, re1Caps, [], replacement),
+				replacement,
+				'`$20` is not a capture index (nor is `$2`) in ' + debug(re1)
+			);
+			st.equal(
+				ES.GetSubstitution(matched, str, pos, re1xCaps, [], replacement),
+				'|0|',
+				'`$20` is not a capture index (but `$2` is a failed capture index) in ' + debug(re1x)
+			);
+			st.equal(
+				ES.GetSubstitution(matched, str, pos, re10Caps, [], replacement),
+				'|x0|',
+				'`$20` is not a capture index (but `$2` is) in ' + debug(re10)
+			);
+
+			replacement = '|$200|';
+			st.equal(
+				ES.GetSubstitution(matched, str, pos, [], [], replacement),
+				replacement,
+				'`$20` before `0` is not a capture index (nor is `$2`) for string ' + debug(matched)
+			);
+			st.equal(
+				ES.GetSubstitution(matched, str, pos, re0Caps, [], replacement),
+				replacement,
+				'`$20` before `0` is not a capture index (nor is `$2`) in ' + debug(re0)
+			);
+			st.equal(
+				ES.GetSubstitution(matched, str, pos, re1Caps, [], replacement),
+				replacement,
+				'`$20` before `0` is not a capture index (nor is `$2`) in ' + debug(re1)
+			);
+			st.equal(
+				ES.GetSubstitution(matched, str, pos, re1xCaps, [], replacement),
+				'|00|',
+				'`$20` before `0` is not a capture index (but `$2` is a failed capture index) in ' + debug(re1x)
+			);
+			st.equal(
+				ES.GetSubstitution(matched, str, pos, re10Caps, [], replacement),
+				'|x00|',
+				'`$20` before `0` is not a capture index (but `$2` is) in ' + debug(re10)
+			);
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('GetValueFromBuffer', function (t) {
+		var isTypedArray = true;
+		var order = 'UNORDERED';
+
+		forEach(v.primitives.concat(v.objects), function (nonAB) {
+			t['throws'](
+				function () { ES.GetValueFromBuffer(nonAB, 0, 'int8', isTypedArray, order); },
+				TypeError,
+				debug(nonAB) + ' is not an ArrayBuffer'
+			);
+		});
+
+		t.test('ArrayBuffers supported', { skip: typeof ArrayBuffer !== 'function' }, function (st) {
+			forEach(v.notNonNegativeIntegers, function (nonNonNegativeInteger) {
+				st['throws'](
+					function () { ES.GetValueFromBuffer(new ArrayBuffer(8), nonNonNegativeInteger, 'int8', isTypedArray, order); },
+					TypeError,
+					debug(nonNonNegativeInteger) + ' is not a valid byte index'
+				);
+			});
+
+			forEach(v.nonStrings.concat('not a valid type'), function (nonString) {
+				st['throws'](
+					function () { ES.GetValueFromBuffer(new ArrayBuffer(8), 0, nonString, isTypedArray, order); },
+					TypeError,
+					'type: ' + debug(nonString) + ' is not a valid String (or type) value'
+				);
+			});
+
+			forEach(v.nonBooleans, function (nonBoolean) {
+				st['throws'](
+					function () { ES.GetValueFromBuffer(new ArrayBuffer(8), 0, 'int8', nonBoolean, order); },
+					TypeError,
+					'isTypedArray: ' + debug(nonBoolean) + ' is not a valid Boolean value'
+				);
+
+				st['throws'](
+					function () { ES.GetValueFromBuffer(new ArrayBuffer(8), 0, 'int8', isTypedArray, order, nonBoolean); },
+					TypeError,
+					'isLittleEndian: ' + debug(nonBoolean) + ' is not a valid Boolean value'
+				);
+			});
+
+			forEach(v.nonStrings, function (nonString) {
+				st['throws'](
+					function () { ES.GetValueFromBuffer(new ArrayBuffer(8), 0, 'int8', isTypedArray, nonString); },
+					TypeError,
+					'order: ' + debug(nonString) + ' is not a valid String (or order) value'
+				);
+			});
+
+			st.test('can detach', { skip: !canDetach }, function (s2t) {
+				var buffer = new ArrayBuffer(8);
+				s2t.equal(ES.DetachArrayBuffer(buffer), null, 'detaching returns null');
+
+				s2t['throws'](
+					function () { ES.GetValueFromBuffer(buffer, 0, 'int8', isTypedArray, order); },
+					TypeError,
+					'detached buffers throw'
+				);
+
+				s2t.end();
+			});
+
+			forEach(bufferTestCases, function (testCase, name) {
+				st.test(name + ': ' + debug(testCase.value), function (s2t) {
+					forEach([].concat(
+						'Int8',
+						'Uint8',
+						'Uint8C',
+						'Int16',
+						'Uint16',
+						'Int32',
+						'Uint32',
+						hasBigInts ? bigIntTypes : [],
+						'Float32',
+						'Float64'
+					), function (type) {
+						var isBigInt = type.slice(0, 3) === 'Big';
+						var view = new DataView(new ArrayBuffer(elementSizes.$Float64Array));
+						var method = type === 'Uint8C' ? 'Uint8' : type;
+						// var value = unserialize(testCase.value);
+						var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
+						var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
+						/*
+						st.equal(
+							ES.GetValueFromBuffer(testCase.buffer, 0, type.toLowerCase()),
+							defaultEndianness === testCase.endian ? testCase[type + 'little'] : testCase[type + 'big'],
+							'buffer holding ' + debug(value) + ' (' + testCase.endian + ' endian) with type ' + type + ', default endian, yields expected value'
+						);
+						*/
+
+						clearBuffer(view.buffer);
+						var littleVal = unserialize(result.setAsLittle.asLittle);
+						view['set' + method](0, isBigInt ? safeBigInt(littleVal) : littleVal, true);
+
+						try {
+							if (isBigInt) {
+								$BigInt(littleVal); // noop to trigger the error when needsBigIntHack
+							}
+							s2t.equal(
+								ES.GetValueFromBuffer(view.buffer, 0, type.toUpperCase(), isTypedArray, order, true),
+								littleVal,
+								'buffer with type ' + type + ', little -> little, yields expected value'
+							);
+						} catch (e) {
+							if (isBigInt && safeBigInt !== $BigInt && e instanceof RangeError) {
+								s2t.comment('SKIP node v10.4-v10.8 have a bug where you can‘t `BigInt(x)` anything larger than MAX_SAFE_INTEGER');
+								return;
+							}
+							throw e;
+						}
+
+						if (hasBigEndian) {
+							s2t.equal(
+								ES.GetValueFromBuffer(view.buffer, 0, type.toUpperCase(), isTypedArray, order, false),
+								view['get' + method](0, false),
+								'buffer with type ' + type + ', little -> big, yields expected value'
+							);
+
+							clearBuffer(view.buffer);
+							var bigVal = unserialize(result.setAsBig.asBig);
+							view['set' + method](0, isBigInt ? safeBigInt(bigVal) : bigVal, false);
+
+							s2t.equal(
+								ES.GetValueFromBuffer(view.buffer, 0, type.toUpperCase(), isTypedArray, order, false),
+								bigVal,
+								'buffer with type ' + type + ', big -> big, yields expected value'
+							);
+
+							s2t.equal(
+								ES.GetValueFromBuffer(view.buffer, 0, type.toUpperCase(), isTypedArray, order, true),
+								view['get' + method](0, true),
+								'buffer with type ' + type + ', big -> little, yields expected value'
+							);
+						}
+					});
+
+					s2t.end();
+				});
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('GetViewByteLength', function (t) {
+		forEach(v.primitives.concat(v.objects), function (nonDVWBWRecord) {
+			t['throws'](
+				function () { ES.GetViewByteLength(nonDVWBWRecord); },
+				TypeError,
+				debug(nonDVWBWRecord) + ' is not a Data View With Buffer Witness Record'
+			);
+		});
+
+		t.test('DataViews supported', { skip: typeof DataView !== 'function' }, function (st) {
+			var ab = new ArrayBuffer(8);
+			var dv = new DataView(ab);
+
+			var record = ES.MakeDataViewWithBufferWitnessRecord(dv, 'UNORDERED');
+
+			st.equal(ES.GetViewByteLength(record), 8, 'non-auto byte length returns it');
+
+			// TODO: actual DV byteLength auto, but not fixed length? (may not be possible)
+
+			st.test('non-fixed length, return byteLength - byteOffset', { todo: 'blocked on native resizable ABs/growable SABs' });
+
+			st.test('can detach', { skip: !canDetach }, function (s2t) {
+				var dab = new ArrayBuffer(1);
+				var ddv = new DataView(dab);
+
+				var ndRecord = ES.MakeDataViewWithBufferWitnessRecord(ddv, 'UNORDERED');
+				ES.DetachArrayBuffer(dab);
+
+				s2t['throws'](
+					function () { ES.GetViewByteLength(ndRecord); },
+					TypeError,
+					'non-fixed view, detached buffer, non-detached record, throws inside IsViewOutOfBounds'
+				);
+
+				ndRecord = ES.MakeDataViewWithBufferWitnessRecord(ddv, 'UNORDERED'); // reflect detachment
+
+				s2t['throws'](
+					function () { ES.GetViewByteLength(ndRecord); },
+					TypeError,
+					'non-fixed view, detached buffer, detached record, throws inside IsViewOutOfBounds'
+				);
+
+				s2t.test('non-fixed length, detached -> throws', { todo: 'blocked on native resizable ABs/growable SABs' });
+
+				s2t.end();
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('IsArrayBufferViewOutOfBounds', function (t) {
+		forEach([].concat(v.primitives, v.objects), function (nonABV) {
+			t['throws'](
+				function () { ES.IsArrayBufferViewOutOfBounds(nonABV); },
+				TypeError,
+				debug(nonABV) + ' is not a Typed Array or DataView'
+			);
+		});
+
+		t.test('Typed Arrays supported', { skip: availableTypedArrays.length === 0 }, function (st) {
+			var ab = new ArrayBuffer(8);
+			var dv = new DataView(ab);
+
+			st.equal(ES.IsArrayBufferViewOutOfBounds(dv), false, 'DataView is not out of bounds');
+
+			forEach(availableTypedArrays, function (type) {
+				var TA = global[type];
+				var ta = new TA(ab);
+
+				st.equal(ES.IsArrayBufferViewOutOfBounds(ta), false, debug(ta) + ' is not out of bounds');
+			});
+
+			st.test('can detach', { skip: !canDetach }, function (s2t) {
+				ES.DetachArrayBuffer(ab);
+
+				s2t.equal(ES.IsArrayBufferViewOutOfBounds(dv), true, 'DataView with detached buffer is out of bounds');
+
+				forEach(availableTypedArrays, function (type) {
+					var ab2 = new ArrayBuffer(8);
+					var TA = global[type];
+					var ta = new TA(ab2);
+					ES.DetachArrayBuffer(ab2);
+
+					s2t.equal(ES.IsArrayBufferViewOutOfBounds(ta), true, debug(ta) + ' with detached buffer is out of bounds');
+				});
+
+				s2t.end();
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('IsBigIntElementType', function (t) {
+		forEach(bigIntTypes, function (type) {
+			t.equal(
+				ES.IsBigIntElementType(type.toUpperCase()),
+				true,
+				debug(type.toLowerCase()) + ' is a BigInt element type'
+			);
+		});
+
+		forEach(numberTypes, function (type) {
+			t.equal(
+				ES.IsBigIntElementType(type.toUpperCase()),
+				false,
+				debug(type.toLowerCase()) + ' is not a BigInt element type'
+			);
+		});
+
+		t.end();
+	});
+
+	test('IsFixedLengthArrayBuffer', function (t) {
+		forEach(v.primitives.concat(v.objects), function (nonAB) {
+			t['throws'](
+				function () { ES.IsFixedLengthArrayBuffer(nonAB); },
+				TypeError,
+				debug(nonAB) + ' is not an ArrayBuffer or SharedArrayBuffer'
+			);
+		});
+
+		t.test('ArrayBuffers supported', { skip: typeof ArrayBuffer !== 'function' }, function (st) {
+			var ab = new ArrayBuffer(1);
+			st.equal(ES.IsFixedLengthArrayBuffer(ab), true, 'fixed length ArrayBuffer is fixed length');
+
+			st.end();
+		});
+
+		t.test('SharedArrayBuffers supported', { skip: typeof SharedArrayBuffer !== 'function' }, function (st) {
+			var sab = new SharedArrayBuffer(1);
+			st.equal(ES.IsFixedLengthArrayBuffer(sab), true, 'fixed length SharedArrayBuffer is fixed length');
+
+			st.end();
+		});
+	});
+
+	test('IsNoTearConfiguration', function (t) {
+		forEach(unclampedIntegerTypes, function (type) {
+			t.equal(
+				ES.IsNoTearConfiguration(type.toUpperCase()),
+				true,
+				debug(type.toUpperCase()) + ' with any order is a no-tear configuration'
+			);
+		});
+
+		forEach(bigIntTypes, function (type) {
+			t.equal(
+				ES.IsNoTearConfiguration(type.toUpperCase(), 'INIT'),
+				false,
+				debug(type.toUpperCase()) + ' with ' + debug('INIT') + ' is not a no-tear configuration'
+			);
+
+			t.equal(
+				ES.IsNoTearConfiguration(type.toUpperCase(), 'UNORDERED'),
+				false,
+				debug(type.toUpperCase()) + ' with ' + debug('UNORDERED') + ' is not a no-tear configuration'
+			);
+
+			t.equal(
+				ES.IsNoTearConfiguration(type.toUpperCase()),
+				true,
+				debug(type.toUpperCase()) + ' with any other order is a no-tear configuration'
+			);
+		});
+
+		forEach(clampedTypes, function (type) {
+			t.equal(
+				ES.IsNoTearConfiguration(type.toUpperCase()),
+				false,
+				debug(type.toUpperCase()) + ' with any order is not a no-tear configuration'
+			);
+		});
+
+		t.end();
+	});
+
+	test('IsUnclampedIntegerElementType', function (t) {
+		forEach(unclampedIntegerTypes, function (type) {
+			t.equal(
+				ES.IsUnclampedIntegerElementType(type.toUpperCase()),
+				true,
+				debug(type.toUpperCase()) + ' is an unclamped integer element type'
+			);
+		});
+
+		forEach(clampedTypes.concat(nonIntegerTypes), function (type) {
+			t.equal(
+				ES.IsUnclampedIntegerElementType(type.toUpperCase()),
+				false,
+				debug(type.toUpperCase()) + ' is not an unclamped integer element type'
+			);
+		});
+
+		t.end();
+	});
+
+	test('IsUnsignedElementType', function (t) {
+		forEach(unsignedElementTypes, function (type) {
+			t.equal(
+				ES.IsUnsignedElementType(type.toUpperCase()),
+				true,
+				debug(type.toUpperCase()) + ' is an unsigned element type'
+			);
+		});
+
+		forEach(signedElementTypes, function (type) {
+			t.equal(
+				ES.IsUnsignedElementType(type.toUpperCase()),
+				false,
+				debug(type.toUpperCase()) + ' is not an unsigned element type'
+			);
+		});
+
+		t.end();
+	});
+
+	test('IsViewOutOfBounds', function (t) {
+		forEach(v.primitives.concat(v.objects), function (nonDVWBWRecord) {
+			t['throws'](
+				function () { ES.IteratorStepValue(nonDVWBWRecord); },
+				TypeError,
+				debug(nonDVWBWRecord) + ' is not a Data View With Buffer Witness Record'
+			);
+		});
+
+		t.test('DataViews supported', { skip: typeof DataView !== 'function' }, function (st) {
+			var ab = new ArrayBuffer(8);
+			var dv = new DataView(ab);
+
+			var record = ES.MakeDataViewWithBufferWitnessRecord(dv, 'UNORDERED');
+
+			st.test('can detach', { skip: !canDetach }, function (s2t) {
+				var dab = new ArrayBuffer(1);
+				var ddv = new DataView(dab);
+				ES.DetachArrayBuffer(dab);
+
+				var ndRecord = { '[[Object]]': ddv, '[[CachedBufferByteLength]]': 1 };
+
+				s2t['throws'](
+					function () { ES.IsViewOutOfBounds(ndRecord); },
+					TypeError,
+					'detached view with no-detached record throws'
+				);
+
+				var dRecord = { '[[Object]]': ddv, '[[CachedBufferByteLength]]': 'DETACHED' };
+
+				s2t.equal(ES.IsViewOutOfBounds(dRecord), true, 'detached view with detached record is out of bounds');
+
+				s2t.end();
+			});
+
+			// TODO true for byteOffsetStart > bufferByteLength || byteOffsetEnd > bufferByteLength
+
+			// else false
+
+			// ES.IsViewOutOfBounds
+		});
+
+		t.end();
+	});
+
+	test('IteratorStepValue', function (t) {
+		forEach(v.primitives.concat(v.objects), function (nonIteratorRecord) {
+			t['throws'](
+				function () { ES.IteratorStepValue(nonIteratorRecord); },
+				TypeError,
+				debug(nonIteratorRecord) + ' is not an Iterator Record'
+			);
+		});
+
+		t.test('sync iterator record', function (st) {
+			var i = 0;
+			var iterator = {
+				next: function next(x) {
+					try {
+						return {
+							done: i > 2,
+							value: [i, arguments.length, x]
+						};
+					} finally {
+						i += 1;
+					}
+				}
+			};
+			var syncIteratorRecord = makeIteratorRecord(iterator);
+
+			st.deepEqual(ES.IteratorStepValue(syncIteratorRecord), [0, 0, undefined], 'first yield');
+			st.deepEqual(ES.IteratorStepValue(syncIteratorRecord), [1, 0, undefined], 'second yield');
+			st.deepEqual(ES.IteratorStepValue(syncIteratorRecord), [2, 0, undefined], 'third yield');
+			st.deepEqual(ES.IteratorStepValue(syncIteratorRecord), 'DONE', 'fourth yield');
+			st.deepEqual(ES.IteratorStepValue(syncIteratorRecord), 'DONE', 'fifth yield');
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('MakeDataViewWithBufferWitnessRecord', function (t) {
+		forEach([].concat(
+			v.nonObjects,
+			v.objects
+		), function (nonObject) {
+			t['throws'](
+				function () { ES.MakeDataViewWithBufferWitnessRecord(nonObject, 'UNORDERED'); },
+				TypeError,
+				debug(nonObject) + ' is not a DataView'
+			);
+		});
+
+		t.test('DataViews supported', { skip: typeof DataView !== 'function' }, function (st) {
+			forEach(v.nonStrings, function (nonString) {
+				st['throws'](
+					function () { ES.MakeDataViewWithBufferWitnessRecord(new DataView(new ArrayBuffer(8)), nonString); },
+					TypeError,
+					debug(nonString) + ' is not a valid order value'
+				);
+			});
+
+			var ab = new ArrayBuffer(8);
+			var dv = new DataView(ab);
+
+			st.deepEqual(
+				ES.MakeDataViewWithBufferWitnessRecord(dv, 'UNORDERED'),
+				{ '[[Object]]': dv, '[[CachedBufferByteLength]]': ab.byteLength },
+				'works with a DataView, unordered'
+			);
+
+			st.deepEqual(
+				ES.MakeDataViewWithBufferWitnessRecord(dv, 'SEQ-CST'),
+				{ '[[Object]]': dv, '[[CachedBufferByteLength]]': ab.byteLength },
+				'works with a DataView, seq-cst'
+			);
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('MakeFullYear', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.MakeFullYear(nonNumber); },
+				TypeError,
+				debug(nonNumber) + ' is not a Number'
+			);
+
+		});
+
+		t.equal(ES.MakeFullYear(NaN), NaN, 'NaN returns NaN');
+		t.equal(ES.MakeFullYear(Infinity), Infinity, '∞ returns ∞');
+		t.equal(ES.MakeFullYear(-Infinity), -Infinity, '-∞ returns -∞');
+
+		t.equal(ES.MakeFullYear(0), 1900, '0 returns 1900');
+		t.equal(ES.MakeFullYear(99), 1999, '99 returns 1999');
+
+		t.equal(ES.MakeFullYear(100), 100, '100 returns 100');
+
+		t.end();
+	});
+
+	test('NumericToRawBytes', function (t) {
+		forEach(v.nonStrings.concat('', 'Byte'), function (nonTAType) {
+			t['throws'](
+				function () { ES.NumericToRawBytes(nonTAType, 0, false); },
+				TypeError,
+				debug(nonTAType) + ' is not a String, or not a TypedArray type'
+			);
+		});
+
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.NumericToRawBytes('int8', nonNumber, false); },
+				TypeError,
+				debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		forEach(v.nonBooleans, function (nonBoolean) {
+			t['throws'](
+				function () { ES.NumericToRawBytes('int8', 0, nonBoolean); },
+				TypeError,
+				debug(nonBoolean) + ' is not a Boolean'
+			);
+		});
+
+		forEach(bufferTestCases, function (testCase, name) {
+			var value = unserialize(testCase.value);
+
+			t.test(name + ': ' + value, function (st) {
+				forEach([].concat(
+					'Int8',
+					'Uint8',
+					'Uint8C',
+					'Int16',
+					'Uint16',
+					'Int32',
+					'Uint32',
+					hasBigInts ? bigIntTypes : [],
+					'Float32',
+					'Float64'
+				), function (type) {
+					var isBigInt = type.slice(0, 3) === 'Big';
+					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
+					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
+
+					if (isBigInt && (!isFinite(value) || Math.floor(value) !== value)) {
+						return;
+					}
+
+					var valToSet = type === 'Uint8C' && value > 0xFF ? 0xFF : isBigInt ? safeBigInt(value) : value;
+
+					st.test(type, function (s2t) {
+						/*
+						s2t.equal(
+							ES.GetValueFromBuffer(testCase.buffer, 0, type, true, 'Unordered'),
+							defaultEndianness === testCase.endian ? testCase[type].little.value : testCase[type].big.value,
+							'buffer holding ' + debug(testCase.value) + ' (' + testCase.endian + ' endian) with type ' + type + ', default endian, yields expected value'
+						);
+						*/
+
+						s2t.deepEqual(
+							ES.NumericToRawBytes(type.toUpperCase(), valToSet, true),
+							result[type === 'Float64' ? 'setAsLittle' : 'setAsTruncatedLittle'].bytes,
+							debug(value) + ' with type ' + type + ', little endian, yields expected value'
+						);
+
+						if (hasBigEndian) {
+							s2t.deepEqual(
+								ES.NumericToRawBytes(type.toUpperCase(), valToSet, false),
+								result[type === 'Float64' ? 'setAsBig' : 'setAsTruncatedBig'].bytes,
+								debug(value) + ' with type ' + type + ', big endian, yields expected value'
+							);
+						}
+
+						s2t.end();
+					});
+				});
+
+				st.end();
+			});
+		});
+
+		t.test('BigInt64', function (st) {
+			st.test('bigints available', { skip: !hasBigInts }, function (s2t) {
+				forEach([
+					[BigInt(0), [0, 0, 0, 0, 0, 0, 0, 0]],
+					[BigInt(1), [1, 0, 0, 0, 0, 0, 0, 0]],
+					// [BigInt(-1), [255, 255, 255, 255, 255, 255, 255, 255]],
+					[BigInt(16777216), [0, 0, 0, 1, 0, 0, 0, 0]], // max safe float32
+					[BigInt(2147483647), [255, 255, 255, 127, 0, 0, 0, 0]],
+					// [BigInt(-2147483647), [1, 0, 0, 128, 255, 255, 255, 255]],
+					[BigInt(2147483648), [0, 0, 0, 128, 0, 0, 0, 0]]
+					// [BigInt(-2147483648), [0, 0, 0, 128, 255, 255, 255, 255]]
+				], function (pair) {
+					var int = pair[0];
+					var bytes = pair[1];
+
+					if (availableTypedArrays.length > 0) {
+						var expectedBytes = arrayFrom(new Uint8Array(assign(new BigInt64Array(1), [int]).buffer));
+						s2t.deepEqual(
+							bytes,
+							expectedBytes,
+							'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
+						);
+					}
+
+					s2t.deepEqual(
+						ES.NumericToRawBytes('BIGINT64', int, true),
+						bytes,
+						'little-endian: bytes for ' + debug(int) + ' are produced'
+					);
+					s2t.deepEqual(
+						ES.NumericToRawBytes('BIGINT64', int, false),
+						bytes.slice().reverse(),
+						'big-endian: bytes for ' + debug(int) + ' are produced'
+					);
+				});
+
+				s2t.end();
+			});
+
+			st.end();
+		});
+
+		t.test('BigUint64', function (st) {
+			st.test('bigints available', { skip: !hasBigInts }, function (s2t) {
+				forEach([
+					[BigInt(0), [0, 0, 0, 0, 0, 0, 0, 0]],
+					[BigInt(1), [1, 0, 0, 0, 0, 0, 0, 0]],
+					// [BigInt(-1), [255, 255, 255, 255, 255, 255, 255, 255]],
+					[BigInt(16777216), [0, 0, 0, 1, 0, 0, 0, 0]], // max safe float32
+					[BigInt(2147483647), [255, 255, 255, 127, 0, 0, 0, 0]],
+					// [BigInt(-2147483647), [1, 0, 0, 128, 255, 255, 255, 255]],
+					[BigInt(2147483648), [0, 0, 0, 128, 0, 0, 0, 0]]
+					// [BigInt(-2147483648), [0, 0, 0, 128, 255, 255, 255, 255]]
+				], function (pair) {
+					var int = pair[0];
+					var bytes = pair[1];
+
+					if (availableTypedArrays.length > 0) {
+						var expectedBytes = arrayFrom(new Uint8Array(assign(new BigUint64Array(1), [int]).buffer));
+						s2t.deepEqual(
+							bytes,
+							expectedBytes,
+							'bytes for ' + debug(int) + ' are correct; got ' + debug(expectedBytes)
+						);
+					}
+
+					s2t.deepEqual(
+						ES.NumericToRawBytes('BIGUINT64', int, true),
+						bytes,
+						'little-endian: bytes for ' + debug(int) + ' are produced'
+					);
+					s2t.deepEqual(
+						ES.NumericToRawBytes('BIGUINT64', int, false),
+						bytes.slice().reverse(),
+						'big-endian: bytes for ' + debug(int) + ' are produced'
+					);
+				});
+
+				s2t.end();
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('RawBytesToNumeric', function (t) {
+		forEach(v.nonStrings.concat('', 'Byte'), function (nonTAType) {
+			t['throws'](
+				function () { ES.RawBytesToNumeric(nonTAType, [], false); },
+				TypeError,
+				debug(nonTAType) + ' is not a String, or not a TypedArray type'
+			);
+		});
+
+		forEach(v.primitives.concat(v.objects), function (nonArray) {
+			t['throws'](
+				function () { ES.RawBytesToNumeric('INT8', nonArray, false); },
+				TypeError,
+				debug(nonArray) + ' is not an Array'
+			);
+		});
+		forEach([-1, 1.5, 256], function (nonByte) {
+			t['throws'](
+				function () { ES.RawBytesToNumeric('INT8', [nonByte], false); },
+				TypeError,
+				debug(nonByte) + ' is not a valid "byte"'
+			);
+		});
+
+		forEach(v.nonBooleans, function (nonBoolean) {
+			t['throws'](
+				function () { ES.RawBytesToNumeric('INT8', [0], nonBoolean); },
+				TypeError,
+				debug(nonBoolean) + ' is not a Boolean'
+			);
+		});
+
+		forEach(bufferTestCases, function (testCase, name) {
+			var value = unserialize(testCase.value);
+			t.test(name + ': ' + value, function (st) {
+				forEach([].concat(
+					'Int8',
+					'Uint8',
+					'Uint8C',
+					'Int16',
+					'Uint16',
+					'Int32',
+					'Uint32',
+					hasBigInts ? bigIntTypes : [],
+					'Float32',
+					'Float64'
+				), function (type) {
+					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
+					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
+
+					var littleLittle = unserialize(result.setAsLittle.asLittle);
+					try {
+						st.equal(
+							ES.RawBytesToNumeric(type.toUpperCase(), result.setAsLittle.bytes, true),
+							littleLittle,
+							type + ', little-endian: bytes (' + debug(result.setAsLittle.bytes) + ') for ' + debug(littleLittle) + ' produces it'
+						);
+					} catch (e) {
+						if (safeBigInt !== $BigInt && e instanceof RangeError) {
+							st.comment('SKIP node v10.4-v10.8 have a bug where you can‘t `BigInt(x)` anything larger than MAX_SAFE_INTEGER');
+							return;
+						}
+					}
+					if (hasBigEndian) {
+						var bigBig = unserialize(result.setAsBig.asBig);
+						st.equal(
+							ES.RawBytesToNumeric(type.toUpperCase(), result.setAsBig.bytes, false),
+							bigBig,
+							type + ', big-endian: bytes (' + debug(result.setAsBig.bytes) + ') for ' + debug(bigBig) + ' produces it'
+						);
+					}
+				});
+
+				st.end();
+			});
+		});
+
+		t.test('incorrect byte counts', function (st) {
+			st['throws'](
+				function () { ES.RawBytesToNumeric('FLOAT32', [0, 0, 0], false); },
+				RangeError,
+				'float32 with less than 4 bytes throws a RangeError'
+			);
+			st['throws'](
+				function () { ES.RawBytesToNumeric('FLOAT32', [0, 0, 0, 0, 0], false); },
+				RangeError,
+				'float32 with more than 4 bytes throws a RangeError'
+			);
+
+			st['throws'](
+				function () { ES.RawBytesToNumeric('FLOAT64', [0, 0, 0, 0, 0, 0, 0], false); },
+				RangeError,
+				'float64 with less than 8 bytes throws a RangeError'
+			);
+			st['throws'](
+				function () { ES.RawBytesToNumeric('FLOAT64', [0, 0, 0, 0, 0, 0, 0, 0, 0], false); },
+				RangeError,
+				'float64 with more than 8 bytes throws a RangeError'
+			);
+
+			st['throws'](
+				function () { ES.RawBytesToNumeric('INT8', [], false); },
+				RangeError,
+				'int8 with less than 1 byte throws a RangeError'
+			);
+			st['throws'](
+				function () { ES.RawBytesToNumeric('INT8', [0, 0], false); },
+				RangeError,
+				'int8 with more than 1 byte throws a RangeError'
+			);
+
+			st['throws'](
+				function () { ES.RawBytesToNumeric('UINT8', [], false); },
+				RangeError,
+				'uint8 with less than 1 byte throws a RangeError'
+			);
+			st['throws'](
+				function () { ES.RawBytesToNumeric('UINT8', [0, 0], false); },
+				RangeError,
+				'uint8 with more than 1 byte throws a RangeError'
+			);
+
+			st['throws'](
+				function () { ES.RawBytesToNumeric('UINT8C', [], false); },
+				RangeError,
+				'uint8c with less than 1 byte throws a RangeError'
+			);
+			st['throws'](
+				function () { ES.RawBytesToNumeric('UINT8C', [0, 0], false); },
+				RangeError,
+				'uint8c with more than 1 byte throws a RangeError'
+			);
+
+			st['throws'](
+				function () { ES.RawBytesToNumeric('INT16', [0], false); },
+				RangeError,
+				'int16 with less than 2 bytes throws a RangeError'
+			);
+			st['throws'](
+				function () { ES.RawBytesToNumeric('INT16', [0, 0, 0], false); },
+				RangeError,
+				'int16 with more than 2 bytes throws a RangeError'
+			);
+
+			st['throws'](
+				function () { ES.RawBytesToNumeric('UINT16', [0], false); },
+				RangeError,
+				'uint16 with less than 2 bytes throws a RangeError'
+			);
+			st['throws'](
+				function () { ES.RawBytesToNumeric('UINT16', [0, 0, 0], false); },
+				RangeError,
+				'uint16 with more than 2 bytes throws a RangeError'
+			);
+
+			st['throws'](
+				function () { ES.RawBytesToNumeric('UINT16', [0, 0, 0], false); },
+				RangeError,
+				'uint16 with less than 4 bytes throws a RangeError'
+			);
+			st['throws'](
+				function () { ES.RawBytesToNumeric('UINT16', [0, 0, 0, 0, 0], false); },
+				RangeError,
+				'uint16 with more than 4 bytes throws a RangeError'
+			);
+
+			st['throws'](
+				function () { ES.RawBytesToNumeric('UINT32', [0, 0, 0], false); },
+				RangeError,
+				'uint32 with less than 4 bytes throws a RangeError'
+			);
+			st['throws'](
+				function () { ES.RawBytesToNumeric('UINT32', [0, 0, 0, 0, 0], false); },
+				RangeError,
+				'uint32 with more than 4 bytes throws a RangeError'
+			);
+
+			st['throws'](
+				function () { ES.RawBytesToNumeric('BIGINT64', [0, 0, 0, 0, 0, 0, 0], false); },
+				RangeError,
+				'bigint64 with less than 8 bytes throws a RangeError'
+			);
+			st['throws'](
+				function () { ES.RawBytesToNumeric('BIGINT64', [0, 0, 0, 0, 0, 0, 0, 0, 0], false); },
+				RangeError,
+				'bigint64 with more than 8 bytes throws a RangeError'
+			);
+
+			st['throws'](
+				function () { ES.RawBytesToNumeric('BIGUINT64', [0, 0, 0, 0, 0, 0, 0], false); },
+				RangeError,
+				'biguint64 with less than 8 bytes throws a RangeError'
+			);
+			st['throws'](
+				function () { ES.RawBytesToNumeric('BIGUINT64', [0, 0, 0, 0, 0, 0, 0, 0, 0], false); },
+				RangeError,
+				'biguint64 with more than 8 bytes throws a RangeError'
+			);
+
+			st.end();
+		});
+
+		t.test('bigint types, no bigints', { skip: hasBigInts }, function (st) {
+			st['throws'](
+				function () { ES.RawBytesToNumeric('BIGINT64', [0, 0, 0, 0, 0, 0, 0, 0], false); },
+				SyntaxError,
+				'bigint64 throws a SyntaxError when BigInt is not available'
+			);
+			st['throws'](
+				function () { ES.RawBytesToNumeric('BIGUINT64', [0, 0, 0, 0, 0, 0, 0, 0], false); },
+				SyntaxError,
+				'biguint64 throws a SyntaxError when BigInt is not available'
+			);
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('SetValueInBuffer', function (t) {
+		var order = 'UNORDERED';
+		forEach(v.primitives.concat(v.objects), function (nonAB) {
+			t['throws'](
+				function () { ES.SetValueInBuffer(nonAB, 0, 'INT8', 0, true, order); },
+				TypeError,
+				debug(nonAB) + ' is not an ArrayBuffer'
+			);
+		});
+
+		t.test('ArrayBuffers supported', { skip: typeof ArrayBuffer !== 'function' }, function (st) {
+			forEach(v.notNonNegativeIntegers, function (nonNonNegativeInteger) {
+				st['throws'](
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), nonNonNegativeInteger, 'INT8', 0, true, order); },
+					TypeError,
+					debug(nonNonNegativeInteger) + ' is not a valid byte index'
+				);
+			});
+
+			forEach(v.nonStrings.concat('not a valid type'), function (nonString) {
+				st['throws'](
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, nonString, 0, true, order); },
+					TypeError,
+					'type: ' + debug(nonString) + ' is not a valid String (or type) value'
+				);
+			});
+
+			forEach(v.nonBooleans, function (nonBoolean) {
+				st['throws'](
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'INT8', 0, nonBoolean, order); },
+					TypeError,
+					'isTypedArray: ' + debug(nonBoolean) + ' is not a valid Boolean value'
+				);
+
+				st['throws'](
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'INT8', 0, true, order, nonBoolean); },
+					TypeError,
+					'isLittleEndian: ' + debug(nonBoolean) + ' is not a valid Boolean value'
+				);
+			});
+
+			if (hasBigInts) {
+				st['throws'](
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'INT8', $BigInt(0), true, order); },
+					TypeError,
+					debug($BigInt(0)) + ' is not a number, but the given type requires one'
+				);
+
+				st['throws'](
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'BIGUINT64', 0, true, order); },
+					TypeError,
+					debug(0) + ' is not a bigint, but the given type requires one'
+				);
+			}
+
+			st['throws'](
+				function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'INT8', 0, true, 'invalid order'); },
+				TypeError,
+				'invalid order'
+			);
+
+			st.test('can detach', { skip: !canDetach }, function (s2t) {
+				var buffer = new ArrayBuffer(8);
+				s2t.equal(ES.DetachArrayBuffer(buffer), null, 'detaching returns null');
+
+				s2t['throws'](
+					function () { ES.SetValueInBuffer(buffer, 0, 'INT8', 0, true, order); },
+					TypeError,
+					'detached buffers throw'
+				);
+
+				s2t.end();
+			});
+
+			forEach(bufferTestCases, function (testCase, name) {
+				forEach([].concat(
+					'Int8',
+					'Uint8',
+					'Uint8C',
+					'Int16',
+					'Uint16',
+					'Int32',
+					'Uint32',
+					hasBigInts ? bigIntTypes : [],
+					'Float32',
+					'Float64'
+				), function (type) {
+					var isBigInt = type === 'BigInt64' || type === 'BigUint64';
+					var Z = isBigInt ? $BigInt : Number;
+					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
+					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
+					var value = unserialize(testCase.value);
+
+					if (isBigInt && (!isFinite(value) || Math.floor(value) !== value)) {
+						return;
+					}
+
+					var valToSet = type === 'Uint8Clamped' && value > 255 ? 255 : Z(value);
+
+					/*
+					st.equal(
+						ES.SetValueInBuffer(testCase.buffer, 0, type.toUpperCase(), true, order),
+						defaultEndianness === testCase.endian ? testCase[type].little.value] : testCase[type].big.value,
+						'buffer holding ' + debug(testCase.value) + ' (' + testCase.endian + ' endian) with type ' + type + ', default endian, yields expected value'
+					);
+					*/
+
+					var elementSize = elementSizes['$' + (type === 'Uint8C' ? 'Uint8Clamped' : type) + 'Array'];
+
+					var buffer = new ArrayBuffer(elementSizes.$Float64Array);
+					var copyBytes = new Uint8Array(buffer);
+
+					clearBuffer(buffer);
+
+					st.equal(
+						ES.SetValueInBuffer(buffer, 0, type.toUpperCase(), valToSet, true, order, true),
+						void undefined,
+						'returns undefined'
+					);
+					st.deepEqual(
+						arrayFrom(Array.prototype.slice.call(copyBytes, 0, elementSize)),
+						arrayFrom(Array.prototype.slice.call(new Uint8Array(result[type === 'Float64' ? 'setAsLittle' : 'setAsTruncatedLittle'].bytes), 0, elementSize)),
+						'buffer holding ' + debug(value) + ' with type ' + type + ', little endian, yields expected value'
+					);
+
+					if (hasBigEndian) {
+						clearBuffer(buffer);
+
+						st.equal(
+							ES.SetValueInBuffer(buffer, 0, type.toUpperCase(), valToSet, true, order, false),
+							void undefined,
+							'returns undefined'
+						);
+						st.deepEqual(
+							arrayFrom(Array.prototype.slice.call(copyBytes, 0, elementSize)),
+							arrayFrom(Array.prototype.slice.call(new Uint8Array(result[type === 'Float64' ? 'setAsBig' : 'setAsTruncatedBig'].bytes), 0, elementSize)),
+							'buffer holding ' + debug(value) + ' with type ' + type + ', big endian, yields expected value'
+						);
+					}
+				});
+			});
+
+			st.end();
+		});
+
+		t.test('SharedArrayBuffers supported', { skip: typeof SharedArrayBuffer !== 'function' }, function (st) {
+			st['throws'](
+				function () { ES.SetValueInBuffer(new SharedArrayBuffer(0), 0, 'INT8', 0, true, order); },
+				SyntaxError,
+				'SAB not yet supported'
+			);
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('StringPad', function (t) {
+		t['throws'](
+			function () { ES.StringPad('', 0, '', 'not start or end'); },
+			TypeError,
+			'`placement` must be "start" or "end"'
+		);
+
+		t.equal(ES.StringPad('a', 3, '', 'start'), 'a');
+		t.equal(ES.StringPad('a', 3, '', 'end'), 'a');
+		t.equal(ES.StringPad('a', 3, '0', 'start'), '00a');
+		t.equal(ES.StringPad('a', 3, '0', 'end'), 'a00');
+		t.equal(ES.StringPad('a', 3, '012', 'start'), '01a');
+		t.equal(ES.StringPad('a', 3, '012', 'end'), 'a01');
+		t.equal(ES.StringPad('a', 7, '012', 'start'), '012012a');
+		t.equal(ES.StringPad('a', 7, '012', 'end'), 'a012012');
+
+		t.end();
+	});
+
+	test('StringPaddingBuiltinsImpl', function (t) {
+		t['throws'](
+			function () { ES.StringPaddingBuiltinsImpl('', 0, '', 'not start or end'); },
+			TypeError,
+			'`placement` must be "start" or "end"'
+		);
+
+		t.equal(ES.StringPaddingBuiltinsImpl('a', 3, '', 'start'), 'a');
+		t.equal(ES.StringPaddingBuiltinsImpl('a', 3, '', 'end'), 'a');
+		t.equal(ES.StringPaddingBuiltinsImpl('a', 3, '0', 'start'), '00a');
+		t.equal(ES.StringPaddingBuiltinsImpl('a', 3, '0', 'end'), 'a00');
+		t.equal(ES.StringPaddingBuiltinsImpl('a', 3, '012', 'start'), '01a');
+		t.equal(ES.StringPaddingBuiltinsImpl('a', 3, '012', 'end'), 'a01');
+		t.equal(ES.StringPaddingBuiltinsImpl('a', 7, '012', 'start'), '012012a');
+		t.equal(ES.StringPaddingBuiltinsImpl('a', 7, '012', 'end'), 'a012012');
+		t.equal(ES.StringPaddingBuiltinsImpl('a', 3, undefined, 'start'), '  a');
+		t.equal(ES.StringPaddingBuiltinsImpl('abc', 1, undefined, 'start'), 'abc');
+
+		t.end();
+	});
+
+	test('SystemTimeZoneIdentifier', function (t) {
+		t.test('Intl supported', { skip: typeof Intl === 'undefined' }, function (st) {
+			st.equal(
+				ES.SystemTimeZoneIdentifier(),
+				new Intl.DateTimeFormat().resolvedOptions().timeZone,
+				'system time zone identifier is resolved from Intl.DateTimeFormat'
+			);
+
+			st.end();
+		});
+
+		t.test('Intl not supported', { skip: typeof Intl !== 'undefined' }, function (st) {
+			st.equal(
+				ES.SystemTimeZoneIdentifier(),
+				'UTC',
+				'system time zone identifier is UTC'
+			);
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('ThisBigIntValue', function (t) {
+		test('actual BigInts', { skip: !hasBigInts }, function (st) {
+			st.equal(ES.ThisBigIntValue(BigInt(42)), BigInt(42));
+			st.equal(ES.ThisBigIntValue(Object(BigInt(42))), BigInt(42));
+
+			st.end();
+		});
+
+		forEach(v.nonBigInts, function (nonBigInt) {
+			t['throws'](
+				function () { ES.ThisBigIntValue(nonBigInt); },
+				hasBigInts ? TypeError : SyntaxError,
+				debug(nonBigInt) + ' is not a BigInt'
+			);
+		});
+
+		t.end();
+	});
+
+	test('ThisBooleanValue', function (t) {
+		forEach(v.nonBooleans, function (nonBoolean) {
+			t['throws'](
+				function () { ES.ThisBooleanValue(nonBoolean); },
+				TypeError,
+				debug(nonBoolean) + ' is not a Boolean'
+			);
+		});
+
+		forEach(v.booleans, function (boolean) {
+			t.equal(ES.ThisBooleanValue(boolean), boolean, debug(boolean) + ' is its own ThisBooleanValue');
+			var obj = Object(boolean);
+			t.equal(ES.ThisBooleanValue(obj), boolean, debug(obj) + ' is the boxed ThisBooleanValue');
+		});
+
+		t.end();
+	});
+
+	test('ThisNumberValue', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.ThisNumberValue(nonNumber); },
+				TypeError,
+				debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		forEach(v.numbers, function (number) {
+			t.equal(ES.ThisNumberValue(number), number, debug(number) + ' is its own ThisNumberValue');
+			var obj = Object(number);
+			t.equal(ES.ThisNumberValue(obj), number, debug(obj) + ' is the boxed ThisNumberValue');
+		});
+
+		t.end();
+	});
+
+	test('ThisStringValue', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.ThisStringValue(nonString); },
+				TypeError,
+				debug(nonString) + ' is not a String'
+			);
+		});
+
+		forEach(v.strings, function (string) {
+			t.equal(ES.ThisStringValue(string), string, debug(string) + ' is its own ThisStringValue');
+			var obj = Object(string);
+			t.equal(ES.ThisStringValue(obj), string, debug(obj) + ' is the boxed ThisStringValue');
+		});
+
+		t.end();
+	});
+
+	test('ThisSymbolValue', function (t) {
+		forEach(v.nonSymbolPrimitives.concat(v.objects), function (nonSymbol) {
+			t['throws'](
+				function () { ES.ThisSymbolValue(nonSymbol); },
+				v.hasSymbols ? TypeError : SyntaxError,
+				debug(nonSymbol) + ' is not a Symbol'
+			);
+		});
+
+		t.test('no native Symbols', { skip: v.hasSymbols }, function (st) {
+			forEach(v.objects.concat(v.primitives), function (value) {
+				st['throws'](
+					function () { ES.ThisSymbolValue(value); },
+					SyntaxError,
+					'Symbols are not supported'
+				);
+			});
+			st.end();
+		});
+
+		t.test('symbol values', { skip: !v.hasSymbols }, function (st) {
+			forEach(v.symbols, function (symbol) {
+				st.equal(ES.ThisSymbolValue(symbol), symbol, 'Symbol value of ' + debug(symbol) + ' is same symbol');
+
+				st.equal(
+					ES.ThisSymbolValue(Object(symbol)),
+					symbol,
+					'Symbol value of ' + debug(Object(symbol)) + ' is ' + debug(symbol)
+				);
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('TypedArrayByteLength', function (t) {
+		forEach(v.primitives.concat(v.objects, [[]]), function (nonTAWBWR) {
+			t['throws'](
+				function () { ES.TypedArrayByteLength(nonTAWBWR); },
+				TypeError,
+				debug(nonTAWBWR) + ' is not a Typed Array With Buffer Witness Record'
+			);
+		});
+
+		t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
+			forEach(availableTypedArrays, function (TypedArray) {
+				st.test('Typed Array: ' + TypedArray, function (tat) {
+					var TA = global[TypedArray];
+					var ta = new TA(8);
+					var record = ES.MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
+
+					var elementSize = elementSizes['$' + TypedArray];
+
+					tat.equal(ES.TypedArrayByteLength(record), 8 * elementSize, 'fixed length array, returns byteLength');
+
+					var zta = new TA(0);
+
+					var zRecord = ES.MakeTypedArrayWithBufferWitnessRecord(zta, 'UNORDERED');
+
+					tat.equal(ES.TypedArrayByteLength(zRecord), 0, 'fixed zero length array, returns zero');
+
+					tat.test('can detach', { skip: !canDetach }, function (s2t) {
+						ES.DetachArrayBuffer(ta.buffer);
+
+						record = ES.MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
+
+						s2t.equal(ES.TypedArrayByteLength(record), 0, 'detached returns zero');
+
+						s2t.end();
+					});
+
+					// TODO: actual TA byteLength auto, but not fixed length? (may not be possible)
+
+					tat.test('non-fixed length, return length * elementSize', { todo: 'blocked on native resizable ABs/growable SABs' });
+
+					tat.test('non-fixed length, detached throws', { todo: 'blocked on native resizable ABs/growable SABs' });
+				});
+			});
+		});
+
+		t.end();
+	});
+
+	test('TypedArrayCreateFromConstructor', function (t) {
+		forEach(v.nonFunctions, function (nonFunction) {
+			t['throws'](
+				function () { ES.TypedArrayCreateFromConstructor(nonFunction, []); },
+				TypeError,
+				debug(nonFunction) + ' is not a constructor'
+			);
+		});
+
+		forEach(v.nonArrays, function (nonArray) {
+			t['throws'](
+				function () { ES.TypedArrayCreateFromConstructor(Array, nonArray); },
+				TypeError,
+				debug(nonArray) + ' is not an Array'
+			);
+		});
+
+		t.test('no Typed Array support', { skip: availableTypedArrays.length > 0 }, function (st) {
+			st['throws'](
+				function () { ES.TypedArrayCreateFromConstructor(Array, []); },
+				SyntaxError,
+				'no Typed Array support'
+			);
+
+			st.end();
+		});
+
+		t.test('Typed Array support', { skip: availableTypedArrays.length === 0 }, function (st) {
+			var expectedLengths = {
+				__proto__: null,
+				$Int8Array: 632,
+				$Uint8Array: 632,
+				$Uint8ClampedArray: 632,
+				$Int16Array: 316,
+				$Uint16Array: 316,
+				$Int32Array: 158,
+				$Uint32Array: 158,
+				$Float32Array: 158,
+				$BigInt64Array: 79,
+				$BigUint64Array: 79,
+				$Float64Array: 79
+			};
+			forEach(availableTypedArrays, function (TypedArray) {
+				var Constructor = global[TypedArray];
+
+				var typedArray = ES.TypedArrayCreateFromConstructor(Constructor, []);
+				st.equal(whichTypedArray(typedArray), TypedArray, 'created a ' + TypedArray);
+				st.equal(typedArray.byteOffset, 0, 'byteOffset is 0');
+				st.equal(typedArrayLength(typedArray), 0, 'created a ' + TypedArray + ' of length 42');
+
+				var taLength = ES.TypedArrayCreateFromConstructor(Constructor, [42]);
+				st.equal(whichTypedArray(taLength), TypedArray, 'created a ' + TypedArray);
+				st.equal(taLength.byteOffset, 0, 'byteOffset is 0');
+				st.equal(typedArrayLength(taLength), 42, 'created a ' + TypedArray + ' of length 42');
+
+				var buffer = new ArrayBuffer(640);
+
+				var taBuffer = ES.TypedArrayCreateFromConstructor(Constructor, [buffer, 8]);
+				st.equal(whichTypedArray(taBuffer), TypedArray, 'created a ' + TypedArray);
+				st.equal(taBuffer.byteOffset, 8, 'byteOffset is 8');
+				st.equal(
+					typedArrayLength(taBuffer),
+					expectedLengths['$' + TypedArray],
+					'created a ' + TypedArray + ' of length ' + expectedLengths['$' + TypedArray]
+				);
+
+				var taBufferLength = ES.TypedArrayCreateFromConstructor(Constructor, [buffer, 8, 64]);
+				st.equal(whichTypedArray(taBufferLength), TypedArray, 'created a ' + TypedArray);
+				st.equal(taBufferLength.byteOffset, 8, 'byteOffset is 8');
+				st.equal(typedArrayLength(taBufferLength), 64, 'created a ' + TypedArray + ' of length 64');
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('TypedArrayElementType', function (t) {
+		forEach(v.primitives.concat(v.objects), function (nonTA) {
+			t['throws'](
+				function () { ES.TypedArrayElementType(nonTA); },
+				TypeError,
+				debug(nonTA) + ' is not a TypedArray'
+			);
+		});
+
+		forEach(availableTypedArrays, function (TA) {
+			t.test(TA, function (st) {
+				var ta = new global[TA](0);
+				st.equal(
+					ES.TypedArrayElementType(ta),
+					TA.replace(/(?:lamped)?Array$/, '').toUpperCase(),
+					debug(ta) + ' (which should be a ' + TA + ') has correct element type'
+				);
+
+				st.end();
+			});
+		});
+
+		t.end();
+	});
+
+	test('TypedArrayGetElement', function (t) {
+		forEach(v.primitives.concat(v.objects), function (nonTA) {
+			t['throws'](
+				function () { ES.TypedArrayGetElement(nonTA, 0); },
+				TypeError,
+				debug(nonTA) + ' is not a TypedArray'
+			);
+		});
+
+		t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
+			var ta = new Uint8Array();
+
+			forEach(v.nonNumbers, function (nonNumber) {
+				st['throws'](
+					function () { ES.TypedArrayGetElement(ta, nonNumber); },
+					TypeError,
+					debug(nonNumber) + ' is not a number'
+				);
+			});
+
+			forEach(availableTypedArrays, function (TypedArray) {
+				var isBigInt = TypedArray.slice(0, 3) === 'Big';
+				var Z = isBigInt ? BigInt : Number;
+				var TA = global[TypedArray];
+
+				var arr = new TA([Z(1), Z(2), Z(3)]);
+
+				st.equal(ES.TypedArrayGetElement(arr, 0), Z(1), 'index 0 is as expected');
+				st.equal(ES.TypedArrayGetElement(arr, 1), Z(2), 'index 1 is as expected');
+				st.equal(ES.TypedArrayGetElement(arr, 2), Z(3), 'index 2 is as expected');
+				st.equal(ES.TypedArrayGetElement(arr, 3), undefined, 'index 3 is undefined as expected');
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('TypedArrayLength', function (t) {
+		forEach(v.primitives.concat(v.objects, [[]]), function (nonTAWBWR) {
+			t['throws'](
+				function () { ES.TypedArrayLength(nonTAWBWR); },
+				TypeError,
+				debug(nonTAWBWR) + ' is not a Typed Array With Buffer Witness Record'
+			);
+		});
+
+		t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
+			forEach(availableTypedArrays, function (type) {
+				st.test('Typed Array: ' + type, function (tat) {
+					var TA = global[type];
+					var ta = new TA(8);
+					var record = ES.MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
+
+					tat.equal(ES.TypedArrayLength(record), 8, 'fixed length array, returns byteLength');
+
+					tat.test('can detach', { skip: !canDetach }, function (s2t) {
+						ES.DetachArrayBuffer(ta.buffer);
+
+						record = ES.MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
+
+						s2t['throws'](
+							function () { ES.TypedArrayLength(record); },
+							TypeError,
+							debug(ta) + ' is a detached TypedArray'
+						);
+
+						s2t.end();
+					});
+
+					// TODO: actual TA byteLength auto, but not fixed length? (may not be possible)
+
+					tat.test('non-fixed length, return floor((byteLength - byteOffset) / elementSize)', { todo: 'blocked on native resizable ABs/growable SABs' });
+
+					tat.test('non-fixed length, detached throws', { todo: 'blocked on native resizable ABs/growable SABs' });
+				});
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('ValidateAtomicAccess', function (t) {
+		forEach(v.primitives.concat(v.objects, [[]]), function (nonTAWBWR) {
+			t['throws'](
+				function () { ES.ValidateAtomicAccess(nonTAWBWR, 0); },
+				TypeError,
+				debug(nonTAWBWR) + ' is not a Typed Array With Buffer Witness Record'
+			);
+		});
+
+		t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
+			forEach(availableTypedArrays, function (TypedArray) {
+				var ta = new global[TypedArray](8);
+				var taRecord = ES.MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
+
+				st.doesNotThrow(
+					function () { ES.ValidateAtomicAccess(taRecord, 0); },
+					debug(ta) + ' is an integer TypedArray'
+				);
+
+				st['throws'](
+					function () { ES.ValidateAtomicAccess(taRecord, -1); },
+					RangeError, // via ToIndex
+					'a requestIndex of -1 is <= 0'
+				);
+				st['throws'](
+					function () { ES.ValidateAtomicAccess(taRecord, 8); },
+					RangeError,
+					'a requestIndex === length throws'
+				);
+				st['throws'](
+					function () { ES.ValidateAtomicAccess(taRecord, 9); },
+					RangeError,
+					'a requestIndex > length throws'
+				);
+
+				var elementSize = elementSizes['$' + TypedArray];
+
+				st.equal(ES.ValidateAtomicAccess(taRecord, 0), elementSize * 0, TypedArray + ': requestIndex of 0 gives 0');
+				st.equal(ES.ValidateAtomicAccess(taRecord, 1), elementSize * 1, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 1));
+				st.equal(ES.ValidateAtomicAccess(taRecord, 2), elementSize * 2, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 2));
+				st.equal(ES.ValidateAtomicAccess(taRecord, 3), elementSize * 3, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 3));
+				st.equal(ES.ValidateAtomicAccess(taRecord, 4), elementSize * 4, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 4));
+				st.equal(ES.ValidateAtomicAccess(taRecord, 5), elementSize * 5, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 5));
+				st.equal(ES.ValidateAtomicAccess(taRecord, 6), elementSize * 6, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 6));
+				st.equal(ES.ValidateAtomicAccess(taRecord, 7), elementSize * 7, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 7));
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('ValidateAtomicAccessOnIntegerTypedArray', function (t) {
+		forEach(v.primitives.concat(v.objects, [[]]), function (nonTA) {
+			t['throws'](
+				function () { ES.ValidateAtomicAccessOnIntegerTypedArray(nonTA, 0); },
+				TypeError,
+				debug(nonTA) + ' is not a TypedArray'
+			);
+		});
+
+		t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
+			forEach(availableTypedArrays, function (TypedArray) {
+				var ta = new global[TypedArray](8);
+
+				var shouldThrow = TypedArray.indexOf('Clamped') > -1 || !(/Int|Uint/).test(TypedArray);
+				var isWaitable = TypedArray === 'Int32Array' || TypedArray === 'BigInt64Array';
+
+				if (shouldThrow) {
+					st['throws'](
+						function () { ES.ValidateAtomicAccessOnIntegerTypedArray(ta, 0); },
+						debug(ta) + ' is not an integer Typed Array'
+					);
+				} else {
+					st.doesNotThrow(
+						function () { ES.ValidateAtomicAccessOnIntegerTypedArray(ta, 0); },
+						debug(ta) + ' is an integer Typed Array'
+					);
+
+					st['throws'](
+						function () { ES.ValidateAtomicAccessOnIntegerTypedArray(ta, -1); },
+						RangeError, // via ToIndex
+						'a requestIndex of -1 is <= 0'
+					);
+					st['throws'](
+						function () { ES.ValidateAtomicAccessOnIntegerTypedArray(ta, 8); },
+						RangeError,
+						'a requestIndex === length throws'
+					);
+					st['throws'](
+						function () { ES.ValidateAtomicAccessOnIntegerTypedArray(ta, 9); },
+						RangeError,
+						'a requestIndex > length throws'
+					);
+
+					var elementSize = elementSizes['$' + TypedArray];
+
+					st.equal(ES.ValidateAtomicAccessOnIntegerTypedArray(ta, 0), elementSize * 0, TypedArray + ': requestIndex of 0 gives 0');
+					st.equal(ES.ValidateAtomicAccessOnIntegerTypedArray(ta, 1), elementSize * 1, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 1));
+					st.equal(ES.ValidateAtomicAccessOnIntegerTypedArray(ta, 2), elementSize * 2, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 2));
+					st.equal(ES.ValidateAtomicAccessOnIntegerTypedArray(ta, 3), elementSize * 3, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 3));
+					st.equal(ES.ValidateAtomicAccessOnIntegerTypedArray(ta, 4), elementSize * 4, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 4));
+					st.equal(ES.ValidateAtomicAccessOnIntegerTypedArray(ta, 5), elementSize * 5, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 5));
+					st.equal(ES.ValidateAtomicAccessOnIntegerTypedArray(ta, 6), elementSize * 6, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 6));
+					st.equal(ES.ValidateAtomicAccessOnIntegerTypedArray(ta, 7), elementSize * 7, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 7));
+
+					forEach(v.nonBooleans, function (nonBoolean) {
+						st['throws'](
+							function () { ES.ValidateAtomicAccessOnIntegerTypedArray(ta, 0, nonBoolean); },
+							TypeError,
+							debug(nonBoolean) + ' is not a Boolean'
+						);
+					});
+
+					if (isWaitable) {
+						st.doesNotThrow(
+							function () { ES.ValidateAtomicAccessOnIntegerTypedArray(ta, 0, true); },
+							debug(ta) + ' is a waitable integer Typed Array'
+						);
+					} else {
+						st['throws'](
+							function () { ES.ValidateAtomicAccessOnIntegerTypedArray(ta, 0, true); },
+							TypeError,
+							debug(ta) + ' is not a waitable integer Typed Array'
+						);
+					}
+				}
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('ValidateIntegerTypedArray', function (t) {
+		forEach(v.nonBooleans, function (nonBoolean) {
+			t['throws'](
+				function () { ES.ValidateIntegerTypedArray(null, nonBoolean); },
+				TypeError,
+				debug(nonBoolean) + ' is not a Boolean'
+			);
+		});
+
+		forEach(v.primitives.concat(v.objects, [[]]), function (nonTA) {
+			t['throws'](
+				function () { ES.ValidateIntegerTypedArray(nonTA, false); },
+				TypeError,
+				debug(nonTA) + ' is not a TypedArray'
+			);
+		});
+
+		t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
+			forEach(availableTypedArrays, function (TypedArray) {
+				var ta = new global[TypedArray](0);
+				var shouldThrow = TypedArray.indexOf('Clamped') > -1 || !(/Int|Uint/).test(TypedArray);
+				if (shouldThrow) {
+					st['throws'](
+						function () { ES.ValidateIntegerTypedArray(ta, false); },
+						TypeError,
+						debug(ta) + ' is not an integer TypedArray'
+					);
+				} else {
+					st.doesNotThrow(
+						function () { ES.ValidateIntegerTypedArray(ta, false); },
+						debug(ta) + ' is an integer TypedArray'
+					);
+				}
+
+				var isWaitable = TypedArray === 'Int32Array' || TypedArray === 'BigInt64Array';
+				if (isWaitable) {
+					st.doesNotThrow(
+						function () { ES.ValidateIntegerTypedArray(ta, true); },
+						debug(ta) + ' is a waitable integer TypedArray'
+					);
+				} else {
+					st['throws'](
+						function () { ES.ValidateIntegerTypedArray(ta, true); },
+						TypeError,
+						debug(ta) + ' is not a waitable integer TypedArray'
+					);
+				}
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('ValidateTypedArray', function (t) {
+		var order = 'UNORDERED';
+
+		forEach(v.primitives.concat(v.objects, [[]]), function (nonTA) {
+			t['throws'](
+				function () { ES.ValidateTypedArray(nonTA, order); },
+				TypeError,
+				debug(nonTA) + ' is not a TypedArray'
+			);
+		});
+
+		t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
+			forEach(availableTypedArrays, function (TypedArray) {
+				var ta = new global[TypedArray](0);
+				st.doesNotThrow(
+					function () { ES.ValidateTypedArray(ta, order); },
+					debug(ta) + ' is a TypedArray'
+				);
+
+				st.test('can detach', { skip: !canDetach }, function (s2t) {
+					ES.DetachArrayBuffer(ta.buffer);
+
+					s2t['throws'](
+						function () { ES.ValidateTypedArray(ta, order); },
+						TypeError,
+						debug(ta) + ' is a detached TypedArray'
+					);
+
+					s2t.end();
+				});
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+};
+
 module.exports = {
 	es5: es5,
 	es2015: es2015,
@@ -14821,5 +16946,6 @@ module.exports = {
 	es2020: es2020,
 	es2021: es2021,
 	es2022: es2022,
-	es2023: es2023
+	es2023: es2023,
+	es2024: es2024
 };
