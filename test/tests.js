@@ -34,9 +34,8 @@ var assertRecordTests = require('./helpers/assertRecord');
 var unserialize = require('./helpers/unserializeNumeric');
 var diffOps = require('./diffOps');
 var bufferTestCases = require('./bufferTestCases.json');
-
-var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || Math.pow(2, 53) - 1;
-var MAX_VALUE = Number.MAX_VALUE || 1.7976931348623157e+308;
+var MAX_SAFE_INTEGER = require('../helpers/maxSafeInteger');
+var MAX_VALUE = require('../helpers/maxValue');
 
 var $BigInt = hasBigInts ? BigInt : null;
 
