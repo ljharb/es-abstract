@@ -7,7 +7,7 @@ var availableTypedArrays = require('available-typed-arrays')();
 var forEach = require('for-each');
 var hasBigInts = require('has-bigints')();
 
-var $BigInt = hasBigInts ? BigInt : null;
+var safeBigInt = require('./helpers/safeBigInt');
 
 var ToUint8Clamp = require('../2017/ToUint8Clamp');
 
@@ -105,7 +105,7 @@ test('buffer test cases: sanity check', { skip: availableTypedArrays.length === 
 							var results = typeTest.setAsTruncatedLittle;
 							view.setFloat64(0, 0, true); // clear the buffer
 
-							view['set' + method](0, isBigInt ? $BigInt(valToSet) : valToSet, true);
+							view['set' + method](0, isBigInt ? safeBigInt(valToSet) : valToSet, true);
 
 							s3t.deepEqual(
 								arrayFrom(results.bytes),
@@ -157,7 +157,7 @@ test('buffer test cases: sanity check', { skip: availableTypedArrays.length === 
 							var results = typeTest.setAsTruncatedBig;
 							view.setFloat64(0, 0, true); // clear the buffer
 
-							view['set' + method](0, isBigInt ? $BigInt(valToSet) : valToSet, false);
+							view['set' + method](0, isBigInt ? safeBigInt(valToSet) : valToSet, false);
 
 							s3t.deepEqual(
 								arrayFrom(results.bytes),

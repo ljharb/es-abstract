@@ -36,6 +36,7 @@ var diffOps = require('./diffOps');
 var bufferTestCases = require('./bufferTestCases.json');
 var MAX_SAFE_INTEGER = require('../helpers/maxSafeInteger');
 var MAX_VALUE = require('../helpers/maxValue');
+var safeBigInt = require('./helpers/safeBigInt');
 
 var $BigInt = hasBigInts ? BigInt : null;
 
@@ -46,32 +47,6 @@ var canDetach = typeof structuredClone === 'function' || typeof postMessage === 
 
 // in node < 6, RegExp.prototype is an actual regex
 var reProtoIsRegex = isRegex(RegExp.prototype);
-
-// node v10.4-v10.8 have a bug where you can't `BigInt(x)` anything larger than MAX_SAFE_INTEGER
-var needsBigIntHack = false;
-if (hasBigInts) {
-	try {
-		$BigInt(Math.pow(2, 64));
-	} catch (e) {
-		needsBigIntHack = true;
-	}
-}
-var safeBigInt = needsBigIntHack ? function (int) {
-	if (int > MAX_SAFE_INTEGER || -int > MAX_SAFE_INTEGER) {
-		// construct a maximum-precision string of digits
-		// from a native serialization like <digits>.<zeroes> or <digit>.<digits>e+<exponent>
-		var preciseParts = Number(int).toPrecision(100).split('e');
-		var significand = preciseParts[0].replace(/(\.[0-9]*?)0*$/, '$1');
-		var baseTenExponent = Number(preciseParts[1] || 0);
-		if (baseTenExponent > 0) {
-			var significandScale = (significand + '.').indexOf('.');
-			baseTenExponent -= significand.length - 1 - significandScale;
-		}
-		var digits = significand.replace('.', '') + Array(baseTenExponent + 1).join('0');
-		return eval(digits + 'n'); // eslint-disable-line no-eval
-	}
-	return $BigInt(int);
-} : $BigInt;
 
 var twoSixtyFour = hasBigInts && safeBigInt(Math.pow(2, 64));
 var twoSixtyThree = hasBigInts && safeBigInt(Math.pow(2, 63));
