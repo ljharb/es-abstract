@@ -9021,14 +9021,15 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 					'Float32',
 					'Float64'
 				), function (type) {
+					var isBigInt = type.slice(0, 3) === 'Big';
 					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
 
-					if (type.slice(0, 3) === 'Big' && (!isFinite(value) || Math.floor(value) !== value)) {
+					if (isBigInt && (!isFinite(value) || Math.floor(value) !== value)) {
 						return;
 					}
 
-					var valToSet = type === 'Uint8C' && value > 0xFF ? 0xFF : type.slice(0, 3) === 'Big' ? $BigInt(value) : value;
+					var valToSet = type === 'Uint8C' && value > 0xFF ? 0xFF : isBigInt ? safeBigInt(value) : value;
 
 					st.test(type, function (s2t) {
 						/*
@@ -9266,11 +9267,18 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 
 					var littleLittle = unserialize(result.setAsLittle.asLittle);
-					st.equal(
-						ES.RawBytesToNumeric(type, result.setAsLittle.bytes, true),
-						littleLittle,
-						type + ', little-endian: bytes (' + debug(result.setAsLittle.bytes) + ') for ' + debug(littleLittle) + ' produces it'
-					);
+					try {
+						st.equal(
+							ES.RawBytesToNumeric(type, result.setAsLittle.bytes, true),
+							littleLittle,
+							type + ', little-endian: bytes (' + debug(result.setAsLittle.bytes) + ') for ' + debug(littleLittle) + ' produces it'
+						);
+					} catch (e) {
+						if (safeBigInt !== $BigInt && e instanceof RangeError) {
+							st.comment('SKIP node v10.4-v10.8 have a bug where you can‘t `BigInt(x)` anything larger than MAX_SAFE_INTEGER');
+							return;
+						}
+					}
 					if (hasBigEndian) {
 						var bigBig = unserialize(result.setAsBig.asBig);
 						st.equal(
