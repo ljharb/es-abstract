@@ -1018,6 +1018,7 @@
 /2022/IsSharedArrayBuffer.js	spackled linguist-generated=true
 /2022/IsUnclampedIntegerElementType.js	spackled linguist-generated=true
 /2022/IsUnsignedElementType.js	spackled linguist-generated=true
+/2022/IsValidIntegerIndex.js	spackled linguist-generated=true
 /2022/IsWordChar.js	spackled linguist-generated=true
 /2022/IterableToList.js	spackled linguist-generated=true
 /2022/IteratorClose.js	spackled linguist-generated=true

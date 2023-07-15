@@ -97,6 +97,7 @@ var ES2022 = {
 	IsStringWellFormedUnicode: require('./2022/IsStringWellFormedUnicode'),
 	IsUnclampedIntegerElementType: require('./2022/IsUnclampedIntegerElementType'),
 	IsUnsignedElementType: require('./2022/IsUnsignedElementType'),
+	IsValidIntegerIndex: require('./2022/IsValidIntegerIndex'),
 	IsWordChar: require('./2022/IsWordChar'),
 	IterableToList: require('./2022/IterableToList'),
 	IteratorClose: require('./2022/IteratorClose'),

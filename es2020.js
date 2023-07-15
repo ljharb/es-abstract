@@ -84,6 +84,7 @@ var ES2020 = {
 	IsStringPrefix: require('./2020/IsStringPrefix'),
 	IsUnclampedIntegerElementType: require('./2020/IsUnclampedIntegerElementType'),
 	IsUnsignedElementType: require('./2020/IsUnsignedElementType'),
+	IsValidIntegerIndex: require('./2020/IsValidIntegerIndex'),
 	IsWordChar: require('./2020/IsWordChar'),
 	IterableToList: require('./2020/IterableToList'),
 	IteratorClose: require('./2020/IteratorClose'),

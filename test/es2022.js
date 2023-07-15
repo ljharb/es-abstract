@@ -114,7 +114,6 @@ var expectedMissing = [
 	'IsPropertyReference',
 	'IsSuperReference',
 	'IsUnresolvableReference',
-	'IsValidIntegerIndex',
 	'IsValidRegularExpressionLiteral',
 	'LeaveCriticalSection',
 	'LocalTime',
