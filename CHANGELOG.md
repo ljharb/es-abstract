@@ -1,3 +1,24 @@
+1.22.0 / 2023-07-15
+=================
+  * [New] add `ES2023`
+  * [New] `ES2021+`: add `SetTypedArrayFromArrayLike`, `SetTypedArrayFromTypedArray`
+  * [New] `ES2021`+: add `CloneArrayBuffer`
+  * [New] `ES2020`+: add `IsValidIntegerIndex`
+  * [New] `ES2015`+: add `GetValueFromBuffer`, `SetValueInBuffer`
+  * [New] `ES2016`+: add `TypedArrayCreate`, `TypedArraySpeciesCreate`
+  * [New] `ES2015`+: add `IsWordChar`
+  * [New] `ES2017`+ add `WordCharacters`
+  * [New] `ES2015`+: add `Canonicalize`
+  * [New] `ES2015`+: add `NewPromiseCapability`
+  * [Fix] `ES2017+`: `NumberToRawBytes`, `NumericToRawBytes`: reimplement Float64, fix integer scenarios
+  * [Refactor] add `helpers/isLineTerminator`
+  * [Refactor] add `isInteger` helper, and use it
+  * [Refactor] extract `isStringOrHole` to a helper
+  * [Refactor] `ES2017`+: `RawBytesToNumber`, `RawBytesToNumeric`: extract common code to helpers
+  * [Refactor] make a MAX_VALUE helper
+  * [Tests] fix RawBytesToNumeric tests in node v10.4-10.8
+  * [Tests] fix buffer test cases in node v10.4-v10.8
+
 1.21.3 / 2023-07-12
 =================
   * [Fix] `ES2017+`: `RawBytesToNumber`, `RawBytesToNumeric`: properly handle some scenarios
