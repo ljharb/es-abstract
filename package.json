@@ -77,7 +77,7 @@
 		"is-regex": "^1.1.4",
 		"is-shared-array-buffer": "^1.0.2",
 		"is-string": "^1.0.7",
-		"is-typed-array": "^1.1.10",
+		"is-typed-array": "^1.1.12",
 		"is-weakref": "^1.0.2",
 		"object-inspect": "^1.12.3",
 		"object-keys": "^1.1.1",
@@ -93,7 +93,7 @@
 		"typed-array-byte-offset": "^1.0.0",
 		"typed-array-length": "^1.0.4",
 		"unbox-primitive": "^1.0.2",
-		"which-typed-array": "^1.1.10"
+		"which-typed-array": "^1.1.11"
 	},
 	"devDependencies": {
 		"@ljharb/eslint-config": "^21.1.0",
