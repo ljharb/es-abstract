@@ -115,7 +115,7 @@
 		"has-bigints": "^1.0.2",
 		"has-strict-mode": "^1.0.1",
 		"in-publish": "^2.0.1",
-		"is-core-module": "^2.12.1",
+		"is-core-module": "^2.13.0",
 		"is-registered-symbol": "^1.0.1",
 		"make-arrow-function": "^1.2.0",
 		"make-async-function": "^1.0.0",
