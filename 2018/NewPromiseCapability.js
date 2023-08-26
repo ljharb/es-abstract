@@ -4,8 +4,8 @@ var GetIntrinsic = require('get-intrinsic');
 
 var $TypeError = GetIntrinsic('%TypeError%');
 
-var IsCallable = require('es-abstract/2022/IsCallable');
-var IsConstructor = require('es-abstract/2022/IsConstructor');
+var IsCallable = require('./IsCallable');
+var IsConstructor = require('./IsConstructor');
 
 // https://262.ecma-international.org/6.0/#sec-newpromisecapability
 
