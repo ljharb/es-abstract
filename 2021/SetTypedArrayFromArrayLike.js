@@ -14,6 +14,7 @@ var whichTypedArray = require('which-typed-array');
 var isInteger = require('../helpers/isInteger');
 
 var Get = require('./Get');
+var IsBigIntElementType = require('./IsBigIntElementType');
 var IsDetachedBuffer = require('./IsDetachedBuffer');
 var LengthOfArrayLike = require('./LengthOfArrayLike');
 var SetValueInBuffer = require('./SetValueInBuffer');
@@ -107,7 +108,7 @@ module.exports = function SetTypedArrayFromArrayLike(target, targetOffset, sourc
 
 		var value = Get(src, Pk); // step 16.b
 
-		if (targetType === 'BigInt64' || targetType === 'BigUint64') {
+		if (IsBigIntElementType(targetType)) {
 			value = ToBigInt(value); // step 16.c
 		} else {
 			value = ToNumber(value); // step 16.d
