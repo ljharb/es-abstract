@@ -11,7 +11,7 @@ var availableTypedArrays = require('available-typed-arrays')();
 var IsArray = require('./IsArray');
 var TypedArrayCreate = require('./TypedArrayCreate');
 
-var getConstructor = require('../helpers/typedArrayContructors');
+var getConstructor = require('../helpers/typedArrayConstructors');
 
 // https://262.ecma-international.org/14.0/#sec-typedarray-create-same-type
 

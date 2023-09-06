@@ -12,7 +12,7 @@ var IsArray = require('./IsArray');
 var SpeciesConstructor = require('./SpeciesConstructor');
 var TypedArrayCreate = require('./TypedArrayCreate');
 
-var getConstructor = require('../helpers/typedArrayContructors');
+var getConstructor = require('../helpers/typedArrayConstructors');
 
 // https://262.ecma-international.org/7.0/#typedarray-species-create
 
