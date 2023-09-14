@@ -1,3 +1,14 @@
+1.22.2 / 2023-09-14
+=================
+  * [Fix] `ES2015`+: `NewPromiseCapability`: use AOs from the current year, not 2022
+  * [Refactor] `ES2021`+: `SetTypedArrayFromArrayLike`: use `IsBigIntElementType`
+  * [Refactor] properly name `helpers/typedArrayConstructors`
+  * [Refactor] simplify helpers
+  * [Deps] update `arraybuffer.prototype.slice`, `function.prototype.name`, `is-typed-array`, `regexp.prototype.flags`, `safe-array-concat`, `string.prototype.trim`, `string.prototype.trimend`, `string.prototype.trimstart`, `which-typed-array`
+  * [actions] update actions
+  * [Tests] run SES tests on more node versions
+  * [Dev Deps] update `@unicode/unicode-15.0.0`, `array.from`, `array.prototype.filter`, `array.prototype.flatmap`, `array.prototype.indexof`, `is-core-module`, `object.fromentries`, `ses`, `tape`
+
 1.22.1 / 2023-07-15
 =================
   * [Deps] add missing `safe-array-concat` dep
@@ -19,7 +30,7 @@
   * [Refactor] add `isInteger` helper, and use it
   * [Refactor] extract `isStringOrHole` to a helper
   * [Refactor] `ES2017`+: `RawBytesToNumber`, `RawBytesToNumeric`: extract common code to helpers
-  * [Refactor] make a MAX_VALUE helper
+  * [Refactor] make a `MAX_VALUE` helper
   * [Tests] fix RawBytesToNumeric tests in node v10.4-10.8
   * [Tests] fix buffer test cases in node v10.4-v10.8
 
