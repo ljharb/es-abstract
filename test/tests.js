@@ -2787,11 +2787,11 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				'`replacement`: ' + debug(nonString) + ' is not a String'
 			);
 
-			if (canDistinguishSparseFromUndefined || typeof nonString !== 'undefined') {
+			if (typeof nonString !== 'undefined') {
 				t['throws'](
 					function () { ES.GetSubstitution('', '', 0, [nonString], ''); },
 					TypeError,
-					'`captures`: ' + debug([nonString]) + ' is not an Array of strings'
+					'`captures`: ' + debug([nonString]) + ' is not an Array of strings or `undefined`'
 				);
 			}
 		});
@@ -7133,7 +7133,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 				'`replacement`: ' + debug(nonString) + ' is not a String'
 			);
 
-			if (canDistinguishSparseFromUndefined || typeof nonString !== 'undefined') {
+			if (typeof nonString !== 'undefined') {
 				t['throws'](
 					function () { ES.GetSubstitution('', '', 0, [nonString], undefined, ''); },
 					TypeError,

@@ -24,7 +24,7 @@ var ToString = require('./ToString');
 var Type = require('./Type');
 
 var isInteger = require('../helpers/isInteger');
-var isStringOrHole = require('../helpers/isStringOrHole');
+var isStringOrUndefined = require('../helpers/isStringOrUndefined');
 
 // http://262.ecma-international.org/9.0/#sec-getsubstitution
 
@@ -44,8 +44,8 @@ module.exports = function GetSubstitution(matched, str, position, captures, name
 		throw new $TypeError('Assertion failed: `position` must be a nonnegative integer, and less than or equal to the length of `string`, got ' + inspect(position));
 	}
 
-	if (!IsArray(captures) || !every(captures, isStringOrHole)) {
-		throw new $TypeError('Assertion failed: `captures` must be a List of Strings, got ' + inspect(captures));
+	if (!IsArray(captures) || !every(captures, isStringOrUndefined)) {
+		throw new $TypeError('Assertion failed: `captures` must be a List of Strings or `undefined`, got ' + inspect(captures));
 	}
 
 	if (Type(replacement) !== 'String') {
