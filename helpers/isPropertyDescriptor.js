@@ -2,7 +2,7 @@
 
 var GetIntrinsic = require('get-intrinsic');
 
-var has = require('has');
+var hasOwn = require('hasown');
 var $TypeError = GetIntrinsic('%TypeError%');
 
 module.exports = function IsPropertyDescriptor(ES, Desc) {
@@ -19,7 +19,7 @@ module.exports = function IsPropertyDescriptor(ES, Desc) {
 	};
 
 	for (var key in Desc) { // eslint-disable-line no-restricted-syntax
-		if (has(Desc, key) && !allowed[key]) {
+		if (hasOwn(Desc, key) && !allowed[key]) {
 			return false;
 		}
 	}

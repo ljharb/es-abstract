@@ -5,7 +5,7 @@ var GetIntrinsic = require('get-intrinsic');
 var $TypeError = GetIntrinsic('%TypeError%');
 var $SyntaxError = GetIntrinsic('%SyntaxError%');
 
-var has = require('has');
+var hasOwn = require('hasown');
 var isInteger = require('./isInteger');
 
 var isMatchRecord = require('./isMatchRecord');
@@ -26,13 +26,13 @@ var predicates = {
 			return false;
 		}
 		for (var key in Desc) { // eslint-disable-line
-			if (has(Desc, key) && !allowed[key]) {
+			if (hasOwn(Desc, key) && !allowed[key]) {
 				return false;
 			}
 		}
 
-		var isData = has(Desc, '[[Value]]');
-		var IsAccessor = has(Desc, '[[Get]]') || has(Desc, '[[Set]]');
+		var isData = hasOwn(Desc, '[[Value]]');
+		var IsAccessor = hasOwn(Desc, '[[Get]]') || hasOwn(Desc, '[[Set]]');
 		if (isData && IsAccessor) {
 			throw new $TypeError('Property Descriptors may not be both accessor and data descriptors');
 		}
@@ -41,35 +41,35 @@ var predicates = {
 	// https://262.ecma-international.org/13.0/#sec-match-records
 	'Match Record': isMatchRecord,
 	'Iterator Record': function isIteratorRecord(value) {
-		return has(value, '[[Iterator]]') && has(value, '[[NextMethod]]') && has(value, '[[Done]]');
+		return hasOwn(value, '[[Iterator]]') && hasOwn(value, '[[NextMethod]]') && hasOwn(value, '[[Done]]');
 	},
 	'PromiseCapability Record': function isPromiseCapabilityRecord(value) {
 		return !!value
-			&& has(value, '[[Resolve]]')
+			&& hasOwn(value, '[[Resolve]]')
 			&& typeof value['[[Resolve]]'] === 'function'
-			&& has(value, '[[Reject]]')
+			&& hasOwn(value, '[[Reject]]')
 			&& typeof value['[[Reject]]'] === 'function'
-			&& has(value, '[[Promise]]')
+			&& hasOwn(value, '[[Promise]]')
 			&& value['[[Promise]]']
 			&& typeof value['[[Promise]]'].then === 'function';
 	},
 	'AsyncGeneratorRequest Record': function isAsyncGeneratorRequestRecord(value) {
 		return !!value
-			&& has(value, '[[Completion]]') // TODO: confirm is a completion record
-			&& has(value, '[[Capability]]')
+			&& hasOwn(value, '[[Completion]]') // TODO: confirm is a completion record
+			&& hasOwn(value, '[[Capability]]')
 			&& predicates['PromiseCapability Record'](value['[[Capability]]']);
 	},
 	'RegExp Record': function isRegExpRecord(value) {
 		return value
-			&& has(value, '[[IgnoreCase]]')
+			&& hasOwn(value, '[[IgnoreCase]]')
 			&& typeof value['[[IgnoreCase]]'] === 'boolean'
-			&& has(value, '[[Multiline]]')
+			&& hasOwn(value, '[[Multiline]]')
 			&& typeof value['[[Multiline]]'] === 'boolean'
-			&& has(value, '[[DotAll]]')
+			&& hasOwn(value, '[[DotAll]]')
 			&& typeof value['[[DotAll]]'] === 'boolean'
-			&& has(value, '[[Unicode]]')
+			&& hasOwn(value, '[[Unicode]]')
 			&& typeof value['[[Unicode]]'] === 'boolean'
-			&& has(value, '[[CapturingGroupsCount]]')
+			&& hasOwn(value, '[[CapturingGroupsCount]]')
 			&& typeof value['[[CapturingGroupsCount]]'] === 'number'
 			&& isInteger(value['[[CapturingGroupsCount]]'])
 			&& value['[[CapturingGroupsCount]]'] >= 0;

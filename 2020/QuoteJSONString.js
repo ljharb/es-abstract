@@ -16,7 +16,7 @@ var UnicodeEscape = require('./UnicodeEscape');
 var UTF16Encoding = require('./UTF16Encoding');
 var UTF16DecodeString = require('./UTF16DecodeString');
 
-var has = require('has');
+var hasOwn = require('hasown');
 
 // https://262.ecma-international.org/11.0/#sec-quotejsonstring
 
@@ -37,7 +37,7 @@ module.exports = function QuoteJSONString(value) {
 	var product = '"';
 	if (value) {
 		forEach(UTF16DecodeString(value), function (C) {
-			if (has(escapes, C)) {
+			if (hasOwn(escapes, C)) {
 				product += escapes[C];
 			} else {
 				var cCharCode = $charCodeAt(C, 0);

@@ -13,7 +13,7 @@ var NumericToRawBytes = require('./NumericToRawBytes');
 
 var isArrayBuffer = require('is-array-buffer');
 var isSharedArrayBuffer = require('is-shared-array-buffer');
-var has = require('has');
+var hasOwn = require('hasown');
 
 var table60 = {
 	__proto__: null,
@@ -47,7 +47,7 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value, 
 		throw new $TypeError('Assertion failed: `byteIndex` must be a non-negative integer');
 	}
 
-	if (typeof type !== 'string' || !has(table60, type)) {
+	if (typeof type !== 'string' || !hasOwn(table60, type)) {
 		throw new $TypeError('Assertion failed: `type` must be a Typed Array Element Type');
 	}
 

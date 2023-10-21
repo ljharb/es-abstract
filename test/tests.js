@@ -8,7 +8,7 @@ var debug = require('object-inspect');
 var assign = require('object.assign');
 var keys = require('object-keys');
 var flatMap = require('array.prototype.flatmap');
-var has = require('has');
+var hasOwn = require('hasown');
 var arrowFns = require('make-arrow-function').list();
 var hasStrictMode = require('has-strict-mode')();
 var functionsHaveNames = require('functions-have-names')();
@@ -303,18 +303,18 @@ var testEnumerableOwnNames = function (t, enumerableOwnNames) {
 	var obj = new Child();
 
 	t.equal('own' in obj, true, 'has "own"');
-	t.equal(has(obj, 'own'), true, 'has own "own"');
+	t.equal(hasOwn(obj, 'own'), true, 'has own "own"');
 	t.equal(Object.prototype.propertyIsEnumerable.call(obj, 'own'), true, 'has enumerable "own"');
 
 	t.equal('inherited' in obj, true, 'has "inherited"');
-	t.equal(has(obj, 'inherited'), false, 'has non-own "inherited"');
-	t.equal(has(Child.prototype, 'inherited'), true, 'Child.prototype has own "inherited"');
+	t.equal(hasOwn(obj, 'inherited'), false, 'has non-own "inherited"');
+	t.equal(hasOwn(Child.prototype, 'inherited'), true, 'Child.prototype has own "inherited"');
 	t.equal(Child.prototype.inherited, obj.inherited, 'Child.prototype.inherited === obj.inherited');
 	t.equal(Object.prototype.propertyIsEnumerable.call(Child.prototype, 'inherited'), true, 'has enumerable "inherited"');
 
 	t.equal('toString' in obj, true, 'has "toString"');
-	t.equal(has(obj, 'toString'), false, 'has non-own "toString"');
-	t.equal(has(Object.prototype, 'toString'), true, 'Object.prototype has own "toString"');
+	t.equal(hasOwn(obj, 'toString'), false, 'has non-own "toString"');
+	t.equal(hasOwn(Object.prototype, 'toString'), true, 'Object.prototype has own "toString"');
 	t.equal(Object.prototype.toString, obj.toString, 'Object.prototype.toString === obj.toString');
 	// eslint-disable-next-line no-useless-call
 	t.equal(Object.prototype.propertyIsEnumerable.call(Object.prototype, 'toString'), false, 'has non-enumerable "toString"');
@@ -3327,7 +3327,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			t.comment('SKIP: class syntax not supported.');
 		}
 
-		if (typeof Reflect !== 'object' || typeof Proxy !== 'function' || has(Proxy, 'prototype')) {
+		if (typeof Reflect !== 'object' || typeof Proxy !== 'function' || hasOwn(Proxy, 'prototype')) {
 			t.comment('SKIP: Proxy is constructor');
 		} else {
 			t.equal(ES.IsConstructor(Proxy), true, 'Proxy is constructor');
@@ -4389,7 +4389,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.test('symbols', { skip: !v.hasSymbols || has(getNamelessFunction(), 'name') }, function (st) {
+		t.test('symbols', { skip: !v.hasSymbols || hasOwn(getNamelessFunction(), 'name') }, function (st) {
 			var pairs = [
 				[Symbol(), ''],
 				[Symbol(undefined), ''],
@@ -4410,7 +4410,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		});
 
 		var f = getNamelessFunction();
-		t.test('when names are configurable', { skip: !functionsHaveConfigurableNames || has(f, 'name') }, function (st) {
+		t.test('when names are configurable', { skip: !functionsHaveConfigurableNames || hasOwn(f, 'name') }, function (st) {
 			// without prefix
 			st.notEqual(f.name, 'foo', 'precondition');
 			ES.SetFunctionName(f, 'foo');
@@ -6863,11 +6863,11 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 				var target = ES.CopyDataProperties({}, source, excludedSymbols);
 
 				forEach(includedSymbols, function (symbol) {
-					s2t.equal(has(target, symbol), true, debug(symbol) + ' is included');
+					s2t.equal(hasOwn(target, symbol), true, debug(symbol) + ' is included');
 				});
 
 				forEach(excludedSymbols, function (symbol) {
-					s2t.equal(has(target, symbol), false, debug(symbol) + ' is excluded');
+					s2t.equal(hasOwn(target, symbol), false, debug(symbol) + ' is excluded');
 				});
 
 				s2t.end();
@@ -7388,7 +7388,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 		});
 
 		var HasLength = function HasLength(_) { return _; };
-		t.equal(has(HasLength, 'length'), true, 'precondition: `HasLength` has own length');
+		t.equal(hasOwn(HasLength, 'length'), true, 'precondition: `HasLength` has own length');
 		t['throws'](
 			function () { ES.SetFunctionLength(HasLength, 0); },
 			TypeError,
@@ -7399,7 +7399,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 			var HasNoLength = function HasNoLength() {};
 			delete HasNoLength.length;
 
-			st.equal(has(HasNoLength, 'length'), false, 'precondition: `HasNoLength` has no own length');
+			st.equal(hasOwn(HasNoLength, 'length'), false, 'precondition: `HasNoLength` has no own length');
 
 			forEach(v.nonNumbers, function (nonNumber) {
 				st['throws'](
@@ -8734,11 +8734,11 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				var target = ES.CopyDataProperties({}, source, excludedSymbols);
 
 				forEach(includedSymbols, function (symbol) {
-					s2t.equal(has(target, symbol), true, debug(symbol) + ' is included');
+					s2t.equal(hasOwn(target, symbol), true, debug(symbol) + ' is included');
 				});
 
 				forEach(excludedSymbols, function (symbol) {
-					s2t.equal(has(target, symbol), false, debug(symbol) + ' is excluded');
+					s2t.equal(hasOwn(target, symbol), false, debug(symbol) + ' is excluded');
 				});
 
 				s2t.end();
@@ -11508,7 +11508,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 		});
 
 		var HasLength = function HasLength(_) { return _; };
-		t.equal(has(HasLength, 'length'), true, 'precondition: `HasLength` has own length');
+		t.equal(hasOwn(HasLength, 'length'), true, 'precondition: `HasLength` has own length');
 		t['throws'](
 			function () { ES.SetFunctionLength(HasLength, 0); },
 			TypeError,
@@ -11519,7 +11519,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			var HasNoLength = function HasNoLength() {};
 			delete HasNoLength.length;
 
-			st.equal(has(HasNoLength, 'length'), false, 'precondition: `HasNoLength` has no own length');
+			st.equal(hasOwn(HasNoLength, 'length'), false, 'precondition: `HasNoLength` has no own length');
 
 			forEach(v.nonNumbers, function (nonNumber) {
 				st['throws'](

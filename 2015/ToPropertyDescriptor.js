@@ -1,6 +1,6 @@
 'use strict';
 
-var has = require('has');
+var hasOwn = require('hasown');
 
 var GetIntrinsic = require('get-intrinsic');
 
@@ -18,26 +18,26 @@ module.exports = function ToPropertyDescriptor(Obj) {
 	}
 
 	var desc = {};
-	if (has(Obj, 'enumerable')) {
+	if (hasOwn(Obj, 'enumerable')) {
 		desc['[[Enumerable]]'] = ToBoolean(Obj.enumerable);
 	}
-	if (has(Obj, 'configurable')) {
+	if (hasOwn(Obj, 'configurable')) {
 		desc['[[Configurable]]'] = ToBoolean(Obj.configurable);
 	}
-	if (has(Obj, 'value')) {
+	if (hasOwn(Obj, 'value')) {
 		desc['[[Value]]'] = Obj.value;
 	}
-	if (has(Obj, 'writable')) {
+	if (hasOwn(Obj, 'writable')) {
 		desc['[[Writable]]'] = ToBoolean(Obj.writable);
 	}
-	if (has(Obj, 'get')) {
+	if (hasOwn(Obj, 'get')) {
 		var getter = Obj.get;
 		if (typeof getter !== 'undefined' && !IsCallable(getter)) {
 			throw new $TypeError('getter must be a function');
 		}
 		desc['[[Get]]'] = getter;
 	}
-	if (has(Obj, 'set')) {
+	if (hasOwn(Obj, 'set')) {
 		var setter = Obj.set;
 		if (typeof setter !== 'undefined' && !IsCallable(setter)) {
 			throw new $TypeError('setter must be a function');
@@ -45,7 +45,7 @@ module.exports = function ToPropertyDescriptor(Obj) {
 		desc['[[Set]]'] = setter;
 	}
 
-	if ((has(desc, '[[Get]]') || has(desc, '[[Set]]')) && (has(desc, '[[Value]]') || has(desc, '[[Writable]]'))) {
+	if ((hasOwn(desc, '[[Get]]') || hasOwn(desc, '[[Set]]')) && (hasOwn(desc, '[[Value]]') || hasOwn(desc, '[[Writable]]'))) {
 		throw new $TypeError('Invalid property descriptor. Cannot both specify accessors and a value or writable attribute');
 	}
 	return desc;

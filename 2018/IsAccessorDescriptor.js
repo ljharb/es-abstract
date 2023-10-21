@@ -1,6 +1,6 @@
 'use strict';
 
-var has = require('has');
+var hasOwn = require('hasown');
 
 var Type = require('./Type');
 
@@ -15,7 +15,7 @@ module.exports = function IsAccessorDescriptor(Desc) {
 
 	assertRecord(Type, 'Property Descriptor', 'Desc', Desc);
 
-	if (!has(Desc, '[[Get]]') && !has(Desc, '[[Set]]')) {
+	if (!hasOwn(Desc, '[[Get]]') && !hasOwn(Desc, '[[Set]]')) {
 		return false;
 	}
 

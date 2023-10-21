@@ -16,7 +16,7 @@ var ToUint8 = require('./ToUint8');
 var ToUint8Clamp = require('./ToUint8Clamp');
 
 var isArrayBuffer = require('is-array-buffer');
-var has = require('has');
+var hasOwn = require('hasown');
 
 var table49 = {
 	__proto__: null,
@@ -59,7 +59,7 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value) 
 		throw new $TypeError('Assertion failed: `byteIndex` must be an integer');
 	}
 
-	if (typeof type !== 'string' || !has(table49, type)) {
+	if (typeof type !== 'string' || !hasOwn(table49, type)) {
 		throw new $TypeError('Assertion failed: `type` must be a Typed Array Element Type');
 	}
 

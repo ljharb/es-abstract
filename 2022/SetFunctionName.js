@@ -2,7 +2,7 @@
 
 var GetIntrinsic = require('get-intrinsic');
 
-var has = require('has');
+var hasOwn = require('hasown');
 
 var $TypeError = GetIntrinsic('%TypeError%');
 
@@ -18,7 +18,7 @@ module.exports = function SetFunctionName(F, name) {
 	if (typeof F !== 'function') {
 		throw new $TypeError('Assertion failed: `F` must be a function');
 	}
-	if (!IsExtensible(F) || has(F, 'name')) {
+	if (!IsExtensible(F) || hasOwn(F, 'name')) {
 		throw new $TypeError('Assertion failed: `F` must be extensible, and must not have a `name` own property');
 	}
 	var nameType = Type(name);

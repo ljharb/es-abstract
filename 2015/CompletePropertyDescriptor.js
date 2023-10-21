@@ -1,6 +1,6 @@
 'use strict';
 
-var has = require('has');
+var hasOwn = require('hasown');
 
 var assertRecord = require('../helpers/assertRecord');
 
@@ -15,24 +15,24 @@ module.exports = function CompletePropertyDescriptor(Desc) {
 	assertRecord(Type, 'Property Descriptor', 'Desc', Desc);
 
 	if (IsGenericDescriptor(Desc) || IsDataDescriptor(Desc)) {
-		if (!has(Desc, '[[Value]]')) {
+		if (!hasOwn(Desc, '[[Value]]')) {
 			Desc['[[Value]]'] = void 0;
 		}
-		if (!has(Desc, '[[Writable]]')) {
+		if (!hasOwn(Desc, '[[Writable]]')) {
 			Desc['[[Writable]]'] = false;
 		}
 	} else {
-		if (!has(Desc, '[[Get]]')) {
+		if (!hasOwn(Desc, '[[Get]]')) {
 			Desc['[[Get]]'] = void 0;
 		}
-		if (!has(Desc, '[[Set]]')) {
+		if (!hasOwn(Desc, '[[Set]]')) {
 			Desc['[[Set]]'] = void 0;
 		}
 	}
-	if (!has(Desc, '[[Enumerable]]')) {
+	if (!hasOwn(Desc, '[[Enumerable]]')) {
 		Desc['[[Enumerable]]'] = false;
 	}
-	if (!has(Desc, '[[Configurable]]')) {
+	if (!hasOwn(Desc, '[[Configurable]]')) {
 		Desc['[[Configurable]]'] = false;
 	}
 	return Desc;

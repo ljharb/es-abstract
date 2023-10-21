@@ -3,7 +3,7 @@
 var keys = require('object-keys');
 var forEach = require('for-each');
 var indexOf = require('array.prototype.indexof');
-var has = require('has');
+var hasOwn = require('hasown');
 
 module.exports = function diffOperations(actual, expected, expectedMissing, expectedExtra) {
 	var actualKeys = keys(actual);
@@ -51,7 +51,7 @@ module.exports = function diffOperations(actual, expected, expectedMissing, expe
 	});
 
 	forEach(expectedMissing, function (expectedOp) {
-		if (!has(expected, expectedOp)) {
+		if (!hasOwn(expected, expectedOp)) {
 			extraMissing.push(expectedOp);
 		}
 	});

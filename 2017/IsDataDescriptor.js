@@ -1,6 +1,6 @@
 'use strict';
 
-var has = require('has');
+var hasOwn = require('hasown');
 
 var Type = require('./Type');
 
@@ -15,7 +15,7 @@ module.exports = function IsDataDescriptor(Desc) {
 
 	assertRecord(Type, 'Property Descriptor', 'Desc', Desc);
 
-	if (!has(Desc, '[[Value]]') && !has(Desc, '[[Writable]]')) {
+	if (!hasOwn(Desc, '[[Value]]') && !hasOwn(Desc, '[[Writable]]')) {
 		return false;
 	}
 

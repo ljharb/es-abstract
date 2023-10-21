@@ -5,7 +5,7 @@ var GetIntrinsic = require('get-intrinsic');
 var $TypeError = GetIntrinsic('%TypeError%');
 
 var callBound = require('call-bind/callBound');
-var has = require('has');
+var hasOwn = require('hasown');
 
 var $charCodeAt = callBound('String.prototype.charCodeAt');
 var $toUpperCase = callBound('String.prototype.toUpperCase');
@@ -30,10 +30,10 @@ module.exports = function Canonicalize(ch, IgnoreCase, Unicode) {
 	}
 
 	if (Unicode) { // step 2
-		if (has(caseFolding.C, ch)) {
+		if (hasOwn(caseFolding.C, ch)) {
 			return caseFolding.C[ch];
 		}
-		if (has(caseFolding.S, ch)) {
+		if (hasOwn(caseFolding.S, ch)) {
 			return caseFolding.S[ch];
 		}
 		return ch; // step 2.b

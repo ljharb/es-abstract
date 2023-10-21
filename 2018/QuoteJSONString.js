@@ -13,7 +13,7 @@ var $strSplit = callBound('String.prototype.split');
 var Type = require('./Type');
 var UnicodeEscape = require('./UnicodeEscape');
 
-var has = require('has');
+var hasOwn = require('hasown');
 
 // https://262.ecma-international.org/9.0/#sec-quotejsonstring
 
@@ -34,7 +34,7 @@ module.exports = function QuoteJSONString(value) {
 	var product = '"';
 	if (value) {
 		forEach($strSplit(value), function (C) {
-			if (has(escapes, C)) {
+			if (hasOwn(escapes, C)) {
 				product += escapes[C];
 			} else if ($charCodeAt(C, 0) < 0x20) {
 				product += UnicodeEscape(C);

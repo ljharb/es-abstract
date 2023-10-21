@@ -4,7 +4,7 @@ var GetIntrinsic = require('get-intrinsic');
 
 var $TypeError = GetIntrinsic('%TypeError%');
 
-var has = require('has');
+var hasOwn = require('hasown');
 
 var IsPropertyKey = require('./IsPropertyKey');
 var Type = require('./Type');
@@ -18,5 +18,5 @@ module.exports = function HasOwnProperty(O, P) {
 	if (!IsPropertyKey(P)) {
 		throw new $TypeError('Assertion failed: `P` must be a Property Key');
 	}
-	return has(O, P);
+	return hasOwn(O, P);
 };
