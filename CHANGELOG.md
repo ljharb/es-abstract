@@ -1,3 +1,10 @@
+1.22.3 / 2023-10-20
+=================
+  * [Fix] `ES2015`+: `GetSubstitution`: accept `undefined` instead of a hole
+  * [Refactor] use `hasown` instead of `has`
+  * [Deps] update `call-bind`, `get-intrinsic`, `object-inspect`, `which-typed-array`
+  * [Dev Deps] update `function-bind`, `is-core-module`, `mock-property`, `tape`
+
 1.22.2 / 2023-09-14
 =================
   * [Fix] `ES2015`+: `NewPromiseCapability`: use AOs from the current year, not 2022
