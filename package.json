@@ -58,11 +58,11 @@
 		"array-buffer-byte-length": "^1.0.0",
 		"arraybuffer.prototype.slice": "^1.0.2",
 		"available-typed-arrays": "^1.0.5",
-		"call-bind": "^1.0.2",
+		"call-bind": "^1.0.5",
 		"es-set-tostringtag": "^2.0.1",
 		"es-to-primitive": "^1.2.1",
 		"function.prototype.name": "^1.1.6",
-		"get-intrinsic": "^1.2.1",
+		"get-intrinsic": "^1.2.2",
 		"get-symbol-description": "^1.0.0",
 		"globalthis": "^1.0.3",
 		"gopd": "^1.0.1",
@@ -79,7 +79,7 @@
 		"is-string": "^1.0.7",
 		"is-typed-array": "^1.1.12",
 		"is-weakref": "^1.0.2",
-		"object-inspect": "^1.12.3",
+		"object-inspect": "^1.13.1",
 		"object-keys": "^1.1.1",
 		"object.assign": "^4.1.4",
 		"regexp.prototype.flags": "^1.5.1",
@@ -93,7 +93,7 @@
 		"typed-array-byte-offset": "^1.0.0",
 		"typed-array-length": "^1.0.4",
 		"unbox-primitive": "^1.0.2",
-		"which-typed-array": "^1.1.11"
+		"which-typed-array": "^1.1.13"
 	},
 	"devDependencies": {
 		"@ljharb/eslint-config": "^21.1.0",
