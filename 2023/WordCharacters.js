@@ -11,7 +11,7 @@ var Canonicalize = require('./Canonicalize');
 var Type = require('./Type');
 
 var assertRecord = require('../helpers/assertRecord');
-var caseFolding = require('../helpers/caseFolding');
+var caseFolding = require('../helpers/caseFolding.json');
 var forEach = require('../helpers/forEach');
 var OwnPropertyKeys = require('../helpers/OwnPropertyKeys');
 

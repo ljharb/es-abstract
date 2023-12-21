@@ -12,7 +12,7 @@ var $toUpperCase = callBound('String.prototype.toUpperCase');
 
 var Type = require('./Type');
 
-var caseFolding = require('../helpers/caseFolding');
+var caseFolding = require('../helpers/caseFolding.json');
 
 // https://262.ecma-international.org/6.0/#sec-runtime-semantics-canonicalize-ch
 

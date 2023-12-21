@@ -10,7 +10,7 @@ var $indexOf = callBound('String.prototype.indexOf', true);
 var Canonicalize = require('./Canonicalize');
 var Type = require('./Type');
 
-var caseFolding = require('../helpers/caseFolding');
+var caseFolding = require('../helpers/caseFolding.json');
 var forEach = require('../helpers/forEach');
 var OwnPropertyKeys = require('../helpers/OwnPropertyKeys');
 

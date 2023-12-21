@@ -40,7 +40,7 @@ var bufferTestCases = require('./bufferTestCases.json');
 var MAX_SAFE_INTEGER = require('../helpers/maxSafeInteger');
 var MAX_VALUE = require('../helpers/maxValue');
 var safeBigInt = require('./helpers/safeBigInt');
-var caseFolding = require('../helpers/caseFolding');
+var caseFolding = require('../helpers/caseFolding.json');
 
 var $BigInt = hasBigInts ? BigInt : null;
 
