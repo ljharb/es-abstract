@@ -25,6 +25,7 @@ var isRegex = require('is-regex');
 var v = require('es-value-fixtures');
 var mockProperty = require('mock-property');
 var isRegisteredSymbol = require('is-registered-symbol');
+var hasNamedCaptures = require('has-named-captures')();
 
 var $getProto = require('../helpers/getProto');
 var $setProto = require('../helpers/setProto');
@@ -7257,38 +7258,6 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 			'works with a mismatched $<'
 		);
 
-		t.test('named captures', function (st) {
-			var namedCaptures = {
-				foo: 'foo!'
-			};
-
-			st.equal(
-				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, 'a>$<foo><z'),
-				'a>foo!<z',
-				'supports named captures'
-			);
-
-			st.equal(
-				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, 'a>$<foo>$z'),
-				'a>foo!$z',
-				'works with a $z'
-			);
-
-			st.equal(
-				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, '$<foo'),
-				'<foo',
-				'supports named captures with a mismatched <'
-			);
-
-			st.equal(
-				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, 'a>$<bar><z'),
-				'a><z',
-				'supports named captures with a missing namedCapture'
-			);
-
-			st.end();
-		});
-
 		t.end();
 	});
 
@@ -11903,6 +11872,7 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 	es2021(ES, ops, expectedMissing, assign({}, skips, {
 		'Abstract Equality Comparison': true,
 		'Abstract Relational Comparison': true,
+		GetSubstitution: true,
 		'Strict Equality Comparison': true,
 		SplitMatch: true,
 		StringToBigInt: true
@@ -12096,6 +12066,215 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 
 		t.equal(ES.GetStringIndex('', 0), 0, 'index 0 yields 0 on empty string');
 		t.equal(ES.GetStringIndex('', 1), 0, 'index 1 yields 0 on empty string');
+
+		t.end();
+	});
+
+	test('GetSubstitution', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.GetSubstitution(nonString, '', 0, [], undefined, ''); },
+				TypeError,
+				'`matched`: ' + debug(nonString) + ' is not a String'
+			);
+
+			t['throws'](
+				function () { ES.GetSubstitution('', nonString, 0, [], undefined, ''); },
+				TypeError,
+				'`str`: ' + debug(nonString) + ' is not a String'
+			);
+
+			t['throws'](
+				function () { ES.GetSubstitution('', '', 0, [], undefined, nonString); },
+				TypeError,
+				'`replacement`: ' + debug(nonString) + ' is not a String'
+			);
+
+			if (typeof nonString !== 'undefined') {
+				t['throws'](
+					function () { ES.GetSubstitution('', '', 0, [nonString], undefined, ''); },
+					TypeError,
+					'`captures`: ' + debug([nonString]) + ' is not an Array of strings'
+				);
+			}
+		});
+
+		forEach(v.notNonNegativeIntegers, function (nonNonNegativeInteger) {
+			t['throws'](
+				function () { ES.GetSubstitution('', '', nonNonNegativeInteger, [], undefined, ''); },
+				TypeError,
+				'`position`: ' + debug(nonNonNegativeInteger) + ' is not a non-negative integer'
+			);
+		});
+
+		forEach(v.nonArrays, function (nonArray) {
+			t['throws'](
+				function () { ES.GetSubstitution('', '', 0, nonArray, undefined, ''); },
+				TypeError,
+				'`captures`: ' + debug(nonArray) + ' is not an Array'
+			);
+		});
+
+		t.equal(
+			ES.GetSubstitution('def', 'abcdefghi', 3, [], undefined, '123'),
+			'123',
+			'returns the substitution'
+		);
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '$$2$'),
+			'$2$',
+			'supports $$, and trailing $'
+		);
+
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$&<'),
+			'>abcdef<',
+			'supports $&'
+		);
+
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$`<'),
+			'><',
+			'supports $` at position 0'
+		);
+		t.equal(
+			ES.GetSubstitution('def', 'abcdefghi', 3, [], undefined, '>$`<'),
+			'>abc<',
+			'supports $` at position > 0'
+		);
+
+		t.equal(
+			ES.GetSubstitution('def', 'abcdefghi', 7, [], undefined, ">$'<"),
+			'><',
+			"supports $' at a position where there's less than `matched.length` chars left"
+		);
+		t.equal(
+			ES.GetSubstitution('def', 'abcdefghi', 3, [], undefined, ">$'<"),
+			'>ghi<',
+			"supports $' at a position where there's more than `matched.length` chars left"
+		);
+
+		for (var i = 0; i < 100; i += 1) {
+			var captures = [];
+			captures[i] = 'test';
+			if (i > 0) {
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$' + i + '<'),
+					'>$' + i + '<',
+					'supports $' + i + ' with no captures'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$' + i),
+					'>$' + i,
+					'supports $' + i + ' at the end of the replacement, with no captures'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, '>$' + i + '<'),
+					i < 10 ? '>$' + i + '<' : '><',
+					'supports $' + i + ' with a capture at that index'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, '>$' + i),
+					'>',
+					'supports $' + i + ' at the end of the replacement, with a capture at that index'
+				);
+			}
+			if (i < 10) {
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$0' + i + '<'),
+					'>$0' + i + '<',
+					'supports $0' + i + ' with no captures'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$0' + i),
+					'>$0' + i,
+					'supports $0' + i + ' at the end of the replacement, with no captures'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, '>$0' + i + '<'),
+					i === 0 ? '>$0' + i + '<' : '><',
+					'supports $0' + i + ' with a capture at that index'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, '>$0' + i),
+					i === 0 ? '>$0' + i : '>',
+					'supports $0' + i + ' at the end of the replacement, with a capture at that index'
+				);
+			}
+		}
+
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, 'a>$<foo><z'),
+			'a>$<foo><z',
+			'works with the named capture regex without named captures'
+		);
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, 'a>$<foo>$<z'),
+			'a>$<foo>$<z',
+			'works with a mismatched $< without named captures'
+		);
+
+		t.test('named captures', function (st) {
+			var namedCaptures = {
+				foo: 'foo!'
+			};
+
+			st.equal(
+				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, 'a>$<foo><z'),
+				'a>foo!<z',
+				'supports named captures'
+			);
+
+			st.equal(
+				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, 'a>$<foo>$z'),
+				'a>foo!$z',
+				'works with a $z'
+			);
+
+			st.equal(
+				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, '$<foo'),
+				'$<foo',
+				'supports named captures with a mismatched <'
+			);
+
+			st.equal(
+				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, 'a>$<bar><z'),
+				'a><z',
+				'supports named captures with a missing namedCapture'
+			);
+
+			st.test('named captures, native', { skip: !hasNamedCaptures }, function (rt) {
+				var str = 'abcdefghi';
+				var regex = new RegExp('(?<foo>abcdef)');
+				rt.equal(
+					str.replace(regex, 'a>$<foo><z'),
+					'a>abcdef<zghi',
+					'works with the named capture regex with named captures'
+				);
+
+				rt.equal(
+					str.replace(regex, 'a>$<foo>$z'),
+					'a>abcdef$zghi',
+					'works with a $z'
+				);
+
+				rt.equal(
+					str.replace(regex, '$<foo'),
+					'$<fooghi',
+					'supports named captures with a mismatched <'
+				);
+
+				rt.equal(
+					str.replace(regex, 'a>$<bar><z'),
+					'a><zghi',
+					'supports named captures with a missing namedCapture'
+				);
+
+				rt.end();
+			});
+
+			st.end();
+		});
 
 		t.end();
 	});
@@ -12752,6 +12931,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 		CreateDataPropertyOrThrow: true,
 		EnumerableOwnPropertyNames: true,
 		GetIterator: true,
+		GetSubstitution: true,
 		IsStringPrefix: true,
 		IsWordChar: true,
 		IterableToList: true,
@@ -13332,6 +13512,215 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 						throw e;
 					}
 				});
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('GetSubstitution', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.GetSubstitution(nonString, '', 0, [], undefined, ''); },
+				TypeError,
+				'`matched`: ' + debug(nonString) + ' is not a String'
+			);
+
+			t['throws'](
+				function () { ES.GetSubstitution('', nonString, 0, [], undefined, ''); },
+				TypeError,
+				'`str`: ' + debug(nonString) + ' is not a String'
+			);
+
+			t['throws'](
+				function () { ES.GetSubstitution('', '', 0, [], undefined, nonString); },
+				TypeError,
+				'`replacement`: ' + debug(nonString) + ' is not a String'
+			);
+
+			if (typeof nonString !== 'undefined') {
+				t['throws'](
+					function () { ES.GetSubstitution('', '', 0, [nonString], undefined, ''); },
+					TypeError,
+					'`captures`: ' + debug([nonString]) + ' is not an Array of strings'
+				);
+			}
+		});
+
+		forEach(v.notNonNegativeIntegers, function (nonNonNegativeInteger) {
+			t['throws'](
+				function () { ES.GetSubstitution('', '', nonNonNegativeInteger, [], undefined, ''); },
+				TypeError,
+				'`position`: ' + debug(nonNonNegativeInteger) + ' is not a non-negative integer'
+			);
+		});
+
+		forEach(v.nonArrays, function (nonArray) {
+			t['throws'](
+				function () { ES.GetSubstitution('', '', 0, nonArray, undefined, ''); },
+				TypeError,
+				'`captures`: ' + debug(nonArray) + ' is not an Array'
+			);
+		});
+
+		t.equal(
+			ES.GetSubstitution('def', 'abcdefghi', 3, [], undefined, '123'),
+			'123',
+			'returns the substitution'
+		);
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '$$2$'),
+			'$2$',
+			'supports $$, and trailing $'
+		);
+
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$&<'),
+			'>abcdef<',
+			'supports $&'
+		);
+
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$`<'),
+			'><',
+			'supports $` at position 0'
+		);
+		t.equal(
+			ES.GetSubstitution('def', 'abcdefghi', 3, [], undefined, '>$`<'),
+			'>abc<',
+			'supports $` at position > 0'
+		);
+
+		t.equal(
+			ES.GetSubstitution('def', 'abcdefghi', 7, [], undefined, ">$'<"),
+			'><',
+			"supports $' at a position where there's less than `matched.length` chars left"
+		);
+		t.equal(
+			ES.GetSubstitution('def', 'abcdefghi', 3, [], undefined, ">$'<"),
+			'>ghi<',
+			"supports $' at a position where there's more than `matched.length` chars left"
+		);
+
+		for (var i = 0; i < 100; i += 1) {
+			var captures = [];
+			captures[i] = 'test';
+			if (i > 0) {
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$' + i + '<'),
+					'>$' + i + '<',
+					'supports $' + i + ' with no captures'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$' + i),
+					'>$' + i,
+					'supports $' + i + ' at the end of the replacement, with no captures'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, '>$' + i + '<'),
+					'><',
+					'supports $' + i + ' with a capture at that index'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, '>$' + i),
+					'>',
+					'supports $' + i + ' at the end of the replacement, with a capture at that index'
+				);
+			}
+			if (i < 10) {
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$0' + i + '<'),
+					'>$0' + i + '<',
+					'supports $0' + i + ' with no captures'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, '>$0' + i),
+					'>$0' + i,
+					'supports $0' + i + ' at the end of the replacement, with no captures'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, '>$0' + i + '<'),
+					i === 0 ? '>$0' + i + '<' : '><',
+					'supports $0' + i + ' with a capture at that index'
+				);
+				t.equal(
+					ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, '>$0' + i),
+					i === 0 ? '>$0' + i : '>',
+					'supports $0' + i + ' at the end of the replacement, with a capture at that index'
+				);
+			}
+		}
+
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, 'a>$<foo><z'),
+			'a>$<foo><z',
+			'works with the named capture regex without named captures'
+		);
+		t.equal(
+			ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, 'a>$<foo>$<z'),
+			'a>$<foo>$<z',
+			'works with a mismatched $< without named captures'
+		);
+
+		t.test('named captures', function (st) {
+			var namedCaptures = {
+				foo: 'foo!'
+			};
+
+			st.equal(
+				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, 'a>$<foo><z'),
+				'a>foo!<z',
+				'supports named captures'
+			);
+
+			st.equal(
+				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, 'a>$<foo>$z'),
+				'a>foo!$z',
+				'works with a $z'
+			);
+
+			st.equal(
+				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, '$<foo'),
+				'$<foo',
+				'supports named captures with a mismatched <'
+			);
+
+			st.equal(
+				ES.GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, 'a>$<bar><z'),
+				'a><z',
+				'supports named captures with a missing namedCapture'
+			);
+
+			st.test('named captures, native', { skip: !hasNamedCaptures }, function (rt) {
+				var str = 'abcdefghi';
+				var regex = new RegExp('(?<foo>abcdef)');
+				rt.equal(
+					str.replace(regex, 'a>$<foo><z'),
+					'a>abcdef<zghi',
+					'works with the named capture regex with named captures'
+				);
+
+				rt.equal(
+					str.replace(regex, 'a>$<foo>$z'),
+					'a>abcdef$zghi',
+					'works with a $z'
+				);
+
+				rt.equal(
+					str.replace(regex, '$<foo'),
+					'$<fooghi',
+					'supports named captures with a mismatched <'
+				);
+
+				rt.equal(
+					str.replace(regex, 'a>$<bar><z'),
+					'a><zghi',
+					'supports named captures with a missing namedCapture'
+				);
+
+				rt.end();
 			});
 
 			st.end();

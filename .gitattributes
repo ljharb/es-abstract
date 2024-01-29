@@ -993,7 +993,6 @@
 /2022/GetOwnPropertyKeys.js	spackled linguist-generated=true
 /2022/GetPromiseResolve.js	spackled linguist-generated=true
 /2022/GetPrototypeFromConstructor.js	spackled linguist-generated=true
-/2022/GetSubstitution.js	spackled linguist-generated=true
 /2022/GetV.js	spackled linguist-generated=true
 /2022/GetValueFromBuffer.js	spackled linguist-generated=true
 /2022/HasOwnProperty.js	spackled linguist-generated=true
@@ -1211,7 +1210,6 @@
 /2023/GetPromiseResolve.js	spackled linguist-generated=true
 /2023/GetPrototypeFromConstructor.js	spackled linguist-generated=true
 /2023/GetStringIndex.js	spackled linguist-generated=true
-/2023/GetSubstitution.js	spackled linguist-generated=true
 /2023/GetV.js	spackled linguist-generated=true
 /2023/GetValueFromBuffer.js	spackled linguist-generated=true
 /2023/HasOwnProperty.js	spackled linguist-generated=true

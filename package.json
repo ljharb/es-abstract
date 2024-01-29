@@ -113,6 +113,7 @@
 		"function-bind": "^1.1.2",
 		"functions-have-names": "^1.2.3",
 		"has-bigints": "^1.0.2",
+		"has-named-captures": "^1.0.0",
 		"has-strict-mode": "^1.0.1",
 		"in-publish": "^2.0.1",
 		"is-core-module": "^2.13.1",
