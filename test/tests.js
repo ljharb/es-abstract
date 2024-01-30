@@ -13083,6 +13083,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 		IteratorNext: true,
 		IteratorStep: true,
 		SameValueNonNumeric: true,
+		SetTypedArrayFromArrayLike: true,
 		SortIndexedProperties: true,
 		WordCharacters: true
 	}));
@@ -14316,6 +14317,89 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 
 		forEach(v.objects.concat(v.nonNumberPrimitives).concat(v.bigints), function (val) {
 			t.equal(val === val, ES.SameValueNonNumber(val, val), debug(val) + ' is SameValueNonNumber to itself');
+		});
+
+		t.end();
+	});
+
+	test('SetTypedArrayFromArrayLike', function (t) {
+		forEach(v.primitives.concat(v.objects, [[]]), function (nonTA) {
+			t['throws'](
+				function () { ES.SetTypedArrayFromArrayLike(nonTA, 0, []); },
+				TypeError,
+				'target: ' + debug(nonTA) + ' is not a TypedArray'
+			);
+		});
+
+		t.test('Typed Array Support', { skip: availableTypedArrays.length === 0 }, function (st) {
+			forEach(v.notNonNegativeIntegers, function (notNonNegativeInteger) {
+				if (notNonNegativeInteger !== Infinity) {
+					st['throws'](
+						function () { ES.SetTypedArrayFromArrayLike(new Uint8Array(0), notNonNegativeInteger, []); },
+						TypeError,
+						'targetOffset: ' + debug(notNonNegativeInteger) + ' is not a non-negative integer'
+					);
+				}
+			});
+
+			st['throws'](
+				function () { ES.SetTypedArrayFromArrayLike(new Uint8Array(0), Infinity, []); },
+				RangeError,
+				'targetOffset: ' + debug(Infinity) + ' is not a finite integer'
+			);
+
+			st['throws'](
+				function () { ES.SetTypedArrayFromArrayLike(new Uint8Array(0), 0, new Uint8Array(0)); },
+				TypeError,
+				'source: must not be a TypedArray'
+			);
+
+			st.test('can detach', { skip: !canDetach }, function (s2t) {
+				var arr = new Uint8Array(0);
+				ES.DetachArrayBuffer(arr.buffer);
+
+				s2t['throws'](
+					function () { ES.SetTypedArrayFromArrayLike(arr, 0, []); },
+					TypeError,
+					'target’s buffer must not be detached'
+				);
+
+				s2t.end();
+			});
+
+			forEach(availableTypedArrays, function (name) {
+				var isBigInt = name.slice(0, 3) === 'Big';
+				var Z = isBigInt ? BigInt : Number;
+				var TA = global[name];
+
+				var ta = new TA([Z(1), Z(2), Z(3)]);
+
+				st['throws'](
+					function () { ES.SetTypedArrayFromArrayLike(ta, 3, [Z(10)]); },
+					RangeError,
+					name + ': out of bounds set attempt throws'
+				);
+
+				ES.SetTypedArrayFromArrayLike(ta, 1, [Z(10)]);
+
+				st.deepEqual(ta, new TA([Z(1), Z(10), Z(3)]), name + ': target is updated');
+			});
+
+			st.test('getters are supported, and can detach', { skip: !defineProperty.oDP || !canDetach }, function (s2t) {
+				var ta = new Uint8Array([1, 2, 3]);
+				var obj = { length: 1 };
+				defineProperty.oDP(obj, '0', { get: function () { ES.DetachArrayBuffer(ta.buffer); return 10; } });
+
+				s2t.doesNotThrow(
+					function () { ES.SetTypedArrayFromArrayLike(ta, 1, obj); },
+					TypeError,
+					'when a Get detaches the buffer, it does not throw'
+				);
+
+				s2t.end();
+			});
+
+			st.end();
 		});
 
 		t.end();
