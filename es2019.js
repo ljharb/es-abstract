@@ -55,6 +55,8 @@ var ES2019 = {
 	HourFromTime: require('./2019/HourFromTime'),
 	InLeapYear: require('./2019/InLeapYear'),
 	InstanceofOperator: require('./2019/InstanceofOperator'),
+	IntegerIndexedElementGet: require('./2019/IntegerIndexedElementGet'),
+	IntegerIndexedElementSet: require('./2019/IntegerIndexedElementSet'),
 	Invoke: require('./2019/Invoke'),
 	IsAccessorDescriptor: require('./2019/IsAccessorDescriptor'),
 	IsArray: require('./2019/IsArray'),

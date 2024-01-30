@@ -73,6 +73,8 @@ var ES2022 = {
 	InLeapYear: require('./2022/InLeapYear'),
 	InstallErrorCause: require('./2022/InstallErrorCause'),
 	InstanceofOperator: require('./2022/InstanceofOperator'),
+	IntegerIndexedElementGet: require('./2022/IntegerIndexedElementGet'),
+	IntegerIndexedElementSet: require('./2022/IntegerIndexedElementSet'),
 	Invoke: require('./2022/Invoke'),
 	IsAccessorDescriptor: require('./2022/IsAccessorDescriptor'),
 	IsArray: require('./2022/IsArray'),

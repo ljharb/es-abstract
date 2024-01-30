@@ -71,6 +71,8 @@ var ES2021 = {
 	HourFromTime: require('./2021/HourFromTime'),
 	InLeapYear: require('./2021/InLeapYear'),
 	InstanceofOperator: require('./2021/InstanceofOperator'),
+	IntegerIndexedElementGet: require('./2021/IntegerIndexedElementGet'),
+	IntegerIndexedElementSet: require('./2021/IntegerIndexedElementSet'),
 	Invoke: require('./2021/Invoke'),
 	IsAccessorDescriptor: require('./2021/IsAccessorDescriptor'),
 	IsArray: require('./2021/IsArray'),

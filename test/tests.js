@@ -3178,6 +3178,43 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('IntegerIndexedElementGet', function (t) {
+		forEach(v.nonNumbers, function (nonNumber) {
+			t['throws'](
+				function () { ES.IntegerIndexedElementGet(null, nonNumber); },
+				TypeError,
+				debug(nonNumber) + ' is not a Number'
+			);
+		});
+
+		forEach(v.primitives.concat(v.objects), function (nonTA) {
+			t['throws'](
+				function () { ES.IntegerIndexedElementGet(nonTA, 0); },
+				TypeError,
+				debug(nonTA) + ' is not an Integer-Indexed Exotic object'
+			);
+		});
+
+		t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
+			forEach(availableTypedArrays, function (typedArray) {
+				var isBigInt = typedArray.slice(0, 3) === 'Big';
+				if (isBigInt && 'ToBigInt' in ES) {
+					var Z = isBigInt ? BigInt : Number;
+					var TA = global[typedArray];
+
+					var arr = new TA([Z(1), Z(2), Z(3)]);
+					st.equal(ES.IntegerIndexedElementGet(arr, 0), Z(1), 'returns index 0');
+					st.equal(ES.IntegerIndexedElementGet(arr, 1), Z(2), 'returns index 1');
+					st.equal(ES.IntegerIndexedElementGet(arr, 2), Z(3), 'returns index 2');
+				}
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
+
 	test('Invoke', function (t) {
 		forEach(v.nonPropertyKeys, function (nonKey) {
 			t['throws'](

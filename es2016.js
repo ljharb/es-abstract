@@ -48,6 +48,8 @@ var ES2016 = {
 	HourFromTime: require('./2016/HourFromTime'),
 	InLeapYear: require('./2016/InLeapYear'),
 	InstanceofOperator: require('./2016/InstanceofOperator'),
+	IntegerIndexedElementGet: require('./2016/IntegerIndexedElementGet'),
+	IntegerIndexedElementSet: require('./2016/IntegerIndexedElementSet'),
 	Invoke: require('./2016/Invoke'),
 	IsAccessorDescriptor: require('./2016/IsAccessorDescriptor'),
 	IsArray: require('./2016/IsArray'),

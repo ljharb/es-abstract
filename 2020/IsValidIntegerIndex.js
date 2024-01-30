@@ -6,12 +6,16 @@ var IsInteger = require('./IsInteger');
 
 var isNegativeZero = require('../helpers/isNegativeZero');
 
+var isTypedArray = require('is-typed-array');
 var typedArrayBuffer = require('typed-array-buffer');
 
 // https://262.ecma-international.org/11.0/#sec-isvalidintegerindex
 
 module.exports = function IsValidIntegerIndex(O, index) {
-	// Assert: O is an Integer-Indexed exotic object.
+	if (!isTypedArray) {
+		throw new $TypeError('Assertion failed: `O` must be a Typed Array');
+	}
+
 	typedArrayBuffer(O); // step 1
 
 	if (typeof index !== 'number') {

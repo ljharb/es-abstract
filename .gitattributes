@@ -83,6 +83,8 @@
 /2016/HourFromTime.js	spackled linguist-generated=true
 /2016/InLeapYear.js	spackled linguist-generated=true
 /2016/InstanceofOperator.js	spackled linguist-generated=true
+/2016/IntegerIndexedElementGet.js	spackled linguist-generated=true
+/2016/IntegerIndexedElementSet.js	spackled linguist-generated=true
 /2016/Invoke.js	spackled linguist-generated=true
 /2016/IsAccessorDescriptor.js	spackled linguist-generated=true
 /2016/IsArray.js	spackled linguist-generated=true
@@ -342,6 +344,8 @@
 /2018/HourFromTime.js	spackled linguist-generated=true
 /2018/InLeapYear.js	spackled linguist-generated=true
 /2018/InstanceofOperator.js	spackled linguist-generated=true
+/2018/IntegerIndexedElementGet.js	spackled linguist-generated=true
+/2018/IntegerIndexedElementSet.js	spackled linguist-generated=true
 /2018/Invoke.js	spackled linguist-generated=true
 /2018/IsAccessorDescriptor.js	spackled linguist-generated=true
 /2018/IsArray.js	spackled linguist-generated=true
@@ -489,6 +493,8 @@
 /2019/HourFromTime.js	spackled linguist-generated=true
 /2019/InLeapYear.js	spackled linguist-generated=true
 /2019/InstanceofOperator.js	spackled linguist-generated=true
+/2019/IntegerIndexedElementGet.js	spackled linguist-generated=true
+/2019/IntegerIndexedElementSet.js	spackled linguist-generated=true
 /2019/Invoke.js	spackled linguist-generated=true
 /2019/IsAccessorDescriptor.js	spackled linguist-generated=true
 /2019/IsArray.js	spackled linguist-generated=true
@@ -1219,6 +1225,8 @@
 /2023/InLeapYear.js	spackled linguist-generated=true
 /2023/InstallErrorCause.js	spackled linguist-generated=true
 /2023/InstanceofOperator.js	spackled linguist-generated=true
+/2023/IntegerIndexedElementGet.js	spackled linguist-generated=true
+/2023/IntegerIndexedElementSet.js	spackled linguist-generated=true
 /2023/Invoke.js	spackled linguist-generated=true
 /2023/IsAccessorDescriptor.js	spackled linguist-generated=true
 /2023/IsArray.js	spackled linguist-generated=true

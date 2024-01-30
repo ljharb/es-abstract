@@ -62,6 +62,8 @@ var ES2020 = {
 	HourFromTime: require('./2020/HourFromTime'),
 	InLeapYear: require('./2020/InLeapYear'),
 	InstanceofOperator: require('./2020/InstanceofOperator'),
+	IntegerIndexedElementGet: require('./2020/IntegerIndexedElementGet'),
+	IntegerIndexedElementSet: require('./2020/IntegerIndexedElementSet'),
 	Invoke: require('./2020/Invoke'),
 	IsAccessorDescriptor: require('./2020/IsAccessorDescriptor'),
 	IsArray: require('./2020/IsArray'),

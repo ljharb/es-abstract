@@ -95,8 +95,6 @@ var expectedMissing = [
 	'InitializeBoundName',
 	'InitializeHostDefinedRealm',
 	'InitializeReferencedBinding',
-	'IntegerIndexedElementGet', // depends on GetValueFromBuffer
-	'IntegerIndexedElementSet', // depends on SetValueInBuffer
 	'IntegerIndexedObjectCreate',
 	'InternalizeJSONProperty',
 	'IsAnonymousFunctionDefinition',

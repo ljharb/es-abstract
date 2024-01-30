@@ -105,8 +105,6 @@ var expectedMissing = [
 	'InitializeReferencedBinding',
 	'InnerModuleEvaluation',
 	'InnerModuleLinking',
-	'IntegerIndexedElementGet', // depends on GetValueFromBuffer
-	'IntegerIndexedElementSet', // depends on SetValueInBuffer
 	'IntegerIndexedObjectCreate',
 	'InternalizeJSONProperty',
 	'IsAnonymousFunctionDefinition',
