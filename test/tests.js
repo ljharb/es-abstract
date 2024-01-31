@@ -5526,6 +5526,18 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 					function () { ES.ValidateTypedArray(ta); },
 					debug(ta) + ' is a TypedArray'
 				);
+
+				st.test('can detach', { skip: !canDetach }, function (s2t) {
+					ES.DetachArrayBuffer(ta.buffer);
+
+					s2t['throws'](
+						function () { ES.ValidateTypedArray(ta); },
+						TypeError,
+						debug(ta) + ' is a detached TypedArray'
+					);
+
+					s2t.end();
+				});
 			});
 
 			st.end();
