@@ -7721,6 +7721,22 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
+
+	test('TimeZoneString', function (t) {
+		forEach(v.nonNumbers.concat(NaN), function (nonIntegerNumber) {
+			t['throws'](
+				function () { ES.TimeZoneString(nonIntegerNumber); },
+				TypeError,
+				debug(nonIntegerNumber) + ' is not a non-NaN Number'
+			);
+		});
+
+		var d = new Date();
+
+		t.equal(ES.TimeZoneString(Number(d)), d.toTimeString().match(/\((.*)\)$/)[1], 'matches parenthesized part of .toTimeString');
+
+		t.end();
+	});
 };
 
 var es2019 = function ES2019(ES, ops, expectedMissing, skips) {
@@ -13085,6 +13101,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 		SameValueNonNumeric: true,
 		SetTypedArrayFromArrayLike: true,
 		SortIndexedProperties: true,
+		TimeZoneString: true,
 		WordCharacters: true
 	}));
 
@@ -14513,6 +14530,22 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 		);
 
 		// TODO: tests with holes
+
+		t.end();
+	});
+
+	test('TimeZoneString', function (t) {
+		forEach(v.nonIntegerNumbers.concat(v.infinities, NaN), function (nonIntegerNumber) {
+			t['throws'](
+				function () { ES.TimeZoneString(nonIntegerNumber); },
+				TypeError,
+				debug(nonIntegerNumber) + ' is not an integral number'
+			);
+		});
+
+		var d = new Date();
+
+		t.equal(ES.TimeZoneString(Number(d)), d.toTimeString().match(/\((.*)\)$/)[1], 'matches parenthesized part of .toTimeString');
 
 		t.end();
 	});

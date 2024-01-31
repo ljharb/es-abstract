@@ -181,7 +181,6 @@ var expectedMissing = [
 	'SharedDataBlockEventSet',
 	'SuspendAgent',
 	'synchronizes-with',
-	'TimeZoneString',
 	'TriggerPromiseReactions',
 	'UnicodeMatchProperty',
 	'UnicodeMatchPropertyValue',

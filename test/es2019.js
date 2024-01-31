@@ -182,7 +182,6 @@ var expectedMissing = [
 	'Suspend',
 	'SynchronizeEventSet',
 	'synchronizes-with',
-	'TimeZoneString', // depends on LocalTZA
 	'TopLevelModuleEvaluationJob',
 	'TriggerPromiseReactions',
 	'UnicodeMatchProperty',

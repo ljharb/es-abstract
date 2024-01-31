@@ -182,6 +182,7 @@ var ES2023 = {
 	TimeFromYear: require('./2023/TimeFromYear'),
 	TimeString: require('./2023/TimeString'),
 	TimeWithinDay: require('./2023/TimeWithinDay'),
+	TimeZoneString: require('./2023/TimeZoneString'),
 	ToBigInt: require('./2023/ToBigInt'),
 	ToBigInt64: require('./2023/ToBigInt64'),
 	ToBigUint64: require('./2023/ToBigUint64'),

@@ -154,6 +154,7 @@ var ES2020 = {
 	TimeFromYear: require('./2020/TimeFromYear'),
 	TimeString: require('./2020/TimeString'),
 	TimeWithinDay: require('./2020/TimeWithinDay'),
+	TimeZoneString: require('./2020/TimeZoneString'),
 	ToBigInt: require('./2020/ToBigInt'),
 	ToBigInt64: require('./2020/ToBigInt64'),
 	ToBigUint64: require('./2020/ToBigUint64'),

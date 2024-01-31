@@ -187,7 +187,6 @@ var expectedMissing = [
 	'SortCompare', // mystery access to `comparefn` arg
 	'SuspendAgent',
 	'synchronizes-with',
-	'TimeZoneString', // depends on LocalTZA
 	'TriggerPromiseReactions',
 	'UnicodeMatchProperty',
 	'UnicodeMatchPropertyValue',

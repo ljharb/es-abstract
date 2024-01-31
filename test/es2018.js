@@ -180,7 +180,6 @@ var expectedMissing = [
 	'SortCompare', // mystery access to `comparefn` arg
 	'Suspend',
 	'synchronizes-with',
-	'TimeZoneString', // depends on LocalTZA
 	'TopLevelModuleEvaluationJob',
 	'TriggerPromiseReactions',
 	'UnicodeMatchProperty',

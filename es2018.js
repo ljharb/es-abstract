@@ -132,6 +132,7 @@ var ES2018 = {
 	TimeFromYear: require('./2018/TimeFromYear'),
 	TimeString: require('./2018/TimeString'),
 	TimeWithinDay: require('./2018/TimeWithinDay'),
+	TimeZoneString: require('./2018/TimeZoneString'),
 	ToBoolean: require('./2018/ToBoolean'),
 	ToDateString: require('./2018/ToDateString'),
 	ToIndex: require('./2018/ToIndex'),

@@ -135,6 +135,7 @@ var ES2019 = {
 	TimeFromYear: require('./2019/TimeFromYear'),
 	TimeString: require('./2019/TimeString'),
 	TimeWithinDay: require('./2019/TimeWithinDay'),
+	TimeZoneString: require('./2019/TimeZoneString'),
 	ToBoolean: require('./2019/ToBoolean'),
 	ToDateString: require('./2019/ToDateString'),
 	ToIndex: require('./2019/ToIndex'),

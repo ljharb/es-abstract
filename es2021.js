@@ -167,6 +167,7 @@ var ES2021 = {
 	TimeFromYear: require('./2021/TimeFromYear'),
 	TimeString: require('./2021/TimeString'),
 	TimeWithinDay: require('./2021/TimeWithinDay'),
+	TimeZoneString: require('./2021/TimeZoneString'),
 	ToBigInt: require('./2021/ToBigInt'),
 	ToBigInt64: require('./2021/ToBigInt64'),
 	ToBigUint64: require('./2021/ToBigUint64'),

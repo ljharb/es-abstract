@@ -189,7 +189,6 @@ var expectedMissing = [
 	'SuspendAgent',
 	'synchronizes-with',
 	'TemplateString', // takes a Parse Node
-	'TimeZoneString',
 	'TriggerPromiseReactions',
 	'UnicodeMatchProperty',
 	'UnicodeMatchPropertyValue',

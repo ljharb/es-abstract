@@ -176,6 +176,7 @@ var ES2022 = {
 	TimeFromYear: require('./2022/TimeFromYear'),
 	TimeString: require('./2022/TimeString'),
 	TimeWithinDay: require('./2022/TimeWithinDay'),
+	TimeZoneString: require('./2022/TimeZoneString'),
 	ToBigInt: require('./2022/ToBigInt'),
 	ToBigInt64: require('./2022/ToBigInt64'),
 	ToBigUint64: require('./2022/ToBigUint64'),
