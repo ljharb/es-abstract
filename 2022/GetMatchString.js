@@ -5,17 +5,18 @@ var GetIntrinsic = require('get-intrinsic');
 var $TypeError = GetIntrinsic('%TypeError%');
 
 var substring = require('./substring');
-var Type = require('./Type');
 
-var assertRecord = require('../helpers/assertRecord');
+var isMatchRecord = require('../helpers/records/match-record');
 
 // https://262.ecma-international.org/13.0/#sec-getmatchstring
 
 module.exports = function GetMatchString(S, match) {
-	if (Type(S) !== 'String') {
+	if (typeof S !== 'string') {
 		throw new $TypeError('Assertion failed: `S` must be a String');
 	}
-	assertRecord(Type, 'Match Record', 'match', match);
+	if (!isMatchRecord(match)) {
+		throw new $TypeError('Assertion failed: `match` must be a Match Record');
+	}
 
 	if (!(match['[[StartIndex]]'] <= S.length)) {
 		throw new $TypeError('`match` [[StartIndex]] must be a non-negative integer <= the length of S');

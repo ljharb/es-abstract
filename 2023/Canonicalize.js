@@ -10,16 +10,17 @@ var hasOwn = require('hasown');
 var $charCodeAt = callBound('String.prototype.charCodeAt');
 var $toUpperCase = callBound('String.prototype.toUpperCase');
 
-var Type = require('./Type');
-
-var assertRecord = require('../helpers/assertRecord');
+var isRegExpRecord = require('../helpers/records/regexp-record');
 var caseFolding = require('../helpers/caseFolding.json');
 
 // https://262.ecma-international.org/14.0/#sec-runtime-semantics-canonicalize-ch
 
 module.exports = function Canonicalize(rer, ch) {
-	assertRecord(Type, 'RegExp Record', 'rer', rer);
-	if (Type(ch) !== 'String') {
+	if (!isRegExpRecord(rer)) {
+		throw new $TypeError('Assertion failed: `rer` must be a RegExp Record');
+	}
+
+	if (typeof ch !== 'string') {
 		throw new $TypeError('Assertion failed: `ch` must be a character');
 	}
 

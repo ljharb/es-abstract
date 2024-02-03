@@ -1,15 +1,17 @@
 'use strict';
 
-var assertRecord = require('../helpers/assertRecord');
-var fromPropertyDescriptor = require('../helpers/fromPropertyDescriptor');
+var GetIntrinsic = require('get-intrinsic');
 
-var Type = require('./Type');
+var $TypeError = GetIntrinsic('%TypeError%');
+
+var isPropertyDescriptor = require('../helpers/records/property-descriptor');
+var fromPropertyDescriptor = require('../helpers/fromPropertyDescriptor');
 
 // https://262.ecma-international.org/6.0/#sec-frompropertydescriptor
 
 module.exports = function FromPropertyDescriptor(Desc) {
-	if (typeof Desc !== 'undefined') {
-		assertRecord(Type, 'Property Descriptor', 'Desc', Desc);
+	if (typeof Desc !== 'undefined' && !isPropertyDescriptor(Desc)) {
+		throw new $TypeError('Assertion failed: `Desc` must be a Property Descriptor');
 	}
 
 	return fromPropertyDescriptor(Desc);

@@ -7,12 +7,14 @@ var $TypeError = GetIntrinsic('%TypeError%');
 var Call = require('./Call');
 var Type = require('./Type');
 
-var assertRecord = require('../helpers/assertRecord');
+var isIteratorRecord = require('../helpers/records/iterator-record');
 
 // https://262.ecma-international.org/14.0/#sec-iteratornext
 
 module.exports = function IteratorNext(iteratorRecord) {
-	assertRecord(Type, 'Iterator Record', 'iteratorRecord', iteratorRecord);
+	if (!isIteratorRecord(iteratorRecord)) {
+		throw new $TypeError('Assertion failed: `iteratorRecord` must be an Iterator Record'); // step 1
+	}
 
 	var result;
 	if (arguments.length < 2) { // step 1

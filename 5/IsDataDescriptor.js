@@ -1,10 +1,12 @@
 'use strict';
 
+var GetIntrinsic = require('get-intrinsic');
+
+var $TypeError = GetIntrinsic('%TypeError%');
+
 var hasOwn = require('hasown');
 
-var Type = require('./Type');
-
-var assertRecord = require('../helpers/assertRecord');
+var isPropertyDescriptor = require('../helpers/records/property-descriptor');
 
 // https://262.ecma-international.org/5.1/#sec-8.10.2
 
@@ -13,7 +15,9 @@ module.exports = function IsDataDescriptor(Desc) {
 		return false;
 	}
 
-	assertRecord(Type, 'Property Descriptor', 'Desc', Desc);
+	if (!isPropertyDescriptor(Desc)) {
+		throw new $TypeError('Assertion failed: `Desc` must be a Property Descriptor');
+	}
 
 	if (!hasOwn(Desc, '[[Value]]') && !hasOwn(Desc, '[[Writable]]')) {
 		return false;

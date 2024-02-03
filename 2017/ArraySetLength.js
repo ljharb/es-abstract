@@ -7,17 +7,15 @@ var $TypeError = GetIntrinsic('%TypeError%');
 
 var assign = require('object.assign');
 
-var isPropertyDescriptor = require('../helpers/isPropertyDescriptor');
+var isPropertyDescriptor = require('../helpers/records/property-descriptor');
 
 var IsArray = require('./IsArray');
-var IsAccessorDescriptor = require('./IsAccessorDescriptor');
 var IsDataDescriptor = require('./IsDataDescriptor');
 var OrdinaryDefineOwnProperty = require('./OrdinaryDefineOwnProperty');
 var OrdinaryGetOwnProperty = require('./OrdinaryGetOwnProperty');
 var ToNumber = require('./ToNumber');
 var ToString = require('./ToString');
 var ToUint32 = require('./ToUint32');
-var Type = require('./Type');
 
 // https://262.ecma-international.org/6.0/#sec-arraysetlength
 
@@ -26,11 +24,7 @@ module.exports = function ArraySetLength(A, Desc) {
 	if (!IsArray(A)) {
 		throw new $TypeError('Assertion failed: A must be an Array');
 	}
-	if (!isPropertyDescriptor({
-		Type: Type,
-		IsDataDescriptor: IsDataDescriptor,
-		IsAccessorDescriptor: IsAccessorDescriptor
-	}, Desc)) {
+	if (!isPropertyDescriptor(Desc)) {
 		throw new $TypeError('Assertion failed: Desc must be a Property Descriptor');
 	}
 	if (!('[[Value]]' in Desc)) {

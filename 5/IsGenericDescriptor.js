@@ -1,10 +1,13 @@
 'use strict';
 
+var GetIntrinsic = require('get-intrinsic');
+
+var $TypeError = GetIntrinsic('%TypeError%');
+
 var IsAccessorDescriptor = require('./IsAccessorDescriptor');
 var IsDataDescriptor = require('./IsDataDescriptor');
-var Type = require('./Type');
 
-var assertRecord = require('../helpers/assertRecord');
+var isPropertyDescriptor = require('./IsPropertyDescriptor');
 
 // https://262.ecma-international.org/5.1/#sec-8.10.3
 
@@ -13,7 +16,9 @@ module.exports = function IsGenericDescriptor(Desc) {
 		return false;
 	}
 
-	assertRecord(Type, 'Property Descriptor', 'Desc', Desc);
+	if (!isPropertyDescriptor(Desc)) {
+		throw new $TypeError('Assertion failed: `Desc` must be a Property Descriptor');
+	}
 
 	if (!IsAccessorDescriptor(Desc) && !IsDataDescriptor(Desc)) {
 		return true;

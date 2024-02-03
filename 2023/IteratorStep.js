@@ -1,15 +1,20 @@
 'use strict';
 
+var GetIntrinsic = require('get-intrinsic');
+
+var $TypeError = GetIntrinsic('%TypeError%');
+
 var IteratorComplete = require('./IteratorComplete');
 var IteratorNext = require('./IteratorNext');
-var Type = require('./Type');
 
-var assertRecord = require('../helpers/assertRecord');
+var isIteratorRecord = require('../helpers/records/iterator-record');
 
 // https://262.ecma-international.org/14.0/#sec-iteratorstep
 
 module.exports = function IteratorStep(iteratorRecord) {
-	assertRecord(Type, 'Iterator Record', 'iteratorRecord', iteratorRecord);
+	if (!isIteratorRecord(iteratorRecord)) {
+		throw new $TypeError('Assertion failed: `iteratorRecord` must be an Iterator Record'); // step 1
+	}
 
 	var result = IteratorNext(iteratorRecord); // step 1
 	var done = IteratorComplete(result); // step 2

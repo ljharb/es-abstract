@@ -9,3 +9,4 @@ require('./isStringOrHole');
 require('./isStringOrUndefined');
 require('./OwnPropertyKeys');
 require('./mod');
+require('./records');

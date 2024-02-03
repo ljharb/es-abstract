@@ -13,7 +13,7 @@ var ToString = require('./ToString');
 var Type = require('./Type');
 
 var every = require('../helpers/every');
-var isMatchRecord = require('../helpers/isMatchRecord');
+var isMatchRecord = require('../helpers/records/match-record');
 
 var isStringOrUndefined = function isStringOrUndefined(s) {
 	return typeof s === 'undefined' || typeof s === 'string';

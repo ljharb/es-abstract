@@ -29,19 +29,18 @@ var hasNamedCaptures = require('has-named-captures')();
 
 var $getProto = require('../helpers/getProto');
 var $setProto = require('../helpers/setProto');
-var defineProperty = require('./helpers/defineProperty');
-var getInferredName = require('../helpers/getInferredName');
-var reduce = require('../helpers/reduce');
-var fromPropertyDescriptor = require('../helpers/fromPropertyDescriptor');
-var assertRecord = require('../helpers/assertRecord');
-var assertRecordTests = require('./helpers/assertRecord');
-var unserialize = require('./helpers/unserializeNumeric');
-var diffOps = require('./diffOps');
 var bufferTestCases = require('./bufferTestCases.json');
+var caseFolding = require('../helpers/caseFolding.json');
+var defineProperty = require('./helpers/defineProperty');
+var diffOps = require('./diffOps');
+var fromPropertyDescriptor = require('../helpers/fromPropertyDescriptor');
+var getInferredName = require('../helpers/getInferredName');
+var isPromiseCapabilityRecord = require('../helpers/records/promise-capability-record');
 var MAX_SAFE_INTEGER = require('../helpers/maxSafeInteger');
 var MAX_VALUE = require('../helpers/maxValue');
+var reduce = require('../helpers/reduce');
 var safeBigInt = require('./helpers/safeBigInt');
-var caseFolding = require('../helpers/caseFolding.json');
+var unserialize = require('./helpers/unserializeNumeric');
 
 var $BigInt = hasBigInts ? BigInt : null;
 
@@ -792,8 +791,6 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 
 		t.end();
 	});
-
-	assertRecordTests(ES, test);
 
 	test('IsAccessorDescriptor', function (t) {
 		forEach(v.nonUndefinedPrimitives, function (primitive) {
@@ -3743,9 +3740,12 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		C.prototype.then = function () {};
 
 		var record = ES.NewPromiseCapability(C);
-		t.doesNotThrow(function () {
-			assertRecord(ES.Type, 'PromiseCapability Record', 'return value', record);
-		});
+		t.equal(
+			isPromiseCapabilityRecord(record),
+			true,
+			'return value is a Promise Capability Record'
+		);
+
 		t.ok(record['[[Promise]]'] instanceof C, 'is an instance of the passed constructor');
 
 		t.deepEqual(calls, ['constructor']);
