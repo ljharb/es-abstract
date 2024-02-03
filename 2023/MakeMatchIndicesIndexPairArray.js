@@ -8,7 +8,6 @@ var GetMatchIndexPair = require('./GetMatchIndexPair');
 var IsArray = require('./IsArray');
 var OrdinaryObjectCreate = require('./OrdinaryObjectCreate');
 var ToString = require('./ToString');
-var Type = require('./Type');
 
 var every = require('../helpers/every');
 var isMatchRecord = require('../helpers/records/match-record');
@@ -26,7 +25,7 @@ var MAX_ARRAY_LENGTH = Math.pow(2, 32) - 1;
 // https://262.ecma-international.org/13.0/#sec-getmatchindexpair
 
 module.exports = function MakeMatchIndicesIndexPairArray(S, indices, groupNames, hasGroups) {
-	if (Type(S) !== 'String') {
+	if (typeof S !== 'string') {
 		throw new $TypeError('Assertion failed: `S` must be a String');
 	}
 	if (!IsArray(indices) || !every(indices, isMatchRecordOrUndefined)) {
@@ -35,7 +34,7 @@ module.exports = function MakeMatchIndicesIndexPairArray(S, indices, groupNames,
 	if (!IsArray(groupNames) || !every(groupNames, isStringOrUndefined)) {
 		throw new $TypeError('Assertion failed: `groupNames` must be a List of either Strings or `undefined`');
 	}
-	if (Type(hasGroups) !== 'Boolean') {
+	if (typeof hasGroups !== 'boolean') {
 		throw new $TypeError('Assertion failed: `hasGroups` must be a Boolean');
 	}
 

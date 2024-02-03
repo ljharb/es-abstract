@@ -6,12 +6,11 @@ var isNaN = require('../../helpers/isNaN');
 var isFinite = require('../../helpers/isFinite');
 
 var truncate = require('../truncate');
-var Type = require('../Type');
 
 // https://262.ecma-international.org/14.0/#sec-numeric-types-number-remainder
 
 module.exports = function NumberRemainder(n, d) {
-	if (Type(n) !== 'Number' || Type(d) !== 'Number') {
+	if (typeof n !== 'number' || typeof d !== 'number') {
 		throw new $TypeError('Assertion failed: `n` and `d` arguments must be Numbers');
 	}
 

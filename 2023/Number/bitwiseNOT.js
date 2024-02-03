@@ -3,12 +3,11 @@
 var $TypeError = require('es-errors/type');
 
 var ToInt32 = require('../ToInt32');
-var Type = require('../Type');
 
 // https://262.ecma-international.org/11.0/#sec-numeric-types-number-bitwiseNOT
 
 module.exports = function NumberBitwiseNOT(x) {
-	if (Type(x) !== 'Number') {
+	if (typeof x !== 'number') {
 		throw new $TypeError('Assertion failed: `x` argument must be a Number');
 	}
 	var oldValue = ToInt32(x);

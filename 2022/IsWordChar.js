@@ -8,7 +8,6 @@ var $indexOf = callBound('String.prototype.indexOf');
 
 var IsArray = require('./IsArray');
 var IsIntegralNumber = require('./IsIntegralNumber');
-var Type = require('./Type');
 var WordCharacters = require('./WordCharacters');
 
 var every = require('../helpers/every');
@@ -30,7 +29,7 @@ module.exports = function IsWordChar(e, InputLength, Input, IgnoreCase, Unicode)
 	if (!IsArray(Input) || !every(Input, isChar)) {
 		throw new $TypeError('Assertion failed: `Input` must be a List of characters');
 	}
-	if (Type(IgnoreCase) !== 'Boolean' || Type(Unicode) !== 'Boolean') {
+	if (typeof IgnoreCase !== 'boolean' || typeof Unicode !== 'boolean') {
 		throw new $TypeError('Assertion failed: `IgnoreCase` and `Unicode` must be booleans');
 	}
 

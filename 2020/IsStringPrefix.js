@@ -8,16 +8,14 @@ var isPrefixOf = require('../helpers/isPrefixOf');
 
 // var $charAt = callBound('String.prototype.charAt');
 
-var Type = require('./Type');
-
 // https://262.ecma-international.org/9.0/#sec-isstringprefix
 
 module.exports = function IsStringPrefix(p, q) {
-	if (Type(p) !== 'String') {
+	if (typeof p !== 'string') {
 		throw new $TypeError('Assertion failed: "p" must be a String');
 	}
 
-	if (Type(q) !== 'String') {
+	if (typeof q !== 'string') {
 		throw new $TypeError('Assertion failed: "q" must be a String');
 	}
 

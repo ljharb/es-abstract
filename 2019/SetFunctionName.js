@@ -8,7 +8,6 @@ var getSymbolDescription = require('get-symbol-description');
 
 var DefinePropertyOrThrow = require('./DefinePropertyOrThrow');
 var IsExtensible = require('./IsExtensible');
-var Type = require('./Type');
 
 // https://262.ecma-international.org/6.0/#sec-setfunctionname
 
@@ -19,11 +18,10 @@ module.exports = function SetFunctionName(F, name) {
 	if (!IsExtensible(F) || hasOwn(F, 'name')) {
 		throw new $TypeError('Assertion failed: `F` must be extensible, and must not have a `name` own property');
 	}
-	var nameType = Type(name);
-	if (nameType !== 'Symbol' && nameType !== 'String') {
+	if (typeof name !== 'symbol' && typeof name !== 'string') {
 		throw new $TypeError('Assertion failed: `name` must be a Symbol or a String');
 	}
-	if (nameType === 'Symbol') {
+	if (typeof name === 'symbol') {
 		var description = getSymbolDescription(name);
 		// eslint-disable-next-line no-param-reassign
 		name = typeof description === 'undefined' ? '' : '[' + description + ']';

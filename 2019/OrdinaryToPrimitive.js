@@ -15,7 +15,7 @@ module.exports = function OrdinaryToPrimitive(O, hint) {
 	if (Type(O) !== 'Object') {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
 	}
-	if (/* Type(hint) !== 'String' || */ hint !== 'string' && hint !== 'number') {
+	if (/* typeof hint !== 'string' || */ hint !== 'string' && hint !== 'number') {
 		throw new $TypeError('Assertion failed: `hint` must be "string" or "number"');
 	}
 

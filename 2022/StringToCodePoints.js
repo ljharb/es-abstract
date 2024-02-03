@@ -7,12 +7,11 @@ var callBound = require('call-bind/callBound');
 var $push = callBound('Array.prototype.push');
 
 var CodePointAt = require('./CodePointAt');
-var Type = require('./Type');
 
 // https://262.ecma-international.org/12.0/#sec-stringtocodepoints
 
 module.exports = function StringToCodePoints(string) {
-	if (Type(string) !== 'String') {
+	if (typeof string !== 'string') {
 		throw new $TypeError('Assertion failed: `string` must be a String');
 	}
 	var codePoints = [];

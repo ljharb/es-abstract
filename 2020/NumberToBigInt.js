@@ -7,14 +7,12 @@ var $RangeError = require('es-errors/range');
 var $SyntaxError = require('es-errors/syntax');
 var $TypeError = require('es-errors/type');
 
-var Type = require('./Type');
-
 var isInteger = require('../helpers/isInteger');
 
 // https://262.ecma-international.org/11.0/#sec-numbertobigint
 
 module.exports = function NumberToBigInt(number) {
-	if (Type(number) !== 'Number') {
+	if (typeof number !== 'number') {
 		throw new $TypeError('Assertion failed: `number` must be a String');
 	}
 	if (!isInteger(number)) {

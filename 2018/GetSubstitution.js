@@ -19,7 +19,6 @@ var Get = require('./Get');
 var IsArray = require('./IsArray');
 var ToObject = require('./ToObject');
 var ToString = require('./ToString');
-var Type = require('./Type');
 
 var isInteger = require('../helpers/isInteger');
 var isStringOrUndefined = require('../helpers/isStringOrUndefined');
@@ -28,12 +27,12 @@ var isStringOrUndefined = require('../helpers/isStringOrUndefined');
 
 // eslint-disable-next-line max-statements, max-params, max-lines-per-function
 module.exports = function GetSubstitution(matched, str, position, captures, namedCaptures, replacement) {
-	if (Type(matched) !== 'String') {
+	if (typeof matched !== 'string') {
 		throw new $TypeError('Assertion failed: `matched` must be a String');
 	}
 	var matchLength = matched.length;
 
-	if (Type(str) !== 'String') {
+	if (typeof str !== 'string') {
 		throw new $TypeError('Assertion failed: `str` must be a String');
 	}
 	var stringLength = str.length;
@@ -46,13 +45,13 @@ module.exports = function GetSubstitution(matched, str, position, captures, name
 		throw new $TypeError('Assertion failed: `captures` must be a List of Strings or `undefined`, got ' + inspect(captures));
 	}
 
-	if (Type(replacement) !== 'String') {
+	if (typeof replacement !== 'string') {
 		throw new $TypeError('Assertion failed: `replacement` must be a String');
 	}
 
 	var tailPos = position + matchLength;
 	var m = captures.length;
-	if (Type(namedCaptures) !== 'Undefined') {
+	if (typeof namedCaptures !== 'undefined') {
 		namedCaptures = ToObject(namedCaptures); // eslint-disable-line no-param-reassign
 	}
 
@@ -82,17 +81,17 @@ module.exports = function GetSubstitution(matched, str, position, captures, name
 					// $1 through $9, and not followed by a digit
 					var n = $parseInt(next, 10);
 					// if (n > m, impl-defined)
-					result += n <= m && Type(captures[n - 1]) === 'Undefined' ? '' : captures[n - 1];
+					result += n <= m && typeof captures[n - 1] === 'undefined' ? '' : captures[n - 1];
 					i += 1;
 				} else if (isDigit(next) && (nextIsLast || isDigit(nextNext))) {
 					// $00 through $99
 					var nn = next + nextNext;
 					var nnI = $parseInt(nn, 10) - 1;
 					// if nn === '00' or nn > m, impl-defined
-					result += nn <= m && Type(captures[nnI]) === 'Undefined' ? '' : captures[nnI];
+					result += nn <= m && typeof captures[nnI] === 'undefined' ? '' : captures[nnI];
 					i += 2;
 				} else if (next === '<') {
-					if (Type(namedCaptures) === 'Undefined') {
+					if (typeof namedCaptures === 'undefined') {
 						result += '$<';
 						i += 2;
 					} else {
@@ -102,7 +101,7 @@ module.exports = function GetSubstitution(matched, str, position, captures, name
 							var groupName = $strSlice(replacement, i + '$<'.length, endIndex);
 							var capture = Get(namedCaptures, groupName);
 
-							if (Type(capture) !== 'Undefined') {
+							if (typeof capture !== 'undefined') {
 								result += ToString(capture);
 							}
 							i += ('<' + groupName + '>').length;

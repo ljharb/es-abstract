@@ -5,16 +5,13 @@ var $TypeError = require('es-errors/type');
 var Call = require('./Call');
 var SameValue = require('./SameValue');
 var ToNumber = require('./ToNumber');
-var Type = require('./Type');
 
 var isNaN = require('../helpers/isNaN');
 
 // https://262.ecma-international.org/14.0/#sec-comparetypedarrayelements
 
 module.exports = function CompareTypedArrayElements(x, y, compareFn) {
-	var xType = Type(x);
-	var yType = Type(y);
-	if (xType !== yType || (xType !== 'BigInt' && xType !== 'Number')) {
+	if ((typeof x !== 'number' && typeof x !== 'bigint') || typeof x !== typeof y) {
 		throw new $TypeError('Assertion failed: `x` and `y` must be either a BigInt or a Number, and both must be the same type');
 	}
 	if (typeof compareFn !== 'function' && typeof compareFn !== 'undefined') {

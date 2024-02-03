@@ -4,7 +4,6 @@ var $TypeError = require('es-errors/type');
 
 var IsBigIntElementType = require('./IsBigIntElementType');
 var IsUnclampedIntegerElementType = require('./IsUnclampedIntegerElementType');
-var Type = require('./Type');
 var ValidateTypedArray = require('./ValidateTypedArray');
 
 var whichTypedArray = require('which-typed-array');
@@ -29,7 +28,7 @@ var table60 = {
 module.exports = function ValidateIntegerTypedArray(typedArray) {
 	var waitable = arguments.length > 1 ? arguments[1] : false; // step 1
 
-	if (Type(waitable) !== 'Boolean') {
+	if (typeof waitable !== 'boolean') {
 		throw new $TypeError('Assertion failed: `waitable` must be a Boolean');
 	}
 

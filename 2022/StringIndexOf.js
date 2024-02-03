@@ -4,8 +4,6 @@ var callBound = require('call-bind/callBound');
 
 var $TypeError = require('es-errors/type');
 
-var Type = require('./Type');
-
 var isInteger = require('../helpers/isInteger');
 
 var $slice = callBound('String.prototype.slice');
@@ -13,10 +11,10 @@ var $slice = callBound('String.prototype.slice');
 // https://262.ecma-international.org/12.0/#sec-stringindexof
 
 module.exports = function StringIndexOf(string, searchValue, fromIndex) {
-	if (Type(string) !== 'String') {
+	if (typeof string !== 'string') {
 		throw new $TypeError('Assertion failed: `string` must be a String');
 	}
-	if (Type(searchValue) !== 'String') {
+	if (typeof searchValue !== 'string') {
 		throw new $TypeError('Assertion failed: `searchValue` must be a String');
 	}
 	if (!isInteger(fromIndex) || fromIndex < 0) {

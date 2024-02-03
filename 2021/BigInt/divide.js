@@ -6,12 +6,10 @@ var $BigInt = GetIntrinsic('%BigInt%', true);
 var $RangeError = require('es-errors/range');
 var $TypeError = require('es-errors/type');
 
-var Type = require('../Type');
-
 // https://262.ecma-international.org/11.0/#sec-numeric-types-bigint-divide
 
 module.exports = function BigIntDivide(x, y) {
-	if (Type(x) !== 'BigInt' || Type(y) !== 'BigInt') {
+	if (typeof x !== 'bigint' || typeof y !== 'bigint') {
 		throw new $TypeError('Assertion failed: `x` and `y` arguments must be BigInts');
 	}
 	if (y === $BigInt(0)) {

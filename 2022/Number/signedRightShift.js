@@ -5,12 +5,11 @@ var $TypeError = require('es-errors/type');
 var ToInt32 = require('../ToInt32');
 var ToUint32 = require('../ToUint32');
 var modulo = require('../modulo');
-var Type = require('../Type');
 
 // https://262.ecma-international.org/12.0/#sec-numeric-types-number-signedRightShift
 
 module.exports = function NumberSignedRightShift(x, y) {
-	if (Type(x) !== 'Number' || Type(y) !== 'Number') {
+	if (typeof x !== 'number' || typeof y !== 'number') {
 		throw new $TypeError('Assertion failed: `x` and `y` arguments must be Numbers');
 	}
 

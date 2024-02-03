@@ -4,8 +4,6 @@ var callBound = require('call-bind/callBound');
 
 var $TypeError = require('es-errors/type');
 
-var Type = require('./Type');
-
 var isInteger = require('../helpers/isInteger');
 
 var $charAt = callBound('String.prototype.charAt');
@@ -13,13 +11,13 @@ var $charAt = callBound('String.prototype.charAt');
 // https://262.ecma-international.org/6.0/#sec-splitmatch
 
 module.exports = function SplitMatch(S, q, R) {
-	if (Type(S) !== 'String') {
+	if (typeof S !== 'string') {
 		throw new $TypeError('Assertion failed: `S` must be a String');
 	}
 	if (!isInteger(q)) {
 		throw new $TypeError('Assertion failed: `q` must be an integer');
 	}
-	if (Type(R) !== 'String') {
+	if (typeof R !== 'string') {
 		throw new $TypeError('Assertion failed: `R` must be a String');
 	}
 	var r = R.length;

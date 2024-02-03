@@ -5,7 +5,6 @@ var callBound = require('call-bind/callBound');
 var isLeadingSurrogate = require('../helpers/isLeadingSurrogate');
 var isTrailingSurrogate = require('../helpers/isTrailingSurrogate');
 
-var Type = require('./Type');
 var UTF16DecodeSurrogatePair = require('./UTF16DecodeSurrogatePair');
 
 var $charAt = callBound('String.prototype.charAt');
@@ -14,7 +13,7 @@ var $charCodeAt = callBound('String.prototype.charCodeAt');
 // https://262.ecma-international.org/11.0/#sec-codepointat
 
 module.exports = function CodePointAt(string, position) {
-	if (Type(string) !== 'String') {
+	if (typeof string !== 'string') {
 		throw new $TypeError('Assertion failed: `string` must be a String');
 	}
 	var size = string.length;

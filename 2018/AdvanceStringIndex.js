@@ -1,7 +1,5 @@
 'use strict';
 
-var Type = require('./Type');
-
 var isInteger = require('../helpers/isInteger');
 var isLeadingSurrogate = require('../helpers/isLeadingSurrogate');
 var isTrailingSurrogate = require('../helpers/isTrailingSurrogate');
@@ -14,13 +12,13 @@ var $charCodeAt = require('call-bind/callBound')('String.prototype.charCodeAt');
 // https://262.ecma-international.org/6.0/#sec-advancestringindex
 
 module.exports = function AdvanceStringIndex(S, index, unicode) {
-	if (Type(S) !== 'String') {
+	if (typeof S !== 'string') {
 		throw new $TypeError('Assertion failed: `S` must be a String');
 	}
 	if (!isInteger(index) || index < 0 || index > MAX_SAFE_INTEGER) {
 		throw new $TypeError('Assertion failed: `length` must be an integer >= 0 and <= 2**53');
 	}
-	if (Type(unicode) !== 'Boolean') {
+	if (typeof unicode !== 'boolean') {
 		throw new $TypeError('Assertion failed: `unicode` must be a Boolean');
 	}
 	if (!unicode) {

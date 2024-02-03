@@ -8,7 +8,6 @@ var forEach = require('../helpers/forEach');
 var $charCodeAt = callBound('String.prototype.charCodeAt');
 var $strSplit = callBound('String.prototype.split');
 
-var Type = require('./Type');
 var UnicodeEscape = require('./UnicodeEscape');
 
 var hasOwn = require('hasown');
@@ -26,7 +25,7 @@ var escapes = {
 };
 
 module.exports = function QuoteJSONString(value) {
-	if (Type(value) !== 'String') {
+	if (typeof value !== 'string') {
 		throw new $TypeError('Assertion failed: `value` must be a String');
 	}
 	var product = '"';

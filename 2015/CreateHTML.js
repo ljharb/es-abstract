@@ -8,12 +8,11 @@ var $replace = callBound('String.prototype.replace');
 
 var RequireObjectCoercible = require('./RequireObjectCoercible');
 var ToString = require('./ToString');
-var Type = require('./Type');
 
 // https://262.ecma-international.org/6.0/#sec-createhtml
 
 module.exports = function CreateHTML(string, tag, attribute, value) {
-	if (Type(tag) !== 'String' || Type(attribute) !== 'String') {
+	if (typeof tag !== 'string' || typeof attribute !== 'string') {
 		throw new $TypeError('Assertion failed: `tag` and `attribute` must be strings');
 	}
 	var str = RequireObjectCoercible(string);

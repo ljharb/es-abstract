@@ -8,12 +8,11 @@ var $SyntaxError = require('es-errors/syntax');
 var $TypeError = require('es-errors/type');
 
 var IsIntegralNumber = require('./IsIntegralNumber');
-var Type = require('./Type');
 
 // https://262.ecma-international.org/12.0/#sec-numbertobigint
 
 module.exports = function NumberToBigInt(number) {
-	if (Type(number) !== 'Number') {
+	if (typeof number !== 'number') {
 		throw new $TypeError('Assertion failed: `number` must be a String');
 	}
 	if (!IsIntegralNumber(number)) {

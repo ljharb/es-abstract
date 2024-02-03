@@ -10,7 +10,6 @@ var isTrailingSurrogate = require('../helpers/isTrailingSurrogate');
 var $charCodeAt = callBound('String.prototype.charCodeAt');
 
 var StringToCodePoints = require('./StringToCodePoints');
-var Type = require('./Type');
 var UnicodeEscape = require('./UnicodeEscape');
 var UTF16EncodeCodePoint = require('./UTF16EncodeCodePoint');
 
@@ -29,7 +28,7 @@ var escapes = {
 };
 
 module.exports = function QuoteJSONString(value) {
-	if (Type(value) !== 'String') {
+	if (typeof value !== 'string') {
 		throw new $TypeError('Assertion failed: `value` must be a String');
 	}
 	var product = '"';

@@ -2,12 +2,10 @@
 
 var $TypeError = require('es-errors/type');
 
-var Type = require('./Type');
-
 // https://262.ecma-international.org/6.0/#sec-createiterresultobject
 
 module.exports = function CreateIterResultObject(value, done) {
-	if (Type(done) !== 'Boolean') {
+	if (typeof done !== 'boolean') {
 		throw new $TypeError('Assertion failed: Type(done) is not Boolean');
 	}
 	return {

@@ -52,13 +52,13 @@ var table = {
 };
 
 module.exports = function ApplyStringOrNumericBinaryOperator(lval, opText, rval) {
-	if (Type(opText) !== 'String' || !HasOwnProperty(table, opText)) {
+	if (typeof opText !== 'string' || !HasOwnProperty(table, opText)) {
 		throw new $TypeError('Assertion failed: `opText` must be a valid operation string');
 	}
 	if (opText === '+') {
 		var lprim = ToPrimitive(lval);
 		var rprim = ToPrimitive(rval);
-		if (Type(lprim) === 'String' || Type(rprim) === 'String') {
+		if (typeof lprim === 'string' || typeof rprim === 'string') {
 			var lstr = ToString(lprim);
 			var rstr = ToString(rprim);
 			return lstr + rstr;

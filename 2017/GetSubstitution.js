@@ -18,7 +18,6 @@ var $charAt = callBound('String.prototype.charAt');
 var $strSlice = callBound('String.prototype.slice');
 
 var IsArray = require('./IsArray');
-var Type = require('./Type');
 
 var isInteger = require('../helpers/isInteger');
 var isStringOrUndefined = require('../helpers/isStringOrUndefined');
@@ -27,12 +26,12 @@ var isStringOrUndefined = require('../helpers/isStringOrUndefined');
 
 // eslint-disable-next-line max-statements, max-lines-per-function
 module.exports = function GetSubstitution(matched, str, position, captures, replacement) {
-	if (Type(matched) !== 'String') {
+	if (typeof matched !== 'string') {
 		throw new $TypeError('Assertion failed: `matched` must be a String');
 	}
 	var matchLength = matched.length;
 
-	if (Type(str) !== 'String') {
+	if (typeof str !== 'string') {
 		throw new $TypeError('Assertion failed: `str` must be a String');
 	}
 	var stringLength = str.length;
@@ -45,7 +44,7 @@ module.exports = function GetSubstitution(matched, str, position, captures, repl
 		throw new $TypeError('Assertion failed: `captures` must be a List of Strings, got ' + inspect(captures));
 	}
 
-	if (Type(replacement) !== 'String') {
+	if (typeof replacement !== 'string') {
 		throw new $TypeError('Assertion failed: `replacement` must be a String');
 	}
 
@@ -78,14 +77,14 @@ module.exports = function GetSubstitution(matched, str, position, captures, repl
 					// $1 through $9, and not followed by a digit
 					var n = $parseInt(next, 10);
 					// if (n > m, impl-defined)
-					result += n <= m && Type(captures[n - 1]) === 'Undefined' ? '' : captures[n - 1];
+					result += n <= m && typeof captures[n - 1] === 'undefined' ? '' : captures[n - 1];
 					i += 1;
 				} else if (isDigit(next) && (nextIsLast || isDigit(nextNext))) {
 					// $00 through $99
 					var nn = next + nextNext;
 					var nnI = $parseInt(nn, 10) - 1;
 					// if nn === '00' or nn > m, impl-defined
-					result += nn <= m && Type(captures[nnI]) === 'Undefined' ? '' : captures[nnI];
+					result += nn <= m && typeof captures[nnI] === 'undefined' ? '' : captures[nnI];
 					i += 2;
 				} else {
 					result += '$';

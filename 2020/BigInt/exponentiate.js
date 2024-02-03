@@ -6,12 +6,10 @@ var $BigInt = GetIntrinsic('%BigInt%', true);
 var $RangeError = require('es-errors/range');
 var $TypeError = require('es-errors/type');
 
-var Type = require('../Type');
-
 // https://262.ecma-international.org/11.0/#sec-numeric-types-bigint-exponentiate
 
 module.exports = function BigIntExponentiate(base, exponent) {
-	if (Type(base) !== 'BigInt' || Type(exponent) !== 'BigInt') {
+	if (typeof base !== 'bigint' || typeof exponent !== 'bigint') {
 		throw new $TypeError('Assertion failed: `base` and `exponent` arguments must be BigInts');
 	}
 	if (exponent < $BigInt(0)) {

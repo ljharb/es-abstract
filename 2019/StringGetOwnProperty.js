@@ -22,13 +22,13 @@ module.exports = function StringGetOwnProperty(S, P) {
 			str = $stringToString(S);
 		} catch (e) { /**/ }
 	}
-	if (Type(str) !== 'String') {
+	if (typeof str !== 'string') {
 		throw new $TypeError('Assertion failed: `S` must be a boxed string object');
 	}
 	if (!IsPropertyKey(P)) {
 		throw new $TypeError('Assertion failed: IsPropertyKey(P) is not true');
 	}
-	if (Type(P) !== 'String') {
+	if (typeof P !== 'string') {
 		return void undefined;
 	}
 	var index = CanonicalNumericIndexString(P);

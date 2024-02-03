@@ -6,7 +6,6 @@ var callBound = require('call-bind/callBound');
 var $indexOf = callBound('String.prototype.indexOf', true);
 
 var Canonicalize = require('./Canonicalize');
-var Type = require('./Type');
 
 var caseFolding = require('../helpers/caseFolding.json');
 var forEach = require('../helpers/forEach');
@@ -17,7 +16,7 @@ var A = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'; // st
 // https://262.ecma-international.org/8.0/#sec-runtime-semantics-wordcharacters-abstract-operation
 
 module.exports = function WordCharacters(IgnoreCase, Unicode) {
-	if (Type(IgnoreCase) !== 'Boolean' || Type(Unicode) !== 'Boolean') {
+	if (typeof IgnoreCase !== 'boolean' || typeof Unicode !== 'boolean') {
 		throw new $TypeError('Assertion failed: `IgnoreCase` and `Unicode` must be booleans');
 	}
 

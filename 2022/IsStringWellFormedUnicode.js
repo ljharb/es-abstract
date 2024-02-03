@@ -4,12 +4,10 @@ var CodePointAt = require('./CodePointAt');
 
 var $TypeError = require('es-errors/type');
 
-var Type = require('./Type');
-
 // https://262.ecma-international.org/13.0/#sec-isstringwellformedunicode
 
 module.exports = function IsStringWellFormedUnicode(string) {
-	if (Type(string) !== 'String') {
+	if (typeof string !== 'string') {
 		throw new $TypeError('Assertion failed: `string` must be a String');
 	}
 	var strLen = string.length; // step 1

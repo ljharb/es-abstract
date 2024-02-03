@@ -20,12 +20,10 @@ var hasNonWS = regexTester(nonWSregex);
 
 var $trim = require('string.prototype.trim');
 
-var Type = require('./Type');
-
 // https://262.ecma-international.org/13.0/#sec-stringtonumber
 
 module.exports = function StringToNumber(argument) {
-	if (Type(argument) !== 'String') {
+	if (typeof argument !== 'string') {
 		throw new $TypeError('Assertion failed: `argument` is not a String');
 	}
 	if (isBinary(argument)) {

@@ -5,12 +5,10 @@ var GetIntrinsic = require('get-intrinsic');
 var $String = GetIntrinsic('%String%');
 var $TypeError = require('es-errors/type');
 
-var Type = require('../Type');
-
 // https://262.ecma-international.org/11.0/#sec-numeric-types-bigint-tostring
 
 module.exports = function BigIntToString(x) {
-	if (Type(x) !== 'BigInt') {
+	if (typeof x !== 'bigint') {
 		throw new $TypeError('Assertion failed: `x` must be a BigInt');
 	}
 

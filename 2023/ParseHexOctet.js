@@ -8,14 +8,13 @@ var $TypeError = require('es-errors/type');
 
 var IsIntegralNumber = require('./IsIntegralNumber');
 var substring = require('./substring');
-var Type = require('./Type');
 
 var isNaN = require('../helpers/isNaN');
 
 // https://262.ecma-international.org/14.0/#sec-parsehexoctet
 
 module.exports = function ParseHexOctet(string, position) {
-	if (Type(string) !== 'String') {
+	if (typeof string !== 'string') {
 		throw new $TypeError('Assertion failed: `string` must be a String');
 	}
 	if (!IsIntegralNumber(position) || position < 0) {

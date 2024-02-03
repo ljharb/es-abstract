@@ -8,14 +8,13 @@ var $SyntaxError = require('es-errors/syntax');
 var $TypeError = require('es-errors/type');
 
 var DefinePropertyOrThrow = require('./DefinePropertyOrThrow');
-var Type = require('./Type');
 
 var setProto = require('../helpers/setProto');
 
 // https://262.ecma-international.org/6.0/#sec-stringcreate
 
 module.exports = function StringCreate(value, prototype) {
-	if (Type(value) !== 'String') {
+	if (typeof value !== 'string') {
 		throw new $TypeError('Assertion failed: `S` must be a String');
 	}
 

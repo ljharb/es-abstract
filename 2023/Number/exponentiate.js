@@ -14,14 +14,13 @@ var isNaN = require('../../helpers/isNaN');
 
 var IsInteger = require('../IsInteger');
 */
-var Type = require('../Type');
 
 // https://262.ecma-international.org/11.0/#sec-numeric-types-number-exponentiate
 
 /* eslint max-lines-per-function: 0, max-statements: 0 */
 
 module.exports = function NumberExponentiate(base, exponent) {
-	if (Type(base) !== 'Number' || Type(exponent) !== 'Number') {
+	if (typeof base !== 'number' || typeof exponent !== 'number') {
 		throw new $TypeError('Assertion failed: `base` and `exponent` arguments must be Numbers');
 	}
 	return $pow(base, exponent);

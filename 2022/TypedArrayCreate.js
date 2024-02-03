@@ -5,7 +5,6 @@ var $TypeError = require('es-errors/type');
 
 var IsArray = require('./IsArray');
 var IsConstructor = require('./IsConstructor');
-var Type = require('./Type');
 var ValidateTypedArray = require('./ValidateTypedArray');
 
 var availableTypedArrays = require('available-typed-arrays')();
@@ -38,7 +37,7 @@ module.exports = function TypedArrayCreate(constructor, argumentList) {
 
 	ValidateTypedArray(newTypedArray); // step 2
 
-	if (argumentList.length === 1 && Type(argumentList[0]) === 'Number') { // step 3
+	if (argumentList.length === 1 && typeof argumentList[0] === 'number') { // step 3
 		if (typedArrayLength(newTypedArray) < argumentList[0]) {
 			throw new $TypeError('Assertion failed: `argumentList[0]` must be <= `newTypedArray.length`'); // step 3.a
 		}

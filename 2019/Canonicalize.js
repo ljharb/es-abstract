@@ -8,18 +8,16 @@ var hasOwn = require('hasown');
 var $charCodeAt = callBound('String.prototype.charCodeAt');
 var $toUpperCase = callBound('String.prototype.toUpperCase');
 
-var Type = require('./Type');
-
 var caseFolding = require('../helpers/caseFolding.json');
 
 // https://262.ecma-international.org/6.0/#sec-runtime-semantics-canonicalize-ch
 
 module.exports = function Canonicalize(ch, IgnoreCase, Unicode) {
-	if (Type(ch) !== 'String') {
+	if (typeof ch !== 'string') {
 		throw new $TypeError('Assertion failed: `ch` must be a character');
 	}
 
-	if (Type(IgnoreCase) !== 'Boolean' || Type(Unicode) !== 'Boolean') {
+	if (typeof IgnoreCase !== 'boolean' || typeof Unicode !== 'boolean') {
 		throw new $TypeError('Assertion failed: `IgnoreCase` and `Unicode` must be Booleans');
 	}
 

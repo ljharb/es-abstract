@@ -13,7 +13,6 @@ var unbox = require('unbox-primitive');
 var CanonicalNumericIndexString = require('./CanonicalNumericIndexString');
 var IsInteger = require('./IsInteger');
 var IsPropertyKey = require('./IsPropertyKey');
-var Type = require('./Type');
 
 // https://262.ecma-international.org/6.0/#sec-stringgetindexproperty
 
@@ -25,7 +24,7 @@ module.exports = function StringGetIndexProperty(S, P) {
 		throw new $TypeError('Assertion failed: `P` must be a Property Key');
 	}
 
-	if (Type(P) !== 'String') {
+	if (typeof P !== 'string') {
 		return void undefined;
 	}
 

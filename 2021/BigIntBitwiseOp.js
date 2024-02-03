@@ -7,7 +7,6 @@ var $TypeError = require('es-errors/type');
 // var BinaryAnd = require('./BinaryAnd');
 // var BinaryOr = require('./BinaryOr');
 // var BinaryXor = require('./BinaryXor');
-var Type = require('./Type');
 // var modulo = require('./modulo');
 
 // var zero = $BigInt && $BigInt(0);
@@ -20,7 +19,7 @@ module.exports = function BigIntBitwiseOp(op, x, y) {
 	if (op !== '&' && op !== '|' && op !== '^') {
 		throw new $TypeError('Assertion failed: `op` must be `&`, `|`, or `^`');
 	}
-	if (Type(x) !== 'BigInt' || Type(y) !== 'BigInt') {
+	if (typeof x !== 'bigint' || typeof y !== 'bigint') {
 		throw new $TypeError('`x` and `y` must be BigInts');
 	}
 

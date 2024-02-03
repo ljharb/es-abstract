@@ -21,13 +21,13 @@ var SLOT = require('internal-slot');
 var setToStringTag = require('es-set-tostringtag');
 
 var RegExpStringIterator = function RegExpStringIterator(R, S, global, fullUnicode) {
-	if (Type(S) !== 'String') {
+	if (typeof S !== 'string') {
 		throw new $TypeError('`S` must be a string');
 	}
-	if (Type(global) !== 'Boolean') {
+	if (typeof global !== 'boolean') {
 		throw new $TypeError('`global` must be a boolean');
 	}
-	if (Type(fullUnicode) !== 'Boolean') {
+	if (typeof fullUnicode !== 'boolean') {
 		throw new $TypeError('`fullUnicode` must be a boolean');
 	}
 	SLOT.set(this, '[[IteratingRegExp]]', R);

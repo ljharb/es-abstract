@@ -17,7 +17,7 @@ var getFlags = require('regexp.prototype.flags');
 // https://262.ecma-international.org/13.0/#sec-regexphasflag
 
 module.exports = function RegExpHasFlag(R, codeUnit) {
-	if (Type(codeUnit) !== 'String' || codeUnit.length !== 1) {
+	if (typeof codeUnit !== 'string' || codeUnit.length !== 1) {
 		throw new $TypeError('Assertion failed: `string` must be a code unit - a String of length 1');
 	}
 

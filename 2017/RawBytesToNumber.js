@@ -11,7 +11,6 @@ var $slice = callBound('Array.prototype.slice');
 
 var hasOwnProperty = require('./HasOwnProperty');
 var IsArray = require('./IsArray');
-var Type = require('./Type');
 
 var bytesAsFloat32 = require('../helpers/bytesAsFloat32');
 var bytesAsFloat64 = require('../helpers/bytesAsFloat64');
@@ -44,7 +43,7 @@ module.exports = function RawBytesToNumber(type, rawBytes, isLittleEndian) {
 	if (!IsArray(rawBytes) || !every(rawBytes, isByteValue)) {
 		throw new $TypeError('Assertion failed: `rawBytes` must be an Array of bytes');
 	}
-	if (Type(isLittleEndian) !== 'Boolean') {
+	if (typeof isLittleEndian !== 'boolean') {
 		throw new $TypeError('Assertion failed: `isLittleEndian` must be a Boolean');
 	}
 

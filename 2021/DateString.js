@@ -8,16 +8,15 @@ var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oc
 var $isNaN = require('../helpers/isNaN');
 var padTimeComponent = require('../helpers/padTimeComponent');
 
-var Type = require('./Type');
-var WeekDay = require('./WeekDay');
-var MonthFromTime = require('./MonthFromTime');
-var YearFromTime = require('./YearFromTime');
 var DateFromTime = require('./DateFromTime');
+var MonthFromTime = require('./MonthFromTime');
+var WeekDay = require('./WeekDay');
+var YearFromTime = require('./YearFromTime');
 
 // https://262.ecma-international.org/9.0/#sec-datestring
 
 module.exports = function DateString(tv) {
-	if (Type(tv) !== 'Number' || $isNaN(tv)) {
+	if (typeof tv !== 'number' || $isNaN(tv)) {
 		throw new $TypeError('Assertion failed: `tv` must be a non-NaN Number');
 	}
 	var weekday = weekdays[WeekDay(tv)];

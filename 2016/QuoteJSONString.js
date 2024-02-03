@@ -11,8 +11,6 @@ var $toLowerCase = callBound('String.prototype.toLowerCase');
 var $strSlice = callBound('String.prototype.slice');
 var $strSplit = callBound('String.prototype.split');
 
-var Type = require('./Type');
-
 // https://262.ecma-international.org/6.0/#sec-quotejsonstring
 
 var escapes = {
@@ -24,7 +22,7 @@ var escapes = {
 };
 
 module.exports = function QuoteJSONString(value) {
-	if (Type(value) !== 'String') {
+	if (typeof value !== 'string') {
 		throw new $TypeError('Assertion failed: `value` must be a String');
 	}
 	var product = '"';
