@@ -1,10 +1,9 @@
 'use strict';
 
-var GetIntrinsic = require('get-intrinsic');
 var callBound = require('call-bind/callBound');
 
-var $RangeError = GetIntrinsic('%RangeError%');
-var $TypeError = GetIntrinsic('%TypeError%');
+var $RangeError = require('es-errors/range');
+var $TypeError = require('es-errors/type');
 
 var $charAt = callBound('String.prototype.charAt');
 var $reverse = callBound('Array.prototype.reverse');

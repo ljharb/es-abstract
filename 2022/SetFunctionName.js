@@ -1,10 +1,8 @@
 'use strict';
 
-var GetIntrinsic = require('get-intrinsic');
-
 var hasOwn = require('hasown');
 
-var $TypeError = GetIntrinsic('%TypeError%');
+var $TypeError = require('es-errors/type');
 
 var getSymbolDescription = require('get-symbol-description');
 

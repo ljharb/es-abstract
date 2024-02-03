@@ -1,14 +1,12 @@
 'use strict';
 
-var GetIntrinsic = require('get-intrinsic');
-
 var CodePointAt = require('./CodePointAt');
 var Type = require('./Type');
 
 var isInteger = require('../helpers/isInteger');
 var MAX_SAFE_INTEGER = require('../helpers/maxSafeInteger');
 
-var $TypeError = GetIntrinsic('%TypeError%');
+var $TypeError = require('es-errors/type');
 
 // https://262.ecma-international.org/11.0/#sec-advancestringindex
 

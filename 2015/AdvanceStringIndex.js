@@ -1,7 +1,5 @@
 'use strict';
 
-var GetIntrinsic = require('get-intrinsic');
-
 var Type = require('./Type');
 
 var isInteger = require('../helpers/isInteger');
@@ -9,7 +7,7 @@ var isLeadingSurrogate = require('../helpers/isLeadingSurrogate');
 var isTrailingSurrogate = require('../helpers/isTrailingSurrogate');
 var MAX_SAFE_INTEGER = require('../helpers/maxSafeInteger');
 
-var $TypeError = GetIntrinsic('%TypeError%');
+var $TypeError = require('es-errors/type');
 
 var $charCodeAt = require('call-bind/callBound')('String.prototype.charCodeAt');
 

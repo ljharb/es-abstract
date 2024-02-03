@@ -1,9 +1,8 @@
 'use strict';
 
-var GetIntrinsic = require('get-intrinsic');
 var isNegativeZero = require('is-negative-zero');
 
-var $TypeError = GetIntrinsic('%TypeError%');
+var $TypeError = require('es-errors/type');
 
 var Type = require('../Type');
 var NumberSameValueZero = require('./sameValueZero');

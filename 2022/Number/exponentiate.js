@@ -5,7 +5,7 @@ var GetIntrinsic = require('get-intrinsic');
 
 var $pow = GetIntrinsic('%Math.pow%');
 
-var $TypeError = GetIntrinsic('%TypeError%');
+var $TypeError = require('es-errors/type');
 
 /*
 var abs = require('../../helpers/abs');

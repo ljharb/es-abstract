@@ -3,8 +3,8 @@
 var GetIntrinsic = require('get-intrinsic');
 
 var $BigInt = GetIntrinsic('%BigInt%', true);
-var $RangeError = GetIntrinsic('%RangeError%');
-var $TypeError = GetIntrinsic('%TypeError%');
+var $RangeError = require('es-errors/range');
+var $TypeError = require('es-errors/type');
 
 var Type = require('../Type');
 

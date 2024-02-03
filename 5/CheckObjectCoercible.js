@@ -1,8 +1,6 @@
 'use strict';
 
-var GetIntrinsic = require('get-intrinsic');
-
-var $TypeError = GetIntrinsic('%TypeError%');
+var $TypeError = require('es-errors/type');
 
 // http://262.ecma-international.org/5.1/#sec-9.10
 

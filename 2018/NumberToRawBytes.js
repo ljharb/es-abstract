@@ -1,8 +1,6 @@
 'use strict';
 
-var GetIntrinsic = require('get-intrinsic');
-
-var $TypeError = GetIntrinsic('%TypeError%');
+var $TypeError = require('es-errors/type');
 
 var hasOwnProperty = require('./HasOwnProperty');
 var ToInt16 = require('./ToInt16');

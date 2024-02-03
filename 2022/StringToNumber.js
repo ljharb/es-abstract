@@ -4,7 +4,7 @@ var GetIntrinsic = require('get-intrinsic');
 
 var $Number = GetIntrinsic('%Number%');
 var $RegExp = GetIntrinsic('%RegExp%');
-var $TypeError = GetIntrinsic('%TypeError%');
+var $TypeError = require('es-errors/type');
 var $parseInteger = GetIntrinsic('%parseInt%');
 
 var callBound = require('call-bind/callBound');

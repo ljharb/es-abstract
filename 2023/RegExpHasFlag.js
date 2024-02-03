@@ -3,7 +3,7 @@
 var GetIntrinsic = require('get-intrinsic');
 var callBound = require('call-bind/callBound');
 
-var $TypeError = GetIntrinsic('%TypeError%');
+var $TypeError = require('es-errors/type');
 var $RegExpPrototype = GetIntrinsic('%RegExp.prototype%');
 
 var SameValue = require('./SameValue');

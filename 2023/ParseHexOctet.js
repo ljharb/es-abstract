@@ -3,8 +3,8 @@
 var GetIntrinsic = require('get-intrinsic');
 
 var $Number = GetIntrinsic('%Number%');
-var $SyntaxError = GetIntrinsic('%SyntaxError%');
-var $TypeError = GetIntrinsic('%TypeError%');
+var $SyntaxError = require('es-errors/syntax');
+var $TypeError = require('es-errors/type');
 
 var IsIntegralNumber = require('./IsIntegralNumber');
 var substring = require('./substring');

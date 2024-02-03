@@ -2,8 +2,8 @@
 
 var GetIntrinsic = require('get-intrinsic');
 
-var $SyntaxError = GetIntrinsic('%SyntaxError%');
-var $TypeError = GetIntrinsic('%TypeError%');
+var $SyntaxError = require('es-errors/syntax');
+var $TypeError = require('es-errors/type');
 var $Promise = GetIntrinsic('%Promise%', true);
 
 var callBound = require('call-bind/callBound');

@@ -2,10 +2,8 @@
 
 // TODO, semver-major: delete this
 
-var GetIntrinsic = require('get-intrinsic');
-
-var $TypeError = GetIntrinsic('%TypeError%');
-var $SyntaxError = GetIntrinsic('%SyntaxError%');
+var $TypeError = require('es-errors/type');
+var $SyntaxError = require('es-errors/syntax');
 
 var isMatchRecord = require('./records/match-record');
 var isPropertyDescriptor = require('./records/property-descriptor');

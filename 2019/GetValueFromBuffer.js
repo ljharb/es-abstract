@@ -2,7 +2,7 @@
 
 var GetIntrinsic = require('get-intrinsic');
 
-var $TypeError = GetIntrinsic('%TypeError%');
+var $TypeError = require('es-errors/type');
 var $Uint8Array = GetIntrinsic('%Uint8Array%', true);
 
 var callBound = require('call-bind/callBound');

@@ -3,9 +3,9 @@
 var GetIntrinsic = require('get-intrinsic');
 
 var $BigInt = GetIntrinsic('%BigInt%', true);
-var $RangeError = GetIntrinsic('%RangeError%');
-var $SyntaxError = GetIntrinsic('%SyntaxError%');
-var $TypeError = GetIntrinsic('%TypeError%');
+var $RangeError = require('es-errors/range');
+var $SyntaxError = require('es-errors/syntax');
+var $TypeError = require('es-errors/type');
 
 var IsIntegralNumber = require('./IsIntegralNumber');
 var Type = require('./Type');

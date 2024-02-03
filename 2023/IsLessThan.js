@@ -3,7 +3,7 @@
 var GetIntrinsic = require('get-intrinsic');
 
 var $Number = GetIntrinsic('%Number%');
-var $TypeError = GetIntrinsic('%TypeError%');
+var $TypeError = require('es-errors/type');
 var min = GetIntrinsic('%Math.min%');
 
 var $isNaN = require('../helpers/isNaN');

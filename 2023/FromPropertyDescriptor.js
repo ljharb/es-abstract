@@ -1,8 +1,6 @@
 'use strict';
 
-var GetIntrinsic = require('get-intrinsic');
-
-var $TypeError = GetIntrinsic('%TypeError%');
+var $TypeError = require('es-errors/type');
 
 var isPropertyDescriptor = require('../helpers/records/property-descriptor');
 var fromPropertyDescriptor = require('../helpers/fromPropertyDescriptor');

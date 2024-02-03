@@ -3,9 +3,9 @@
 var GetIntrinsic = require('get-intrinsic');
 var callBound = require('call-bind/callBound');
 
-var $RangeError = GetIntrinsic('%RangeError%');
-var $SyntaxError = GetIntrinsic('%SyntaxError%');
-var $TypeError = GetIntrinsic('%TypeError%');
+var $RangeError = require('es-errors/range');
+var $SyntaxError = require('es-errors/syntax');
+var $TypeError = require('es-errors/type');
 var $BigInt = GetIntrinsic('%BigInt%', true);
 
 var hasOwnProperty = require('./HasOwnProperty');

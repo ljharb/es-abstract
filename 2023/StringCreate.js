@@ -4,8 +4,8 @@ var GetIntrinsic = require('get-intrinsic');
 
 var $Object = GetIntrinsic('%Object%');
 var $StringPrototype = GetIntrinsic('%String.prototype%');
-var $SyntaxError = GetIntrinsic('%SyntaxError%');
-var $TypeError = GetIntrinsic('%TypeError%');
+var $SyntaxError = require('es-errors/syntax');
+var $TypeError = require('es-errors/type');
 
 var DefinePropertyOrThrow = require('./DefinePropertyOrThrow');
 var Type = require('./Type');

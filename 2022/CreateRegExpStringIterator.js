@@ -3,7 +3,7 @@
 var GetIntrinsic = require('get-intrinsic');
 var hasSymbols = require('has-symbols')();
 
-var $TypeError = GetIntrinsic('%TypeError%');
+var $TypeError = require('es-errors/type');
 var IteratorPrototype = GetIntrinsic('%IteratorPrototype%', true);
 
 var AdvanceStringIndex = require('./AdvanceStringIndex');

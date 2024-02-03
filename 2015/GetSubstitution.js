@@ -3,7 +3,7 @@
 
 var GetIntrinsic = require('get-intrinsic');
 
-var $TypeError = GetIntrinsic('%TypeError%');
+var $TypeError = require('es-errors/type');
 var $parseInt = GetIntrinsic('%parseInt%');
 
 var inspect = require('object-inspect');
