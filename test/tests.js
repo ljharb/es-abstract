@@ -5920,6 +5920,16 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('IsDetachedBufer (Shared Array Buffers)', { skip: typeof SharedArrayBuffer !== 'function' }, function (t) {
+		var sab = new SharedArrayBuffer(1);
+		t.equal(ES.IsDetachedBuffer(sab), false, 'a new SharedArrayBuffer is not detached');
+
+		var zsab = new SharedArrayBuffer(0);
+		t.equal(ES.IsDetachedBuffer(zsab), false, 'a new zero-length SharedArrayBuffer is not detached');
+
+		t.end();
+	});
+
 	test('EnumerableOwnProperties', function (t) {
 		t['throws'](
 			function () { ES.EnumerableOwnProperties({}, 'not key, value, or key+value'); },
@@ -10440,9 +10450,11 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	});
 
 	test('SetValueInBuffer', function (t) {
+		var order = 'Unordered';
+
 		forEach(v.primitives.concat(v.objects), function (nonAB) {
 			t['throws'](
-				function () { ES.SetValueInBuffer(nonAB, 0, 'Int8', 0, false, 'Unordered'); },
+				function () { ES.SetValueInBuffer(nonAB, 0, 'Int8', 0, false, order); },
 				TypeError,
 				debug(nonAB) + ' is not an ArrayBuffer'
 			);
@@ -10453,7 +10465,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 			forEach(v.notNonNegativeIntegers, function (nonNonNegativeInteger) {
 				st['throws'](
-					function () { ES.SetValueInBuffer(new ArrayBuffer(8), nonNonNegativeInteger, 'Int8', 0, isTypedArray, 'Unordered'); },
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), nonNonNegativeInteger, 'Int8', 0, isTypedArray, order); },
 					TypeError,
 					debug(nonNonNegativeInteger) + ' is not a valid byte index'
 				);
@@ -10461,7 +10473,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 			forEach(v.nonStrings.concat('not a valid type'), function (nonString) {
 				st['throws'](
-					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, nonString, 0, isTypedArray, 'Unordered'); },
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, nonString, 0, isTypedArray, order); },
 					TypeError,
 					'type: ' + debug(nonString) + ' is not a valid String (or type) value'
 				);
@@ -10469,13 +10481,13 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 			forEach(v.nonBooleans, function (nonBoolean) {
 				st['throws'](
-					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'Int8', 0, nonBoolean, 'Unordered'); },
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'Int8', 0, nonBoolean, order); },
 					TypeError,
 					'isTypedArray: ' + debug(nonBoolean) + ' is not a valid Boolean value'
 				);
 
 				st['throws'](
-					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'Int8', 0, isTypedArray, 'Unordered', nonBoolean); },
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'Int8', 0, isTypedArray, order, nonBoolean); },
 					TypeError,
 					'isLittleEndian: ' + debug(nonBoolean) + ' is not a valid Boolean value'
 				);
@@ -10491,13 +10503,13 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 			if (hasBigInts) {
 				st['throws'](
-					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'Int8', $BigInt(0), isTypedArray, 'Unordered'); },
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'Int8', $BigInt(0), isTypedArray, order); },
 					TypeError,
 					debug($BigInt(0)) + ' is not a number, but the given type requires one'
 				);
 
 				st['throws'](
-					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'BigUint64', 0, isTypedArray, 'Unordered'); },
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'BigUint64', 0, isTypedArray, order); },
 					TypeError,
 					debug(0) + ' is not a bigint, but the given type requires one'
 				);
@@ -10514,9 +10526,19 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				s2t.equal(ES.DetachArrayBuffer(buffer), null, 'detaching returns null');
 
 				s2t['throws'](
-					function () { ES.SetValueInBuffer(buffer, 0, 'Int8', 0, isTypedArray, 'Unordered'); },
+					function () { ES.SetValueInBuffer(buffer, 0, 'Int8', 0, isTypedArray, order); },
 					TypeError,
 					'detached buffers throw'
+				);
+
+				s2t.end();
+			});
+
+			st.test('SharedArrayBuffers supported', { skip: typeof SharedArrayBuffer !== 'function' }, function (s2t) {
+				s2t['throws'](
+					function () { ES.SetValueInBuffer(new SharedArrayBuffer(0), 0, 'Int8', 0, true, order); },
+					SyntaxError,
+					'SAB not yet supported'
 				);
 
 				s2t.end();
@@ -10550,7 +10572,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 					/*
 					st.equal(
-						ES.SetValueInBuffer(testCase.buffer, 0, type, true, 'Unordered'),
+						ES.SetValueInBuffer(testCase.buffer, 0, type, true, order),
 						defaultEndianness === testCase.endian ? testCase[type].little.value] : testCase[type].big.value,
 						'buffer holding ' + debug(testCase.value) + ' (' + testCase.endian + ' endian) with type ' + type + ', default endian, yields expected value'
 					);
@@ -10562,7 +10584,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 					clearBuffer(buffer);
 
 					st.equal(
-						ES.SetValueInBuffer(buffer, 0, type, valToSet, isTypedArray, 'Unordered', true),
+						ES.SetValueInBuffer(buffer, 0, type, valToSet, isTypedArray, order, true),
 						void undefined,
 						'returns undefined'
 					);
@@ -10576,7 +10598,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 						clearBuffer(buffer);
 
 						st.equal(
-							ES.SetValueInBuffer(buffer, 0, type, valToSet, isTypedArray, 'Unordered', false),
+							ES.SetValueInBuffer(buffer, 0, type, valToSet, isTypedArray, order, false),
 							void undefined,
 							'returns undefined'
 						);
@@ -12727,6 +12749,22 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 			} else {
 				t.equal(ES.RegExpHasFlag(allFlagsU, flag), true, debug(allFlagsU) + ' has flag ' + flag);
 			}
+		});
+
+		t.end();
+	});
+
+	test('SetValueInBuffer', function (t) {
+		var order = 'Unordered';
+
+		t.test('SharedArrayBuffers supported', { skip: typeof SharedArrayBuffer !== 'function' }, function (st) {
+			st['throws'](
+				function () { ES.SetValueInBuffer(new SharedArrayBuffer(0), 0, 'Int8', 0, true, order); },
+				SyntaxError,
+				'SAB not yet supported'
+			);
+
+			st.end();
 		});
 
 		t.end();
