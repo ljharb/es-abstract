@@ -10,9 +10,7 @@ var $SyntaxError = GetIntrinsic('%SyntaxError%');
 var StringToBigInt = require('./StringToBigInt');
 var ToPrimitive = require('./ToPrimitive');
 
-var isNaN = require('../helpers/isNaN');
-
-// https://262.ecma-international.org/11.0/#sec-tobigint
+// https://262.ecma-international.org/13.0/#sec-tobigint
 
 module.exports = function ToBigInt(argument) {
 	if (!$BigInt) {
@@ -35,7 +33,7 @@ module.exports = function ToBigInt(argument) {
 
 	if (typeof prim === 'string') {
 		var n = StringToBigInt(prim);
-		if (isNaN(n)) {
+		if (typeof n === 'undefined') {
 			throw new $TypeError('Failed to parse String to BigInt');
 		}
 		return n;

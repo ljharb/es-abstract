@@ -10666,6 +10666,13 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			st.equal(ES.ToBigInt(true), BigInt(1), 'true becomes 1n');
 			st.equal(ES.ToBigInt(false), BigInt(0), 'true becomes 0n');
 
+			st.equal(ES.ToBigInt(''), BigInt(0), 'empty string becomes 0n');
+			st['throws'](
+				function () { ES.ToBigInt('a'); },
+				TypeError,
+				debug('a') + ' can not be parsed to a bigint'
+			);
+
 			forEach(v.bigints, function (bigint) {
 				st.equal(
 					ES.ToBigInt(bigint),
