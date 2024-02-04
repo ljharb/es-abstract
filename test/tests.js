@@ -4504,6 +4504,14 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				);
 			});
 
+			forEach(v.nonNumbers, function (nonNumber) {
+				st['throws'](
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'Int8', nonNumber); },
+					TypeError,
+					debug(nonNumber) + ' is not a valid Number or BigInt value'
+				);
+			});
+
 			st.test('can detach', { skip: !canDetach }, function (s2t) {
 				var buffer = new ArrayBuffer(8);
 				s2t.equal(ES.DetachArrayBuffer(buffer), null, 'detaching returns null');
@@ -10473,6 +10481,34 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				);
 			});
 
+			forEach(v.nonNumbers, function (nonNumber) {
+				st['throws'](
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'Int8', nonNumber, isTypedArray, order); },
+					TypeError,
+					debug(nonNumber) + ' is not a valid Number or BigInt value'
+				);
+			});
+
+			if (hasBigInts) {
+				st['throws'](
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'Int8', $BigInt(0), isTypedArray, 'Unordered'); },
+					TypeError,
+					debug($BigInt(0)) + ' is not a number, but the given type requires one'
+				);
+
+				st['throws'](
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'BigUint64', 0, isTypedArray, 'Unordered'); },
+					TypeError,
+					debug(0) + ' is not a bigint, but the given type requires one'
+				);
+			}
+
+			st['throws'](
+				function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'Int8', 0, isTypedArray, 'invalid order'); },
+				TypeError,
+				'invalid order'
+			);
+
 			st.test('can detach', { skip: !canDetach }, function (s2t) {
 				var buffer = new ArrayBuffer(8);
 				s2t.equal(ES.DetachArrayBuffer(buffer), null, 'detaching returns null');
@@ -10495,14 +10531,22 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 					'Uint16',
 					'Int32',
 					'Uint32',
+					hasBigInts ? bigIntTypes : [],
 					'Float32',
 					'Float64'
 				), function (type) {
+					var isBigInt = type === 'BigInt64' || type === 'BigUint64';
+					var Z = isBigInt ? $BigInt : Number;
 					var elementSize = elementSizes['$' + (type === 'Uint8C' ? 'Uint8Clamped' : type) + 'Array'];
 					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
 					var value = unserialize(testCase.value);
-					var valToSet = type === 'Uint8Clamped' && value > 255 ? 255 : value;
+
+					if (isBigInt && (!isFinite(value) || Math.floor(value) !== value)) {
+						return;
+					}
+
+					var valToSet = type === 'Uint8Clamped' && value > 255 ? 255 : Z(value);
 
 					/*
 					st.equal(
@@ -14382,6 +14426,14 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 	});
 
 	test('WordCharacters', function (t) {
+		forEach([].concat(v.primitives, v.objects), function (nonRER) {
+			t['throws'](
+				function () { ES.WordCharacters(nonRER); },
+				TypeError,
+				debug(nonRER) + ' is not a RegularExpressionRecord'
+			);
+		});
+
 		var rer = {
 			'[[IgnoreCase]]': false,
 			'[[Multiline]]': false,
@@ -14392,13 +14444,13 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 
 		forEach(v.nonBooleans, function (nonBoolean) {
 			t['throws'](
-				function () { ES.Canonicalize(assign({}, rer, { '[[IgnoreCase]]': nonBoolean })); },
+				function () { ES.WordCharacters(assign({}, rer, { '[[IgnoreCase]]': nonBoolean })); },
 				TypeError,
 				'[[IgnoreCase]]: ' + debug(nonBoolean) + ' is not a Boolean'
 			);
 
 			t['throws'](
-				function () { ES.Canonicalize(assign({}, rer, { '[[Unicode]]': nonBoolean })); },
+				function () { ES.WordCharacters(assign({}, rer, { '[[Unicode]]': nonBoolean })); },
 				TypeError,
 				'[[Unicode]]: ' + debug(nonBoolean) + ' is not a Boolean'
 			);
