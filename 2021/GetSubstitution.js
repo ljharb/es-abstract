@@ -94,17 +94,15 @@ module.exports = function GetSubstitution(matched, str, position, captures, name
 					result += nn <= m && Type(captures[nnI]) === 'Undefined' ? '' : captures[nnI];
 					i += 2;
 				} else if (next === '<') {
-					// eslint-disable-next-line max-depth
 					if (Type(namedCaptures) === 'Undefined') {
 						result += '$<';
 						i += 2;
 					} else {
 						var endIndex = $indexOf(replacement, '>', i);
-						// eslint-disable-next-line max-depth
 						if (endIndex > -1) {
 							var groupName = $strSlice(replacement, i + '$<'.length, endIndex);
 							var capture = Get(namedCaptures, groupName);
-							// eslint-disable-next-line max-depth
+
 							if (Type(capture) !== 'Undefined') {
 								result += ToString(capture);
 							}
