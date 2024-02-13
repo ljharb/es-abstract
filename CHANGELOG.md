@@ -1,3 +1,19 @@
+1.22.4 / 2024-02-13
+=================
+  * [Fix] `ES2017`+: `IsDetachedBuffer`: properly allow SABs
+  * [Fix] `ES2022`+: `ToBigInt`: properly throw on an unparseable string
+  * [Fix] `ES2015`+: `ValidateTypedArray`: proper detachment check and return value
+  * [Fix] `ES2022`+: `GetSubstitution`: match updated semantics
+  * [Refactor] prefer `typeof` over `Type()`, except for Object, where possible
+  * [Refactor] use `es-errors` instead of `get-intrinsic` where possible
+  * [Refactor] use `es-define-property`
+  * [Refactor] records: extract predicates to individual files
+  * [Refactor] `ES2015`+: `Canonicalize`, `WordCharacters`: use explicit `.json` extension for imports
+  * [Deps] update `array-buffer-byte-length`, `arraybuffer.prototype.slice`, `available-typed-arrays`, `call-bind`, `es-set-tostringtag`, `get-intrinsic`, `get-symbol-description`, `has-proper    ty-descriptors`, `has-property-descriptors`, `hasown`, `internal-slot`, `is-array-buffer`, `is-typed-array`, `object.assign`, `regexp.prototype.flags`, `safe-array-concat`, `safe-regex-test`, `typed-array-buffer`, `which-typed-array`
+  * [eslint] remove unused overrides
+  * [Tests] increase/fix coverage
+  * [Dev Deps] update `aud`, `npmignore`, `mock-property`, `tape`
+
 1.22.3 / 2023-10-20
 =================
   * [Fix] `ES2015`+: `GetSubstitution`: accept `undefined` instead of a hole
