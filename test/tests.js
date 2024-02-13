@@ -26,6 +26,7 @@ var v = require('es-value-fixtures');
 var mockProperty = require('mock-property');
 var isRegisteredSymbol = require('is-registered-symbol');
 var hasNamedCaptures = require('has-named-captures')();
+var $defineProperty = require('es-define-property');
 
 var $getProto = require('../helpers/getProto');
 var $setProto = require('../helpers/setProto');
@@ -2069,7 +2070,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				debug(secondSentinel) + ' is installed on "' + debug(propertyKey) + '" on the object'
 			);
 
-			t.test('with defineProperty', { skip: !defineProperty.oDP }, function (st) {
+			t.test('with defineProperty', { skip: !$defineProperty }, function (st) {
 				var nonWritable = defineProperty({}, propertyKey, { configurable: true, writable: false });
 
 				var nonWritableStatus = ES.CreateDataProperty(nonWritable, propertyKey, sentinel);
@@ -2699,7 +2700,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
-		t.test('non-enumerable names', { skip: !defineProperty.oDP }, function (st) {
+		t.test('non-enumerable names', { skip: !$defineProperty }, function (st) {
 			var O = { a: 1 };
 			defineProperty(O, 'b', { enumerable: false, value: 2 });
 			if (v.hasSymbols) {
@@ -2919,7 +2920,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.equal(ES.GetV(obj, 'a'), obj.a, 'returns property if it exists');
 		t.equal(ES.GetV(obj, 'b'), undefined, 'returns undefiend if property does not exist');
 
-		t.test('getter observability of the receiver', { skip: !defineProperty.oDP || !Object.isExtensible(Number.prototype) }, function (st) {
+		t.test('getter observability of the receiver', { skip: !$defineProperty || !Object.isExtensible(Number.prototype) }, function (st) {
 			var receivers = [];
 
 			st.teardown(mockProperty(Number.prototype, 'foo', {
@@ -4014,7 +4015,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			);
 		}
 
-		t.test('ES5+', { skip: !defineProperty.oDP }, function (st) {
+		t.test('ES5+', { skip: !$defineProperty }, function (st) {
 			var O = {};
 			defineProperty(O, 'foo', {
 				configurable: false,
@@ -4300,7 +4301,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		ES.Set(o, 'key', value, true);
 		t.deepEqual(o, { key: value }, 'key is set');
 
-		t.test('nonwritable', { skip: !defineProperty.oDP }, function (st) {
+		t.test('nonwritable', { skip: !$defineProperty }, function (st) {
 			var obj = { a: value };
 			defineProperty(obj, 'a', { writable: false });
 
@@ -4320,7 +4321,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
-		t.test('nonconfigurable', { skip: !defineProperty.oDP }, function (st) {
+		t.test('nonconfigurable', { skip: !$defineProperty }, function (st) {
 			var obj = { a: value };
 			defineProperty(obj, 'a', { configurable: false });
 
@@ -5163,7 +5164,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.test('current is undefined', function (st) {
 			var propertyKey = 'howdy';
 
-			st.test('generic descriptor', { skip: !defineProperty.oDP }, function (s2t) {
+			st.test('generic descriptor', { skip: !$defineProperty }, function (s2t) {
 				var generic = v.genericDescriptor();
 				generic['[[Enumerable]]'] = true;
 				var O = {};
@@ -5187,7 +5188,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 			st.test('data descriptor', function (s2t) {
 				var data = v.descriptors.enumerable(v.dataDescriptor());
-				if (!defineProperty.oDP) {
+				if (!$defineProperty) {
 					// IE 8 can't handle defining a new property with an incomplete descriptor
 					data = v.descriptors.configurable(v.descriptors.writable(data));
 				}
@@ -5215,7 +5216,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				s2t.end();
 			});
 
-			st.test('accessor descriptor', { skip: !defineProperty.oDP }, function (s2t) {
+			st.test('accessor descriptor', { skip: !$defineProperty }, function (s2t) {
 				var count = 0;
 				var accessor = v.accessorDescriptor();
 				accessor['[[Enumerable]]'] = true;
@@ -5959,7 +5960,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 			'returns enumerable own entries'
 		);
 
-		t.test('getters changing properties of unvisited entries', { skip: !defineProperty.oDP }, function (st) {
+		t.test('getters changing properties of unvisited entries', { skip: !$defineProperty }, function (st) {
 			var o = { a: 1, b: 2, c: 3, d: 4 };
 			defineProperty(o, 'a', {
 				enumerable: true,
@@ -6847,7 +6848,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 				st.deepEqual(keys(result), keys(Object(objectCoercible)), 'target ends up with keys of ' + debug(objectCoercible));
 			});
 
-			st.test('enumerable accessor property', { skip: !defineProperty.oDP }, function (s2t) {
+			st.test('enumerable accessor property', { skip: !$defineProperty }, function (s2t) {
 				var target = {};
 				var source = {};
 				defineProperty(source, 'a', {
@@ -7115,7 +7116,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 			'returns enumerable own entries'
 		);
 
-		t.test('getters changing properties of unvisited entries', { skip: !defineProperty.oDP }, function (st) {
+		t.test('getters changing properties of unvisited entries', { skip: !$defineProperty }, function (st) {
 			var o = { a: 1, b: 2, c: 3, d: 4 };
 			defineProperty(o, 'a', {
 				enumerable: true,
@@ -8686,7 +8687,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				st.deepEqual(keys(result), keys(Object(objectCoercible)), 'target ends up with keys of ' + debug(objectCoercible));
 			});
 
-			st.test('enumerable accessor property', { skip: !defineProperty.oDP }, function (s2t) {
+			st.test('enumerable accessor property', { skip: !$defineProperty }, function (s2t) {
 				var target = {};
 				var source = {};
 				defineProperty(source, 'a', {
@@ -8904,7 +8905,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 		var iterator = ES.CreateRegExpStringIterator(/a/, '', false, false);
 		t.deepEqual(keys(iterator), [], 'iterator has no enumerable keys');
-		if (defineProperty.oDP) {
+		if ($defineProperty) {
 			for (var key in iterator) { // eslint-disable-line no-restricted-syntax
 				t.fail(debug(key) + ' should not be an enumerable key');
 			}
@@ -11417,10 +11418,10 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 				st.deepEqual(ta, new TA([Z(1), Z(10), Z(3)]), name + ': target is updated');
 			});
 
-			st.test('getters are supported, and can detach', { skip: !defineProperty.oDP || !canDetach }, function (s2t) {
+			st.test('getters are supported, and can detach', { skip: !$defineProperty || !canDetach }, function (s2t) {
 				var ta = new Uint8Array([1, 2, 3]);
 				var obj = { length: 1 };
-				defineProperty.oDP(obj, '0', { get: function () { ES.DetachArrayBuffer(ta.buffer); return 10; } });
+				$defineProperty(obj, '0', { get: function () { ES.DetachArrayBuffer(ta.buffer); return 10; } });
 
 				s2t['throws'](
 					function () { ES.SetTypedArrayFromArrayLike(ta, 1, obj); },

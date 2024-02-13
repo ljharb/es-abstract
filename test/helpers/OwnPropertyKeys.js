@@ -2,6 +2,7 @@
 
 var test = require('tape');
 var hasSymbols = require('has-symbols')();
+var $defineProperty = require('es-define-property');
 
 var OwnPropertyKeys = require('../../helpers/OwnPropertyKeys');
 var defineProperty = require('./defineProperty');
@@ -19,7 +20,7 @@ test('OwnPropertyKeys', function (t) {
 		st.end();
 	});
 
-	t.test('non-enumerables', { skip: !defineProperty.oDP }, function (st) {
+	t.test('non-enumerables', { skip: !$defineProperty }, function (st) {
 		var o = { a: 1, b: 42, c: NaN };
 		defineProperty(o, 'b', { enumerable: false, value: 42 });
 		defineProperty(o, 'c', { enumerable: false, get: function () { return NaN; } });
