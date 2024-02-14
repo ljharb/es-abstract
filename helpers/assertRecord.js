@@ -21,7 +21,7 @@ var predicates = {
 	'RegExp Record': isRegExpRecord
 };
 
-module.exports = function assertRecord(recordType, argumentName, value) {
+module.exports = function assertRecord(Type, recordType, argumentName, value) {
 	var predicate = predicates[recordType];
 	if (typeof predicate !== 'function') {
 		throw new $SyntaxError('unknown record type: ' + recordType);
