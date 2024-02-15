@@ -7773,7 +7773,7 @@ var es2019 = function ES2019(ES, ops, expectedMissing, skips) {
 	});
 
 	test('AsyncFromSyncIteratorContinuation', function (t) {
-		forEach(v.nonObjects, function (nonObject) {
+		forEach(v.primitives, function (nonObject) {
 			t['throws'](
 				function () { ES.AsyncFromSyncIteratorContinuation(nonObject); },
 				TypeError,
@@ -14134,7 +14134,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 	});
 
 	test('KeyForSymbol', function (t) {
-		forEach(v.nonSymbols, function (nonSymbol) {
+		forEach(v.nonSymbolPrimitives, function (nonSymbol) {
 			t['throws'](
 				function () { ES.KeyForSymbol(nonSymbol); },
 				TypeError,
