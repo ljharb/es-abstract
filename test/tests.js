@@ -12089,6 +12089,130 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('DefineMethodProperty', function (t) {
+		var enumerable = true;
+		var nonEnumerable = false;
+
+		forEach(v.primitives, function (nonObject) {
+			t['throws'](
+				function () { ES.DefineMethodProperty(nonObject, 'key', function () {}, enumerable); },
+				TypeError,
+				'O must be an Object; ' + debug(nonObject) + ' is not one'
+			);
+		});
+
+		forEach(v.nonPropertyKeys, function (nonPropertyKey) {
+			t['throws'](
+				function () { ES.DefineMethodProperty({}, nonPropertyKey, function () {}, enumerable); },
+				TypeError,
+				debug(nonPropertyKey) + ' is not a Property Key'
+			);
+		});
+
+		forEach(v.nonFunctions, function (nonFunction) {
+			t['throws'](
+				function () { ES.DefineMethodProperty({}, 'key', nonFunction, enumerable); },
+				TypeError,
+				debug(nonFunction) + ' is not a Function'
+			);
+		});
+
+		forEach(v.nonBooleans, function (nonBoolean) {
+			t['throws'](
+				function () { ES.DefineMethodProperty({}, 'key', function () {}, nonBoolean); },
+				TypeError,
+				debug(nonBoolean) + ' is not a Boolean'
+			);
+		});
+
+		t.test('non-extensible object', { skip: !Object.preventExtensions }, function (st) {
+			var obj = {};
+			Object.preventExtensions(obj);
+
+			st['throws'](
+				function () { ES.DefineMethodProperty(obj, 'key', function () {}, enumerable); },
+				TypeError,
+				'non-extensible object can not have a method defined'
+			);
+
+			st.end();
+		});
+
+		t.test('defining an enumerable method', function (st) {
+			var obj = {};
+			var key = 'the key';
+			var value = function () {};
+
+			st.doesNotThrow(
+				function () { ES.DefineMethodProperty(obj, key, value, enumerable); },
+				'defines property successfully'
+			);
+
+			st.equal(obj[key], value, 'sets the correct value');
+			st.deepEqual(
+				getOwnPropertyDescriptor(obj, key),
+				{
+					configurable: true,
+					enumerable: true,
+					value: value,
+					writable: true
+				},
+				'sets the correct property descriptor'
+			);
+
+			st.end();
+		});
+
+		// test defining a non-enumerable property when descriptors are supported
+		t.test('defining a non-enumerable method', { skip: !defineProperty || !getOwnPropertyDescriptor }, function (st) {
+			var obj = {};
+			var key = 'the key';
+			var value = function () {};
+
+			st.doesNotThrow(
+				function () { ES.DefineMethodProperty(obj, key, value, nonEnumerable); },
+				'defines property successfully'
+			);
+
+			st.equal(obj[key], value, 'sets the correct value');
+			st.deepEqual(
+				getOwnPropertyDescriptor(obj, key),
+				{
+					configurable: true,
+					enumerable: false,
+					value: value,
+					writable: true
+				},
+				'sets the correct property descriptor'
+			);
+
+			st.end();
+		});
+
+		// test defining over a nonconfigurable property when descriptors are supported (unless there's an ES3 builtin that's nonconfigurable)
+		t.test('defining over a nonconfigurable property', { skip: !defineProperty || !getOwnPropertyDescriptor }, function (st) {
+			var obj = {};
+			var key = 'the key';
+			defineProperty(obj, key, {
+				configurable: false,
+				enumerable: true,
+				value: 'foo',
+				writable: true
+			});
+			var value = function () {};
+
+			st['throws'](
+				function () { ES.DefineMethodProperty(obj, key, value, enumerable); },
+				TypeError,
+				'nonconfigurable key can not be redefined'
+			);
+
+			st.end();
+		});
+
+		t.end();
+	});
+
 	test('GetMatchIndexPair', function (t) {
 		forEach(v.nonStrings, function (notString) {
 			t['throws'](

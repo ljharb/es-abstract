@@ -210,7 +210,6 @@ var expectedMissing = [
 	'ContinueDynamicImport',
 	'ContinueModuleLoading',
 	'DefineField', // used by class syntax to make fields
-	'DefineMethodProperty', // used by class syntax to make class methods
 	'ExecuteAsyncModule', // module stuff
 	'FinishLoadingImportedModule',
 	'GatherAvailableAncestors', // module stuff

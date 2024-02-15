@@ -47,6 +47,7 @@ var ES2022 = {
 	DayFromYear: require('./2022/DayFromYear'),
 	DaysInYear: require('./2022/DaysInYear'),
 	DayWithinYear: require('./2022/DayWithinYear'),
+	DefineMethodProperty: require('./2022/DefineMethodProperty'),
 	DefinePropertyOrThrow: require('./2022/DefinePropertyOrThrow'),
 	DeletePropertyOrThrow: require('./2022/DeletePropertyOrThrow'),
 	DetachArrayBuffer: require('./2022/DetachArrayBuffer'),
