@@ -68,7 +68,6 @@ var expectedMissing = [
 	'ForBodyEvaluation',
 	'ForIn/OfBodyEvaluation',
 	'ForIn/OfHeadEvaluation',
-	'DefaultTimeZone',
 	'FulfillPromise',
 	'FunctionDeclarationInstantiation',
 	'GeneratorResume',

@@ -50,6 +50,7 @@ var ES2023 = {
 	DayFromYear: require('./2023/DayFromYear'),
 	DaysInYear: require('./2023/DaysInYear'),
 	DayWithinYear: require('./2023/DayWithinYear'),
+	DefaultTimeZone: require('./2023/DefaultTimeZone'),
 	DefineMethodProperty: require('./2023/DefineMethodProperty'),
 	DefinePropertyOrThrow: require('./2023/DefinePropertyOrThrow'),
 	DeletePropertyOrThrow: require('./2023/DeletePropertyOrThrow'),

@@ -13558,6 +13558,30 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('DefaultTimeZone', function (t) {
+		t.test('Intl supported', { skip: typeof Intl === 'undefined' }, function (st) {
+			st.equal(
+				ES.DefaultTimeZone(),
+				new Intl.DateTimeFormat().resolvedOptions().timeZone,
+				'default time zone is resolved from Intl.DateTimeFormat'
+			);
+
+			st.end();
+		});
+
+		t.test('Intl not supported', { skip: typeof Intl !== 'undefined' }, function (st) {
+			st.equal(
+				ES.DefaultTimeZone(),
+				'UTC',
+				'default time zone is UTC'
+			);
+
+			st.end();
+		});
+
+		t.end();
+	});
+
 	test('EnumerableOwnProperties', function (t) {
 		var obj = testEnumerableOwnNames(t, function (O) {
 			return ES.EnumerableOwnProperties(O, 'key');
