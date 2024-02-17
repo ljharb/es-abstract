@@ -219,11 +219,9 @@ var expectedMissing = [
 	'ValidateNonRevokedProxy',
 
 	// new missings in 2024
-	'AllCharacters',
 	'AtomicCompareExchangeInSharedBlock', // atomics
 	'AvailableNamedTimeZoneIdentifiers',
 	'BuiltinCallOrConstruct',
-	'CharacterComplement',
 	'DoWait', // atomics
 	'EmptyMatcher', // regex matcher stuff
 	'EnqueueAtomicsWaitAsyncTimeoutJob',
