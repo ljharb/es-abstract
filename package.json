@@ -107,6 +107,8 @@
 		"aud": "^2.0.4",
 		"available-regexp-flags": "^1.0.2",
 		"cheerio": "=1.0.0-rc.3",
+		"define-accessor-property": "^1.0.0",
+		"define-data-property": "^1.1.4",
 		"diff": "^5.1.0",
 		"eclint": "^2.8.1",
 		"es-value-fixtures": "^1.4.2",
