@@ -6,11 +6,13 @@ var hasOwn = require('hasown');
 
 module.exports = function isMatchRecord(record) {
 	return (
-		hasOwn(record, '[[StartIndex]]')
-        && hasOwn(record, '[[EndIndex]]')
-        && record['[[StartIndex]]'] >= 0
-        && record['[[EndIndex]]'] >= record['[[StartIndex]]']
-        && String(parseInt(record['[[StartIndex]]'], 10)) === String(record['[[StartIndex]]'])
-        && String(parseInt(record['[[EndIndex]]'], 10)) === String(record['[[EndIndex]]'])
+		!!record
+		&& typeof record === 'object'
+		&& hasOwn(record, '[[StartIndex]]')
+		&& hasOwn(record, '[[EndIndex]]')
+		&& record['[[StartIndex]]'] >= 0
+		&& record['[[EndIndex]]'] >= record['[[StartIndex]]']
+		&& String(parseInt(record['[[StartIndex]]'], 10)) === String(record['[[StartIndex]]'])
+		&& String(parseInt(record['[[EndIndex]]'], 10)) === String(record['[[EndIndex]]'])
 	);
 };

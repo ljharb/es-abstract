@@ -21,7 +21,7 @@ module.exports = function isPropertyDescriptor(Desc) {
 		return false;
 	}
 
-    for (var key in Desc) { // eslint-disable-line
+	for (var key in Desc) { // eslint-disable-line
 		if (hasOwn(Desc, key) && !allowed[key]) {
 			return false;
 		}
