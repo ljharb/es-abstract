@@ -16,18 +16,7 @@ var ToUint8Clamp = require('./ToUint8Clamp');
 var isArrayBuffer = require('is-array-buffer');
 var hasOwn = require('hasown');
 
-var table49 = {
-	__proto__: null,
-	Int8: 1,
-	Uint8: 1,
-	Uint8C: 1,
-	Int16: 2,
-	Uint16: 2,
-	Int32: 4,
-	Uint32: 4,
-	Float32: 4,
-	Float64: 8
-};
+var tableTAO = require('./tables/typed-array-objects');
 
 var TypeToAO = {
 	__proto__: null,
@@ -57,7 +46,7 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value) 
 		throw new $TypeError('Assertion failed: `byteIndex` must be an integer');
 	}
 
-	if (typeof type !== 'string' || !hasOwn(table49, type)) {
+	if (typeof type !== 'string' || !hasOwn(tableTAO.size, '$' + type)) {
 		throw new $TypeError('Assertion failed: `type` must be a Typed Array Element Type');
 	}
 
@@ -85,7 +74,7 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value) 
 
 	// 6. Assert: block is not undefined.
 
-	var elementSize = table49[type]; // step 7
+	var elementSize = tableTAO.size['$' + type]; // step 7
 	if (!elementSize) {
 		throw new $TypeError('Assertion failed: `type` must be one of "Int8", "Uint8", "Uint8C", "Int16", "Uint16", "Int32", "Uint32", "Float32", or "Float64"');
 	}
@@ -99,7 +88,7 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value) 
 	} else if (type === 'Float64') { // step 2
 		rawBytes = valueToFloat64Bytes(value, isLittleEndian);
 	} else {
-		var n = table49[type]; // step 3.a
+		var n = elementSize; // step 3.a
 
 		var convOp = TypeToAO[type]; // step 3.b
 

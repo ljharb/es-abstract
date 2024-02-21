@@ -13,20 +13,7 @@ var isArrayBuffer = require('is-array-buffer');
 var isSharedArrayBuffer = require('is-shared-array-buffer');
 var hasOwn = require('hasown');
 
-var table60 = {
-	__proto__: null,
-	Int8: 1,
-	Uint8: 1,
-	Uint8C: 1,
-	Int16: 2,
-	Uint16: 2,
-	Int32: 4,
-	Uint32: 4,
-	BigInt64: 8,
-	BigUint64: 8,
-	Float32: 4,
-	Float64: 8
-};
+var tableTAO = require('./tables/typed-array-objects');
 
 var defaultEndianness = require('../helpers/defaultEndianness');
 var forEach = require('../helpers/forEach');
@@ -45,7 +32,7 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value, 
 		throw new $TypeError('Assertion failed: `byteIndex` must be a non-negative integer');
 	}
 
-	if (typeof type !== 'string' || !hasOwn(table60, type)) {
+	if (typeof type !== 'string' || !hasOwn(tableTAO.size, '$' + type)) {
 		throw new $TypeError('Assertion failed: `type` must be a Typed Array Element Type');
 	}
 
@@ -76,7 +63,7 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value, 
 
 	// 4. Let block be arrayBuffer’s [[ArrayBufferData]] internal slot.
 
-	var elementSize = table60[type]; // step 5
+	var elementSize = tableTAO.size['$' + type]; // step 5
 
 	// 6. If isLittleEndian is not present, set isLittleEndian to either true or false. The choice is implementation dependent and should be the alternative that is most efficient for the implementation. An implementation must use the same value each time this step is executed and the same value must be used for the corresponding step in the GetValueFromBuffer abstract operation.
 	var isLittleEndian = arguments.length > 6 ? arguments[6] : defaultEndianness === 'little'; // step 6

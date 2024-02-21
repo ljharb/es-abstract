@@ -21,35 +21,7 @@ var ToNumber = require('./ToNumber');
 var ToObject = require('./ToObject');
 var ToString = require('./ToString');
 
-var table60Sizes = {
-	__proto__: null,
-	$Int8Array: 1,
-	$Uint8Array: 1,
-	$Uint8ClampedArray: 1,
-	$Int16Array: 2,
-	$Uint16Array: 2,
-	$Int32Array: 4,
-	$Uint32Array: 4,
-	$BigInt64Array: 8,
-	$BigUint64Array: 8,
-	$Float32Array: 4,
-	$Float64Array: 8
-};
-
-var table60Types = {
-	__proto__: null,
-	$Int8Array: 'Int8',
-	$Uint8Array: 'Uint8',
-	$Uint8ClampedArray: 'Uint8C',
-	$Int16Array: 'Int16',
-	$Uint16Array: 'Uint16',
-	$Int32Array: 'Int32',
-	$Uint32Array: 'Uint32',
-	$BigInt64Array: 'BigInt64',
-	$BigUint64Array: 'BigUint64',
-	$Float32Array: 'Float32',
-	$Float64Array: 'Float64'
-};
+var tableTAO = require('./tables/typed-array-objects');
 
 // https://262.ecma-international.org/12.0/#sec-settypedarrayfromarraylike
 
@@ -77,9 +49,9 @@ module.exports = function SetTypedArrayFromArrayLike(target, targetOffset, sourc
 
 	var targetName = whichTarget; // step 5
 
-	var targetElementSize = table60Sizes['$' + targetName]; // step 6
+	var targetType = tableTAO.name['$' + targetName]; // step 7
 
-	var targetType = table60Types['$' + targetName]; // step 7
+	var targetElementSize = tableTAO.size['$' + targetType]; // step 6
 
 	var targetByteOffset = typedArrayByteOffset(target); // step 8
 

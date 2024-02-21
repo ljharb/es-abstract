@@ -10,20 +10,7 @@ var whichTypedArray = require('which-typed-array');
 
 // https://262.ecma-international.org/12.0/#sec-validateintegertypedarray
 
-var table60 = {
-	__proto__: null,
-	$Int8Array: 'Int8',
-	$Uint8Array: 'Uint8',
-	$Uint8ClampedArray: 'Uint8C',
-	$Int16Array: 'Int16',
-	$Uint16Array: 'Uint16',
-	$Int32Array: 'Int32',
-	$Uint32Array: 'Uint32',
-	$BigInt64Array: 'BigInt64',
-	$BigUint64Array: 'BigUint64',
-	$Float32Array: 'Float32',
-	$Float64Array: 'Float64'
-};
+var tableTAO = require('./tables/typed-array-objects');
 
 module.exports = function ValidateIntegerTypedArray(typedArray) {
 	var waitable = arguments.length > 1 ? arguments[1] : false; // step 1
@@ -36,7 +23,7 @@ module.exports = function ValidateIntegerTypedArray(typedArray) {
 
 	var typeName = whichTypedArray(typedArray); // step 3
 
-	var type = table60['$' + typeName]; // step 4
+	var type = tableTAO.name['$' + typeName]; // step 4
 
 	if (waitable) { // step 5
 		if (typeName !== 'Int32Array' && typeName !== 'BigInt64Array') {

@@ -167,6 +167,7 @@
 /2016/min.js	spackled linguist-generated=true
 /2016/modulo.js	spackled linguist-generated=true
 /2016/msFromTime.js	spackled linguist-generated=true
+/2016/tables/typed-array-objects.js	spackled linguist-generated=true
 /2016/thisBooleanValue.js	spackled linguist-generated=true
 /2016/thisNumberValue.js	spackled linguist-generated=true
 /2016/thisStringValue.js	spackled linguist-generated=true
@@ -439,6 +440,7 @@
 /2018/min.js	spackled linguist-generated=true
 /2018/modulo.js	spackled linguist-generated=true
 /2018/msFromTime.js	spackled linguist-generated=true
+/2018/tables/typed-array-objects.js	spackled linguist-generated=true
 /2018/thisBooleanValue.js	spackled linguist-generated=true
 /2018/thisNumberValue.js	spackled linguist-generated=true
 /2018/thisStringValue.js	spackled linguist-generated=true
@@ -914,6 +916,7 @@
 /2021/min.js	spackled linguist-generated=true
 /2021/modulo.js	spackled linguist-generated=true
 /2021/msFromTime.js	spackled linguist-generated=true
+/2021/tables/typed-array-objects.js	spackled linguist-generated=true
 /2021/thisBigIntValue.js	spackled linguist-generated=true
 /2021/thisBooleanValue.js	spackled linguist-generated=true
 /2021/thisNumberValue.js	spackled linguist-generated=true
@@ -1134,6 +1137,7 @@
 /2022/modulo.js	spackled linguist-generated=true
 /2022/msFromTime.js	spackled linguist-generated=true
 /2022/substring.js	spackled linguist-generated=true
+/2022/tables/typed-array-objects.js	spackled linguist-generated=true
 /2022/thisBigIntValue.js	spackled linguist-generated=true
 /2022/thisBooleanValue.js	spackled linguist-generated=true
 /2022/thisNumberValue.js	spackled linguist-generated=true
@@ -1350,6 +1354,7 @@
 /2023/modulo.js	spackled linguist-generated=true
 /2023/msFromTime.js	spackled linguist-generated=true
 /2023/substring.js	spackled linguist-generated=true
+/2023/tables/typed-array-objects.js	spackled linguist-generated=true
 /2023/thisBigIntValue.js	spackled linguist-generated=true
 /2023/thisBooleanValue.js	spackled linguist-generated=true
 /2023/thisNumberValue.js	spackled linguist-generated=true

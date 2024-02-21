@@ -31,14 +31,19 @@ const writtenOps = [5].concat(years).flatMap((year, i, arr) => {
 	}).map((opFile) => {
 		const op = path.basename(opFile, path.extname(opFile));
 		const opPath = op.replace('::', '/');
+		const isEntryPoint = !opPath.startsWith('tables/');
 		const thisFile = path.join(process.cwd(), String(year), `${opPath}.js`);
-		addOpToYear(year, op, opPath);
+		if (isEntryPoint) {
+			addOpToYear(year, op, opPath);
+		}
 		if ((i + 1) < arr.length) {
 			const nextYear = arr[i + 1];
 			const nextFile = path.join(process.cwd(), String(nextYear), `${opPath}.js`);
 			fs.mkdirSync(path.dirname(nextFile), { recursive: true });
 			if (!deltas[nextYear].removed.has(op)) {
-				addOpToYear(nextYear, op, opPath);
+				if (isEntryPoint) {
+					addOpToYear(nextYear, op, opPath);
+				}
 
 				if (fs.existsSync(thisFile) && !fs.existsSync(nextFile)) {
 					console.log(`writing: ${nextYear}/${opPath} -> ${year}/${opPath}`);
@@ -50,6 +55,7 @@ const writtenOps = [5].concat(years).flatMap((year, i, arr) => {
 					const replacement = fs.readFileSync(thisFile, 'utf-8');
 					fs.writeFileSync(nextFile, process.argv[2] ? replacement : reexport);
 					return {
+						isEntryPoint,
 						op,
 						opFile: path.relative(process.cwd(), nextFile),
 						year: nextYear,
