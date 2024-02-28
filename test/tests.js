@@ -10564,7 +10564,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 					'Float64'
 				), function (type) {
 					var isBigInt = type === 'BigInt64' || type === 'BigUint64';
-					var Z = isBigInt ? $BigInt : Number;
+					var Z = isBigInt ? safeBigInt : Number;
 					var elementSize = elementSizes['$' + (type === 'Uint8C' ? 'Uint8Clamped' : type) + 'Array'];
 					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
@@ -11407,7 +11407,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 
 			forEach(availableTypedArrays, function (name) {
 				var isBigInt = name.slice(0, 3) === 'Big';
-				var Z = isBigInt ? BigInt : Number;
+				var Z = isBigInt ? safeBigInt : Number;
 				var TA = global[name];
 
 				var ta = new TA([Z(1), Z(2), Z(3)]);
@@ -11495,7 +11495,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 
 		forEach(availableTypedArrays, function (name) {
 			var isBigInt = name.slice(0, 3) === 'Big';
-			var Z = isBigInt ? BigInt : Number;
+			var Z = isBigInt ? safeBigInt : Number;
 			var TA = global[name];
 
 			var ta = new TA([Z(1), Z(2), Z(3)]);
