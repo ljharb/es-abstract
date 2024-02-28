@@ -2477,6 +2477,11 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 						TypeError,
 						'can not create a Float32Array from a now detached ArrayBuffer'
 					);
+
+					s2t.doesNotThrow(
+						function () { ES.DetachArrayBuffer(buffer); },
+						'can call DetachArrayBuffer on an already-detached ArrayBuffer'
+					);
 				});
 
 				s2t.end();
