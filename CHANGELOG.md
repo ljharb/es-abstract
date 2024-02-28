@@ -1,3 +1,17 @@
+1.22.5 / 2024-02-28
+=================
+  * [Fix] `ES2015`+: `DetachArrayBuffer`: node v21.0.0+ structuredClone throws with an already-detached ArrayBuffer
+  * [Fix] `helpers/assertRecord`: partial revert of 87c340d2; unintentional breaking change
+  * [patch] records: fix indentation, improve object checks
+  * [Refactor] extract TA tables to separate files
+  * [meta] extract "list spackled files" to separate run-script
+  * [Deps] update `available-typed-arrays`, `es-set-tostringtag`, `has-proto`, `is-negative-zero`, `is-shared-array-buffer`, `typed-array-buffer`, `typed-array-byte-length`, `typed-array-byte-offset`, `typed-array-length`
+  * [Dev Deps] update `available-regexp-flags`, `tape`
+  * [Dev Deps] pin `jackspeak` and `glob`, since v2.1.2+ and v10.3.8+ respectively depend on npm aliases, which kill the install process in npm < 6
+  * [Tests] use `define-{accessor,data}-property`
+  * [Tests] fix some test cases
+  * [Tests] use `safeBigInt` for `Z()` pattern to handle node 10.4 - 10.8
+
 1.22.4 / 2024-02-13
 =================
   * [Fix] `ES2017`+: `IsDetachedBuffer`: properly allow SABs
