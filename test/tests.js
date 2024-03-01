@@ -40,7 +40,7 @@ var isPromiseCapabilityRecord = require('../helpers/records/promise-capability-r
 var MAX_SAFE_INTEGER = require('../helpers/maxSafeInteger');
 var MAX_VALUE = require('../helpers/maxValue');
 var reduce = require('../helpers/reduce');
-var safeBigInt = require('./helpers/safeBigInt');
+var safeBigInt = require('safe-bigint');
 var unserialize = require('./helpers/unserializeNumeric');
 
 var $BigInt = hasBigInts ? BigInt : null;

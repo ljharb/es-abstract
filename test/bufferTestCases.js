@@ -7,7 +7,7 @@ var availableTypedArrays = require('available-typed-arrays')();
 var forEach = require('for-each');
 var hasBigInts = require('has-bigints')();
 
-var safeBigInt = require('./helpers/safeBigInt');
+var safeBigInt = require('safe-bigint');
 
 var ToUint8Clamp = require('../2017/ToUint8Clamp');
 
