@@ -61,6 +61,8 @@
 		"available-typed-arrays": "^1.0.7",
 		"call-bind": "^1.0.7",
 		"data-view-buffer": "^1.0.1",
+		"data-view-byte-length": "^1.0.0",
+		"data-view-byte-offset": "^1.0.0",
 		"es-define-property": "^1.0.0",
 		"es-errors": "^1.3.0",
 		"es-set-tostringtag": "^2.0.3",

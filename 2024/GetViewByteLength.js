@@ -8,10 +8,8 @@ var IsViewOutOfBounds = require('./IsViewOutOfBounds');
 var isDataViewWithBufferWitnessRecord = require('../helpers/records/data-view-with-buffer-witness-record');
 
 var dataViewBuffer = require('data-view-buffer');
-var callBound = require('call-bind/callBound');
-
-var $byteOffset = callBound('DataView.prototype.byteOffset', true);
-var $byteLength = callBound('DataView.prototype.byteLength', true);
+var dataViewByteLength = require('data-view-byte-length');
+var dataViewByteOffset = require('data-view-byte-offset');
 
 // https://262.ecma-international.org/15.0/#sec-getviewbytelength
 
@@ -26,7 +24,7 @@ module.exports = function GetViewByteLength(viewRecord) {
 
 	var view = viewRecord['[[Object]]']; // step 2
 
-	var viewByteLength = $byteLength(view); // view.[[ByteLength]]
+	var viewByteLength = dataViewByteLength(view); // view.[[ByteLength]]
 	if (viewByteLength !== 'AUTO') {
 		return viewByteLength; // step 3
 	}
@@ -35,7 +33,7 @@ module.exports = function GetViewByteLength(viewRecord) {
 		throw new $TypeError('Assertion failed: DataView’s ArrayBuffer is not fixed length'); // step 4
 	}
 
-	var byteOffset = $byteOffset(view); // step 5
+	var byteOffset = dataViewByteOffset(view); // step 5
 
 	var byteLength = viewRecord['[[CachedBufferByteLength]]']; // step 6
 
