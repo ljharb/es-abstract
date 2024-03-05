@@ -59,38 +59,6 @@ var reProtoIsRegex = isRegex(RegExp.prototype);
 var twoSixtyFour = hasBigInts && safeBigInt(Math.pow(2, 64));
 var twoSixtyThree = hasBigInts && safeBigInt(Math.pow(2, 63));
 
-var float32TestCases = [
-	[0, 0, [0, 0, 0, 0]],
-	[-0, 1.793662034335766e-43, [0, 0, 0, 128]],
-	[1, 4.600602988224807e-41, [0, 0, 128, 63]],
-	[0.75, 2.3047155842750266e-41, [0, 0, 64, 63]],
-	[0.5, 8.828180325246348e-44, [0, 0, 0, 63]],
-	[-1.5, 6.914427012517945e-41, [0, 0, 192, 191]],
-	[-3.5, 3.470736036439707e-41, [0, 0, 96, 192]],
-	[16777216, 4.602284546381997e-41, [0, 0, 128, 75]], // max safe float32
-	[4294967296, 4.602845065767727e-41, [0, 0, 128, 79]], // max float32
-	[2147483648, 1.1070257868166055e-43, [0, 0, 0, 79]], // 2147483647 isn't representable as a float32
-	[Infinity, 4.609571298396486e-41, [0, 0, 128, 127]],
-	[-Infinity, 4.627507918739843e-41, [0, 0, 128, 255]],
-	[NaN, 6.905458702346266e-41, [0, 0, 192, 127]],
-	[4.602845065767727e-41, 4294967296, [79, 128, 0, 0]]
-];
-
-var float64TestCases = [
-	[0, 0, [0, 0, 0, 0, 0, 0, 0, 0]],
-	[-0, 6.3e-322, [0, 0, 0, 0, 0, 0, 0, 128]],
-	[1, 3.03865e-319, [0, 0, 0, 0, 0, 0, 240, 63]],
-	[0.75, 2.93747e-319, [0, 0, 0, 0, 0, 0, 232, 63]],
-	[0.5, 2.8363e-319, [0, 0, 0, 0, 0, 0, 224, 63]],
-	[-1.5, 3.14616e-319, [0, 0, 0, 0, 0, 0, 248, 191]],
-	[-3.5, 1.6126e-320, [0, 0, 0, 0, 0, 0, 12, 192]],
-	[2147483647, 1.048435680358704e-309, [0, 0, 192, 255, 255, 255, 223, 65]],
-	[9007199254740992, 8.128e-320, [0, 0, 0, 0, 0, 0, 64, 67]],
-	[Infinity, 3.0418e-319, [0, 0, 0, 0, 0, 0, 240, 127]],
-	[-Infinity, 3.04814e-319, [0, 0, 0, 0, 0, 0, 240, 255]],
-	[NaN, 3.143e-319, [0, 0, 0, 0, 0, 0, 248, 127]],
-	[6.97011957458363e-310, 6.589791616e-315, [0, 0, 0, 0, 79, 128, 0, 0]]
-];
 var elementSizes = {
 	__proto__: null,
 	$Int8Array: 1,
@@ -3211,6 +3179,80 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 			st.end();
 		});
+
+		t.end();
+	});
+
+	test('InternalizeJSONProperty', function (t) {
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.InternalizeJSONProperty(primitive, '', function () {}); },
+				TypeError,
+				debug(primitive) + ' is not an Object'
+			);
+		});
+
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.InternalizeJSONProperty({}, nonString, function () {}); },
+				TypeError,
+				debug(nonString) + ' is not a String'
+			);
+		});
+
+		forEach(v.nonFunctions, function (nonFunction) {
+			t['throws'](
+				function () { ES.InternalizeJSONProperty({}, 'a', nonFunction); },
+				TypeError,
+				debug(nonFunction) + ' is not a function'
+			);
+		});
+
+		t.deepEqual(
+			ES.InternalizeJSONProperty({ a: { b: { c: 1 } } }, 'a', function (name, val) { return val; }),
+			{ b: { c: 1 } }
+		);
+
+		t.deepEqual(
+			ES.InternalizeJSONProperty({ a: [{ b: { c: 1 } }, { d: 2 }] }, 'a', function (name, val) { return val; }),
+			[{ b: { c: 1 } }, { d: 2 }]
+		);
+
+		// eslint-disable-next-line consistent-return
+		var noD = function (name, val) { if (name !== 'd') { return val; } };
+
+		t.deepEqual(
+			ES.InternalizeJSONProperty({ a: [{ b: { c: 1 } }, { d: 2, e: 3 }] }, 'a', noD),
+			[{ b: { c: 1 } }, { e: 3 }],
+			'reviver drops a nested property in an array'
+		);
+
+		// eslint-disable-next-line consistent-return
+		var noZero = function (name, val) { if (name !== '0') { return val; } };
+		t.deepEqual(
+			ES.InternalizeJSONProperty({ a: [{ b: { c: 1 } }, { d: 2, e: 3 }] }, 'a', noZero),
+			[, { d: 2, e: 3 }], // eslint-disable-line no-sparse-arrays
+			'reviver drops a nested index in an array'
+		);
+
+		t.deepEqual(
+			ES.InternalizeJSONProperty({ a: { d: 2, e: 3 } }, 'a', noD),
+			{ e: 3 },
+			'reviver drops a nested property in an object'
+		);
+
+		t.deepEqual(
+			ES.InternalizeJSONProperty({ d: [{ b: { c: 1 } }, { d: 2, e: 3 }] }, 'd', noD),
+			undefined,
+			'reviver drops a top-level property'
+		);
+
+		t.deepEqual(
+			ES.InternalizeJSONProperty({ a: 1, b: 2 }, 'a', function (name, val) { return val; }),
+			1
+		);
+
+		// stuff with the reviver
 
 		t.end();
 	});

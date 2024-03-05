@@ -86,6 +86,7 @@
 /2016/InstanceofOperator.js	spackled linguist-generated=true
 /2016/IntegerIndexedElementGet.js	spackled linguist-generated=true
 /2016/IntegerIndexedElementSet.js	spackled linguist-generated=true
+/2016/InternalizeJSONProperty.js	spackled linguist-generated=true
 /2016/Invoke.js	spackled linguist-generated=true
 /2016/IsAccessorDescriptor.js	spackled linguist-generated=true
 /2016/IsArray.js	spackled linguist-generated=true
@@ -496,6 +497,7 @@
 /2019/InstanceofOperator.js	spackled linguist-generated=true
 /2019/IntegerIndexedElementGet.js	spackled linguist-generated=true
 /2019/IntegerIndexedElementSet.js	spackled linguist-generated=true
+/2019/InternalizeJSONProperty.js	spackled linguist-generated=true
 /2019/Invoke.js	spackled linguist-generated=true
 /2019/IsAccessorDescriptor.js	spackled linguist-generated=true
 /2019/IsArray.js	spackled linguist-generated=true
@@ -807,6 +809,7 @@
 /2021/HourFromTime.js	spackled linguist-generated=true
 /2021/InLeapYear.js	spackled linguist-generated=true
 /2021/InstanceofOperator.js	spackled linguist-generated=true
+/2021/InternalizeJSONProperty.js	spackled linguist-generated=true
 /2021/Invoke.js	spackled linguist-generated=true
 /2021/IsAccessorDescriptor.js	spackled linguist-generated=true
 /2021/IsArray.js	spackled linguist-generated=true
@@ -1009,6 +1012,7 @@
 /2022/HourFromTime.js	spackled linguist-generated=true
 /2022/InLeapYear.js	spackled linguist-generated=true
 /2022/InstanceofOperator.js	spackled linguist-generated=true
+/2022/InternalizeJSONProperty.js	spackled linguist-generated=true
 /2022/Invoke.js	spackled linguist-generated=true
 /2022/IsAccessorDescriptor.js	spackled linguist-generated=true
 /2022/IsArray.js	spackled linguist-generated=true
@@ -1454,6 +1458,7 @@
 /2024/InLeapYear.js	spackled linguist-generated=true
 /2024/InstallErrorCause.js	spackled linguist-generated=true
 /2024/InstanceofOperator.js	spackled linguist-generated=true
+/2024/InternalizeJSONProperty.js	spackled linguist-generated=true
 /2024/Invoke.js	spackled linguist-generated=true
 /2024/IsAccessorDescriptor.js	spackled linguist-generated=true
 /2024/IsArray.js	spackled linguist-generated=true

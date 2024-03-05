@@ -57,6 +57,7 @@ var ES2019 = {
 	InstanceofOperator: require('./2019/InstanceofOperator'),
 	IntegerIndexedElementGet: require('./2019/IntegerIndexedElementGet'),
 	IntegerIndexedElementSet: require('./2019/IntegerIndexedElementSet'),
+	InternalizeJSONProperty: require('./2019/InternalizeJSONProperty'),
 	Invoke: require('./2019/Invoke'),
 	IsAccessorDescriptor: require('./2019/IsAccessorDescriptor'),
 	IsArray: require('./2019/IsArray'),

@@ -73,6 +73,7 @@ var ES2021 = {
 	InstanceofOperator: require('./2021/InstanceofOperator'),
 	IntegerIndexedElementGet: require('./2021/IntegerIndexedElementGet'),
 	IntegerIndexedElementSet: require('./2021/IntegerIndexedElementSet'),
+	InternalizeJSONProperty: require('./2021/InternalizeJSONProperty'),
 	Invoke: require('./2021/Invoke'),
 	IsAccessorDescriptor: require('./2021/IsAccessorDescriptor'),
 	IsArray: require('./2021/IsArray'),

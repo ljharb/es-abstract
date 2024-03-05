@@ -75,7 +75,6 @@ var expectedMissing = [
 	'InitializeHostDefinedRealm',
 	'InitializeReferencedBinding',
 	'IntegerIndexedObjectCreate',
-	'InternalizeJSONProperty',
 	'IsAnonymousFunctionDefinition',
 	'IsInTailPosition',
 	'IsLabelledFunction',

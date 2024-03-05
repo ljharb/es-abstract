@@ -82,6 +82,7 @@ var ES2023 = {
 	InstanceofOperator: require('./2023/InstanceofOperator'),
 	IntegerIndexedElementGet: require('./2023/IntegerIndexedElementGet'),
 	IntegerIndexedElementSet: require('./2023/IntegerIndexedElementSet'),
+	InternalizeJSONProperty: require('./2023/InternalizeJSONProperty'),
 	Invoke: require('./2023/Invoke'),
 	IsAccessorDescriptor: require('./2023/IsAccessorDescriptor'),
 	IsArray: require('./2023/IsArray'),

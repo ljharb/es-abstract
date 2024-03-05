@@ -107,7 +107,6 @@ var expectedMissing = [
 	'InnerModuleEvaluation',
 	'InnerModuleInstantiation',
 	'IntegerIndexedObjectCreate',
-	'InternalizeJSONProperty',
 	'IsAnonymousFunctionDefinition',
 	'IsInTailPosition',
 	'IsLabelledFunction',

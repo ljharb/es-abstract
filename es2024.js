@@ -85,6 +85,7 @@ var ES2024 = {
 	InLeapYear: require('./2024/InLeapYear'),
 	InstallErrorCause: require('./2024/InstallErrorCause'),
 	InstanceofOperator: require('./2024/InstanceofOperator'),
+	InternalizeJSONProperty: require('./2024/InternalizeJSONProperty'),
 	Invoke: require('./2024/Invoke'),
 	IsAccessorDescriptor: require('./2024/IsAccessorDescriptor'),
 	IsArray: require('./2024/IsArray'),

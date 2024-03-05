@@ -107,7 +107,6 @@ var expectedMissing = [
 	'InitializeTypedArrayFromTypedArray', // TypedArray initialization
 	'InnerModuleEvaluation',
 	'InnerModuleLinking',
-	'InternalizeJSONProperty',
 	'IsAnonymousFunctionDefinition',
 	'IsInTailPosition',
 	'IsLabelledFunction',

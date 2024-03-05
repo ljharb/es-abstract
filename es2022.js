@@ -76,6 +76,7 @@ var ES2022 = {
 	InstanceofOperator: require('./2022/InstanceofOperator'),
 	IntegerIndexedElementGet: require('./2022/IntegerIndexedElementGet'),
 	IntegerIndexedElementSet: require('./2022/IntegerIndexedElementSet'),
+	InternalizeJSONProperty: require('./2022/InternalizeJSONProperty'),
 	Invoke: require('./2022/Invoke'),
 	IsAccessorDescriptor: require('./2022/IsAccessorDescriptor'),
 	IsArray: require('./2022/IsArray'),

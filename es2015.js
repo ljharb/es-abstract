@@ -50,6 +50,7 @@ var ES2015 = {
 	InstanceofOperator: require('./2015/InstanceofOperator'),
 	IntegerIndexedElementGet: require('./2015/IntegerIndexedElementGet'),
 	IntegerIndexedElementSet: require('./2015/IntegerIndexedElementSet'),
+	InternalizeJSONProperty: require('./2015/InternalizeJSONProperty'),
 	Invoke: require('./2015/Invoke'),
 	IsAccessorDescriptor: require('./2015/IsAccessorDescriptor'),
 	IsArray: require('./2015/IsArray'),

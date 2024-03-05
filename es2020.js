@@ -64,6 +64,7 @@ var ES2020 = {
 	InstanceofOperator: require('./2020/InstanceofOperator'),
 	IntegerIndexedElementGet: require('./2020/IntegerIndexedElementGet'),
 	IntegerIndexedElementSet: require('./2020/IntegerIndexedElementSet'),
+	InternalizeJSONProperty: require('./2020/InternalizeJSONProperty'),
 	Invoke: require('./2020/Invoke'),
 	IsAccessorDescriptor: require('./2020/IsAccessorDescriptor'),
 	IsArray: require('./2020/IsArray'),
