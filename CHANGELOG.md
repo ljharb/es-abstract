@@ -1,3 +1,15 @@
+1.23.0 / 2024-03-04
+=================
+  * [New] add `ES2024`
+  * [New] `ES2015`+: add `InternalizeJSONProperty`
+  * [New] `ES2015`+: add `IntegerIndexedElement{Get,Set}`
+  * [New] `ES2018`+: add `TimeZoneString`
+  * [New] `ES2022`+: add `DefineMethodProperty`
+  * [New] `ES2023`: add `DefaultTimeZone`
+  * [Fix] `ES2023`+: `SetTypedArrayFrom{TypedArray,ArrayLike}`: match engine reality
+  * [Fix] `ES2024`+: `GetViewByteLength`, `IsViewOutOfBounds`: support engines with only own DV properties
+  * [Tests] use `safe-bigint`
+
 1.22.5 / 2024-02-28
 =================
   * [Fix] `ES2015`+: `DetachArrayBuffer`: node v21.0.0+ structuredClone throws with an already-detached ArrayBuffer
