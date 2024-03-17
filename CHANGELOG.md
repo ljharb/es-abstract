@@ -1,3 +1,9 @@
+1.23.1 / 2024-03-16
+=================
+  * [Refactor] use `es-object-atoms`
+  * [Deps] update `hasown`, `which-typed-array`, `data-view-byte-length`, `safe-array-concat`
+  * [Dev Deps] update `diff`
+
 1.23.0 / 2024-03-04
 =================
   * [New] add `ES2024`
