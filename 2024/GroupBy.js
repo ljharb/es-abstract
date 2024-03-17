@@ -19,8 +19,8 @@ var maxSafeInteger = require('../helpers/maxSafeInteger');
 // https://tc39.es/ecma262/#sec-groupby
 
 module.exports = function GroupBy(items, callbackfn, keyCoercion) {
-	if (keyCoercion !== 'property' && keyCoercion !== 'zero') {
-		throw new $TypeError('Assertion failed: `keyCoercion` must be `"property"` or `"zero"`');
+	if (keyCoercion !== 'PROPERTY' && keyCoercion !== 'ZERO') {
+		throw new $TypeError('Assertion failed: `keyCoercion` must be `"PROPERTY"` or `"ZERO"`');
 	}
 
 	RequireObjectCoercible(items); // step 1
@@ -31,7 +31,7 @@ module.exports = function GroupBy(items, callbackfn, keyCoercion) {
 
 	var groups = []; // step 3
 
-	var iteratorRecord = GetIterator(items, 'sync'); // step 4
+	var iteratorRecord = GetIterator(items, 'SYNC'); // step 4
 
 	var k = 0; // step 5
 
@@ -55,15 +55,15 @@ module.exports = function GroupBy(items, callbackfn, keyCoercion) {
 			return IteratorClose(iteratorRecord, ThrowCompletion(e)); // step 6.f
 		}
 
-		if (keyCoercion === 'property') { // step 6.g
+		if (keyCoercion === 'PROPERTY') { // step 6.g
 			try {
 				key = ToPropertyKey(key); // step 6.g.i
 			} catch (e) {
 				return IteratorClose(iteratorRecord, ThrowCompletion(e)); // step 6.g.ii
 			}
 		} else { // step 6.h
-			if (keyCoercion !== 'zero') {
-				throw new $TypeError('keyCoercion must be "property" or "zero"'); // step 6.h.i
+			if (keyCoercion !== 'ZERO') {
+				throw new $TypeError('keyCoercion must be ~PROPERTY~ or ~ZERO~'); // step 6.h.i
 			}
 			if (isNegativeZero(key)) {
 				key = +0; // step 6.h.ii

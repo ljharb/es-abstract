@@ -1373,7 +1373,6 @@
 /2023/thisStringValue.js	spackled linguist-generated=true
 /2023/thisSymbolValue.js	spackled linguist-generated=true
 /2023/thisTimeValue.js	spackled linguist-generated=true
-/2024/AddEntriesFromIterable.js	spackled linguist-generated=true
 /2024/AddToKeptObjects.js	spackled linguist-generated=true
 /2024/AdvanceStringIndex.js	spackled linguist-generated=true
 /2024/ApplyStringOrNumericBinaryOperator.js	spackled linguist-generated=true
@@ -1443,7 +1442,6 @@
 /2024/FromPropertyDescriptor.js	spackled linguist-generated=true
 /2024/Get.js	spackled linguist-generated=true
 /2024/GetGlobalObject.js	spackled linguist-generated=true
-/2024/GetIterator.js	spackled linguist-generated=true
 /2024/GetMatchIndexPair.js	spackled linguist-generated=true
 /2024/GetMatchString.js	spackled linguist-generated=true
 /2024/GetMethod.js	spackled linguist-generated=true

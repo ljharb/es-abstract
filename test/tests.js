@@ -14858,6 +14858,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	es2023(ES, ops, expectedMissing, assign({}, skips, {
 		CreateMethodProperty: true,
 		DefaultTimeZone: true,
+		GetIterator: true,
 		GetSubstitution: true,
 		GetValueFromBuffer: true,
 		IntegerIndexedElementGet: true,
@@ -14884,6 +14885,103 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	}));
 
 	var test = makeTest(ES, skips);
+
+	test('GetIterator', function (t) {
+		try {
+			ES.GetIterator({}, 'null');
+		} catch (e) {
+			t.ok(e.message.indexOf('Assertion failed: `kind` must be one of \'sync\' or \'async\'' >= 0));
+		}
+
+		var arr = [1, 2];
+		testIterator(t, ES.GetIterator(arr, 'SYNC')['[[Iterator]]'], arr);
+
+		testIterator(t, ES.GetIterator('abc', 'SYNC')['[[Iterator]]'], 'abc'.split(''));
+
+		t['throws'](
+			function () { ES.GetIterator({}, 'SYNC'); },
+			TypeError,
+			'sync hint: undefined iterator method throws'
+		);
+
+		t['throws'](
+			function () { ES.GetIterator({}, 'ASYNC'); },
+			TypeError,
+			'async hint: undefined iterator method throws'
+		);
+
+		t.test('Symbol.iterator', { skip: !v.hasSymbols }, function (st) {
+			var m = new Map();
+			m.set(1, 'a');
+			m.set(2, 'b');
+
+			var syncRecord = ES.GetIterator(m, 'SYNC');
+			testIterator(st, syncRecord['[[Iterator]]'], [[1, 'a'], [2, 'b']]);
+
+			var asyncRecord = ES.GetIterator(m, 'ASYNC');
+			return testAsyncIterator(st, asyncRecord['[[Iterator]]'], [[1, 'a'], [2, 'b']]);
+		});
+
+		t.test('Symbol.asyncIterator', { skip: !v.hasSymbols || !Symbol.asyncIterator }, function (st) {
+			st.test('an async iteratable returning a sync iterator', function (s2t) {
+				var it = {
+					next: function nextFromTest() {
+						return Promise.resolve({
+							done: true
+						});
+					}
+				};
+				var obj = {};
+				obj[Symbol.asyncIterator] = function () {
+					return it;
+				};
+
+				var asyncIterator = ES.GetIterator(obj, 'ASYNC');
+
+				s2t.deepEqual(asyncIterator, makeIteratorRecord(it));
+
+				s2t.end();
+			});
+
+			st.test('a throwing async iterator', function (s2t) {
+				var sentinel = {};
+
+				var asyncIterable = {};
+				asyncIterable[Symbol.asyncIterator] = function () {
+					var i = 0;
+					return {
+						next: function next() {
+							if (i > 4) {
+								throw sentinel;
+							}
+							try {
+								return {
+									done: i > 5,
+									value: i
+								};
+							} finally {
+								i += 1;
+							}
+						}
+					};
+				};
+				var iteratorRecord = ES.GetIterator(asyncIterable, 'ASYNC');
+				return testAsyncIterator(
+					s2t,
+					iteratorRecord['[[Iterator]]'],
+					[0, 1, 2, 3, 4, 5]
+				)['catch'](function (e) {
+					if (e !== sentinel) {
+						throw e;
+					}
+				});
+			});
+
+			st.end();
+		});
+
+		t.end();
+	});
 
 	test('GetSubstitution', function (t) {
 		forEach(v.nonStrings, function (nonString) {

@@ -14,7 +14,7 @@ var IteratorValue = require('./IteratorValue');
 var ThrowCompletion = require('./ThrowCompletion');
 var Type = require('./Type');
 
-// https://262.ecma-international.org/14.0/#sec-add-entries-from-iterable
+// https://262.ecma-international.org/15.0/#sec-add-entries-from-iterable
 
 module.exports = function AddEntriesFromIterable(target, iterable, adder) {
 	if (!IsCallable(adder)) {
@@ -23,7 +23,7 @@ module.exports = function AddEntriesFromIterable(target, iterable, adder) {
 	if (iterable == null) {
 		throw new $TypeError('Assertion failed: `iterable` is present, and not nullish');
 	}
-	var iteratorRecord = GetIterator(iterable, 'sync');
+	var iteratorRecord = GetIterator(iterable, 'SYNC');
 	while (true) { // eslint-disable-line no-constant-condition
 		var next = IteratorStep(iteratorRecord);
 		if (!next) {
