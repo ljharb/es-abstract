@@ -14886,6 +14886,39 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 
 	var test = makeTest(ES, skips);
 
+	test('AddValueToKeyedGroup', function (t) {
+		forEach(v.nonArrays, function (nonArray) {
+			t['throws'](
+				function () { ES.AddValueToKeyedGroup(nonArray, 'key', 'value'); },
+				TypeError,
+				debug(nonArray) + ' is not an Array'
+			);
+		});
+
+		t['throws'](
+			function () { ES.AddValueToKeyedGroup([{ keyedGroup: false }], 'key', 'value'); },
+			TypeError,
+			'`groups` is not a List of keyed groups'
+		);
+
+		var groups = [];
+		t.equal(ES.AddValueToKeyedGroup(groups, 'key', 'value'), undefined);
+		t.deepEqual(groups, [{ '[[Key]]': 'key', '[[Elements]]': ['value'] }], 'first value is added to a new group');
+
+		t.equal(ES.AddValueToKeyedGroup(groups, 'key', 'value2'), undefined);
+		t.equal(ES.AddValueToKeyedGroup(groups, 'key2', 'value'), undefined);
+		t.deepEqual(
+			groups,
+			[
+				{ '[[Key]]': 'key', '[[Elements]]': ['value', 'value2'] },
+				{ '[[Key]]': 'key2', '[[Elements]]': ['value'] }
+			],
+			'values added to expected groups'
+		);
+
+		t.end();
+	});
+
 	test('GetIterator', function (t) {
 		try {
 			ES.GetIterator({}, 'null');

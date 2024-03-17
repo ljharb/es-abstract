@@ -15,7 +15,7 @@ var forEach = require('../helpers/forEach');
 var hasOwn = require('hasown');
 
 var isKeyedGroup = function (group) {
-	return hasOwn(group, '[[Keys]]')
+	return hasOwn(group, '[[Key]]')
         && hasOwn(group, '[[Elements]]')
         && IsArray(group['[[Elements]]']);
 };
@@ -23,7 +23,7 @@ var isKeyedGroup = function (group) {
 // https://tc39.es/ecma262/#sec-add-value-to-keyed-group
 
 module.exports = function AddValueToKeyedGroup(groups, key, value) {
-	if (!IsArray(groups) || !every(groups, isKeyedGroup)) {
+	if (!IsArray(groups) || (groups.length > 0 && !every(groups, isKeyedGroup))) {
 		throw new $TypeError('Assertion failed: `groups` must be a List of Records with [[Key]] and [[Elements]]');
 	}
 
@@ -39,7 +39,9 @@ module.exports = function AddValueToKeyedGroup(groups, key, value) {
 		}
 	});
 
-	var group = { '[[Key]]': key, '[[Elements]]': [value] }; // step 2
+	if (matched === 0) {
+		var group = { '[[Key]]': key, '[[Elements]]': [value] }; // step 2
 
-	$push(groups, group); // step 3
+		$push(groups, group); // step 3
+	}
 };
