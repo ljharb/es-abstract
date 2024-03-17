@@ -2,7 +2,7 @@
 
 var GetIntrinsic = require('get-intrinsic');
 
-var $Object = GetIntrinsic('%Object%');
+var $Object = require('es-object-atoms');
 var $StringPrototype = GetIntrinsic('%String.prototype%');
 var $SyntaxError = require('es-errors/syntax');
 var $TypeError = require('es-errors/type');
