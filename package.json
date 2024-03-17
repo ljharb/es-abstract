@@ -76,7 +76,7 @@
 		"has-property-descriptors": "^1.0.2",
 		"has-proto": "^1.0.3",
 		"has-symbols": "^1.0.3",
-		"hasown": "^2.0.1",
+		"hasown": "^2.0.2",
 		"internal-slot": "^1.0.7",
 		"is-array-buffer": "^3.0.4",
 		"is-callable": "^1.2.7",
@@ -101,7 +101,7 @@
 		"typed-array-byte-offset": "^1.0.2",
 		"typed-array-length": "^1.0.5",
 		"unbox-primitive": "^1.0.2",
-		"which-typed-array": "^1.1.14"
+		"which-typed-array": "^1.1.15"
 	},
 	"devDependencies": {
 		"@ljharb/eslint-config": "^21.1.0",
