@@ -1,3 +1,12 @@
+1.23.2 / 2024-03-17
+=================
+  * [Fix] `records/regexp-record`: add optional `[[UnicodeSets]]` boolean field
+  * [Fix] `ES2024`+: `AddValueToKeyedGroup`: avoid adding matched values twice
+  * [Fix] `ES5`: `CheckObjectCoercible`: use the right function name
+  * [Fix] `ES2024`+: `AddEntriesFromIterable`, `GetIterator`, `GroupBy`: properly capitalize spec enums
+  * [Deps] update `string.prototype.trim`, `string.prototype.trimend`
+  * [Tests] increase coverage
+
 1.23.1 / 2024-03-16
 =================
   * [Refactor] use `es-object-atoms`
