@@ -3670,6 +3670,14 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IteratorStep', function (t) {
+		forEach(v.primitives.concat(v.objects), function (nonIteratorRecord) {
+			t['throws'](
+				function () { ES.IteratorStep(nonIteratorRecord); },
+				TypeError,
+				debug(nonIteratorRecord) + ' is not an Iterator Record'
+			);
+		});
+
 		t.deepEqual(
 			ES.IteratorStep({
 				next: function () {
@@ -14236,6 +14244,21 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 				TypeError,
 				'`.return` returns ' + debug(nonObject) + ', which is not an Object'
 			);
+
+			t['throws'](
+				function () {
+					ES.IteratorClose(
+						{
+							'[[Iterator]]': nonObject,
+							'[[Done]]': false,
+							'[[NextMethod]]': function () { return {}; }
+						},
+						function () {}
+					);
+				},
+				TypeError,
+				'`.return` returns ' + debug(nonObject) + ', which is not an Object'
+			);
 		});
 
 		forEach(v.nonFunctions, function (nonFunction) {
@@ -14353,6 +14376,14 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IteratorStep', function (t) {
+		forEach(v.primitives.concat(v.objects), function (nonIteratorRecord) {
+			t['throws'](
+				function () { ES.IteratorStep(nonIteratorRecord); },
+				TypeError,
+				debug(nonIteratorRecord) + ' is not an Iterator Record'
+			);
+		});
+
 		var iterator = {
 			next: function () {
 				return {
@@ -14915,6 +14946,20 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 			],
 			'values added to expected groups'
 		);
+
+		t.end();
+	});
+
+	test('GetArrayBufferMaxByteLengthOption', function (t) {
+		forEach(v.primitives, function (nonObject) {
+			t.equal(ES.GetArrayBufferMaxByteLengthOption(nonObject), 'EMPTY', debug(nonObject) + ' is not an Object, returns ~EMPTY~');
+		});
+
+		t.equal(ES.GetArrayBufferMaxByteLengthOption({}), 'EMPTY', 'absent `maxByteLength` yields ~EMPTY~');
+		t.equal(ES.GetArrayBufferMaxByteLengthOption({ maxByteLength: undefined }), 'EMPTY', 'undefined `maxByteLength` yields ~EMPTY~');
+
+		t.equal(ES.GetArrayBufferMaxByteLengthOption({ maxByteLength: 42 }), 42, '42 `maxByteLength` yields 42');
+		t.equal(ES.GetArrayBufferMaxByteLengthOption({ maxByteLength: { valueOf: function () { return 42; } } }), 42, 'valueOf -> 42 `maxByteLength` yields 42');
 
 		t.end();
 	});
@@ -15607,6 +15652,129 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('GroupBy', function (t) {
+		t['throws'](function () { ES.GroupBy([], function () {}, 'unknown'); }, 'keyCoercion is not ~PROPERTY~ or ~ZERO~');
+
+		forEach(v.nullPrimitives, function (nullish) {
+			t['throws'](
+				function () { ES.GroupBy(nullish, function () {}, 'PROPERTY'); },
+				TypeError,
+				debug(nullish) + ' is not an Object'
+			);
+		});
+
+		forEach(v.nonFunctions, function (nonFunction) {
+			t['throws'](
+				function () { ES.GroupBy([], nonFunction, 'PROPERTY'); },
+				TypeError,
+				debug(nonFunction) + ' is not a Function'
+			);
+		});
+
+		forEach(v.nonStrings, function (nonIterable) {
+			t['throws'](
+				function () { ES.GroupBy(nonIterable, function () {}, 'PROPERTY'); },
+				TypeError,
+				debug(nonIterable) + ' is not iterable'
+			);
+		});
+
+		var tenEx = t.captureFn(function (x) { return x * 10; });
+		var result = ES.GroupBy([-0, 0, 1, 2], tenEx, 'PROPERTY');
+		t.deepEqual(
+			result,
+			[
+				{ '[[Key]]': '0', '[[Elements]]': [-0, 0] },
+				{ '[[Key]]': '10', '[[Elements]]': [1] },
+				{ '[[Key]]': '20', '[[Elements]]': [2] }
+			],
+			'groups by property'
+		);
+		t.deepEqual(tenEx.calls, [
+			{ args: [-0, 0], receiver: undefined, returned: -0 },
+			{ args: [0, 1], receiver: undefined, returned: 0 },
+			{ args: [1, 2], receiver: undefined, returned: 10 },
+			{ args: [2, 3], receiver: undefined, returned: 20 }
+		]);
+
+		// TODO: maybe add a test for "larger than max safe int"?
+
+		var negate = t.captureFn(function (x) { return -x; });
+		var resultZero = ES.GroupBy([-0, 0, 1, 2], negate, 'ZERO');
+		t.deepEqual(
+			resultZero,
+			[
+				{ '[[Key]]': 0, '[[Elements]]': [-0, 0] },
+				{ '[[Key]]': -1, '[[Elements]]': [1] },
+				{ '[[Key]]': -2, '[[Elements]]': [2] }
+			],
+			'groups with SameValueZero'
+		);
+		t.deepEqual(negate.calls, [
+			{ args: [-0, 0], receiver: undefined, returned: 0 },
+			{ args: [0, 1], receiver: undefined, returned: -0 },
+			{ args: [1, 2], receiver: undefined, returned: -1 },
+			{ args: [2, 3], receiver: undefined, returned: -2 }
+		]);
+
+		// TODO: add a test for the callback throwing, that the iterator is closed
+
+		// TODO: add a test for the callback return coercion throwing, that the iterator is closed
+
+		// TODO:
+
+		t.end();
+	});
+
+	test('HasEitherUnicodeFlag', function (t) {
+		forEach([].concat(v.primitives, v.objects), function (nonRER) {
+			t['throws'](
+				function () { ES.HasEitherUnicodeFlag(nonRER); },
+				TypeError,
+				debug(nonRER) + ' is not a Regular Expression Record'
+			);
+		});
+
+		var nonUnicode = {
+			'[[IgnoreCase]]': false,
+			'[[Multiline]]': false,
+			'[[DotAll]]': false,
+			'[[Unicode]]': false,
+			'[[CapturingGroupsCount]]': 0
+		};
+		var unicode = {
+			'[[IgnoreCase]]': false,
+			'[[Multiline]]': false,
+			'[[DotAll]]': false,
+			'[[Unicode]]': true,
+			'[[CapturingGroupsCount]]': 0
+		};
+		var nonUnicodeSets = {
+			'[[IgnoreCase]]': false,
+			'[[Multiline]]': false,
+			'[[DotAll]]': false,
+			'[[Unicode]]': false,
+			'[[UnicodeSets]]': false,
+			'[[CapturingGroupsCount]]': 0
+		};
+		var unicodeSets = {
+			'[[IgnoreCase]]': false,
+			'[[Multiline]]': false,
+			'[[DotAll]]': false,
+			'[[Unicode]]': false,
+			'[[UnicodeSets]]': true,
+			'[[CapturingGroupsCount]]': 0
+		};
+
+		t.equal(ES.HasEitherUnicodeFlag(nonUnicode), false);
+		t.equal(ES.HasEitherUnicodeFlag(unicode), true);
+
+		t.equal(ES.HasEitherUnicodeFlag(nonUnicodeSets), false);
+		t.equal(ES.HasEitherUnicodeFlag(unicodeSets), true);
+
+		t.end();
+	});
+
 	test('IsArrayBufferViewOutOfBounds', function (t) {
 		forEach([].concat(v.primitives, v.objects), function (nonABV) {
 			t['throws'](
@@ -15736,6 +15904,41 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('IsTypedArrayOutOfBounds', function (t) {
+		forEach(v.primitives.concat(v.objects, [[]]), function (nonTAWBWR) {
+			t['throws'](
+				function () { ES.IsTypedArrayOutOfBounds(nonTAWBWR); },
+				TypeError,
+				debug(nonTAWBWR) + ' is not a Typed Array With Buffer Witness Record'
+			);
+		});
+
+		t.test('detached buffer', { skip: !canDetach }, function (st) {
+			var ab = new ArrayBuffer(8);
+
+			var ta = new Uint8Array(ab);
+
+			var preDetachedRecord = ES.MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
+
+			st.equal(ES.IsTypedArrayOutOfBounds(preDetachedRecord), false);
+
+			ES.DetachArrayBuffer(ab);
+
+			var postDetachedRecord = ES.MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
+
+			st['throws'](
+				function () { ES.IsTypedArrayOutOfBounds(preDetachedRecord); },
+				TypeError
+			);
+
+			st.equal(ES.IsTypedArrayOutOfBounds(postDetachedRecord), true);
+
+			st.end();
+		});
+
+		t.end();
+	});
+
 	test('IsUnclampedIntegerElementType', function (t) {
 		forEach(unclampedIntegerTypes, function (type) {
 			t.equal(
@@ -15779,7 +15982,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	test('IsViewOutOfBounds', function (t) {
 		forEach(v.primitives.concat(v.objects), function (nonDVWBWRecord) {
 			t['throws'](
-				function () { ES.IteratorStepValue(nonDVWBWRecord); },
+				function () { ES.IsViewOutOfBounds(nonDVWBWRecord); },
 				TypeError,
 				debug(nonDVWBWRecord) + ' is not a Data View With Buffer Witness Record'
 			);
@@ -15855,6 +16058,83 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
+		var sentinel = {};
+		t.test('next throws', function (st) {
+			var iterator = {
+				next: function next(x) {
+					throw sentinel;
+				}
+			};
+			var syncIteratorRecord = makeIteratorRecord(iterator);
+
+			st.equal(syncIteratorRecord['[[Done]]'], false);
+			try {
+				ES.IteratorStepValue(syncIteratorRecord);
+				st.fail('did not throw');
+			} catch (e) {
+				st.equal(e, sentinel, 'when next throws, it is rethrown');
+			}
+			st.equal(syncIteratorRecord['[[Done]]'], true);
+
+			st.end();
+		});
+
+		t.test('.done throws', { skip: !$defineProperty }, function (st) {
+			var result = {};
+			$defineProperty(result, 'done', {
+				configurable: true,
+				enumerable: true,
+				get: function () {
+					throw sentinel;
+				}
+			});
+			var iterator = {
+				next: function () {
+					return result;
+				}
+			};
+			var syncIteratorRecord = makeIteratorRecord(iterator);
+
+			st.equal(syncIteratorRecord['[[Done]]'], false);
+			try {
+				ES.IteratorStepValue(syncIteratorRecord);
+				st.fail('did not throw');
+			} catch (e) {
+				st.equal(e, sentinel, 'when .done throws, it is rethrown');
+			}
+			st.equal(syncIteratorRecord['[[Done]]'], true);
+
+			st.end();
+		});
+
+		t.test('.value throws', { skip: !$defineProperty }, function (st) {
+			var result = { done: false };
+			$defineProperty(result, 'value', {
+				configurable: true,
+				enumerable: true,
+				get: function () {
+					throw sentinel;
+				}
+			});
+			var iterator = {
+				next: function () {
+					return result;
+				}
+			};
+			var syncIteratorRecord = makeIteratorRecord(iterator);
+
+			st.equal(syncIteratorRecord['[[Done]]'], false);
+			try {
+				ES.IteratorStepValue(syncIteratorRecord);
+				st.fail('did not throw');
+			} catch (e) {
+				st.equal(e, sentinel, 'when .value throws, it is rethrown');
+			}
+			st.equal(syncIteratorRecord['[[Done]]'], true);
+
+			st.end();
+		});
+
 		t.end();
 	});
 
@@ -15918,6 +16198,43 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 		t.equal(ES.MakeFullYear(99), 1999, '99 returns 1999');
 
 		t.equal(ES.MakeFullYear(100), 100, '100 returns 100');
+
+		t.end();
+	});
+
+	test('MakeTypedArrayWithBufferWitnessRecord', function (t) {
+		forEach(v.primitives, function (nonObject) {
+			t['throws'](
+				function () { ES.MakeTypedArrayWithBufferWitnessRecord(nonObject, 'UNORDERED'); },
+				TypeError,
+				debug(nonObject) + ' is not a TypedArray'
+			);
+		});
+
+		t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
+			forEach(availableTypedArrays, function (TypedArray) {
+				st.test('Typed Array: ' + TypedArray, function (tat) {
+					var TA = global[TypedArray];
+					var ta = new TA(8);
+
+					tat['throws'](
+						function () { ES.MakeTypedArrayWithBufferWitnessRecord(ta, 'not a valid order'); },
+						TypeError,
+						'invalid order enum value throws'
+					);
+
+					var record = ES.MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
+					tat.deepEqual(record, {
+						'[[Object]]': ta,
+						'[[CachedBufferByteLength]]': ta.byteLength
+					});
+
+					tat.end();
+				});
+			});
+
+			st.end();
+		});
 
 		t.end();
 	});
