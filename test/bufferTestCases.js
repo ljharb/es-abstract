@@ -25,6 +25,7 @@ var elementSizes = {
 	$Uint32Array: 4,
 	$BigInt64Array: 8,
 	$BigUint64Array: 8,
+	$Float16Array: 2,
 	$Float32Array: 4,
 	$Float64Array: 8
 };
@@ -33,7 +34,7 @@ test('buffer test cases: sanity check', { skip: availableTypedArrays.length === 
 	forEach(bufferTestCases, function (testCase, name) {
 		var value = unserialize(testCase.value);
 
-		t.test(name + ': ' + value, function (st) {
+		t.test('*** ' + name + ': ' + value, function (st) {
 			forEach([].concat(
 				'Int8',
 				'Uint8',
@@ -46,6 +47,7 @@ test('buffer test cases: sanity check', { skip: availableTypedArrays.length === 
 					'BigInt64',
 					'BigUint64'
 				] : [],
+				typeof Float16Array === 'undefined' ? [] : 'Float16',
 				'Float32',
 				'Float64'
 			), function (type) {
@@ -81,19 +83,19 @@ test('buffer test cases: sanity check', { skip: availableTypedArrays.length === 
 
 							view.setFloat64(0, valToSet, true);
 							s3t.deepEqual(
-								arrayFrom(results.bytes),
 								arrayFrom(Array.prototype.slice.call(new Uint8Array(view.buffer), 0, elementSize)),
+								arrayFrom(results.bytes),
 								'has correct expected bytes'
 							);
 							s3t.equal(
-								unserialize(results.asLittle),
 								view['get' + method](0, true),
+								unserialize(results.asLittle),
 								'get as little: has correct expected value'
 							);
 
 							s3t.equal(
-								unserialize(results.asBig),
 								view['get' + method](0, false),
+								unserialize(results.asBig),
 								'get as big: has correct expected value',
 								{ skip: hasBigEndian ? false : '(' + type + ' only has little-endian)' }
 							);
@@ -108,19 +110,19 @@ test('buffer test cases: sanity check', { skip: availableTypedArrays.length === 
 							view['set' + method](0, isBigInt ? safeBigInt(valToSet) : valToSet, true);
 
 							s3t.deepEqual(
-								arrayFrom(results.bytes),
 								arrayFrom(Array.prototype.slice.call(new Uint8Array(view.buffer), 0, elementSize)),
+								arrayFrom(results.bytes),
 								'has correct expected bytes'
 							);
 							s3t.equal(
-								unserialize(results.asLittle),
 								view['get' + method](0, true),
+								unserialize(results.asLittle),
 								'get as little: has correct expected value'
 							);
 
 							s3t.equal(
-								unserialize(results.asBig),
 								view['get' + method](0, false),
+								unserialize(results.asBig),
 								'get as big: has correct expected value',
 								{ skip: hasBigEndian ? false : '(' + type + ' only has little-endian)' }
 							);
@@ -135,18 +137,18 @@ test('buffer test cases: sanity check', { skip: availableTypedArrays.length === 
 							view.setFloat64(0, valToSet, false);
 
 							s3t.deepEqual(
-								arrayFrom(results.bytes),
 								arrayFrom(Array.prototype.slice.call(new Uint8Array(view.buffer), 0, elementSize)),
+								arrayFrom(results.bytes),
 								'has correct expected bytes'
 							);
 							s3t.equal(
-								unserialize(results.asLittle),
 								view['get' + method](0, true),
+								unserialize(results.asLittle),
 								'get as little: has correct expected value'
 							);
 							s3t.equal(
-								unserialize(results.asBig),
 								view['get' + method](0, false),
+								unserialize(results.asBig),
 								'get as big: has correct expected value'
 							);
 
@@ -160,18 +162,18 @@ test('buffer test cases: sanity check', { skip: availableTypedArrays.length === 
 							view['set' + method](0, isBigInt ? safeBigInt(valToSet) : valToSet, false);
 
 							s3t.deepEqual(
-								arrayFrom(results.bytes),
 								arrayFrom(Array.prototype.slice.call(new Uint8Array(view.buffer), 0, elementSize)),
+								arrayFrom(results.bytes),
 								'has correct expected bytes'
 							);
 							s3t.equal(
-								unserialize(results.asLittle),
 								view['get' + method](0, true),
+								unserialize(results.asLittle),
 								'get as little: has correct expected value'
 							);
 							s3t.equal(
-								unserialize(results.asBig),
 								view['get' + method](0, false),
+								unserialize(results.asBig),
 								'get as big: has correct expected value'
 							);
 

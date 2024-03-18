@@ -9,6 +9,8 @@ module.exports = function (t, year, GroupBy) {
 
 	t['throws'](function () { GroupBy([], function () {}, 'unknown'); }, 'keyCoercion is not ~PROPERTY~ or ~ZERO~');
 
+	var nonProperty = year >= 2025 ? 'COLLECTION' : 'ZERO';
+
 	forEach(v.nullPrimitives, function (nullish) {
 		t['throws'](
 			function () { GroupBy(nullish, function () {}, 'PROPERTY'); },
@@ -54,7 +56,7 @@ module.exports = function (t, year, GroupBy) {
 	// TODO: maybe add a test for "larger than max safe int"?
 
 	var negate = t.captureFn(function (x) { return -x; });
-	var resultZero = GroupBy([-0, 0, 1, 2], negate, 'ZERO');
+	var resultZero = GroupBy([-0, 0, 1, 2], negate, nonProperty);
 	t.deepEqual(
 		resultZero,
 		[

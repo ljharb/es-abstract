@@ -48,6 +48,7 @@ var elementSizes = {
 	$Uint32Array: 4,
 	$BigInt64Array: 8,
 	$BigUint64Array: 8,
+	$Float16Array: 2,
 	$Float32Array: 4,
 	$Float64Array: 8
 };
@@ -79,7 +80,7 @@ var getUnclampedIntegerTypes = function (year) {
 };
 var getFloatTypes = function (year) {
 	return [].concat(
-		year >= 2025 ? 'Float16' : [],
+		year >= 2025 && typeof Float16Array !== 'undefined' ? 'Float16' : [],
 		'Float32',
 		'Float64'
 	);

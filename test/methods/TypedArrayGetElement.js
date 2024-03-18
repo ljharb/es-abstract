@@ -39,10 +39,10 @@ module.exports = function (t, year, TypedArrayGetElement) {
 
 			var arr = new TA([Z(1), Z(2), Z(3)]);
 
-			st.equal(TypedArrayGetElement(arr, 0), Z(1), 'index 0 is as expected');
-			st.equal(TypedArrayGetElement(arr, 1), Z(2), 'index 1 is as expected');
-			st.equal(TypedArrayGetElement(arr, 2), Z(3), 'index 2 is as expected');
-			st.equal(TypedArrayGetElement(arr, 3), undefined, 'index 3 is undefined as expected');
+			st.equal(TypedArrayGetElement(arr, 0), Z(1), TypedArray + ': index 0 is as expected');
+			st.equal(TypedArrayGetElement(arr, 1), Z(2), TypedArray + ': index 1 is as expected');
+			st.equal(TypedArrayGetElement(arr, 2), Z(3), TypedArray + ': index 2 is as expected');
+			st.equal(TypedArrayGetElement(arr, 3), undefined, TypedArray + ': index 3 is undefined as expected');
 		});
 
 		st.end();

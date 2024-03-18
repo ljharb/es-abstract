@@ -19,7 +19,7 @@ async function getOps(year) {
 	const edition = year - 2009;
 
 	const specHTMLurl = year > 2015
-		? new URL(`https://raw.githubusercontent.com/tc39/ecma262/${year === 2025 ? 'HEAD' : `es${year}`}/spec.html`)
+		? new URL(`https://raw.githubusercontent.com/tc39/ecma262/${year === 2026 ? 'HEAD' : `es${year}`}/spec.html`)
 		: new URL('https://262.ecma-international.org/6.0/');
 
 	const cmd = `curl -q --silent ${specHTMLurl}`;

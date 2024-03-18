@@ -18,6 +18,8 @@ module.exports = function (t, year, IteratorStepValue) {
 		);
 	});
 
+	var done = year >= 2025 ? false : 'DONE';
+
 	t.test('sync iterator record', function (st) {
 		var i = 0;
 		var iterator = {
@@ -37,8 +39,8 @@ module.exports = function (t, year, IteratorStepValue) {
 		st.deepEqual(IteratorStepValue(syncIteratorRecord), [0, 0, undefined], 'first yield');
 		st.deepEqual(IteratorStepValue(syncIteratorRecord), [1, 0, undefined], 'second yield');
 		st.deepEqual(IteratorStepValue(syncIteratorRecord), [2, 0, undefined], 'third yield');
-		st.deepEqual(IteratorStepValue(syncIteratorRecord), 'DONE', 'fourth yield');
-		st.deepEqual(IteratorStepValue(syncIteratorRecord), 'DONE', 'fifth yield');
+		st.deepEqual(IteratorStepValue(syncIteratorRecord), done, 'fourth yield');
+		st.deepEqual(IteratorStepValue(syncIteratorRecord), done, 'fifth yield');
 
 		st.end();
 	});
@@ -127,7 +129,7 @@ module.exports = function (t, year, IteratorStepValue) {
 				try {
 					return {
 						done: i > 2,
-						value: i > 0 ? i : 'DONE'
+						value: i > 0 ? i : done
 					};
 				} finally {
 					i += 1;
@@ -136,11 +138,11 @@ module.exports = function (t, year, IteratorStepValue) {
 		};
 		var syncIteratorRecord = makeIteratorRecord(iterator);
 
-		st.deepEqual(IteratorStepValue(syncIteratorRecord), 'DONE', 'first yield');
+		st.deepEqual(IteratorStepValue(syncIteratorRecord), done, 'first yield');
 		st.deepEqual(IteratorStepValue(syncIteratorRecord), 1, 'second yield');
 		st.deepEqual(IteratorStepValue(syncIteratorRecord), 2, 'third yield');
-		st.deepEqual(IteratorStepValue(syncIteratorRecord), 'DONE', 'fourth yield');
-		st.deepEqual(IteratorStepValue(syncIteratorRecord), 'DONE', 'fifth yield');
+		st.deepEqual(IteratorStepValue(syncIteratorRecord), done, 'fourth yield');
+		st.deepEqual(IteratorStepValue(syncIteratorRecord), done, 'fifth yield');
 
 		st.end();
 	});

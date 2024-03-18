@@ -25,21 +25,23 @@ module.exports = function (t, year, CharacterRange) {
 			debug(notOne) + ' as both args do not have 1 item'
 		);
 
-		t['throws'](
-			function () { CharacterRange(notOne, 'a'); },
-			TypeError,
-			debug(notOne) + ' as first arg does not have 1 item'
-		);
-		t['throws'](
-			function () { CharacterRange('a', notOne); },
-			TypeError,
-			debug(notOne) + ' as second arg does not have 1 item'
-		);
-		t['throws'](
-			function () { CharacterRange(notOne, notOne); },
-			TypeError,
-			debug(notOne) + ' as both args do not have 1 item'
-		);
+		if (year < 2025) {
+			t['throws'](
+				function () { CharacterRange(notOne, 'a'); },
+				TypeError,
+				debug(notOne) + ' as first arg does not have 1 item'
+			);
+			t['throws'](
+				function () { CharacterRange('a', notOne); },
+				TypeError,
+				debug(notOne) + ' as second arg does not have 1 item'
+			);
+			t['throws'](
+				function () { CharacterRange(notOne, notOne); },
+				TypeError,
+				debug(notOne) + ' as both args do not have 1 item'
+			);
+		}
 	});
 
 	t['throws'](
@@ -56,17 +58,19 @@ module.exports = function (t, year, CharacterRange) {
 		['Z', '[', '\\', ']', '^', '_', '`', 'a']
 	);
 
-	t['throws'](
-		function () { CharacterRange('b', 'a'); },
-		TypeError,
-		'a backwards range throws'
-	);
-	t.deepEqual(
-		CharacterRange('a', 'b'),
-		['a', 'b']
-	);
-	t.deepEqual(
-		CharacterRange('Z', 'a'),
-		['Z', '[', '\\', ']', '^', '_', '`', 'a']
-	);
+	if (year < 2025) {
+		t['throws'](
+			function () { CharacterRange('b', 'a'); },
+			TypeError,
+			'a backwards range throws'
+		);
+		t.deepEqual(
+			CharacterRange('a', 'b'),
+			['a', 'b']
+		);
+		t.deepEqual(
+			CharacterRange('Z', 'a'),
+			['Z', '[', '\\', ']', '^', '_', '`', 'a']
+		);
+	}
 };

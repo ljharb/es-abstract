@@ -78,6 +78,19 @@ module.exports = function (t, year, RawBytesToNumeric) {
 	});
 
 	t.test('incorrect byte counts', function (st) {
+		if (year >= 2025) {
+			st['throws'](
+				function () { RawBytesToNumeric('FLOAT16', [0], false); },
+				RangeError,
+				'Float16 with less than 2 bytes throws a RangeError'
+			);
+			st['throws'](
+				function () { RawBytesToNumeric('FLOAT16', [0, 0, 0], false); },
+				RangeError,
+				'Float16 with more than 2 bytes throws a RangeError'
+			);
+		}
+
 		st['throws'](
 			function () { RawBytesToNumeric(year >= 2024 ? 'FLOAT32' : 'Float32', [0, 0, 0], false); },
 			RangeError,

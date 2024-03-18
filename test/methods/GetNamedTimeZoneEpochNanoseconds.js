@@ -167,7 +167,7 @@ module.exports = function (t, year, GetNamedTimeZoneEpochNanoseconds) {
 
 	t.test('BigInt supported', { skip: !esV.hasBigInts }, function (st) {
 		st.deepEqual(
-			GetNamedTimeZoneEpochNanoseconds('UTC', 2025, 5, 19, 14, 45, 2, 0, 0, 0),
+			GetNamedTimeZoneEpochNanoseconds(UTC, 2025, 5, 19, 14, 45, 2, 0, 0, 0),
 			[BigInt(1747665902000000000)],
 			'2025-05-19T14:45:02.000000000Z'
 		);
@@ -177,7 +177,7 @@ module.exports = function (t, year, GetNamedTimeZoneEpochNanoseconds) {
 
 	t.test('no BigInts', { skip: esV.hasBigInts }, function (st) {
 		st['throws'](
-			function () { GetNamedTimeZoneEpochNanoseconds(2025, 5, 19, 14, 45, 2, 0, 0, 0); },
+			function () { GetNamedTimeZoneEpochNanoseconds(UTC, 2025, 5, 19, 14, 45, 2, 0, 0, 0); },
 			SyntaxError,
 			'BigInts are not supported in this environment'
 		);

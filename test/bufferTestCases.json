@@ -165,6 +165,28 @@
                 "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
             }
         },
+        "Float16": {
+            "setAsLittle": {
+                "asLittle": "NaN",
+                "asBig": "NaN",
+                "bytes": [254, 255]
+            },
+            "setAsTruncatedLittle": {
+                "asLittle": "Infinity",
+                "asBig": 0.0000073909759521484375,
+                "bytes": [0, 124]
+            },
+            "setAsBig": {
+                "asLittle": -479.75,
+                "asBig": "NaN",
+                "bytes": [127, 223]
+            },
+            "setAsTruncatedBig": {
+                "asLittle": 0.0000073909759521484375,
+                "asBig": "Infinity",
+                "bytes": [124, 0]
+            }
+        },
         "Float32": {
             "setAsLittle": {
                 "asLittle": "NaN",
@@ -372,6 +394,28 @@
                 "asBig": "0n",
                 "asLittle": "0n",
                 "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "Float16": {
+            "setAsLittle": {
+                "asLittle": "NaN",
+                "asBig": "NaN",
+                "bytes": [255, 255]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0.0000073909759521484375,
+                "asLittle": "Infinity",
+                "bytes": [0, 124]
+            },
+            "setAsBig": {
+                "asLittle": -7676,
+                "asBig": "NaN",
+                "bytes": [127, 239]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "Infinity",
+                "asLittle": 0.0000073909759521484375,
+                "bytes": [124, 0]
             }
         },
         "Float32": {
@@ -586,6 +630,30 @@
                 "bytes": [0, 0, 0, 0, 255, 255, 255, 255]
             }
         },
+        "Float16": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0],
+                "truncatedLittle": 4294967296,
+                "truncatedBig": 4.602845065767727e-41
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0.0000073909759521484375,
+                "asLittle": "Infinity",
+                "bytes": [0, 124]
+            },
+            "setAsBig": {
+                "asLittle": -7428,
+                "asBig": 2.966796875,
+                "bytes": [65, 239]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "Infinity",
+                "asLittle": 0.0000073909759521484375,
+                "bytes": [124, 0]
+            }
+        },
         "Float32": {
             "setAsLittle": {
                 "asLittle": "NaN",
@@ -797,6 +865,28 @@
                 "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
             }
         },
+        "Float16": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsBig": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            }
+        },
         "Float32": {
             "setAsLittle": {
                 "asLittle": 0,
@@ -1004,6 +1094,28 @@
                 "asBig": "0n",
                 "asLittle": "0n",
                 "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "Float16": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0.00000762939453125,
+                "asLittle": "-0",
+                "bytes": [0, 128]
+            },
+            "setAsBig": {
+                "asBig": "-0",
+                "asLittle": 0.00000762939453125,
+                "bytes": [128, 0]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "-0",
+                "asLittle": 0.00000762939453125,
+                "bytes": [128, 0]
             }
         },
         "Float32": {
@@ -1215,6 +1327,28 @@
                 "bytes": [0, 0, 0, 0, 0, 0, 0, 1]
             }
         },
+        "Float16": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0.0000035762786865234375,
+                "asLittle": 1,
+                "bytes": [0, 60]
+            },
+            "setAsBig": {
+                "asBig": 1.984375,
+                "asLittle": -8696,
+                "bytes": [63, 240]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 1,
+                "asLittle": 0.0000035762786865234375,
+                "bytes": [60, 0]
+            }
+        },
         "Float32": {
             "setAsLittle": {
                 "asBig": 0,
@@ -1422,6 +1556,28 @@
                 "asBig": "0n",
                 "asLittle": "0n",
                 "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "Float16": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0.0000034570693969726562,
+                "asLittle": 0.75,
+                "bytes": [0, 58]
+            },
+            "setAsBig": {
+                "asBig": 1.9765625,
+                "asLittle": -2174,
+                "bytes": [63, 232]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0.75,
+                "asLittle": 0.0000034570693969726562,
+                "bytes": [58, 0]
             }
         },
         "Float32": {
@@ -1633,6 +1789,28 @@
                 "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
             }
         },
+        "Float16": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0.000003337860107421875,
+                "asLittle": 0.5,
+                "bytes": [0, 56]
+            },
+            "setAsBig": {
+                "asBig": 1.96875,
+                "asLittle": -543.5,
+                "bytes": [63, 224]
+            },
+            "setAsTruncatedBig": {
+                "asBig": 0.5,
+                "asLittle": 0.000003337860107421875,
+                "bytes": [56, 0]
+            }
+        },
         "Float32": {
             "setAsLittle": {
                 "asBig": 0,
@@ -1840,6 +2018,28 @@
                 "asBig": "0n",
                 "asLittle": "0n",
                 "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "Float16": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0.000011324882507324219,
+                "asLittle": -1.5,
+                "bytes": [0, 190]
+            },
+            "setAsBig": {
+                "asBig": -1.9921875,
+                "asLittle": -38880,
+                "bytes": [191, 248]
+            },
+            "setAsTruncatedBig": {
+                "asBig": -1.5,
+                "asLittle": 0.000011324882507324219,
+                "bytes": [190, 0]
             }
         },
         "Float32": {
@@ -2051,6 +2251,28 @@
                 "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
             }
         },
+        "Float16": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0.000011622905731201172,
+                "asLittle": -3.5,
+                "bytes": [0, 195]
+            },
+            "setAsBig": {
+                "asBig": -2.0234375,
+                "asLittle": 0.0002899169921875,
+                "bytes": [192, 12]
+            },
+            "setAsTruncatedBig": {
+                "asBig": -3.5,
+                "asLittle": 0.000011622905731201172,
+                "bytes": [195, 0]
+            }
+        },
         "Float32": {
             "setAsLittle": {
                 "asBig": 0,
@@ -2258,6 +2480,28 @@
                 "asBig": "16777216n",
                 "asLittle": "4294967296n",
                 "bytes": [0, 0, 0, 0, 1, 0, 0, 0]
+            }
+        },
+        "Float16": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0.0000073909759521484375,
+                "asLittle": "Infinity",
+                "bytes": [0, 124]
+            },
+            "setAsBig": {
+                "asBig": 2.71875,
+                "asLittle": 8712,
+                "bytes": [65, 112]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "Infinity",
+                "asLittle": 0.0000073909759521484375,
+                "bytes": [124, 0]
             }
         },
         "Float32": {
@@ -2469,6 +2713,28 @@
                 "bytes": [0, 0, 0, 0, 128, 0, 0, 0]
             }
         },
+        "Float16": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0.0000073909759521484375,
+                "asLittle": "Infinity",
+                "bytes": [0, 124]
+            },
+            "setAsBig": {
+                "asBig": 2.9375,
+                "asLittle": -544.5,
+                "bytes": [65, 224]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "Infinity",
+                "asLittle": 0.0000073909759521484375,
+                "bytes": [124, 0]
+            }
+        },
         "Float32": {
             "setAsLittle": {
                 "asBig": 0,
@@ -2676,6 +2942,28 @@
                 "asBig": "0n",
                 "asLittle": "0n",
                 "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "Float16": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0.0000073909759521484375,
+                "asLittle": "Infinity",
+                "bytes": [0, 124]
+            },
+            "setAsBig": {
+                "asBig": "NaN",
+                "asLittle": -9208,
+                "bytes": [127, 240]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "Infinity",
+                "asLittle": 0.0000073909759521484375,
+                "bytes": [124, 0]
             }
         },
         "Float32": {
@@ -2887,6 +3175,28 @@
                 "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
             }
         },
+        "Float16": {
+            "setAsLittle": {
+                "asBig": 0,
+                "asLittle": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0.000015020370483398438,
+                "asLittle": "-Infinity",
+                "bytes": [0, 252]
+            },
+            "setAsBig": {
+                "asBig": "NaN",
+                "asLittle": -10232,
+                "bytes": [255, 240]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "-Infinity",
+                "asLittle": 0.000015020370483398438,
+                "bytes": [252, 0]
+            }
+        },
         "Float32": {
             "setAsLittle": {
                 "asBig": 0,
@@ -3094,6 +3404,28 @@
                 "asBig": "0n",
                 "asLittle": "0n",
                 "bytes": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "Float16": {
+            "setAsLittle": {
+                "asLittle": 0,
+                "asBig": 0,
+                "bytes": [0, 0]
+            },
+            "setAsTruncatedLittle": {
+                "asBig": 0.000007510185241699219,
+                "asLittle": "NaN",
+                "bytes": [0, 126]
+            },
+            "setAsBig": {
+                "asBig": "NaN",
+                "asLittle": -36832,
+                "bytes": [127, 248]
+            },
+            "setAsTruncatedBig": {
+                "asBig": "NaN",
+                "asLittle": 0.000007510185241699219,
+                "bytes": [126, 0]
             }
         },
         "Float32": {

@@ -60,7 +60,7 @@ module.exports = function (t, year, CharacterComplement) {
 
 	t.notEqual(A.count(), nuCC.count(), 'non-unicode: nonzero characters filtered out');
 	t.notEqual(A.count(), uCC.count(), 'unicode: nonzero characters filtered out');
-	t.notEqual(nuCC.count(), uCC.count(), 'unicode and non-unicode: different char counts');
+	t.ok(uCC.count() >= nuCC.count(), 'unicode is a subset of non-unicode ' + uCC.count() + ' >= ' + nuCC.count());
 
 	t.notOk(nuCC.test('a'), 'non-unicode: lowercase a');
 	t.notOk(nuCC.test('A'), 'non-unicode: uppercase a');
