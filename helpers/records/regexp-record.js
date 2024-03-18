@@ -18,5 +18,6 @@ module.exports = function isRegExpRecord(value) {
 		&& hasOwn(value, '[[CapturingGroupsCount]]')
 		&& typeof value['[[CapturingGroupsCount]]'] === 'number'
 		&& isInteger(value['[[CapturingGroupsCount]]'])
-		&& value['[[CapturingGroupsCount]]'] >= 0;
+		&& value['[[CapturingGroupsCount]]'] >= 0
+		&& (!hasOwn(value, '[[UnicodeSets]]') || typeof value['[[UnicodeSets]]'] === 'boolean'); // optional since it was added later
 };
