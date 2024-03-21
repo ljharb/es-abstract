@@ -1,5 +1,6 @@
 'use strict';
 
+var $SyntaxError = require('es-errors/syntax');
 var callBound = require('call-bind/callBound');
 
 var $SymbolValueOf = callBound('Symbol.prototype.valueOf', true);
@@ -8,7 +9,7 @@ var $SymbolValueOf = callBound('Symbol.prototype.valueOf', true);
 
 module.exports = function thisSymbolValue(value) {
 	if (!$SymbolValueOf) {
-		throw new SyntaxError('Symbols are not supported; thisSymbolValue requires that `value` be a Symbol or a Symbol object');
+		throw new $SyntaxError('Symbols are not supported; thisSymbolValue requires that `value` be a Symbol or a Symbol object');
 	}
 	if (typeof value === 'symbol') {
 		return value;

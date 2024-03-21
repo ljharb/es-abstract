@@ -1,7 +1,10 @@
 'use strict';
 
+var GetIntrinsic = require('get-intrinsic');
+
 var $SyntaxError = require('es-errors/syntax');
 var $TypeError = require('es-errors/type');
+var $Uint8Array = GetIntrinsic('%Uint8Array%', true);
 
 var isInteger = require('../helpers/isInteger');
 
@@ -84,7 +87,7 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value, 
 		throw new $SyntaxError('SharedArrayBuffer is not supported by this implementation');
 	} else {
 		// 10. Store the individual bytes of rawBytes into block, in order, starting at block[byteIndex].
-		var arr = new Uint8Array(arrayBuffer, byteIndex, elementSize);
+		var arr = new $Uint8Array(arrayBuffer, byteIndex, elementSize);
 		forEach(rawBytes, function (rawByte, i) {
 			arr[i] = rawByte;
 		});

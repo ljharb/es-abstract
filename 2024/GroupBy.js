@@ -26,7 +26,7 @@ module.exports = function GroupBy(items, callbackfn, keyCoercion) {
 	RequireObjectCoercible(items); // step 1
 
 	if (!IsCallable(callbackfn)) {
-		throw new TypeError('callbackfn must be callable'); // step 2
+		throw new $TypeError('callbackfn must be callable'); // step 2
 	}
 
 	var groups = []; // step 3
@@ -38,7 +38,7 @@ module.exports = function GroupBy(items, callbackfn, keyCoercion) {
 	// eslint-disable-next-line no-constant-condition
 	while (true) { // step 6
 		if (k >= maxSafeInteger) { // step 6.a
-			var error = ThrowCompletion(new TypeError('k must be less than 2 ** 53 - 1')); // step 6.a.i
+			var error = ThrowCompletion(new $TypeError('k must be less than 2 ** 53 - 1')); // step 6.a.i
 			return IteratorClose(iteratorRecord, error); // step 6.a.ii
 		}
 		var next = IteratorStep(iteratorRecord); // step 6.b

@@ -38,7 +38,7 @@ var AsyncFromSyncIteratorContinuation = function AsyncFromSyncIteratorContinuati
 		throw new $SyntaxError('This environment does not support Promises.');
 	}
 
-	return new Promise(function (resolve) {
+	return new $Promise(function (resolve) {
 		var done = IteratorComplete(result); // step 2
 		var value = IteratorValue(result); // step 4
 		var valueWrapper = PromiseResolve($Promise, value); // step 6
@@ -53,13 +53,17 @@ var AsyncFromSyncIteratorContinuation = function AsyncFromSyncIteratorContinuati
 
 var $AsyncFromSyncIteratorPrototype = GetIntrinsic('%AsyncFromSyncIteratorPrototype%', true) || {
 	next: function next(value) {
+		if (!$Promise) {
+			throw new $SyntaxError('This environment does not support Promises.');
+		}
+
 		var O = this; // step 1
 
 		SLOT.assert(O, '[[SyncIteratorRecord]]'); // step 2
 
 		var argsLength = arguments.length;
 
-		return new Promise(function (resolve) { // step 3
+		return new $Promise(function (resolve) { // step 3
 			var syncIteratorRecord = SLOT.get(O, '[[SyncIteratorRecord]]'); // step 4
 			var result;
 			if (argsLength > 0) {
@@ -71,6 +75,10 @@ var $AsyncFromSyncIteratorPrototype = GetIntrinsic('%AsyncFromSyncIteratorProtot
 		});
 	},
 	'return': function () {
+		if (!$Promise) {
+			throw new $SyntaxError('This environment does not support Promises.');
+		}
+
 		var O = this; // step 1
 
 		SLOT.assert(O, '[[SyncIteratorRecord]]'); // step 2
@@ -78,7 +86,7 @@ var $AsyncFromSyncIteratorPrototype = GetIntrinsic('%AsyncFromSyncIteratorProtot
 		var valueIsPresent = arguments.length > 0;
 		var value = valueIsPresent ? arguments[0] : void undefined;
 
-		return new Promise(function (resolve, reject) { // step 3
+		return new $Promise(function (resolve, reject) { // step 3
 			var syncIterator = SLOT.get(O, '[[SyncIteratorRecord]]')['[[Iterator]]']; // step 4
 			var iteratorReturn = GetMethod(syncIterator, 'return'); // step 5
 
@@ -102,6 +110,10 @@ var $AsyncFromSyncIteratorPrototype = GetIntrinsic('%AsyncFromSyncIteratorProtot
 		});
 	},
 	'throw': function () {
+		if (!$Promise) {
+			throw new $SyntaxError('This environment does not support Promises.');
+		}
+
 		var O = this; // step 1
 
 		SLOT.assert(O, '[[SyncIteratorRecord]]'); // step 2
@@ -109,7 +121,7 @@ var $AsyncFromSyncIteratorPrototype = GetIntrinsic('%AsyncFromSyncIteratorProtot
 		var valueIsPresent = arguments.length > 0;
 		var value = valueIsPresent ? arguments[0] : void undefined;
 
-		return new Promise(function (resolve, reject) { // step 3
+		return new $Promise(function (resolve, reject) { // step 3
 			var syncIterator = SLOT.get(O, '[[SyncIteratorRecord]]')['[[Iterator]]']; // step 4
 
 			var throwMethod = GetMethod(syncIterator, 'throw'); // step 5

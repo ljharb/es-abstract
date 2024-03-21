@@ -31,7 +31,7 @@ module.exports = function AsyncFromSyncIteratorContinuation(result) {
 		throw new $SyntaxError('This environment does not support Promises.');
 	}
 
-	return new Promise(function (resolve) {
+	return new $Promise(function (resolve) {
 		var done = IteratorComplete(result); // step 2
 		var value = IteratorValue(result); // step 4
 		var valueWrapper = PromiseResolve($Promise, value); // step 6

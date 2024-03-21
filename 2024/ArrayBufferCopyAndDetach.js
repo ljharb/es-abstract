@@ -12,12 +12,12 @@ var callBound = require('call-bind/callBound');
 var byteLength = require('array-buffer-byte-length');
 var $maxByteLength = callBound('%ArrayBuffer.prototype.maxByteLength%', true);
 var copy = function copyAB(src, start, end) {
-	var that = new Uint8Array(src);
+	var that = new $Uint8Array(src);
 	if (typeof end === 'undefined') {
 		end = that.length; // eslint-disable-line no-param-reassign
 	}
-	var result = new ArrayBuffer(end - start);
-	var resultArray = new Uint8Array(result);
+	var result = new $ArrayBuffer(end - start);
+	var resultArray = new $Uint8Array(result);
 	for (var i = 0; i < resultArray.length; i++) {
 		resultArray[i] = that[i + start];
 	}
