@@ -95,7 +95,7 @@
 		"safe-regex-test": "^1.0.3",
 		"string.prototype.trim": "^1.2.9",
 		"string.prototype.trimend": "^1.0.8",
-		"string.prototype.trimstart": "^1.0.7",
+		"string.prototype.trimstart": "^1.0.8",
 		"typed-array-buffer": "^1.0.2",
 		"typed-array-byte-length": "^1.0.1",
 		"typed-array-byte-offset": "^1.0.2",
