@@ -99,7 +99,7 @@
 		"typed-array-buffer": "^1.0.2",
 		"typed-array-byte-length": "^1.0.1",
 		"typed-array-byte-offset": "^1.0.2",
-		"typed-array-length": "^1.0.5",
+		"typed-array-length": "^1.0.6",
 		"unbox-primitive": "^1.0.2",
 		"which-typed-array": "^1.1.15"
 	},
