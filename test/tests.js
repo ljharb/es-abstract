@@ -15545,6 +15545,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 
 						clearBuffer(view.buffer);
 						var littleVal = unserialize(result.setAsLittle.asLittle);
+						console.log(littleVal);
 						view['set' + method](0, isBigInt ? safeBigInt(littleVal) : littleVal, true);
 
 						try {
