@@ -3167,7 +3167,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			forEach(availableTypedArrays, function (typedArray) {
 				var isBigInt = typedArray.slice(0, 3) === 'Big';
 				if (isBigInt && 'ToBigInt' in ES) {
-					var Z = isBigInt ? BigInt : Number;
+					var Z = isBigInt ? safeBigInt : Number;
 					var TA = global[typedArray];
 
 					var arr = new TA([Z(1), Z(2), Z(3)]);
@@ -14608,7 +14608,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 
 			forEach(availableTypedArrays, function (name) {
 				var isBigInt = name.slice(0, 3) === 'Big';
-				var Z = isBigInt ? BigInt : Number;
+				var Z = isBigInt ? safeBigInt : Number;
 				var TA = global[name];
 
 				var ta = new TA([Z(1), Z(2), Z(3)]);
@@ -15545,7 +15545,6 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 
 						clearBuffer(view.buffer);
 						var littleVal = unserialize(result.setAsLittle.asLittle);
-						console.log(littleVal);
 						view['set' + method](0, isBigInt ? safeBigInt(littleVal) : littleVal, true);
 
 						try {
@@ -16717,7 +16716,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 					'Float64'
 				), function (type) {
 					var isBigInt = type === 'BigInt64' || type === 'BigUint64';
-					var Z = isBigInt ? $BigInt : Number;
+					var Z = isBigInt ? safeBigInt : Number;
 					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
 					var value = unserialize(testCase.value);
@@ -17134,7 +17133,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 
 			forEach(availableTypedArrays, function (TypedArray) {
 				var isBigInt = TypedArray.slice(0, 3) === 'Big';
-				var Z = isBigInt ? BigInt : Number;
+				var Z = isBigInt ? safeBigInt : Number;
 				var TA = global[TypedArray];
 
 				var arr = new TA([Z(1), Z(2), Z(3)]);
