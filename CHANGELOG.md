@@ -1,3 +1,13 @@
+1.23.3 / 2024-03-29
+=================
+  * [Fix] `ES2024`: `StringPad`, `StringPaddingBuiltinsImpl`: prefer uppercase spec enums
+  * [Fix] `helpers/bytesAsInteger`: avoid a crash in node 10.4 - 10.8
+  * [Fix] `ES5`: `CheckObjectCoercible`: restore `optMessage` optional arg
+  * [Refactor] `ES2022`+: update `TimeString` to use `ToZeroPaddedDecimalString`
+  * [Robustness] use cached copies of builtins
+  * [Deps] update `string.prototype.trimstart`, `typed-array-length`
+  * [Dev Deps] update `array.from`, `array.prototype.filter`, `array.prototype.indexof`, `object.fromentries`, `safe-bigint`
+
 1.23.2 / 2024-03-17
 =================
   * [Fix] `records/regexp-record`: add optional `[[UnicodeSets]]` boolean field
