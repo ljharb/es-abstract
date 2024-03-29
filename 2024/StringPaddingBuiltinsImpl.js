@@ -9,8 +9,8 @@ var ToString = require('./ToString');
 // https://262.ecma-international.org/15.0/#sec-stringpaddingbuiltinsimpl
 
 module.exports = function StringPaddingBuiltinsImpl(O, maxLength, fillString, placement) {
-	if (placement !== 'start' && placement !== 'end') {
-		throw new $TypeError('Assertion failed: `placement` must be "start" or "end"');
+	if (placement !== 'start' && placement !== 'end' && placement !== 'START' && placement !== 'END') {
+		throw new $TypeError('Assertion failed: `placement` must be ~START~ or ~END~');
 	}
 
 	var S = ToString(O); // step 1

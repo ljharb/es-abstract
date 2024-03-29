@@ -16790,7 +16790,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 		t['throws'](
 			function () { ES.StringPad('', 0, '', 'not start or end'); },
 			TypeError,
-			'`placement` must be "start" or "end"'
+			'`placement` must be ~START~ or ~END~'
 		);
 
 		t.equal(ES.StringPad('a', 3, '', 'start'), 'a');
@@ -16802,6 +16802,15 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 		t.equal(ES.StringPad('a', 7, '012', 'start'), '012012a');
 		t.equal(ES.StringPad('a', 7, '012', 'end'), 'a012012');
 
+		t.equal(ES.StringPad('a', 3, '', 'START'), 'a');
+		t.equal(ES.StringPad('a', 3, '', 'END'), 'a');
+		t.equal(ES.StringPad('a', 3, '0', 'START'), '00a');
+		t.equal(ES.StringPad('a', 3, '0', 'END'), 'a00');
+		t.equal(ES.StringPad('a', 3, '012', 'START'), '01a');
+		t.equal(ES.StringPad('a', 3, '012', 'END'), 'a01');
+		t.equal(ES.StringPad('a', 7, '012', 'START'), '012012a');
+		t.equal(ES.StringPad('a', 7, '012', 'END'), 'a012012');
+
 		t.end();
 	});
 
@@ -16809,7 +16818,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 		t['throws'](
 			function () { ES.StringPaddingBuiltinsImpl('', 0, '', 'not start or end'); },
 			TypeError,
-			'`placement` must be "start" or "end"'
+			'`placement` must be ~START~ or ~END~'
 		);
 
 		t.equal(ES.StringPaddingBuiltinsImpl('a', 3, '', 'start'), 'a');
@@ -16822,6 +16831,17 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 		t.equal(ES.StringPaddingBuiltinsImpl('a', 7, '012', 'end'), 'a012012');
 		t.equal(ES.StringPaddingBuiltinsImpl('a', 3, undefined, 'start'), '  a');
 		t.equal(ES.StringPaddingBuiltinsImpl('abc', 1, undefined, 'start'), 'abc');
+
+		t.equal(ES.StringPaddingBuiltinsImpl('a', 3, '', 'START'), 'a');
+		t.equal(ES.StringPaddingBuiltinsImpl('a', 3, '', 'END'), 'a');
+		t.equal(ES.StringPaddingBuiltinsImpl('a', 3, '0', 'START'), '00a');
+		t.equal(ES.StringPaddingBuiltinsImpl('a', 3, '0', 'END'), 'a00');
+		t.equal(ES.StringPaddingBuiltinsImpl('a', 3, '012', 'START'), '01a');
+		t.equal(ES.StringPaddingBuiltinsImpl('a', 3, '012', 'END'), 'a01');
+		t.equal(ES.StringPaddingBuiltinsImpl('a', 7, '012', 'START'), '012012a');
+		t.equal(ES.StringPaddingBuiltinsImpl('a', 7, '012', 'END'), 'a012012');
+		t.equal(ES.StringPaddingBuiltinsImpl('a', 3, undefined, 'START'), '  a');
+		t.equal(ES.StringPaddingBuiltinsImpl('abc', 1, undefined, 'START'), 'abc');
 
 		t.end();
 	});

@@ -20,8 +20,8 @@ module.exports = function StringPad(S, maxLength, fillString, placement) {
 	if (typeof fillString !== 'string') {
 		throw new $TypeError('Assertion failed: `fillString` must be a String');
 	}
-	if (placement !== 'start' && placement !== 'end') {
-		throw new $TypeError('Assertion failed: `placement` must be "start" or "end"');
+	if (placement !== 'start' && placement !== 'end' && placement !== 'START' && placement !== 'END') {
+		throw new $TypeError('Assertion failed: `placement` must be ~START~ or ~END~');
 	}
 
 	var stringLength = S.length; // step 1
@@ -39,7 +39,7 @@ module.exports = function StringPad(S, maxLength, fillString, placement) {
 	}
 	truncatedStringFiller = $strSlice(truncatedStringFiller, 0, fillLen);
 
-	if (placement === 'start') { return truncatedStringFiller + S; } // step 6
+	if (placement === 'start' || placement === 'START') { return truncatedStringFiller + S; } // step 6
 
 	return S + truncatedStringFiller; // step 7
 };
