@@ -16135,6 +16135,31 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
+		t.test('conflated sentinel value', function (st) {
+			var i = 0;
+			var iterator = {
+				next: function next(x) {
+					try {
+						return {
+							done: i > 2,
+							value: i > 0 ? i : 'DONE'
+						};
+					} finally {
+						i += 1;
+					}
+				}
+			};
+			var syncIteratorRecord = makeIteratorRecord(iterator);
+
+			st.deepEqual(ES.IteratorStepValue(syncIteratorRecord), 'DONE', 'first yield');
+			st.deepEqual(ES.IteratorStepValue(syncIteratorRecord), 1, 'second yield');
+			st.deepEqual(ES.IteratorStepValue(syncIteratorRecord), 2, 'third yield');
+			st.deepEqual(ES.IteratorStepValue(syncIteratorRecord), 'DONE', 'fourth yield');
+			st.deepEqual(ES.IteratorStepValue(syncIteratorRecord), 'DONE', 'fifth yield');
+
+			st.end();
+		});
+
 		t.end();
 	});
 
