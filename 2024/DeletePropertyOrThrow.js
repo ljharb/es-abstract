@@ -2,9 +2,8 @@
 
 var $TypeError = require('es-errors/type');
 
-var IsPropertyKey = require('./IsPropertyKey');
-
 var isObject = require('../helpers/isObject');
+var isPropertyKey = require('../helpers/isPropertyKey');
 
 // https://262.ecma-international.org/6.0/#sec-deletepropertyorthrow
 
@@ -13,8 +12,8 @@ module.exports = function DeletePropertyOrThrow(O, P) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
 	}
 
-	if (!IsPropertyKey(P)) {
-		throw new $TypeError('Assertion failed: IsPropertyKey(P) is not true');
+	if (!isPropertyKey(P)) {
+		throw new $TypeError('Assertion failed: P is not a Property Key');
 	}
 
 	// eslint-disable-next-line no-param-reassign

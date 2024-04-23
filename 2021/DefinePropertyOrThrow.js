@@ -7,7 +7,7 @@ var DefineOwnProperty = require('../helpers/DefineOwnProperty');
 
 var FromPropertyDescriptor = require('./FromPropertyDescriptor');
 var IsDataDescriptor = require('./IsDataDescriptor');
-var IsPropertyKey = require('./IsPropertyKey');
+var isPropertyKey = require('../helpers/isPropertyKey');
 var SameValue = require('./SameValue');
 var ToPropertyDescriptor = require('./ToPropertyDescriptor');
 
@@ -20,8 +20,8 @@ module.exports = function DefinePropertyOrThrow(O, P, desc) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
 	}
 
-	if (!IsPropertyKey(P)) {
-		throw new $TypeError('Assertion failed: IsPropertyKey(P) is not true');
+	if (!isPropertyKey(P)) {
+		throw new $TypeError('Assertion failed: P is not a Property Key');
 	}
 
 	var Desc = isPropertyDescriptor(desc) ? desc : ToPropertyDescriptor(desc);

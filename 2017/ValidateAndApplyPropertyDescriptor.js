@@ -10,7 +10,7 @@ var FromPropertyDescriptor = require('./FromPropertyDescriptor');
 var IsAccessorDescriptor = require('./IsAccessorDescriptor');
 var IsDataDescriptor = require('./IsDataDescriptor');
 var IsGenericDescriptor = require('./IsGenericDescriptor');
-var IsPropertyKey = require('./IsPropertyKey');
+var isPropertyKey = require('../helpers/isPropertyKey');
 var SameValue = require('./SameValue');
 
 var isObject = require('../helpers/isObject');
@@ -33,7 +33,7 @@ module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, D
 	if (typeof current !== 'undefined' && !isPropertyDescriptor(current)) {
 		throw new $TypeError('Assertion failed: current must be a Property Descriptor, or undefined');
 	}
-	if (typeof O !== 'undefined' && !IsPropertyKey(P)) {
+	if (typeof O !== 'undefined' && !isPropertyKey(P)) {
 		throw new $TypeError('Assertion failed: if O is not undefined, P must be a Property Key');
 	}
 	if (typeof current === 'undefined') {

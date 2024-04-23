@@ -12,7 +12,7 @@ var CreateDataProperty = require('./CreateDataProperty');
 var Get = require('./Get');
 var IsArray = require('./IsArray');
 var IsInteger = require('./IsInteger');
-var IsPropertyKey = require('./IsPropertyKey');
+var isPropertyKey = require('../helpers/isPropertyKey');
 var SameValue = require('./SameValue');
 var ToNumber = require('./ToNumber');
 var ToObject = require('./ToObject');
@@ -30,7 +30,7 @@ module.exports = function CopyDataProperties(target, source, excludedItems) {
 		throw new $TypeError('Assertion failed: "excludedItems" must be a List of Property Keys');
 	}
 	for (var i = 0; i < excludedItems.length; i += 1) {
-		if (!IsPropertyKey(excludedItems[i])) {
+		if (!isPropertyKey(excludedItems[i])) {
 			throw new $TypeError('Assertion failed: "excludedItems" must be a List of Property Keys');
 		}
 	}

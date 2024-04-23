@@ -10,7 +10,7 @@ var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 var hasOwn = require('hasown');
 
 var IsArray = require('./IsArray');
-var IsPropertyKey = require('./IsPropertyKey');
+var isPropertyKey = require('../helpers/isPropertyKey');
 var IsRegExp = require('./IsRegExp');
 var ToPropertyDescriptor = require('./ToPropertyDescriptor');
 
@@ -22,7 +22,7 @@ module.exports = function OrdinaryGetOwnProperty(O, P) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: O must be an Object');
 	}
-	if (!IsPropertyKey(P)) {
+	if (!isPropertyKey(P)) {
 		throw new $TypeError('Assertion failed: P must be a Property Key');
 	}
 	if (!hasOwn(O, P)) {

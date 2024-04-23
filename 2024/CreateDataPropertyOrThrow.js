@@ -3,9 +3,9 @@
 var $TypeError = require('es-errors/type');
 
 var CreateDataProperty = require('./CreateDataProperty');
-var IsPropertyKey = require('./IsPropertyKey');
 
 var isObject = require('../helpers/isObject');
+var isPropertyKey = require('../helpers/isPropertyKey');
 
 // // https://262.ecma-international.org/14.0/#sec-createdatapropertyorthrow
 
@@ -13,8 +13,8 @@ module.exports = function CreateDataPropertyOrThrow(O, P, V) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
 	}
-	if (!IsPropertyKey(P)) {
-		throw new $TypeError('Assertion failed: IsPropertyKey(P) is not true');
+	if (!isPropertyKey(P)) {
+		throw new $TypeError('Assertion failed: P is not a Property Key');
 	}
 	var success = CreateDataProperty(O, P, V);
 	if (!success) {

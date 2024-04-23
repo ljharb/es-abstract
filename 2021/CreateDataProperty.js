@@ -2,7 +2,7 @@
 
 var $TypeError = require('es-errors/type');
 
-var IsPropertyKey = require('./IsPropertyKey');
+var isPropertyKey = require('../helpers/isPropertyKey');
 var OrdinaryDefineOwnProperty = require('./OrdinaryDefineOwnProperty');
 
 var isObject = require('../helpers/isObject');
@@ -13,8 +13,8 @@ module.exports = function CreateDataProperty(O, P, V) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
 	}
-	if (!IsPropertyKey(P)) {
-		throw new $TypeError('Assertion failed: IsPropertyKey(P) is not true');
+	if (!isPropertyKey(P)) {
+		throw new $TypeError('Assertion failed: P is not a Property Key');
 	}
 	var newDesc = {
 		'[[Configurable]]': true,

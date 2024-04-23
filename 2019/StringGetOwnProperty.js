@@ -8,9 +8,9 @@ var $stringToString = callBound('String.prototype.toString');
 
 var CanonicalNumericIndexString = require('./CanonicalNumericIndexString');
 var IsInteger = require('./IsInteger');
-var IsPropertyKey = require('./IsPropertyKey');
 
 var isObject = require('../helpers/isObject');
+var isPropertyKey = require('../helpers/isPropertyKey');
 
 var isNegativeZero = require('math-intrinsics/isNegativeZero');
 
@@ -26,8 +26,8 @@ module.exports = function StringGetOwnProperty(S, P) {
 	if (typeof str !== 'string') {
 		throw new $TypeError('Assertion failed: `S` must be a boxed string object');
 	}
-	if (!IsPropertyKey(P)) {
-		throw new $TypeError('Assertion failed: IsPropertyKey(P) is not true');
+	if (!isPropertyKey(P)) {
+		throw new $TypeError('Assertion failed: P is not a Property Key');
 	}
 	if (typeof P !== 'string') {
 		return void undefined;

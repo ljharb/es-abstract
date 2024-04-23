@@ -4,9 +4,9 @@ var $TypeError = require('es-errors/type');
 
 var DefinePropertyOrThrow = require('./DefinePropertyOrThrow');
 var IsExtensible = require('./IsExtensible');
-var IsPropertyKey = require('./IsPropertyKey');
 
 var isObject = require('../helpers/isObject');
+var isPropertyKey = require('../helpers/isPropertyKey');
 
 // https://262.ecma-international.org/13.0/#sec-definemethodproperty
 
@@ -14,7 +14,7 @@ module.exports = function DefineMethodProperty(homeObject, key, closure, enumera
 	if (!isObject(homeObject)) {
 		throw new $TypeError('Assertion failed: `homeObject` is not an Object');
 	}
-	if (!IsPropertyKey(key)) {
+	if (!isPropertyKey(key)) {
 		throw new $TypeError('Assertion failed: `key` is not a Property Key or a Private Name');
 	}
 	if (typeof closure !== 'function') {

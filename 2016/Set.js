@@ -2,7 +2,7 @@
 
 var $TypeError = require('es-errors/type');
 
-var IsPropertyKey = require('./IsPropertyKey');
+var isPropertyKey = require('../helpers/isPropertyKey');
 var SameValue = require('./SameValue');
 
 var isObject = require('../helpers/isObject');
@@ -23,7 +23,7 @@ module.exports = function Set(O, P, V, Throw) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: `O` must be an Object');
 	}
-	if (!IsPropertyKey(P)) {
+	if (!isPropertyKey(P)) {
 		throw new $TypeError('Assertion failed: `P` must be a Property Key');
 	}
 	if (typeof Throw !== 'boolean') {

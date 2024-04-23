@@ -3,9 +3,9 @@
 var $TypeError = require('es-errors/type');
 
 var DefinePropertyOrThrow = require('./DefinePropertyOrThrow');
-var IsPropertyKey = require('./IsPropertyKey');
 
 var isObject = require('../helpers/isObject');
+var isPropertyKey = require('../helpers/isPropertyKey');
 
 // https://262.ecma-international.org/13.0/#sec-createnonenumerabledatapropertyorthrow
 
@@ -14,8 +14,8 @@ module.exports = function CreateNonEnumerableDataPropertyOrThrow(O, P, V) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
 	}
 
-	if (!IsPropertyKey(P)) {
-		throw new $TypeError('Assertion failed: IsPropertyKey(P) is not true');
+	if (!isPropertyKey(P)) {
+		throw new $TypeError('Assertion failed: P is not a Property Key');
 	}
 
 	var newDesc = {

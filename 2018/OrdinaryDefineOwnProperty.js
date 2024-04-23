@@ -8,7 +8,7 @@ var isPropertyDescriptor = require('../helpers/records/property-descriptor');
 
 var IsAccessorDescriptor = require('./IsAccessorDescriptor');
 var IsExtensible = require('./IsExtensible');
-var IsPropertyKey = require('./IsPropertyKey');
+var isPropertyKey = require('../helpers/isPropertyKey');
 var ToPropertyDescriptor = require('./ToPropertyDescriptor');
 var SameValue = require('./SameValue');
 var ValidateAndApplyPropertyDescriptor = require('./ValidateAndApplyPropertyDescriptor');
@@ -21,7 +21,7 @@ module.exports = function OrdinaryDefineOwnProperty(O, P, Desc) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: O must be an Object');
 	}
-	if (!IsPropertyKey(P)) {
+	if (!isPropertyKey(P)) {
 		throw new $TypeError('Assertion failed: P must be a Property Key');
 	}
 	if (!isPropertyDescriptor(Desc)) {

@@ -14,7 +14,7 @@ var CreateDataPropertyOrThrow = require('./CreateDataPropertyOrThrow');
 var Get = require('./Get');
 var IsArray = require('./IsArray');
 var IsIntegralNumber = require('./IsIntegralNumber');
-var IsPropertyKey = require('./IsPropertyKey');
+var isPropertyKey = require('../helpers/isPropertyKey');
 var SameValue = require('./SameValue');
 var ToNumber = require('./ToNumber');
 var ToObject = require('./ToObject');
@@ -28,7 +28,7 @@ module.exports = function CopyDataProperties(target, source, excludedItems) {
 		throw new $TypeError('Assertion failed: "target" must be an Object');
 	}
 
-	if (!IsArray(excludedItems) || !every(excludedItems, IsPropertyKey)) {
+	if (!IsArray(excludedItems) || !every(excludedItems, isPropertyKey)) {
 		throw new $TypeError('Assertion failed: "excludedItems" must be a List of Property Keys');
 	}
 
