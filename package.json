@@ -71,7 +71,7 @@
 		"function.prototype.name": "^1.1.6",
 		"get-intrinsic": "^1.2.4",
 		"get-symbol-description": "^1.0.2",
-		"globalthis": "^1.0.3",
+		"globalthis": "^1.0.4",
 		"gopd": "^1.0.1",
 		"has-property-descriptors": "^1.0.2",
 		"has-proto": "^1.0.3",
