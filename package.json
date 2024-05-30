@@ -104,7 +104,7 @@
 		"which-typed-array": "^1.1.15"
 	},
 	"devDependencies": {
-		"@ljharb/eslint-config": "^21.1.0",
+		"@ljharb/eslint-config": "^21.1.1",
 		"@unicode/unicode-15.0.0": "^1.5.2",
 		"array.from": "^1.1.6",
 		"array.prototype.filter": "^1.0.4",
