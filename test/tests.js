@@ -212,7 +212,6 @@ var testAsyncIterator = function (t, asyncIterator, expected) {
 	});
 };
 
-// eslint-disable-next-line max-params
 var testRESIterator = function testRegExpStringIterator(ES, t, regex, str, global, unicode, expected) {
 	var iterator = ES.CreateRegExpStringIterator(regex, str, global, unicode);
 	t.equal(typeof iterator, 'object', 'iterator is an object');

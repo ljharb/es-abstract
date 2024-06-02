@@ -1,6 +1,6 @@
 'use strict';
 
-var isNegativeZero = require('is-negative-zero');
+var isNegativeZero = require('../helpers/isNegativeZero');
 
 var $TypeError = require('es-errors/type');
 

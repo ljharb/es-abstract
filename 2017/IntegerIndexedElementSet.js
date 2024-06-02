@@ -7,7 +7,7 @@ var IsInteger = require('./IsInteger');
 var SetValueInBuffer = require('./SetValueInBuffer');
 var ToNumber = require('./ToNumber');
 
-var isNegativeZero = require('is-negative-zero');
+var isNegativeZero = require('../helpers/isNegativeZero');
 var typedArrayBuffer = require('typed-array-buffer');
 var typedArrayByteOffset = require('typed-array-byte-offset');
 var typedArrayLength = require('typed-array-length');

@@ -1,7 +1,6 @@
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
-// var isNegativeZero = require('is-negative-zero');
 
 var $pow = GetIntrinsic('%Math.pow%');
 

@@ -81,7 +81,6 @@
 		"is-array-buffer": "^3.0.4",
 		"is-callable": "^1.2.7",
 		"is-data-view": "^1.0.1",
-		"is-negative-zero": "^2.0.3",
 		"is-regex": "^1.1.4",
 		"is-shared-array-buffer": "^1.0.3",
 		"is-string": "^1.0.7",

@@ -7,7 +7,7 @@ var $TypeError = require('es-errors/type');
 var $charAt = callBound('String.prototype.charAt');
 
 var isString = require('is-string');
-var isNegativeZero = require('is-negative-zero');
+var isNegativeZero = require('../helpers/isNegativeZero');
 var unbox = require('unbox-primitive');
 
 var CanonicalNumericIndexString = require('./CanonicalNumericIndexString');

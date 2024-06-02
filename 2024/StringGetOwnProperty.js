@@ -11,7 +11,7 @@ var IsIntegralNumber = require('./IsIntegralNumber');
 var IsPropertyKey = require('./IsPropertyKey');
 var Type = require('./Type');
 
-var isNegativeZero = require('is-negative-zero');
+var isNegativeZero = require('../helpers/isNegativeZero');
 
 // https://262.ecma-international.org/12.0/#sec-stringgetownproperty
 
