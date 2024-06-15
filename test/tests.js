@@ -158,7 +158,7 @@ var makeTest = function makeTest(ES, skips) {
 	};
 };
 
-Test.prototype.throwsSentinel = function throwsSentinel(fn, sentinel, message) {
+var throwsSentinel = function throwsSentinel(fn, sentinel, message) {
 	try {
 		fn();
 		this.fail('did not throw: ' + message);
@@ -212,7 +212,6 @@ var testAsyncIterator = function (t, asyncIterator, expected) {
 	});
 };
 
-// eslint-disable-next-line max-params
 var testRESIterator = function testRegExpStringIterator(ES, t, regex, str, global, unicode, expected) {
 	var iterator = ES.CreateRegExpStringIterator(regex, str, global, unicode);
 	t.equal(typeof iterator, 'object', 'iterator is an object');
@@ -3750,34 +3749,40 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		);
 
 		/* eslint no-throw-literal: 0 */
-		t.throwsSentinel(
+		t.assertion(
+			throwsSentinel,
 			function () { ES.IteratorClose({ 'return': function () { throw sentinel; } }, function () {}); },
 			sentinel,
 			'`.return` that throws, when completionThunk does not, throws exception from `.return`'
 		);
-		t.throwsSentinel(
+		t.assertion(
+			throwsSentinel,
 			function () { ES.IteratorClose({ 'return': function () { throw sentinel; } }, ES.NormalCompletion()); },
 			sentinel,
 			'`.return` that throws, when Completion Record does not, throws exception from `.return`'
 		);
 
-		t.throwsSentinel(
+		t.assertion(
+			throwsSentinel,
 			function () { ES.IteratorClose({ 'return': function () { throw sentinel; } }, function () { throw -1; }); },
 			-1,
 			'`.return` that throws, when completionThunk does too, throws exception from completionThunk'
 		);
-		t.throwsSentinel(
+		t.assertion(
+			throwsSentinel,
 			function () { ES.IteratorClose({ 'return': function () { throw sentinel; } }, ES.CompletionRecord('throw', -1)); },
 			-1,
 			'`.return` that throws, when completionThunk does too, throws exception from Completion Record'
 		);
 
-		t.throwsSentinel(
+		t.assertion(
+			throwsSentinel,
 			function () { ES.IteratorClose({ 'return': function () { } }, function () { throw -1; }); },
 			-1,
 			'`.return` that does not throw, when completionThunk does, throws exception from completionThunk'
 		);
-		t.throwsSentinel(
+		t.assertion(
+			throwsSentinel,
 			function () { ES.IteratorClose({ 'return': function () { } }, ES.CompletionRecord('throw', -1)); },
 			-1,
 			'`.return` that does not throw, when completionThunk does, throws exception from Competion Record'
@@ -14298,7 +14303,8 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 		);
 
 		/* eslint no-throw-literal: 0 */
-		t.throwsSentinel(
+		t.assertion(
+			throwsSentinel,
 			function () {
 				ES.IteratorClose(
 					{ '[[Iterator]]': { 'return': function () { throw sentinel; } }, '[[Done]]': false, '[[NextMethod]]': function () {} },
@@ -14308,7 +14314,8 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 			sentinel,
 			'`.return` that throws, when completionThunk does not, throws exception from `.return`'
 		);
-		t.throwsSentinel(
+		t.assertion(
+			throwsSentinel,
 			function () {
 				ES.IteratorClose(
 					{ '[[Iterator]]': { 'return': function () { throw sentinel; } }, '[[Done]]': false, '[[NextMethod]]': function () {} },
@@ -14318,7 +14325,8 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 			-1,
 			'`.return` that throws, when completionThunk does too, throws exception from completionThunk'
 		);
-		t.throwsSentinel(
+		t.assertion(
+			throwsSentinel,
 			function () {
 				ES.IteratorClose(
 					{ '[[Iterator]]': { 'return': function () { } }, '[[Done]]': false, '[[NextMethod]]': function () {} },
