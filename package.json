@@ -141,7 +141,7 @@
 		"safe-bigint": "^1.1.0",
 		"safe-publish-latest": "^2.0.0",
 		"ses": "^0.18.8",
-		"tape": "^5.7.5"
+		"tape": "^5.8.0"
 	},
 	"testling": {
 		"files": "test/index.js",
