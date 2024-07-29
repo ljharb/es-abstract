@@ -127,7 +127,7 @@
 		"has-named-captures": "^1.0.0",
 		"has-strict-mode": "^1.0.1",
 		"in-publish": "^2.0.1",
-		"is-core-module": "^2.13.1",
+		"is-core-module": "^2.15.0",
 		"is-registered-symbol": "^1.0.1",
 		"jackspeak": "=2.1.1",
 		"make-arrow-function": "^1.2.0",
@@ -141,7 +141,7 @@
 		"safe-bigint": "^1.1.0",
 		"safe-publish-latest": "^2.0.0",
 		"ses": "^0.18.8",
-		"tape": "^5.8.0"
+		"tape": "^5.8.1"
 	},
 	"testling": {
 		"files": "test/index.js",
