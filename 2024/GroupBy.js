@@ -16,7 +16,7 @@ var ToPropertyKey = require('./ToPropertyKey');
 var isNegativeZero = require('../helpers/isNegativeZero');
 var maxSafeInteger = require('../helpers/maxSafeInteger');
 
-// https://tc39.es/ecma262/#sec-groupby
+// https://262.ecma-international.org/15.0/#sec-groupby
 
 module.exports = function GroupBy(items, callbackfn, keyCoercion) {
 	if (keyCoercion !== 'PROPERTY' && keyCoercion !== 'ZERO') {

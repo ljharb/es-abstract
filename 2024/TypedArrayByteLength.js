@@ -10,7 +10,7 @@ var isTypedArrayWithBufferWitnessRecord = require('../helpers/records/typed-arra
 
 var typedArrayByteLength = require('typed-array-byte-length');
 
-// https://tc39.es/ecma262/#sec-typedarraybytelength
+// https://262.ecma-international.org/15.0/#sec-typedarraybytelength
 
 module.exports = function TypedArrayByteLength(taRecord) {
 	if (!isTypedArrayWithBufferWitnessRecord(taRecord)) {

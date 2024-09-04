@@ -20,7 +20,7 @@ var isKeyedGroup = function (group) {
         && IsArray(group['[[Elements]]']);
 };
 
-// https://tc39.es/ecma262/#sec-add-value-to-keyed-group
+// https://262.ecma-international.org/15.0/#sec-add-value-to-keyed-group
 
 module.exports = function AddValueToKeyedGroup(groups, key, value) {
 	if (!IsArray(groups) || (groups.length > 0 && !every(groups, isKeyedGroup))) {

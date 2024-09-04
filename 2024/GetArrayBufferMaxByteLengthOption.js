@@ -4,7 +4,7 @@ var Get = require('./Get');
 var ToIndex = require('./ToIndex');
 var Type = require('./Type');
 
-// https://tc39.es/ecma262/#sec-getarraybuffermaxbytelengthoption
+// https://262.ecma-international.org/15.0/#sec-getarraybuffermaxbytelengthoption
 
 module.exports = function GetArrayBufferMaxByteLengthOption(options) {
 	if (Type(options) !== 'Object') {

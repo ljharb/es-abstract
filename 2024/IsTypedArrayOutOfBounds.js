@@ -11,7 +11,7 @@ var typedArrayBuffer = require('typed-array-buffer');
 var typedArrayByteOffset = require('typed-array-byte-offset');
 var typedArrayLength = require('typed-array-length');
 
-// https://tc39.es/ecma262/#sec-istypedarrayoutofbounds
+// https://262.ecma-international.org/15.0/#sec-istypedarrayoutofbounds
 
 module.exports = function IsTypedArrayOutOfBounds(taRecord) {
 	if (!isTypedArrayWithBufferWitnessRecord(taRecord)) {

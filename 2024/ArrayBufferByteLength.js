@@ -2,7 +2,7 @@
 
 var $TypeError = require('es-errors/type');
 
-// https://tc39.es/ecma262/#sec-arraybufferbytelength
+// https://262.ecma-international.org/15.0/#sec-arraybufferbytelength
 
 var IsDetachedBuffer = require('./IsDetachedBuffer');
 
