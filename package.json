@@ -90,7 +90,7 @@
 		"object-inspect": "^1.13.2",
 		"object-keys": "^1.1.1",
 		"object.assign": "^4.1.5",
-		"regexp.prototype.flags": "^1.5.2",
+		"regexp.prototype.flags": "^1.5.3",
 		"safe-array-concat": "^1.1.2",
 		"safe-regex-test": "^1.0.3",
 		"string.prototype.trim": "^1.2.9",
