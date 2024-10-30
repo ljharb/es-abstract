@@ -13,6 +13,8 @@ jobs:
       fail-fast: false
       matrix:
         node-version:
+          - '23'
+          - '22'
           - '20'
           - '18'
           - '16'
@@ -20,13 +22,15 @@ jobs:
           - '12'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: ljharb/actions/node/install@main
         name: 'nvm install ${{ matrix.node-version }} && npm install'
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm run test:ses
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v3.1.5
 
   SES:
     permissions:
@@ -34,4 +38,4 @@ jobs:
     needs: [tests]
     runs-on: ubuntu-latest
     steps:
-      - run: 'echo tests completed'
+      - run: true
