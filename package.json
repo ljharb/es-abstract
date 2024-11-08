@@ -105,7 +105,7 @@
 	},
 	"devDependencies": {
 		"@ljharb/eslint-config": "^21.1.1",
-		"@unicode/unicode-15.0.0": "^1.6.0",
+		"@unicode/unicode-15.0.0": "^1.6.3",
 		"array.from": "^1.1.6",
 		"array.prototype.filter": "^1.0.4",
 		"array.prototype.flatmap": "^1.3.2",
@@ -114,7 +114,7 @@
 		"cheerio": "=1.0.0-rc.3",
 		"define-accessor-property": "^1.0.0",
 		"define-data-property": "^1.1.4",
-		"diff": "^5.2.0",
+		"diff": "^7.0.0",
 		"eclint": "^2.8.1",
 		"es-value-fixtures": "^1.5.0",
 		"eslint": "=8.8.0",
