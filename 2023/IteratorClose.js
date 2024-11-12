@@ -8,7 +8,7 @@ var GetMethod = require('./GetMethod');
 var IsCallable = require('./IsCallable');
 var Type = require('./Type');
 
-var isIteratorRecord = require('../helpers/records/iterator-record');
+var isIteratorRecord = require('../helpers/records/iterator-record-2023');
 
 // https://262.ecma-international.org/14.0/#sec-iteratorclose
 

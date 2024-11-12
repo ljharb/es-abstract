@@ -9,7 +9,7 @@ var $arrayPush = callBound('Array.prototype.push');
 var IteratorStep = require('./IteratorStep');
 var IteratorValue = require('./IteratorValue');
 
-var isIteratorRecord = require('../helpers/records/iterator-record');
+var isIteratorRecord = require('../helpers/records/iterator-record-2023');
 
 // https://262.ecma-international.org/14.0/#sec-iteratortolist
 

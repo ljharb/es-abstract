@@ -11,7 +11,7 @@ var IteratorValue = require('./IteratorValue');
 
 var isIteratorRecord = require('../helpers/records/iterator-record');
 
-// https://262.ecma-international.org/14.0/#sec-iteratortolist
+// https://262.ecma-international.org/15.0/#sec-iteratortolist
 
 module.exports = function IteratorToList(iteratorRecord) {
 	if (!isIteratorRecord(iteratorRecord)) {

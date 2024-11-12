@@ -17,7 +17,7 @@ var ObjectCreate = require('./ObjectCreate');
 var PromiseResolve = require('./PromiseResolve');
 var Type = require('./Type');
 
-var isIteratorRecord = require('../helpers/records/iterator-record');
+var isIteratorRecord = require('../helpers/records/iterator-record-2023');
 
 var SLOT = require('internal-slot');
 

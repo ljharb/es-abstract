@@ -17,7 +17,7 @@ var callBound = require('call-bind/callBound');
 
 var $then = callBound('Promise.prototype.then', true);
 
-// https://262.ecma-international.org/12.0/#sec-asynciteratorclose
+// https://262.ecma-international.org/15.0/#sec-asynciteratorclose
 
 module.exports = function AsyncIteratorClose(iteratorRecord, completion) {
 	if (!isIteratorRecord(iteratorRecord)) {

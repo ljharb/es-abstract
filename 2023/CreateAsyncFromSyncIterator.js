@@ -17,7 +17,7 @@ var Type = require('./Type');
 
 var SLOT = require('internal-slot');
 
-var isIteratorRecord = require('../helpers/records/iterator-record');
+var isIteratorRecord = require('../helpers/records/iterator-record-2023');
 
 var $AsyncFromSyncIteratorPrototype = GetIntrinsic('%AsyncFromSyncIteratorPrototype%', true) || {
 	next: function next(value) {

@@ -11,7 +11,7 @@ var CompletionRecord = require('./CompletionRecord');
 var GetMethod = require('./GetMethod');
 var Type = require('./Type');
 
-var isIteratorRecord = require('../helpers/records/iterator-record');
+var isIteratorRecord = require('../helpers/records/iterator-record-2023');
 
 var callBound = require('call-bind/callBound');
 

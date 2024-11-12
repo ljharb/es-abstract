@@ -10,7 +10,7 @@ var Type = require('./Type');
 
 var isIteratorRecord = require('../helpers/records/iterator-record');
 
-// https://262.ecma-international.org/14.0/#sec-iteratorclose
+// https://262.ecma-international.org/15.0/#sec-iteratorclose
 
 module.exports = function IteratorClose(iteratorRecord, completion) {
 	if (!isIteratorRecord(iteratorRecord)) {

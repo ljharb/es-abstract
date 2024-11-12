@@ -1379,7 +1379,6 @@
 /2024/ArraySetLength.js	spackled linguist-generated=true
 /2024/ArraySpeciesCreate.js	spackled linguist-generated=true
 /2024/AsyncFromSyncIteratorContinuation.js	spackled linguist-generated=true
-/2024/AsyncIteratorClose.js	spackled linguist-generated=true
 /2024/BigInt/add.js	spackled linguist-generated=true
 /2024/BigInt/bitwiseAND.js	spackled linguist-generated=true
 /2024/BigInt/bitwiseNOT.js	spackled linguist-generated=true
@@ -1418,7 +1417,6 @@
 /2024/CompletePropertyDescriptor.js	spackled linguist-generated=true
 /2024/CompletionRecord.js	spackled linguist-generated=true
 /2024/CopyDataProperties.js	spackled linguist-generated=true
-/2024/CreateAsyncFromSyncIterator.js	spackled linguist-generated=true
 /2024/CreateDataProperty.js	spackled linguist-generated=true
 /2024/CreateDataPropertyOrThrow.js	spackled linguist-generated=true
 /2024/CreateHTML.js	spackled linguist-generated=true
@@ -1477,11 +1475,7 @@
 /2024/IsStrictlyEqual.js	spackled linguist-generated=true
 /2024/IsStringWellFormedUnicode.js	spackled linguist-generated=true
 /2024/IsWordChar.js	spackled linguist-generated=true
-/2024/IteratorClose.js	spackled linguist-generated=true
 /2024/IteratorComplete.js	spackled linguist-generated=true
-/2024/IteratorNext.js	spackled linguist-generated=true
-/2024/IteratorStep.js	spackled linguist-generated=true
-/2024/IteratorToList.js	spackled linguist-generated=true
 /2024/IteratorValue.js	spackled linguist-generated=true
 /2024/KeyForSymbol.js	spackled linguist-generated=true
 /2024/LengthOfArrayLike.js	spackled linguist-generated=true

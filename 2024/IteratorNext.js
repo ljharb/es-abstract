@@ -7,7 +7,7 @@ var Type = require('./Type');
 
 var isIteratorRecord = require('../helpers/records/iterator-record');
 
-// https://262.ecma-international.org/14.0/#sec-iteratornext
+// https://262.ecma-international.org/15.0/#sec-iteratornext
 
 module.exports = function IteratorNext(iteratorRecord) {
 	if (!isIteratorRecord(iteratorRecord)) {
