@@ -1,3 +1,14 @@
+1.23.4 / 2024-11-12
+=================
+  * [Fix] `ES2024`+: Iterator Records can now have non-functions in `[[NextMethod]]`
+  * [meta] update spec URL comments
+  * [Deps] update `globalthis`, `object-inspect`, `regexp.prototype.flags`
+  * [Dev Deps] update `@ljharb/eslint-config`, `@unicode/unicode-15.0.0`, `diff`, `es-value-fixtures`, `is-core-module`, `mock-property`, `ses`, `tape`
+  * [actions] split out node 10-20, and 20+
+  * [Tests] switch to `npm audit` from `aud`
+  * [Tests] use `.assertion` instead of monkeypatching tape
+  * [Tests] increase coverage
+
 1.23.3 / 2024-03-29
 =================
   * [Fix] `ES2024`: `StringPad`, `StringPaddingBuiltinsImpl`: prefer uppercase spec enums
