@@ -1975,14 +1975,20 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			'invalid Completion Record type throws'
 		);
 
-		forEach(['break', 'continue', 'return'], function (unsupportedType) {
-			var completion = ES.CompletionRecord(unsupportedType);
-			t['throws'](
-				function () { completion['?'](); },
-				SyntaxError,
-				'type ' + unsupportedType + ' is not supported'
-			);
+		var sentinel = { sentinel: true };
+		forEach(['normal', 'break', 'continue', 'return'], function (nonAbruptType) {
+			var completion = ES.CompletionRecord(nonAbruptType, sentinel);
+			t.equal(completion['?'](), sentinel, '? returns the value of a non-abrupt completion');
 		});
+		var throwCompletion = ES.CompletionRecord('throw', sentinel);
+		t['throws'](
+			function () { throwCompletion['?'](); },
+			sentinel,
+			'? throws the value of a throw completion'
+		);
+
+		var normalCompletion = ES.CompletionRecord('normal', sentinel);
+		t.equal(normalCompletion['!'](), sentinel, '! returns the value of a normal completion');
 
 		forEach(['break', 'continue', 'return', 'throw'], function (nonNormalType) {
 			var completion = ES.CompletionRecord(nonNormalType);
@@ -1992,11 +1998,6 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				'assertion failed: type ' + nonNormalType + ' is not "normal"'
 			);
 		});
-
-		var sentinel = {};
-		var completion = ES.CompletionRecord('normal', sentinel);
-		t.equal(completion['!'](), sentinel, '! returns the value of a normal completion');
-		t.equal(completion['?'](), sentinel, '? returns the value of a normal completion');
 
 		t.end();
 	});
