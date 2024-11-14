@@ -1,3 +1,7 @@
+1.23.5 / 2024-11-14
+=================
+  * [Fix] `ES2015`+: `CompletionRecord`: ensure `?` works on any non-abrupt completion
+
 1.23.4 / 2024-11-12
 =================
   * [Fix] `ES2024`+: Iterator Records can now have non-functions in `[[NextMethod]]`
