@@ -21,7 +21,7 @@ module.exports = function TestIntegrityLevel(O, level) {
 		throw new $TypeError('Assertion failed: `level` must be `"sealed"` or `"frozen"`');
 	}
 	var status = IsExtensible(O);
-	if (status) {
+	if (status || !$gOPD) {
 		return false;
 	}
 	var theKeys = OwnPropertyKeys(O);
