@@ -98,8 +98,8 @@
 		"string.prototype.trimstart": "^1.0.8",
 		"typed-array-buffer": "^1.0.2",
 		"typed-array-byte-length": "^1.0.1",
-		"typed-array-byte-offset": "^1.0.2",
-		"typed-array-length": "^1.0.6",
+		"typed-array-byte-offset": "^1.0.3",
+		"typed-array-length": "^1.0.7",
 		"unbox-primitive": "^1.0.2",
 		"which-typed-array": "^1.1.15"
 	},
