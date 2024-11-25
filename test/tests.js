@@ -116,6 +116,66 @@ var noThrowOnStrictViolation = (function () {
 	return false;
 }());
 
+var clearBuffer = function clearBuffer(buffer) {
+	new DataView(buffer).setFloat64(0, 0, true); // clear the buffer
+};
+
+var testSetValueInBuffer = function (ES, st, testCase, isTypedArray, order) {
+	return function (type) {
+		var isBigInt = type === 'BigInt64' || type === 'BigUint64';
+		var Z = isBigInt ? safeBigInt : Number;
+		var elementSize = elementSizes['$' + (type === 'Uint8C' ? 'Uint8Clamped' : type) + 'Array'];
+		var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
+		var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
+		var value = unserialize(testCase.value);
+
+		if (isBigInt && (!isFinite(value) || Math.floor(value) !== value)) {
+			return;
+		}
+
+		var valToSet = type === 'Uint8Clamped' && value > 255 ? 255 : Z(value);
+
+		/*
+		st.equal(
+			ES.SetValueInBuffer(testCase.buffer, 0, type, true, order),
+			defaultEndianness === testCase.endian ? testCase[type].little.value] : testCase[type].big.value,
+			'buffer holding ' + debug(testCase.value) + ' (' + testCase.endian + ' endian) with type ' + type + ', default endian, yields expected value'
+		);
+		*/
+
+		var buffer = new ArrayBuffer(elementSizes.$Float64Array);
+		var copyBytes = new Uint8Array(buffer);
+
+		clearBuffer(buffer);
+
+		st.equal(
+			ES.SetValueInBuffer(buffer, 0, type, valToSet, isTypedArray, order, true),
+			void undefined,
+			'returns undefined'
+		);
+		st.deepEqual(
+			Array.prototype.slice.call(copyBytes, 0, elementSize),
+			Array.prototype.slice.call(new Uint8Array(result[type === 'Float64' ? 'setAsLittle' : 'setAsTruncatedLittle'].bytes), 0, elementSize),
+			'buffer holding ' + debug(value) + ' with type ' + type + ', little endian, yields expected value'
+		);
+
+		if (hasBigEndian) {
+			clearBuffer(buffer);
+
+			st.equal(
+				ES.SetValueInBuffer(buffer, 0, type, valToSet, isTypedArray, order, false),
+				void undefined,
+				'returns undefined'
+			);
+			st.deepEqual(
+				Array.prototype.slice.call(copyBytes, 0, elementSize),
+				Array.prototype.slice.call(new Uint8Array(result[type === 'Float64' ? 'setAsBig' : 'setAsTruncatedBig'].bytes), 0, elementSizes[type + 'Array']),
+				'buffer holding ' + debug(value) + ' with type ' + type + ', big endian, yields expected value'
+			);
+		}
+	};
+};
+
 // var defaultEndianness = require('../helpers/defaultEndianness');
 
 var nameExceptions = {
@@ -247,10 +307,6 @@ var kludgeMatch = function kludgeMatch(R, matchObject) {
 		delete matchObject.lastIndex; // eslint-disable-line no-param-reassign
 	}
 	return matchObject;
-};
-
-var clearBuffer = function clearBuffer(buffer) {
-	new DataView(buffer).setFloat64(0, 0, true); // clear the buffer
 };
 
 var testEnumerableOwnNames = function (t, enumerableOwnNames) {
@@ -6002,7 +6058,8 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 		GetValueFromBuffer: true,
 		EnumerableOwnNames: true,
 		IsWordChar: true,
-		IterableToArrayLike: true
+		IterableToArrayLike: true,
+		SetValueInBuffer: true
 	}));
 	var test = makeTest(ES, skips);
 
@@ -6686,6 +6743,121 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 				RangeError,
 				'Uint32 with more than 4 bytes throws a RangeError'
 			);
+
+			st.end();
+		});
+
+		t.end();
+	});
+
+	test('SetValueInBuffer', function (t) {
+		var order = 'Unordered';
+
+		forEach(v.primitives.concat(v.objects), function (nonAB) {
+			t['throws'](
+				function () { ES.SetValueInBuffer(nonAB, 0, 'Int8', 0, false, order); },
+				TypeError,
+				debug(nonAB) + ' is not an ArrayBuffer'
+			);
+		});
+
+		t.test('ArrayBuffers supported', { skip: typeof ArrayBuffer !== 'function' }, function (st) {
+			var isTypedArray = false; // only matters for SAB
+
+			forEach(v.notNonNegativeIntegers, function (nonNonNegativeInteger) {
+				st['throws'](
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), nonNonNegativeInteger, 'Int8', 0, isTypedArray, order); },
+					TypeError,
+					debug(nonNonNegativeInteger) + ' is not a valid byte index'
+				);
+			});
+
+			forEach(v.nonStrings.concat('not a valid type'), function (nonString) {
+				st['throws'](
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, nonString, 0, isTypedArray, order); },
+					TypeError,
+					'type: ' + debug(nonString) + ' is not a valid String (or type) value'
+				);
+			});
+
+			forEach(v.nonBooleans, function (nonBoolean) {
+				st['throws'](
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'Int8', 0, nonBoolean, order); },
+					TypeError,
+					'isTypedArray: ' + debug(nonBoolean) + ' is not a valid Boolean value'
+				);
+
+				st['throws'](
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'Int8', 0, isTypedArray, order, nonBoolean); },
+					TypeError,
+					'isLittleEndian: ' + debug(nonBoolean) + ' is not a valid Boolean value'
+				);
+			});
+
+			forEach(v.nonNumbers, function (nonNumber) {
+				st['throws'](
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'Int8', nonNumber, isTypedArray, order); },
+					TypeError,
+					debug(nonNumber) + ' is not a valid Number or BigInt value'
+				);
+			});
+
+			if (hasBigInts) {
+				st['throws'](
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'Int8', $BigInt(0), isTypedArray, order); },
+					TypeError,
+					debug($BigInt(0)) + ' is not a number, but the given type requires one'
+				);
+
+				st['throws'](
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'BigUint64', 0, isTypedArray, order); },
+					TypeError,
+					debug(0) + ' is not a bigint, but the given type requires one'
+				);
+			}
+
+			st['throws'](
+				function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'Int8', 0, isTypedArray, 'invalid order'); },
+				TypeError,
+				'invalid order'
+			);
+
+			st.test('can detach', { skip: !canDetach }, function (s2t) {
+				var buffer = new ArrayBuffer(8);
+				s2t.equal(ES.DetachArrayBuffer(buffer), null, 'detaching returns null');
+
+				s2t['throws'](
+					function () { ES.SetValueInBuffer(buffer, 0, 'Int8', 0, isTypedArray, order); },
+					TypeError,
+					'detached buffers throw'
+				);
+
+				s2t.end();
+			});
+
+			st.test('SharedArrayBuffers supported', { skip: typeof SharedArrayBuffer !== 'function' }, function (s2t) {
+				s2t['throws'](
+					function () { ES.SetValueInBuffer(new SharedArrayBuffer(0), 0, 'Int8', 0, true, order); },
+					SyntaxError,
+					'SAB not yet supported'
+				);
+
+				s2t.end();
+			});
+
+			forEach(bufferTestCases, function (testCase, name) {
+				forEach([].concat(
+					'Int8',
+					'Uint8',
+					'Uint8C',
+					'Int16',
+					'Uint16',
+					'Int32',
+					'Uint32',
+					'Float32',
+					'Float64'
+				), testSetValueInBuffer(ES, st, testCase, isTypedArray, order));
+			});
 
 			st.end();
 		});
@@ -10701,59 +10873,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 					hasBigInts ? bigIntTypes : [],
 					'Float32',
 					'Float64'
-				), function (type) {
-					var isBigInt = type === 'BigInt64' || type === 'BigUint64';
-					var Z = isBigInt ? safeBigInt : Number;
-					var elementSize = elementSizes['$' + (type === 'Uint8C' ? 'Uint8Clamped' : type) + 'Array'];
-					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
-					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
-					var value = unserialize(testCase.value);
-
-					if (isBigInt && (!isFinite(value) || Math.floor(value) !== value)) {
-						return;
-					}
-
-					var valToSet = type === 'Uint8Clamped' && value > 255 ? 255 : Z(value);
-
-					/*
-					st.equal(
-						ES.SetValueInBuffer(testCase.buffer, 0, type, true, order),
-						defaultEndianness === testCase.endian ? testCase[type].little.value] : testCase[type].big.value,
-						'buffer holding ' + debug(testCase.value) + ' (' + testCase.endian + ' endian) with type ' + type + ', default endian, yields expected value'
-					);
-					*/
-
-					var buffer = new ArrayBuffer(elementSizes.$Float64Array);
-					var copyBytes = new Uint8Array(buffer);
-
-					clearBuffer(buffer);
-
-					st.equal(
-						ES.SetValueInBuffer(buffer, 0, type, valToSet, isTypedArray, order, true),
-						void undefined,
-						'returns undefined'
-					);
-					st.deepEqual(
-						Array.prototype.slice.call(copyBytes, 0, elementSize),
-						Array.prototype.slice.call(new Uint8Array(result[type === 'Float64' ? 'setAsLittle' : 'setAsTruncatedLittle'].bytes), 0, elementSize),
-						'buffer holding ' + debug(value) + ' with type ' + type + ', little endian, yields expected value'
-					);
-
-					if (hasBigEndian) {
-						clearBuffer(buffer);
-
-						st.equal(
-							ES.SetValueInBuffer(buffer, 0, type, valToSet, isTypedArray, order, false),
-							void undefined,
-							'returns undefined'
-						);
-						st.deepEqual(
-							Array.prototype.slice.call(copyBytes, 0, elementSize),
-							Array.prototype.slice.call(new Uint8Array(result[type === 'Float64' ? 'setAsBig' : 'setAsTruncatedBig'].bytes), 0, elementSizes[type + 'Array']),
-							'buffer holding ' + debug(value) + ' with type ' + type + ', big endian, yields expected value'
-						);
-					}
-				});
+				), testSetValueInBuffer(ES, st, testCase, isTypedArray, order));
 			});
 
 			st.end();

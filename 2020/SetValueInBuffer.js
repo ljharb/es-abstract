@@ -68,11 +68,11 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value, 
 		throw new $TypeError('Assertion failed: `value` must be a BigInt if type is BigInt64 or BigUint64, otherwise a Number');
 	}
 
-	// 5. Let block be arrayBuffer’s [[ArrayBufferData]] internal slot.
+	// 5. Let block be arrayBuffer.[[ArrayBufferData]].
 
 	var elementSize = tableTAO.size['$' + type]; // step 6
 
-	// 8. If isLittleEndian is not present, set isLittleEndian to either true or false. The choice is implementation dependent and should be the alternative that is most efficient for the implementation. An implementation must use the same value each time this step is executed and the same value must be used for the corresponding step in the GetValueFromBuffer abstract operation.
+	// 7. If isLittleEndian is not present, set isLittleEndian to to the value of the [[LittleEndian]] field of the surrounding agent's Agent Record.
 	var isLittleEndian = arguments.length > 6 ? arguments[6] : defaultEndianness === 'little'; // step 8
 
 	var rawBytes = NumericToRawBytes(type, value, isLittleEndian); // step 8
