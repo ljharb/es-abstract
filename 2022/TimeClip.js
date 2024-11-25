@@ -3,7 +3,6 @@
 var GetIntrinsic = require('get-intrinsic');
 
 var $Date = GetIntrinsic('%Date%');
-var $Number = GetIntrinsic('%Number%');
 
 var $isFinite = require('../helpers/isFinite');
 
@@ -16,6 +15,6 @@ module.exports = function TimeClip(time) {
 	if (!$isFinite(time) || abs(time) > 8.64e15) {
 		return NaN;
 	}
-	return $Number(new $Date(ToNumber(time)));
+	return +new $Date(ToNumber(time));
 };
 

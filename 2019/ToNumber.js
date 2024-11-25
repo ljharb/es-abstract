@@ -44,5 +44,5 @@ module.exports = function ToNumber(argument) {
 		}
 
 	}
-	return $Number(value);
+	return +value;
 };

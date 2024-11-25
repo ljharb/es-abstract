@@ -2,7 +2,6 @@
 
 var GetIntrinsic = require('get-intrinsic');
 
-var $Number = GetIntrinsic('%Number%');
 var $RegExp = GetIntrinsic('%RegExp%');
 var $TypeError = require('es-errors/type');
 var $parseInteger = GetIntrinsic('%parseInt%');
@@ -27,10 +26,10 @@ module.exports = function StringToNumber(argument) {
 		throw new $TypeError('Assertion failed: `argument` is not a String');
 	}
 	if (isBinary(argument)) {
-		return $Number($parseInteger($strSlice(argument, 2), 2));
+		return +$parseInteger($strSlice(argument, 2), 2);
 	}
 	if (isOctal(argument)) {
-		return $Number($parseInteger($strSlice(argument, 2), 8));
+		return +$parseInteger($strSlice(argument, 2), 8);
 	}
 	if (hasNonWS(argument) || isInvalidHexLiteral(argument)) {
 		return NaN;
@@ -39,5 +38,5 @@ module.exports = function StringToNumber(argument) {
 	if (trimmed !== argument) {
 		return StringToNumber(trimmed);
 	}
-	return $Number(argument);
+	return +argument;
 };

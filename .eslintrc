@@ -18,6 +18,11 @@
 		"max-statements": 1,
 		"max-statements-per-line": [2, { "max": 2 }],
 		"multiline-comment-style": 0,
+		"no-implicit-coercion": [2, {
+			"boolean": false,
+			"number": false,
+			"string": true,
+		}],
 		"no-magic-numbers": 0,
 		"new-cap": 0,
 		"no-extra-parens": 1,

@@ -1,8 +1,5 @@
 'use strict';
 
-var GetIntrinsic = require('get-intrinsic');
-
-var $Number = GetIntrinsic('%Number%');
 var $SyntaxError = require('es-errors/syntax');
 var $TypeError = require('es-errors/type');
 
@@ -28,7 +25,7 @@ module.exports = function ParseHexOctet(string, position) {
 	}
 	var hexDigits = substring(string, position, position + 2); // step 3
 
-	var n = $Number('0x' + hexDigits);
+	var n = +('0x' + hexDigits);
 	if (isNaN(n)) {
 		return [new $SyntaxError('Invalid hexadecimal characters')];
 	}
