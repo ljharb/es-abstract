@@ -4251,7 +4251,11 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.equal(ES.QuoteJSONString('\r'), '"\\r"', '"\\r" gets properly JSON-quoted');
 		t.equal(ES.QuoteJSONString('\\'), '"\\\\"', '"\\\\" gets properly JSON-quoted');
 		t.equal(ES.QuoteJSONString('\\'), '"\\\\"', '"\\\\" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\u000B'), '"\\u000b"', '"\\u000B" gets properly JSON-quoted');
 		t.equal(ES.QuoteJSONString('\u0019'), '"\\u0019"', '"\\u0019" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString(leadingPoo), '"\ud83d"', 'leading poo gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString(trailingPoo), '"\udca9"', 'trailing poo gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString(wholePoo), '"\ud83d\udca9"', 'whole poo gets properly JSON-quoted');
 
 		t.end();
 	});
@@ -7760,6 +7764,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 
 var es2019 = function ES2019(ES, ops, expectedMissing, skips) {
 	es2018(ES, ops, expectedMissing, assign({}, skips, {
+		QuoteJSONString: true
 	}));
 	var test = makeTest(ES, skips);
 
@@ -7918,6 +7923,34 @@ var es2019 = function ES2019(ES, ops, expectedMissing, skips) {
 			);
 			st.end();
 		});
+
+		t.end();
+	});
+
+	test('QuoteJSONString', function (t) {
+		forEach(v.nonStrings, function (nonString) {
+			t['throws'](
+				function () { ES.QuoteJSONString(nonString); },
+				TypeError,
+				debug(nonString) + ' is not a String'
+			);
+		});
+
+		t.equal(ES.QuoteJSONString(''), '""', '"" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('a'), '"a"', '"a" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('"'), '"\\""', '"\\"" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\b'), '"\\b"', '"\\b" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\t'), '"\\t"', '"\\t" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\n'), '"\\n"', '"\\n" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\f'), '"\\f"', '"\\f" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\r'), '"\\r"', '"\\r" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\\'), '"\\\\"', '"\\\\" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\\'), '"\\\\"', '"\\\\" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\u000B'), '"\\u000b"', '"\\u000B" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString('\u0019'), '"\\u0019"', '"\\u0019" gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString(leadingPoo), '"\\ud83d"', 'leading poo gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString(trailingPoo), '"\\udca9"', 'trailing poo gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString(wholePoo), '"\\ud83d\\udca9"', 'whole poo gets properly JSON-quoted');
 
 		t.end();
 	});

@@ -33,12 +33,12 @@ module.exports = function QuoteJSONString(value) {
 	}
 	var product = '"';
 	if (value) {
-		forEach($strSplit(value), function (C) {
+		forEach($strSplit(value, ''), function (C) {
 			if (hasOwn(escapes, C)) {
 				product += escapes[C];
 			} else {
 				var cCharCode = $charCodeAt(C, 0);
-				if (cCharCode < 0x20 || isLeadingSurrogate(C) || isTrailingSurrogate(C)) {
+				if (cCharCode < 0x20 || isLeadingSurrogate(cCharCode) || isTrailingSurrogate(cCharCode)) {
 					product += UnicodeEscape(C);
 				} else {
 					product += UTF16Encoding(cCharCode);

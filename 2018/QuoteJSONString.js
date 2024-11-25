@@ -30,7 +30,7 @@ module.exports = function QuoteJSONString(value) {
 	}
 	var product = '"';
 	if (value) {
-		forEach($strSplit(value), function (C) {
+		forEach($strSplit(value, ''), function (C) {
 			if (hasOwn(escapes, C)) {
 				product += escapes[C];
 			} else if ($charCodeAt(C, 0) < 0x20) {

@@ -8,6 +8,7 @@ var isLeadingSurrogate = require('../helpers/isLeadingSurrogate');
 var isTrailingSurrogate = require('../helpers/isTrailingSurrogate');
 
 var $charCodeAt = callBound('String.prototype.charCodeAt');
+var $strSplit = callBound('String.prototype.split');
 
 var UnicodeEscape = require('./UnicodeEscape');
 var UTF16DecodeString = require('./UTF16DecodeString');
@@ -33,12 +34,12 @@ module.exports = function QuoteJSONString(value) {
 	}
 	var product = '"';
 	if (value) {
-		forEach(UTF16DecodeString(value), function (C) {
+		forEach($strSplit(UTF16DecodeString(value), ''), function (C) {
 			if (hasOwn(escapes, C)) {
 				product += escapes[C];
 			} else {
 				var cCharCode = $charCodeAt(C, 0);
-				if (cCharCode < 0x20 || isLeadingSurrogate(C) || isTrailingSurrogate(C)) {
+				if (cCharCode < 0x20 || isLeadingSurrogate(cCharCode) || isTrailingSurrogate(cCharCode)) {
 					product += UnicodeEscape(C);
 				} else {
 					product += UTF16Encoding(cCharCode);

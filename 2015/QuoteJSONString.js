@@ -27,7 +27,7 @@ module.exports = function QuoteJSONString(value) {
 	}
 	var product = '"';
 	if (value) {
-		forEach($strSplit(value), function (C) {
+		forEach($strSplit(value, ''), function (C) {
 			if (C === '"' || C === '\\') {
 				product += '\u005C' + C;
 			} else if (C === '\u0008' || C === '\u000C' || C === '\u000A' || C === '\u000D' || C === '\u0009') {
