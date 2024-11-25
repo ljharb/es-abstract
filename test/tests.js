@@ -6879,44 +6879,6 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 	}));
 	var test = makeTest(ES, skips);
 
-	test('Abstract Relational Comparison', function (t) {
-		forEach(v.bigints, function (bigint) {
-			t.equal(
-				ES['Abstract Relational Comparison'](bigint, bigint + BigInt(1), false),
-				true,
-				debug(bigint) + ' is less than the same + 1n'
-			);
-			t.equal(
-				ES['Abstract Relational Comparison'](bigint, bigint - BigInt(1), false),
-				false,
-				debug(bigint) + ' is not less than the same - 1n'
-			);
-
-			t.equal(
-				ES['Abstract Relational Comparison'](bigint, -Infinity, false),
-				false,
-				debug(bigint) + ' is not less than -∞'
-			);
-			t.equal(
-				ES['Abstract Relational Comparison'](-Infinity, bigint, false),
-				true,
-				'-∞ is less than ' + debug(bigint)
-			);
-			t.equal(
-				ES['Abstract Relational Comparison'](bigint, Infinity, false),
-				true,
-				debug(bigint) + ' is less than ∞'
-			);
-			t.equal(
-				ES['Abstract Relational Comparison'](Infinity, bigint, false),
-				false,
-				'∞ is not less than ' + debug(bigint)
-			);
-		});
-
-		t.end();
-	});
-
 	test('CopyDataProperties', function (t) {
 		t.test('first argument: target', function (st) {
 			forEach(v.primitives, function (primitive) {
@@ -8087,6 +8049,40 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	});
 
 	test('Abstract Relational Comparison', { skip: !hasBigInts }, function (t) {
+		forEach(v.bigints, function (bigint) {
+			t.equal(
+				ES['Abstract Relational Comparison'](bigint, bigint + BigInt(1), false),
+				true,
+				debug(bigint) + ' is less than the same + 1n'
+			);
+			t.equal(
+				ES['Abstract Relational Comparison'](bigint, bigint - BigInt(1), false),
+				false,
+				debug(bigint) + ' is not less than the same - 1n'
+			);
+
+			t.equal(
+				ES['Abstract Relational Comparison'](bigint, -Infinity, false),
+				false,
+				debug(bigint) + ' is not less than -∞'
+			);
+			t.equal(
+				ES['Abstract Relational Comparison'](-Infinity, bigint, false),
+				true,
+				'-∞ is less than ' + debug(bigint)
+			);
+			t.equal(
+				ES['Abstract Relational Comparison'](bigint, Infinity, false),
+				true,
+				debug(bigint) + ' is less than ∞'
+			);
+			t.equal(
+				ES['Abstract Relational Comparison'](Infinity, bigint, false),
+				false,
+				'∞ is not less than ' + debug(bigint)
+			);
+		});
+
 		t.equal(ES['Abstract Relational Comparison']($BigInt(0), '1', true), true, 'LeftFirst: 0n is less than "1"');
 		t.equal(ES['Abstract Relational Comparison']('1', $BigInt(0), true), false, 'LeftFirst: "1" is not less than 0n');
 		t.equal(ES['Abstract Relational Comparison']($BigInt(0), '1', false), true, '!LeftFirst: 0n is less than "1"');
