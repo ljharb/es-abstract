@@ -127,7 +127,7 @@
 		"has-strict-mode": "^1.0.1",
 		"in-publish": "^2.0.1",
 		"is-core-module": "^2.15.1",
-		"is-registered-symbol": "^1.0.1",
+		"is-registered-symbol": "^1.1.0",
 		"jackspeak": "=2.1.1",
 		"make-arrow-function": "^1.2.0",
 		"make-async-function": "^1.0.0",
