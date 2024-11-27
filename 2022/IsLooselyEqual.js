@@ -13,43 +13,41 @@ var isObject = require('../helpers/isObject');
 // https://262.ecma-international.org/13.0/#sec-islooselyequal
 
 module.exports = function IsLooselyEqual(x, y) {
-	var xType = Type(x);
-	var yType = Type(y);
-	if (xType === yType) {
+	if (Type(x) === Type(y)) {
 		return IsStrictlyEqual(x, y);
 	}
 	if (x == null && y == null) {
 		return true;
 	}
-	if (xType === 'Number' && yType === 'String') {
+	if (typeof x === 'number' && typeof y === 'string') {
 		return IsLooselyEqual(x, ToNumber(y));
 	}
-	if (xType === 'String' && yType === 'Number') {
+	if (typeof x === 'string' && typeof y === 'number') {
 		return IsLooselyEqual(ToNumber(x), y);
 	}
-	if (xType === 'BigInt' && yType === 'String') {
+	if (typeof x === 'bigint' && typeof y === 'string') {
 		var n = StringToBigInt(y);
 		if (typeof n === 'undefined') {
 			return false;
 		}
 		return IsLooselyEqual(x, n);
 	}
-	if (xType === 'String' && yType === 'BigInt') {
+	if (typeof x === 'string' && typeof y === 'bigint') {
 		return IsLooselyEqual(y, x);
 	}
-	if (xType === 'Boolean') {
+	if (typeof x === 'boolean') {
 		return IsLooselyEqual(ToNumber(x), y);
 	}
-	if (yType === 'Boolean') {
+	if (typeof y === 'boolean') {
 		return IsLooselyEqual(x, ToNumber(y));
 	}
-	if ((xType === 'String' || xType === 'Number' || xType === 'Symbol' || xType === 'BigInt') && isObject(y)) {
+	if ((typeof x === 'string' || typeof x === 'number' || typeof x === 'symbol' || typeof x === 'bigint') && isObject(y)) {
 		return IsLooselyEqual(x, ToPrimitive(y));
 	}
-	if (isObject(x) && (yType === 'String' || yType === 'Number' || yType === 'Symbol' || yType === 'BigInt')) {
+	if (isObject(x) && (typeof y === 'string' || typeof y === 'number' || typeof y === 'symbol' || typeof y === 'bigint')) {
 		return IsLooselyEqual(ToPrimitive(x), y);
 	}
-	if ((xType === 'BigInt' && yType === 'Number') || (xType === 'Number' && yType === 'BigInt')) {
+	if ((typeof x === 'bigint' && typeof y === 'number') || (typeof x === 'number' && typeof y === 'bigint')) {
 		if (!isFinite(x) || !isFinite(y)) {
 			return false;
 		}

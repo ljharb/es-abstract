@@ -42,18 +42,16 @@ module.exports = function AbstractRelationalComparison(x, y, LeftFirst) {
 		return px < py; // both strings, neither a prefix of the other. shortcut for steps 3 c-f
 	}
 
-	var pxType = Type(px);
-	var pyType = Type(py);
 	var nx;
 	var ny;
-	if (pxType === 'BigInt' && pyType === 'String') {
+	if (typeof px === 'bigint' && typeof py === 'string') {
 		ny = StringToBigInt(py);
 		if ($isNaN(ny)) {
 			return void undefined;
 		}
 		return BigIntLessThan(px, ny);
 	}
-	if (pxType === 'String' && pyType === 'BigInt') {
+	if (typeof px === 'string' && typeof py === 'bigint') {
 		nx = StringToBigInt(px);
 		if ($isNaN(nx)) {
 			return void undefined;
@@ -63,9 +61,8 @@ module.exports = function AbstractRelationalComparison(x, y, LeftFirst) {
 
 	nx = ToNumeric(px);
 	ny = ToNumeric(py);
-	var nxType = Type(nx);
-	if (nxType === Type(ny)) {
-		return nxType === 'Number' ? NumberLessThan(nx, ny) : BigIntLessThan(nx, ny);
+	if (Type(nx) === Type(ny)) {
+		return typeof nx === 'number' ? NumberLessThan(nx, ny) : BigIntLessThan(nx, ny);
 	}
 
 	if ($isNaN(nx) || $isNaN(ny)) {

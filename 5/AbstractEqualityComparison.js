@@ -9,30 +9,28 @@ var isObject = require('../helpers/isObject');
 // https://262.ecma-international.org/5.1/#sec-11.9.3
 
 module.exports = function AbstractEqualityComparison(x, y) {
-	var xType = Type(x);
-	var yType = Type(y);
-	if (xType === yType) {
+	if (Type(x) === Type(y)) {
 		return x === y; // ES6+ specified this shortcut anyways.
 	}
 	if (x == null && y == null) {
 		return true;
 	}
-	if (xType === 'Number' && yType === 'String') {
+	if (typeof x === 'number' && typeof y === 'string') {
 		return AbstractEqualityComparison(x, ToNumber(y));
 	}
-	if (xType === 'String' && yType === 'Number') {
+	if (typeof x === 'string' && typeof y === 'number') {
 		return AbstractEqualityComparison(ToNumber(x), y);
 	}
-	if (xType === 'Boolean') {
+	if (typeof x === 'boolean') {
 		return AbstractEqualityComparison(ToNumber(x), y);
 	}
-	if (yType === 'Boolean') {
+	if (typeof y === 'boolean') {
 		return AbstractEqualityComparison(x, ToNumber(y));
 	}
-	if ((xType === 'String' || xType === 'Number') && isObject(y)) {
+	if ((typeof x === 'string' || typeof x === 'number') && isObject(y)) {
 		return AbstractEqualityComparison(x, ToPrimitive(y));
 	}
-	if (isObject(x) && (yType === 'String' || yType === 'Number')) {
+	if (isObject(x) && (typeof y === 'string' || typeof y === 'number')) {
 		return AbstractEqualityComparison(ToPrimitive(x), y);
 	}
 	return false;

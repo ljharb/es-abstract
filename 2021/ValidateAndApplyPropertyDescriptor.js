@@ -12,7 +12,6 @@ var IsDataDescriptor = require('./IsDataDescriptor');
 var IsGenericDescriptor = require('./IsGenericDescriptor');
 var IsPropertyKey = require('./IsPropertyKey');
 var SameValue = require('./SameValue');
-var Type = require('./Type');
 
 var isObject = require('../helpers/isObject');
 
@@ -22,8 +21,7 @@ var isObject = require('../helpers/isObject');
 // eslint-disable-next-line max-lines-per-function, max-statements
 module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, Desc, current) {
 	// this uses the ES2017+ logic, since it fixes a number of bugs in the ES2015 logic.
-	var oType = Type(O);
-	if (oType !== 'Undefined' && !isObject(O)) {
+	if (typeof O !== 'undefined' && !isObject(O)) {
 		throw new $TypeError('Assertion failed: O must be undefined or an Object');
 	}
 	if (typeof extensible !== 'boolean') {
@@ -35,7 +33,7 @@ module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, D
 	if (typeof current !== 'undefined' && !isPropertyDescriptor(current)) {
 		throw new $TypeError('Assertion failed: current must be a Property Descriptor, or undefined');
 	}
-	if (oType !== 'Undefined' && !IsPropertyKey(P)) {
+	if (typeof O !== 'undefined' && !IsPropertyKey(P)) {
 		throw new $TypeError('Assertion failed: if O is not undefined, P must be a Property Key');
 	}
 	if (typeof current === 'undefined') {
@@ -43,7 +41,7 @@ module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, D
 			return false;
 		}
 		if (IsGenericDescriptor(Desc) || IsDataDescriptor(Desc)) {
-			if (oType !== 'Undefined') {
+			if (typeof O !== 'undefined') {
 				DefineOwnProperty(
 					IsDataDescriptor,
 					SameValue,
@@ -62,7 +60,7 @@ module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, D
 			if (!IsAccessorDescriptor(Desc)) {
 				throw new $TypeError('Assertion failed: Desc is not an accessor descriptor');
 			}
-			if (oType !== 'Undefined') {
+			if (typeof O !== 'undefined') {
 				return DefineOwnProperty(
 					IsDataDescriptor,
 					SameValue,
@@ -97,7 +95,7 @@ module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, D
 			return false;
 		}
 		if (IsDataDescriptor(current)) {
-			if (oType !== 'Undefined') {
+			if (typeof O !== 'undefined') {
 				DefineOwnProperty(
 					IsDataDescriptor,
 					SameValue,
@@ -111,7 +109,7 @@ module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, D
 					}
 				);
 			}
-		} else if (oType !== 'Undefined') {
+		} else if (typeof O !== 'undefined') {
 			DefineOwnProperty(
 				IsDataDescriptor,
 				SameValue,
@@ -148,7 +146,7 @@ module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, D
 	} else {
 		throw new $TypeError('Assertion failed: current and Desc are not both data, both accessors, or one accessor and one data.');
 	}
-	if (oType !== 'Undefined') {
+	if (typeof O !== 'undefined') {
 		return DefineOwnProperty(
 			IsDataDescriptor,
 			SameValue,
