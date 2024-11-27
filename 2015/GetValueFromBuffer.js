@@ -75,11 +75,11 @@ module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type) {
 	var bytes = $slice(safeConcat([0, 0, 0, 0, 0, 0, 0, 0], rawValue), -elementSize);
 
 	if (type === 'Float32') { // step 3
-		return bytesAsFloat32(bytes, true);
+		return bytesAsFloat32(bytes);
 	}
 
 	if (type === 'Float64') { // step 4
-		return bytesAsFloat64(bytes, true);
+		return bytesAsFloat64(bytes);
 	}
 
 	return bytesAsInteger(bytes, elementSize, isUnsignedElementType(type), false);
