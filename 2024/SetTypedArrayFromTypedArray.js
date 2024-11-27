@@ -19,8 +19,11 @@ var TypedArrayLength = require('./TypedArrayLength');
 var typedArrayBuffer = require('typed-array-buffer');
 var typedArrayByteOffset = require('typed-array-byte-offset');
 var whichTypedArray = require('which-typed-array');
+var callBound = require('call-bind/callBound');
 
 var isInteger = require('../helpers/isInteger');
+
+var $ArrayBuffer = callBound('ArrayBuffer', true);
 
 // https://262.ecma-international.org/15.0/#sec-settypedarrayfromtypedarray
 
@@ -94,7 +97,7 @@ module.exports = function SetTypedArrayFromTypedArray(target, targetOffset, sour
 	var srcByteIndex;
 	if (SameValue(srcBuffer, targetBuffer) || sameSharedArrayBuffer) { // step 19
 		var srcByteLength = TypedArrayByteLength(srcRecord); // step 19.a
-		srcBuffer = CloneArrayBuffer(srcBuffer, srcByteOffset, srcByteLength); // step 19.b
+		srcBuffer = CloneArrayBuffer(srcBuffer, srcByteOffset, srcByteLength, $ArrayBuffer); // step 19.b
 		srcByteIndex = 0; // step 19.c
 	} else { // step 20
 		srcByteIndex = srcByteOffset; // step 20.a
