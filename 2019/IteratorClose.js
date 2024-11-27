@@ -6,12 +6,13 @@ var Call = require('./Call');
 var CompletionRecord = require('./CompletionRecord');
 var GetMethod = require('./GetMethod');
 var IsCallable = require('./IsCallable');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/6.0/#sec-iteratorclose
 
 module.exports = function IteratorClose(iterator, completion) {
-	if (Type(iterator) !== 'Object') {
+	if (!isObject(iterator)) {
 		throw new $TypeError('Assertion failed: Type(iterator) is not Object');
 	}
 	if (!IsCallable(completion) && !(completion instanceof CompletionRecord)) {
@@ -41,7 +42,7 @@ module.exports = function IteratorClose(iterator, completion) {
 	completionRecord = completionThunk(); // if innerResult worked, then throw if the completion does
 	completionThunk = null; // ensure it's not called twice.
 
-	if (Type(innerResult) !== 'Object') {
+	if (!isObject(innerResult)) {
 		throw new $TypeError('iterator .return must return an object');
 	}
 

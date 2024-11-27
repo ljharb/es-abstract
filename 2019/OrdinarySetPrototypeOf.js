@@ -6,10 +6,12 @@ var $setProto = require('../helpers/setProto');
 
 var OrdinaryGetPrototypeOf = require('./OrdinaryGetPrototypeOf');
 
+var isObject = require('../helpers/isObject');
+
 // https://262.ecma-international.org/7.0/#sec-ordinarysetprototypeof
 
 module.exports = function OrdinarySetPrototypeOf(O, V) {
-	if (typeof V !== 'object') {
+	if (V !== null && !isObject(V)) {
 		throw new $TypeError('Assertion failed: V must be Object or Null');
 	}
 	/*

@@ -14,13 +14,12 @@ var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 var $pushApply = callBind.apply(GetIntrinsic('%Array.prototype.push%'));
 
 var forEach = require('../helpers/forEach');
-
-var Type = require('./Type');
+var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/8.0/#sec-enumerableownproperties
 
 module.exports = function EnumerableOwnPropertyNames(O, kind) {
-	if (Type(O) !== 'Object') {
+	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
 	}
 

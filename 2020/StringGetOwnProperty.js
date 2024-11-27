@@ -9,7 +9,8 @@ var $stringToString = callBound('String.prototype.toString');
 var CanonicalNumericIndexString = require('./CanonicalNumericIndexString');
 var IsInteger = require('./IsInteger');
 var IsPropertyKey = require('./IsPropertyKey');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
 
 var isNegativeZero = require('is-negative-zero');
 
@@ -17,7 +18,7 @@ var isNegativeZero = require('is-negative-zero');
 
 module.exports = function StringGetOwnProperty(S, P) {
 	var str;
-	if (Type(S) === 'Object') {
+	if (isObject(S)) {
 		try {
 			str = $stringToString(S);
 		} catch (e) { /**/ }

@@ -13,12 +13,13 @@ var IsArray = require('./IsArray');
 var IsPropertyKey = require('./IsPropertyKey');
 var IsRegExp = require('./IsRegExp');
 var ToPropertyDescriptor = require('./ToPropertyDescriptor');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/6.0/#sec-ordinarygetownproperty
 
 module.exports = function OrdinaryGetOwnProperty(O, P) {
-	if (Type(O) !== 'Object') {
+	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: O must be an Object');
 	}
 	if (!IsPropertyKey(P)) {

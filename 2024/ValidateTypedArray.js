@@ -4,7 +4,8 @@ var $TypeError = require('es-errors/type');
 
 var IsTypedArrayOutOfBounds = require('./IsTypedArrayOutOfBounds');
 var MakeTypedArrayWithBufferWitnessRecord = require('./MakeTypedArrayWithBufferWitnessRecord');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
 
 var isTypedArray = require('is-typed-array');
 
@@ -15,7 +16,7 @@ module.exports = function ValidateTypedArray(O, order) {
 		throw new $TypeError('Assertion failed: `order` must be ~SEQ-CST~ or ~UNORDERED~');
 	}
 
-	if (Type(O) !== 'Object') {
+	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: `O` must be an Object'); // step 1
 	}
 	if (!isTypedArray(O)) {

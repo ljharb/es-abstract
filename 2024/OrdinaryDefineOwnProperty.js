@@ -11,13 +11,14 @@ var IsExtensible = require('./IsExtensible');
 var IsPropertyKey = require('./IsPropertyKey');
 var ToPropertyDescriptor = require('./ToPropertyDescriptor');
 var SameValue = require('./SameValue');
-var Type = require('./Type');
 var ValidateAndApplyPropertyDescriptor = require('./ValidateAndApplyPropertyDescriptor');
+
+var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/6.0/#sec-ordinarydefineownproperty
 
 module.exports = function OrdinaryDefineOwnProperty(O, P, Desc) {
-	if (Type(O) !== 'Object') {
+	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: O must be an Object');
 	}
 	if (!IsPropertyKey(P)) {

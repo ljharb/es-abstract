@@ -7,7 +7,8 @@ var $TypeError = require('es-errors/type');
 var $RegExpPrototype = GetIntrinsic('%RegExp.prototype%');
 
 var SameValue = require('./SameValue');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
 
 var $indexOf = callBound('String.prototype.indexOf');
 
@@ -21,7 +22,7 @@ module.exports = function RegExpHasFlag(R, codeUnit) {
 		throw new $TypeError('Assertion failed: `string` must be a code unit - a String of length 1');
 	}
 
-	if (Type(R) !== 'Object') {
+	if (!isObject(R)) {
 		throw new $TypeError('Assertion failed: Type(R) is not Object');
 	}
 

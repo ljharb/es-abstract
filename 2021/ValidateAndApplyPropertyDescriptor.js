@@ -14,6 +14,8 @@ var IsPropertyKey = require('./IsPropertyKey');
 var SameValue = require('./SameValue');
 var Type = require('./Type');
 
+var isObject = require('../helpers/isObject');
+
 // https://262.ecma-international.org/6.0/#sec-validateandapplypropertydescriptor
 // https://262.ecma-international.org/8.0/#sec-validateandapplypropertydescriptor
 
@@ -21,7 +23,7 @@ var Type = require('./Type');
 module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, Desc, current) {
 	// this uses the ES2017+ logic, since it fixes a number of bugs in the ES2015 logic.
 	var oType = Type(O);
-	if (oType !== 'Undefined' && oType !== 'Object') {
+	if (oType !== 'Undefined' && !isObject(O)) {
 		throw new $TypeError('Assertion failed: O must be undefined or an Object');
 	}
 	if (typeof extensible !== 'boolean') {

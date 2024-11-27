@@ -13,11 +13,11 @@ var Get = require('./Get');
 var GetMethod = require('./GetMethod');
 var IteratorNext = require('./IteratorNext');
 var OrdinaryObjectCreate = require('./OrdinaryObjectCreate');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
+var isIteratorRecord = require('../helpers/records/iterator-record-2023');
 
 var SLOT = require('internal-slot');
-
-var isIteratorRecord = require('../helpers/records/iterator-record-2023');
 
 var $AsyncFromSyncIteratorPrototype = GetIntrinsic('%AsyncFromSyncIteratorPrototype%', true) || {
 	next: function next(value) {
@@ -69,7 +69,7 @@ var $AsyncFromSyncIteratorPrototype = GetIntrinsic('%AsyncFromSyncIteratorProtot
 			} else { // step 9
 				result = Call(iteratorReturn, syncIterator); // step 9.a
 			}
-			if (Type(result) !== 'Object') { // step 11
+			if (!isObject(result)) { // step 11
 				Call(reject, undefined, [new $TypeError('Iterator `return` method returned a non-object value.')]); // step 11.a
 				return;
 			}
@@ -105,7 +105,7 @@ var $AsyncFromSyncIteratorPrototype = GetIntrinsic('%AsyncFromSyncIteratorProtot
 			} else { // step 9
 				result = Call(throwMethod, syncIterator); // step 9.a
 			}
-			if (Type(result) !== 'Object') { // step 11
+			if (!isObject(result)) { // step 11
 				Call(reject, undefined, [new $TypeError('Iterator `throw` method returned a non-object value.')]); // step 11.a
 				return;
 			}

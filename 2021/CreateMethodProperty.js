@@ -8,12 +8,13 @@ var FromPropertyDescriptor = require('./FromPropertyDescriptor');
 var IsDataDescriptor = require('./IsDataDescriptor');
 var IsPropertyKey = require('./IsPropertyKey');
 var SameValue = require('./SameValue');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/6.0/#sec-createmethodproperty
 
 module.exports = function CreateMethodProperty(O, P, V) {
-	if (Type(O) !== 'Object') {
+	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
 	}
 

@@ -12,14 +12,15 @@ var CreateIterResultObject = require('./CreateIterResultObject');
 var IteratorComplete = require('./IteratorComplete');
 var IteratorValue = require('./IteratorValue');
 var PromiseResolve = require('./PromiseResolve');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
 
 var $then = callBound('Promise.prototype.then', true);
 
 // https://262.ecma-international.org/10.0/#sec-asyncfromsynciteratorcontinuation
 
 module.exports = function AsyncFromSyncIteratorContinuation(result) {
-	if (Type(result) !== 'Object') {
+	if (!isObject(result)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
 	}
 

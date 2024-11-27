@@ -7,6 +7,7 @@ var ToPrimitive = require('./ToPrimitive');
 var Type = require('./Type');
 
 var isNaN = require('../helpers/isNaN');
+var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/11.0/#sec-abstract-equality-comparison
 
@@ -41,10 +42,10 @@ module.exports = function AbstractEqualityComparison(x, y) {
 	if (yType === 'Boolean') {
 		return AbstractEqualityComparison(x, ToNumber(y));
 	}
-	if ((xType === 'String' || xType === 'Number' || xType === 'BigInt' || xType === 'Symbol') && yType === 'Object') {
+	if ((xType === 'String' || xType === 'Number' || xType === 'BigInt' || xType === 'Symbol') && isObject(y)) {
 		return AbstractEqualityComparison(x, ToPrimitive(y));
 	}
-	if (xType === 'Object' && (yType === 'String' || yType === 'Number' || yType === 'BigInt' || yType === 'Symbol')) {
+	if (isObject(x) && (yType === 'String' || yType === 'Number' || yType === 'BigInt' || yType === 'Symbol')) {
 		return AbstractEqualityComparison(ToPrimitive(x), y);
 	}
 	if ((xType === 'BigInt' && yType === 'Number') || (xType === 'Number' && yType === 'BigInt')) {

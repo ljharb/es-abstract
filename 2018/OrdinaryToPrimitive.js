@@ -5,14 +5,15 @@ var $TypeError = require('es-errors/type');
 var Call = require('./Call');
 var Get = require('./Get');
 var IsCallable = require('./IsCallable');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
 
 var inspect = require('object-inspect');
 
 // https://262.ecma-international.org/8.0/#sec-ordinarytoprimitive
 
 module.exports = function OrdinaryToPrimitive(O, hint) {
-	if (Type(O) !== 'Object') {
+	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
 	}
 	if (/* typeof hint !== 'string' || */ hint !== 'string' && hint !== 'number') {
@@ -26,7 +27,7 @@ module.exports = function OrdinaryToPrimitive(O, hint) {
 		var method = Get(O, name);
 		if (IsCallable(method)) {
 			var result = Call(method, O);
-			if (Type(result) !== 'Object') {
+			if (!isObject(result)) {
 				return result;
 			}
 		}

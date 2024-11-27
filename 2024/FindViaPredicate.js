@@ -7,12 +7,12 @@ var Get = require('./Get');
 var ToBoolean = require('./ToBoolean');
 var IsCallable = require('./IsCallable');
 var ToString = require('./ToString');
-var Type = require('./Type');
 
 var isInteger = require('../helpers/isInteger');
+var isObject = require('../helpers/isObject');
 
 module.exports = function FindViaPredicate(O, len, direction, predicate, thisArg) {
-	if (Type(O) !== 'Object') {
+	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
 	}
 	if (!isInteger(len) || len < 0) {

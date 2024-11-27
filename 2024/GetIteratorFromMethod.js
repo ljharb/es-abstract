@@ -5,7 +5,8 @@ var $TypeError = require('es-errors/type');
 var Call = require('./Call');
 var Get = require('./Get');
 var IsCallable = require('./IsCallable');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/15.0/#sec-getiteratorfrommethod
 
@@ -15,7 +16,7 @@ module.exports = function GetIteratorFromMethod(obj, method) {
 	}
 
 	var iterator = Call(method, obj); // step 1
-	if (Type(iterator) !== 'Object') {
+	if (!isObject(iterator)) {
 		throw new $TypeError('iterator must return an object'); // step 2
 	}
 

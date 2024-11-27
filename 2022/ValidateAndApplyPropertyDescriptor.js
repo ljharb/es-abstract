@@ -14,6 +14,8 @@ var IsPropertyKey = require('./IsPropertyKey');
 var SameValue = require('./SameValue');
 var Type = require('./Type');
 
+var isObject = require('../helpers/isObject');
+
 // https://262.ecma-international.org/13.0/#sec-validateandapplypropertydescriptor
 
 // see https://github.com/tc39/ecma262/pull/2468 for ES2022 changes
@@ -21,7 +23,7 @@ var Type = require('./Type');
 // eslint-disable-next-line max-lines-per-function, max-statements
 module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, Desc, current) {
 	var oType = Type(O);
-	if (oType !== 'Undefined' && oType !== 'Object') {
+	if (typeof O !== 'undefined' && !isObject(O)) {
 		throw new $TypeError('Assertion failed: O must be undefined or an Object');
 	}
 	if (!IsPropertyKey(P)) {

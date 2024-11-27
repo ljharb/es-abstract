@@ -9,16 +9,16 @@ var Get = require('./Get');
 var IsArray = require('./IsArray');
 var ToLength = require('./ToLength');
 var ToString = require('./ToString');
-var Type = require('./Type');
 
 var forEach = require('../helpers/forEach');
+var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/9.0/#sec-internalizejsonproperty
 
 // note: `reviver` was implicitly closed-over until ES2020, where it becomes a third argument
 
 module.exports = function InternalizeJSONProperty(holder, name, reviver) {
-	if (Type(holder) !== 'Object') {
+	if (!isObject(holder)) {
 		throw new $TypeError('Assertion failed: `holder` is not an Object');
 	}
 	if (typeof name !== 'string') {
@@ -30,7 +30,7 @@ module.exports = function InternalizeJSONProperty(holder, name, reviver) {
 
 	var val = Get(holder, name); // step 1
 
-	if (Type(val) === 'Object') { // step 2
+	if (isObject(val)) { // step 2
 		var isArray = IsArray(val); // step 2.a
 		if (isArray) { // step 2.b
 			var I = 0; // step 2.b.i

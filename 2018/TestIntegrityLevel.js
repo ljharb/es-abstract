@@ -9,12 +9,13 @@ var OwnPropertyKeys = require('../helpers/OwnPropertyKeys');
 var IsDataDescriptor = require('./IsDataDescriptor');
 var IsExtensible = require('./IsExtensible');
 var ToPropertyDescriptor = require('./ToPropertyDescriptor');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/6.0/#sec-testintegritylevel
 
 module.exports = function TestIntegrityLevel(O, level) {
-	if (Type(O) !== 'Object') {
+	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
 	}
 	if (level !== 'sealed' && level !== 'frozen') {

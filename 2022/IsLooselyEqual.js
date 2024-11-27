@@ -8,6 +8,8 @@ var ToNumber = require('./ToNumber');
 var ToPrimitive = require('./ToPrimitive');
 var Type = require('./Type');
 
+var isObject = require('../helpers/isObject');
+
 // https://262.ecma-international.org/13.0/#sec-islooselyequal
 
 module.exports = function IsLooselyEqual(x, y) {
@@ -41,10 +43,10 @@ module.exports = function IsLooselyEqual(x, y) {
 	if (yType === 'Boolean') {
 		return IsLooselyEqual(x, ToNumber(y));
 	}
-	if ((xType === 'String' || xType === 'Number' || xType === 'Symbol' || xType === 'BigInt') && yType === 'Object') {
+	if ((xType === 'String' || xType === 'Number' || xType === 'Symbol' || xType === 'BigInt') && isObject(y)) {
 		return IsLooselyEqual(x, ToPrimitive(y));
 	}
-	if (xType === 'Object' && (yType === 'String' || yType === 'Number' || yType === 'Symbol' || yType === 'BigInt')) {
+	if (isObject(x) && (yType === 'String' || yType === 'Number' || yType === 'Symbol' || yType === 'BigInt')) {
 		return IsLooselyEqual(ToPrimitive(x), y);
 	}
 	if ((xType === 'BigInt' && yType === 'Number') || (xType === 'Number' && yType === 'BigInt')) {

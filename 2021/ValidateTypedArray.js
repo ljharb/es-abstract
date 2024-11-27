@@ -3,7 +3,8 @@
 var $TypeError = require('es-errors/type');
 
 var IsDetachedBuffer = require('./IsDetachedBuffer');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
 
 var isTypedArray = require('is-typed-array');
 var typedArrayBuffer = require('typed-array-buffer');
@@ -11,7 +12,7 @@ var typedArrayBuffer = require('typed-array-buffer');
 // https://262.ecma-international.org/6.0/#sec-validatetypedarray
 
 module.exports = function ValidateTypedArray(O) {
-	if (Type(O) !== 'Object') {
+	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: `O` must be an Object'); // step 1
 	}
 	if (!isTypedArray(O)) {

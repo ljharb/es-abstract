@@ -3,12 +3,13 @@
 var $TypeError = require('es-errors/type');
 
 var IsPropertyKey = require('./IsPropertyKey');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/6.0/#sec-hasproperty
 
 module.exports = function HasProperty(O, P) {
-	if (Type(O) !== 'Object') {
+	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: `O` must be an Object');
 	}
 	if (!IsPropertyKey(P)) {

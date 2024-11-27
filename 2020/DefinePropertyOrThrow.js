@@ -10,12 +10,13 @@ var IsDataDescriptor = require('./IsDataDescriptor');
 var IsPropertyKey = require('./IsPropertyKey');
 var SameValue = require('./SameValue');
 var ToPropertyDescriptor = require('./ToPropertyDescriptor');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/6.0/#sec-definepropertyorthrow
 
 module.exports = function DefinePropertyOrThrow(O, P, desc) {
-	if (Type(O) !== 'Object') {
+	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
 	}
 

@@ -13,12 +13,13 @@ var forEach = require('../helpers/forEach');
 var DefinePropertyOrThrow = require('./DefinePropertyOrThrow');
 var IsAccessorDescriptor = require('./IsAccessorDescriptor');
 var ToPropertyDescriptor = require('./ToPropertyDescriptor');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/6.0/#sec-setintegritylevel
 
 module.exports = function SetIntegrityLevel(O, level) {
-	if (Type(O) !== 'Object') {
+	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
 	}
 	if (level !== 'sealed' && level !== 'frozen') {

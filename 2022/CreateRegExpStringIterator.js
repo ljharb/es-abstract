@@ -15,7 +15,8 @@ var RegExpExec = require('./RegExpExec');
 var Set = require('./Set');
 var ToLength = require('./ToLength');
 var ToString = require('./ToString');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
 
 var SLOT = require('internal-slot');
 var setToStringTag = require('es-set-tostringtag');
@@ -43,7 +44,7 @@ if (IteratorPrototype) {
 
 var RegExpStringIteratorNext = function next() {
 	var O = this; // eslint-disable-line no-invalid-this
-	if (Type(O) !== 'Object') {
+	if (!isObject(O)) {
 		throw new $TypeError('receiver must be an object');
 	}
 	if (

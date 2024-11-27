@@ -7,7 +7,8 @@ var AdvanceStringIndex = require('./AdvanceStringIndex');
 var Call = require('./Call');
 var GetMethod = require('./GetMethod');
 var IsArray = require('./IsArray');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/6.0/#sec-getiterator
 
@@ -24,7 +25,7 @@ module.exports = function GetIterator(obj, method) {
 		);
 	}
 	var iterator = Call(actualMethod, obj);
-	if (Type(iterator) !== 'Object') {
+	if (!isObject(iterator)) {
 		throw new $TypeError('iterator must return an object');
 	}
 

@@ -7,9 +7,9 @@ var $TypeError = require('es-errors/type');
 var $SyntaxError = require('es-errors/syntax');
 
 var IsArray = require('./IsArray');
-var Type = require('./Type');
 
 var forEach = require('../helpers/forEach');
+var isObject = require('../helpers/isObject');
 
 var SLOT = require('internal-slot');
 
@@ -18,7 +18,7 @@ var hasProto = require('has-proto')();
 // https://262.ecma-international.org/6.0/#sec-objectcreate
 
 module.exports = function ObjectCreate(proto, internalSlotsList) {
-	if (proto !== null && Type(proto) !== 'Object') {
+	if (proto !== null && !isObject(proto)) {
 		throw new $TypeError('Assertion failed: `proto` must be null or an object');
 	}
 	var slots = arguments.length < 2 ? [] : internalSlotsList; // step 1

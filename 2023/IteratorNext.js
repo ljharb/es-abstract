@@ -3,8 +3,8 @@
 var $TypeError = require('es-errors/type');
 
 var Call = require('./Call');
-var Type = require('./Type');
 
+var isObject = require('../helpers/isObject');
 var isIteratorRecord = require('../helpers/records/iterator-record-2023');
 
 // https://262.ecma-international.org/14.0/#sec-iteratornext
@@ -21,7 +21,7 @@ module.exports = function IteratorNext(iteratorRecord) {
 		result = Call(iteratorRecord['[[NextMethod]]'], iteratorRecord['[[Iterator]]'], [arguments[1]]); // step 2.a
 	}
 
-	if (Type(result) !== 'Object') {
+	if (!isObject(result)) {
 		throw new $TypeError('iterator next must return an object'); // step 3
 	}
 	return result; // step 4

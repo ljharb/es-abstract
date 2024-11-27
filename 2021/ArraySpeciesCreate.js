@@ -9,9 +9,9 @@ var ArrayCreate = require('./ArrayCreate');
 var Get = require('./Get');
 var IsArray = require('./IsArray');
 var IsConstructor = require('./IsConstructor');
-var Type = require('./Type');
 
 var isInteger = require('../helpers/isInteger');
+var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/12.0/#sec-arrayspeciescreate
 
@@ -31,7 +31,7 @@ module.exports = function ArraySpeciesCreate(originalArray, length) {
 	// 	if C is another realm's Array, C = undefined
 	// 	Object.getPrototypeOf(Object.getPrototypeOf(Object.getPrototypeOf(Array))) === null ?
 	// }
-	if ($species && Type(C) === 'Object') {
+	if ($species && isObject(C)) {
 		C = Get(C, $species);
 		if (C === null) {
 			C = void 0;

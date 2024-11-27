@@ -7,10 +7,10 @@ var $TypeError = require('es-errors/type');
 var Get = require('./Get');
 var HasProperty = require('./HasProperty');
 var ToString = require('./ToString');
-var Type = require('./Type');
 
 var isAbstractClosure = require('../helpers/isAbstractClosure');
 var isInteger = require('../helpers/isInteger');
+var isObject = require('../helpers/isObject');
 
 var $push = callBound('Array.prototype.push');
 var $sort = callBound('Array.prototype.sort');
@@ -18,7 +18,7 @@ var $sort = callBound('Array.prototype.sort');
 // https://262.ecma-international.org/14.0/#sec-sortindexedproperties
 
 module.exports = function SortIndexedProperties(obj, len, SortCompare, holes) {
-	if (Type(obj) !== 'Object') {
+	if (!isObject(obj)) {
 		throw new $TypeError('Assertion failed: Type(obj) is not Object');
 	}
 	if (!isInteger(len) || len < 0) {

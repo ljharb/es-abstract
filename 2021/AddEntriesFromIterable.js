@@ -12,7 +12,8 @@ var IteratorClose = require('./IteratorClose');
 var IteratorStep = require('./IteratorStep');
 var IteratorValue = require('./IteratorValue');
 var ThrowCompletion = require('./ThrowCompletion');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/10.0/#sec-add-entries-from-iterable
 
@@ -30,7 +31,7 @@ module.exports = function AddEntriesFromIterable(target, iterable, adder) {
 			return target;
 		}
 		var nextItem = IteratorValue(next);
-		if (Type(nextItem) !== 'Object') {
+		if (!isObject(nextItem)) {
 			var error = ThrowCompletion(new $TypeError('iterator next must return an Object, got ' + inspect(nextItem)));
 			return IteratorClose(iteratorRecord, error);
 		}

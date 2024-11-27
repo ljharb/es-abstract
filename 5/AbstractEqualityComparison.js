@@ -4,6 +4,8 @@ var ToNumber = require('./ToNumber');
 var ToPrimitive = require('./ToPrimitive');
 var Type = require('./Type');
 
+var isObject = require('../helpers/isObject');
+
 // https://262.ecma-international.org/5.1/#sec-11.9.3
 
 module.exports = function AbstractEqualityComparison(x, y) {
@@ -27,10 +29,10 @@ module.exports = function AbstractEqualityComparison(x, y) {
 	if (yType === 'Boolean') {
 		return AbstractEqualityComparison(x, ToNumber(y));
 	}
-	if ((xType === 'String' || xType === 'Number') && yType === 'Object') {
+	if ((xType === 'String' || xType === 'Number') && isObject(y)) {
 		return AbstractEqualityComparison(x, ToPrimitive(y));
 	}
-	if (xType === 'Object' && (yType === 'String' || yType === 'Number')) {
+	if (isObject(x) && (yType === 'String' || yType === 'Number')) {
 		return AbstractEqualityComparison(ToPrimitive(x), y);
 	}
 	return false;

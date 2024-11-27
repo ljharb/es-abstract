@@ -11,12 +11,13 @@ var GetMethod = require('./GetMethod');
 var IsCallable = require('./IsCallable');
 var OrdinaryHasInstance = require('./OrdinaryHasInstance');
 var ToBoolean = require('./ToBoolean');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/6.0/#sec-instanceofoperator
 
 module.exports = function InstanceofOperator(O, C) {
-	if (Type(O) !== 'Object') {
+	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
 	}
 	var instOfHandler = $hasInstance ? GetMethod(C, $hasInstance) : void 0;

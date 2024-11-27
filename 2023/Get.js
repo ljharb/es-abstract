@@ -5,13 +5,14 @@ var $TypeError = require('es-errors/type');
 var inspect = require('object-inspect');
 
 var IsPropertyKey = require('./IsPropertyKey');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/6.0/#sec-get-o-p
 
 module.exports = function Get(O, P) {
 	// 7.3.1.1
-	if (Type(O) !== 'Object') {
+	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
 	}
 	// 7.3.1.2

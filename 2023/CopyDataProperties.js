@@ -18,12 +18,13 @@ var IsPropertyKey = require('./IsPropertyKey');
 var SameValue = require('./SameValue');
 var ToNumber = require('./ToNumber');
 var ToObject = require('./ToObject');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/12.0/#sec-copydataproperties
 
 module.exports = function CopyDataProperties(target, source, excludedItems) {
-	if (Type(target) !== 'Object') {
+	if (!isObject(target)) {
 		throw new $TypeError('Assertion failed: "target" must be an Object');
 	}
 

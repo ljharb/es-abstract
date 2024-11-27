@@ -3,13 +3,12 @@
 var $TypeError = require('es-errors/type');
 
 var $getProto = require('../helpers/getProto');
-
-var Type = require('./Type');
+var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/7.0/#sec-ordinarygetprototypeof
 
 module.exports = function OrdinaryGetPrototypeOf(O) {
-	if (Type(O) !== 'Object') {
+	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: O must be an Object');
 	}
 	if (!$getProto) {

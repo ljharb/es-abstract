@@ -4,7 +4,8 @@ var $TypeError = require('es-errors/type');
 
 var IsPropertyKey = require('./IsPropertyKey');
 var SameValue = require('./SameValue');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
 
 // IE 9 does not throw in strict mode when writability/configurability/extensibility is violated
 var noThrowOnStrictViolation = (function () {
@@ -19,7 +20,7 @@ var noThrowOnStrictViolation = (function () {
 // https://262.ecma-international.org/6.0/#sec-set-o-p-v-throw
 
 module.exports = function Set(O, P, V, Throw) {
-	if (Type(O) !== 'Object') {
+	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: `O` must be an Object');
 	}
 	if (!IsPropertyKey(P)) {

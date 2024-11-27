@@ -9,8 +9,8 @@ var $Promise = GetIntrinsic('%Promise%', true);
 var Call = require('./Call');
 var CompletionRecord = require('./CompletionRecord');
 var GetMethod = require('./GetMethod');
-var Type = require('./Type');
 
+var isObject = require('../helpers/isObject');
 var isIteratorRecord = require('../helpers/records/iterator-record-2023');
 
 var callBound = require('call-bind/callBound');
@@ -46,7 +46,7 @@ module.exports = function AsyncIteratorClose(iteratorRecord, completion) {
 					resolve2(Call(ret, iterator, [])); // step 6
 				}),
 				function (innerResult) {
-					if (Type(innerResult) !== 'Object') {
+					if (!isObject(innerResult)) {
 						throw new $TypeError('`innerResult` must be an Object'); // step 10
 					}
 					return completion;

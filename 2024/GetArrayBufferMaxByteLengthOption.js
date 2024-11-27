@@ -2,12 +2,13 @@
 
 var Get = require('./Get');
 var ToIndex = require('./ToIndex');
-var Type = require('./Type');
+
+var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/15.0/#sec-getarraybuffermaxbytelengthoption
 
 module.exports = function GetArrayBufferMaxByteLengthOption(options) {
-	if (Type(options) !== 'Object') {
+	if (!isObject(options)) {
 		return 'EMPTY'; // step 1
 	}
 

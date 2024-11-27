@@ -10,12 +10,12 @@ var $gOPN = GetIntrinsic('%Object.getOwnPropertyNames%', true);
 var $gOPS = hasSymbols && GetIntrinsic('%Object.getOwnPropertySymbols%', true);
 var keys = require('object-keys');
 
-var esType = require('./Type');
+var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/6.0/#sec-getownpropertykeys
 
 module.exports = function GetOwnPropertyKeys(O, Type) {
-	if (esType(O) !== 'Object') {
+	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
 	}
 	if (Type === 'Symbol') {

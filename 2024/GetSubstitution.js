@@ -14,11 +14,11 @@ var StringIndexOf = require('./StringIndexOf');
 var StringToNumber = require('./StringToNumber');
 var substring = require('./substring');
 var ToString = require('./ToString');
-var Type = require('./Type');
 
 var isInteger = require('../helpers/isInteger');
-var isStringOrUndefined = require('../helpers/isStringOrUndefined');
+var isObject = require('../helpers/isObject');
 var isPrefixOf = require('../helpers/isPrefixOf');
+var isStringOrUndefined = require('../helpers/isStringOrUndefined');
 
 var startsWithDollarDigit = regexTester(/^\$[0-9]/);
 var startsWithDollarTwoDigit = regexTester(/^\$[0-9][0-9]/);
@@ -43,7 +43,7 @@ module.exports = function GetSubstitution(matched, str, position, captures, name
 		throw new $TypeError('Assertion failed: `captures` must be a possibly-empty List of Strings or `undefined`, got ' + inspect(captures));
 	}
 
-	if (typeof namedCaptures !== 'undefined' && Type(namedCaptures) !== 'Object') {
+	if (typeof namedCaptures !== 'undefined' && !isObject(namedCaptures)) {
 		throw new $TypeError('Assertion failed: `namedCaptures` must be `undefined` or an Object');
 	}
 
@@ -124,7 +124,7 @@ module.exports = function GetSubstitution(matched, str, position, captures, name
 			} else { // step 5.g.iii
 				ref = substring(templateRemainder, 0, gtPos + 1); // step 5.g.iii.1
 				var groupName = substring(templateRemainder, 2, gtPos); // step 5.g.iii.2
-				if (Type(namedCaptures) !== 'Object') {
+				if (!isObject(namedCaptures)) {
 					throw new $TypeError('Assertion failed: Type(namedCaptures) is not Object'); // step 5.g.iii.3
 				}
 				capture = Get(namedCaptures, groupName); // step 5.g.iii.4

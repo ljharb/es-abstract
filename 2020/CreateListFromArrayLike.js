@@ -12,6 +12,8 @@ var LengthOfArrayLike = require('./LengthOfArrayLike');
 var ToString = require('./ToString');
 var Type = require('./Type');
 
+var isObject = require('../helpers/isObject');
+
 var defaultElementTypes = ['Undefined', 'Null', 'Boolean', 'String', 'Symbol', 'Number', 'BigInt', 'Object'];
 
 // https://262.ecma-international.org/11.0/#sec-createlistfromarraylike
@@ -21,7 +23,7 @@ module.exports = function CreateListFromArrayLike(obj) {
 		? arguments[1]
 		: defaultElementTypes;
 
-	if (Type(obj) !== 'Object') {
+	if (!isObject(obj)) {
 		throw new $TypeError('Assertion failed: `obj` must be an Object');
 	}
 	if (!IsArray(elementTypes)) {
