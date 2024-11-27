@@ -1,5 +1,6 @@
 'use strict';
 
+var $SyntaxError = require('es-errors/syntax');
 var $TypeError = require('es-errors/type');
 
 var IsDetachedBuffer = require('./IsDetachedBuffer');
@@ -24,6 +25,9 @@ module.exports = function IntegerIndexedElementSet(O, index, value) {
 	var arrayTypeName = whichTypedArray(O); // step 12
 	if (!arrayTypeName) {
 		throw new $TypeError('`O` must be a TypedArray'); // step 2
+	}
+	if (arrayTypeName === 'BigInt64Array' || arrayTypeName === 'BigUint64Array') {
+		throw new $SyntaxError('BigInt64Array and BigUint64Array do not exist until ES2020'); // step 2
 	}
 
 	var numValue = ToNumber(value); // step 3
