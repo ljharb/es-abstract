@@ -18,8 +18,8 @@ module.exports = function FindViaPredicate(O, len, direction, predicate, thisArg
 	if (!isInteger(len) || len < 0) {
 		throw new $TypeError('Assertion failed: len must be a non-negative integer');
 	}
-	if (direction !== 'ascending' && direction !== 'descending') {
-		throw new $TypeError('Assertion failed: direction must be "ascending" or "descending"');
+	if (direction !== 'ascending' && direction !== 'descending' && direction !== 'DESCENDING' && direction !== 'ASCENDING') {
+		throw new $TypeError('Assertion failed: direction must be ~ASCENDING~ or ~DESCENDING~');
 	}
 
 	if (!IsCallable(predicate)) {
@@ -27,8 +27,8 @@ module.exports = function FindViaPredicate(O, len, direction, predicate, thisArg
 	}
 
 	for ( // steps 2-4
-		var k = direction === 'ascending' ? 0 : len - 1;
-		direction === 'ascending' ? k < len : k >= 0;
+		var k = direction === 'ascending' || direction === 'ASCENDING' ? 0 : len - 1;
+		direction === 'ascending' || direction === 'ASCENDING' ? k < len : k >= 0;
 		k += 1
 	) {
 		var Pk = ToString(k); // step 4.a

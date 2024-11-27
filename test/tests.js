@@ -15047,6 +15047,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	es2023(ES, ops, expectedMissing, assign({}, skips, {
 		CreateMethodProperty: true,
 		DefaultTimeZone: true,
+		FindViaPredicate: true,
 		GetIterator: true,
 		GetSubstitution: true,
 		GetValueFromBuffer: true,
@@ -15104,6 +15105,93 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 			],
 			'values added to expected groups'
 		);
+
+		t.end();
+	});
+
+	test('FindViaPredicate', function (t) {
+		forEach(v.primitives, function (primitive) {
+			t['throws'](
+				function () { ES.FindViaPredicate(primitive, 0, 'ASCENDING', function () {}); },
+				TypeError,
+				debug(primitive) + ' is not an object'
+			);
+		});
+
+		forEach(v.notNonNegativeIntegers, function (notNonNegativeInteger) {
+			t['throws'](
+				function () { ES.FindViaPredicate({}, notNonNegativeInteger, 'ASCENDING', function () {}); },
+				TypeError,
+				debug(notNonNegativeInteger) + ' is not a non-negative integer'
+			);
+		});
+
+		forEach(v.nonFunctions, function (nonFunction) {
+			t['throws'](
+				function () { ES.FindViaPredicate({}, 0, 'ASCENDING', nonFunction); },
+				TypeError,
+				debug(nonFunction) + ' is not a function'
+			);
+		});
+
+		t['throws'](
+			function () { ES.FindViaPredicate({}, 0, 'invalid', function () {}); },
+			TypeError,
+			'invalid direction'
+		);
+
+		var sentinel = {};
+		var arr = [1, 2, 3, 4];
+		var fakeLength = 3;
+		t.test('ascending', function (st) {
+			var expectedIndex = 1;
+			st.plan(((expectedIndex + 1) * 3) + 1);
+
+			var result = ES.FindViaPredicate(arr, fakeLength, 'ASCENDING', function (element, index, obj) {
+				st.equal(element, arr[index], 'first callback arg is in O, at second callback arg');
+				st.equal(obj, arr, 'third callback arg is O');
+				st.equal(this, sentinel, 'callback receiver is thisArg');
+
+				return element % 2 === 0;
+			}, sentinel);
+
+			st.deepEqual(result, { '[[Index]]': expectedIndex, '[[Value]]': 2 }, 'expected result is found');
+
+			st.end();
+		});
+
+		t.test('descending', function (st) {
+			var expectedIndex = 3;
+			st.plan((((arr.length - expectedIndex) + 1) * 3) + 1);
+
+			var result = ES.FindViaPredicate(arr, fakeLength, 'DESCENDING', function (element, index, obj) {
+				st.equal(element, arr[index], 'first callback arg is in O, at second callback arg');
+				st.equal(obj, arr, 'third callback arg is O');
+				st.equal(this, sentinel, 'callback receiver is thisArg');
+
+				return element % 2 === 0;
+			}, sentinel);
+
+			st.deepEqual(result, { '[[Index]]': 3, '[[Value]]': 4 }, 'expected result is found');
+
+			st.end();
+		});
+
+		t.test('not found', function (st) {
+			st.plan((fakeLength * 3) + 1);
+
+			var result = ES.FindViaPredicate(arr, fakeLength, 'ASCENDING', function (element, index, obj) {
+				st.equal(element, arr[index], 'first callback arg is in O, at second callback arg (' + index + ')');
+				st.equal(obj, arr, 'third callback arg is O');
+				st.equal(this, sentinel, 'callback receiver is thisArg');
+
+				return false;
+			}, sentinel);
+
+			st.deepEqual(result, { '[[Index]]': -1, '[[Value]]': void undefined }, 'expected result is produced');
+
+			st.end();
+		});
 
 		t.end();
 	});
