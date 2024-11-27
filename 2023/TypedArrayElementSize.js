@@ -13,7 +13,7 @@ var tableTAO = require('./tables/typed-array-objects');
 
 module.exports = function TypedArrayElementSize(O) {
 	var type = whichTypedArray(O);
-	if (type === false) {
+	if (!type) {
 		throw new $TypeError('Assertion failed: `O` must be a TypedArray');
 	}
 	var size = tableTAO.size['$' + tableTAO.name['$' + type]];

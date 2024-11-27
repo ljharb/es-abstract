@@ -39,7 +39,8 @@ module.exports = function GroupBy(items, callbackfn, keyCoercion) {
 	while (true) { // step 6
 		if (k >= maxSafeInteger) { // step 6.a
 			var error = ThrowCompletion(new $TypeError('k must be less than 2 ** 53 - 1')); // step 6.a.i
-			return IteratorClose(iteratorRecord, error); // step 6.a.ii
+			IteratorClose(iteratorRecord, error); // step 6.a.ii
+			return void undefined;
 		}
 		var next = IteratorStep(iteratorRecord); // step 6.b
 		if (!next) { // step 6.c
@@ -52,14 +53,16 @@ module.exports = function GroupBy(items, callbackfn, keyCoercion) {
 		try {
 			key = Call(callbackfn, undefined, [value, k]); // step 6.e
 		} catch (e) {
-			return IteratorClose(iteratorRecord, ThrowCompletion(e)); // step 6.f
+			IteratorClose(iteratorRecord, ThrowCompletion(e)); // step 6.f
+			return void undefined;
 		}
 
 		if (keyCoercion === 'PROPERTY') { // step 6.g
 			try {
 				key = ToPropertyKey(key); // step 6.g.i
 			} catch (e) {
-				return IteratorClose(iteratorRecord, ThrowCompletion(e)); // step 6.g.ii
+				IteratorClose(iteratorRecord, ThrowCompletion(e)); // step 6.g.ii
+				return void undefined;
 			}
 		} else { // step 6.h
 			if (keyCoercion !== 'ZERO') {

@@ -9,10 +9,12 @@ var $bigIntValueOf = callBound('BigInt.prototype.valueOf', true);
 
 module.exports = function ThisBigIntValue(value) {
 	if (typeof value === 'bigint') {
-		return value; // step 1
+		return value;
 	}
+
 	if (!$bigIntValueOf) {
 		throw new $SyntaxError('BigInt is not supported');
 	}
+
 	return $bigIntValueOf(value);
 };

@@ -11,6 +11,8 @@ var ToString = require('./ToString');
 var isInteger = require('../helpers/isInteger');
 var isObject = require('../helpers/isObject');
 
+// https://262.ecma-international.org/14.0/#sec-findviapredicate
+
 module.exports = function FindViaPredicate(O, len, direction, predicate, thisArg) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
