@@ -23,13 +23,13 @@ var tableTAO = require('./tables/typed-array-objects');
 
 var TypeToAO = {
 	__proto__: null,
-	Int8: ToInt8,
-	Uint8: ToUint8,
-	Uint8C: ToUint8Clamp,
-	Int16: ToInt16,
-	Uint16: ToUint16,
-	Int32: ToInt32,
-	Uint32: ToUint32
+	$Int8: ToInt8,
+	$Uint8: ToUint8,
+	$Uint8C: ToUint8Clamp,
+	$Int16: ToInt16,
+	$Uint16: ToUint16,
+	$Int32: ToInt32,
+	$Uint32: ToUint32
 };
 
 var defaultEndianness = require('../helpers/defaultEndianness');
@@ -93,7 +93,7 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value) 
 	} else {
 		var n = elementSize; // step 3.a
 
-		var convOp = TypeToAO[type]; // step 3.b
+		var convOp = TypeToAO['$' + type]; // step 3.b
 
 		var intValue = convOp(value); // step 3.c
 
