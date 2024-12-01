@@ -72,9 +72,9 @@
 		"get-intrinsic": "^1.2.4",
 		"get-symbol-description": "^1.0.2",
 		"globalthis": "^1.0.4",
-		"gopd": "^1.0.1",
+		"gopd": "^1.1.0",
 		"has-property-descriptors": "^1.0.2",
-		"has-proto": "^1.0.3",
+		"has-proto": "^1.1.0",
 		"has-symbols": "^1.0.3",
 		"hasown": "^2.0.2",
 		"internal-slot": "^1.0.7",
@@ -82,7 +82,7 @@
 		"is-callable": "^1.2.7",
 		"is-data-view": "^1.0.1",
 		"is-negative-zero": "^2.0.3",
-		"is-regex": "^1.1.4",
+		"is-regex": "^1.2.0",
 		"is-shared-array-buffer": "^1.0.3",
 		"is-string": "^1.0.7",
 		"is-typed-array": "^1.1.13",
@@ -101,7 +101,7 @@
 		"typed-array-byte-offset": "^1.0.3",
 		"typed-array-length": "^1.0.7",
 		"unbox-primitive": "^1.0.2",
-		"which-typed-array": "^1.1.15"
+		"which-typed-array": "^1.1.16"
 	},
 	"devDependencies": {
 		"@ljharb/eslint-config": "^21.1.1",
