@@ -17,6 +17,12 @@ var IsArray = require('./IsArray');
 
 var isObject = require('../helpers/isObject');
 
+var ES = {
+	AdvanceStringIndex: AdvanceStringIndex,
+	GetMethod: GetMethod,
+	IsArray: IsArray
+};
+
 // https://262.ecma-international.org/11.0/#sec-getiterator
 
 module.exports = function GetIterator(obj, hint, method) {
@@ -38,14 +44,7 @@ module.exports = function GetIterator(obj, hint, method) {
 				throw new $SyntaxError("async from sync iterators aren't currently supported");
 			}
 		} else {
-			actualMethod = getIteratorMethod(
-				{
-					AdvanceStringIndex: AdvanceStringIndex,
-					GetMethod: GetMethod,
-					IsArray: IsArray
-				},
-				obj
-			);
+			actualMethod = getIteratorMethod(ES, obj);
 		}
 	}
 	var iterator = Call(actualMethod, obj);

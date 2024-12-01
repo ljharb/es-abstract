@@ -10,19 +10,18 @@ var IsArray = require('./IsArray');
 
 var isObject = require('../helpers/isObject');
 
+var ES = {
+	AdvanceStringIndex: AdvanceStringIndex,
+	GetMethod: GetMethod,
+	IsArray: IsArray
+};
+
 // https://262.ecma-international.org/6.0/#sec-getiterator
 
 module.exports = function GetIterator(obj, method) {
 	var actualMethod = method;
 	if (arguments.length < 2) {
-		actualMethod = getIteratorMethod(
-			{
-				AdvanceStringIndex: AdvanceStringIndex,
-				GetMethod: GetMethod,
-				IsArray: IsArray
-			},
-			obj
-		);
+		actualMethod = getIteratorMethod(ES, obj);
 	}
 	var iterator = Call(actualMethod, obj);
 	if (!isObject(iterator)) {

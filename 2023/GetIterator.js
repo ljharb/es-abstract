@@ -16,6 +16,12 @@ var IsArray = require('./IsArray');
 
 var getIteratorMethod = require('../helpers/getIteratorMethod');
 
+var ES = {
+	AdvanceStringIndex: AdvanceStringIndex,
+	GetMethod: GetMethod,
+	IsArray: IsArray
+};
+
 // https://262.ecma-international.org/14.0/#sec-getiterator
 
 module.exports = function GetIterator(obj, kind) {
@@ -31,14 +37,7 @@ module.exports = function GetIterator(obj, kind) {
 	}
 	if (typeof method === 'undefined') { // step 1.b
 		// var syncMethod = GetMethod(obj, $iterator); // step 1.b.i
-		var syncMethod = getIteratorMethod(
-			{
-				AdvanceStringIndex: AdvanceStringIndex,
-				GetMethod: GetMethod,
-				IsArray: IsArray
-			},
-			obj
-		);
+		var syncMethod = getIteratorMethod(ES, obj);
 		if (kind === 'async') {
 			if (typeof syncMethod === 'undefined') {
 				throw new $TypeError('iterator method is `undefined`'); // step 1.b.ii
