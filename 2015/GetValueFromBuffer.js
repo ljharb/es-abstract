@@ -5,7 +5,7 @@ var GetIntrinsic = require('get-intrinsic');
 var $TypeError = require('es-errors/type');
 var $Uint8Array = GetIntrinsic('%Uint8Array%', true);
 
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 
 var $charAt = callBound('String.prototype.charAt');
 var $reverse = callBound('Array.prototype.reverse');

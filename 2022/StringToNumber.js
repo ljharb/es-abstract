@@ -6,7 +6,7 @@ var $RegExp = GetIntrinsic('%RegExp%');
 var $TypeError = require('es-errors/type');
 var $parseInteger = GetIntrinsic('%parseInt%');
 
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 var regexTester = require('safe-regex-test');
 
 var $strSlice = callBound('String.prototype.slice');

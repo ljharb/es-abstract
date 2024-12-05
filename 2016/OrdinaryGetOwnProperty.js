@@ -3,7 +3,7 @@
 var $gOPD = require('gopd');
 var $TypeError = require('es-errors/type');
 
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 

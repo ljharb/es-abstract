@@ -10,7 +10,7 @@ var typedArrayByteOffset = require('typed-array-byte-offset');
 var typedArrayLength = require('typed-array-length');
 var whichTypedArray = require('which-typed-array');
 
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 
 var isInteger = require('../helpers/isInteger');
 

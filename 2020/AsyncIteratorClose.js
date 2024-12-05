@@ -13,7 +13,7 @@ var GetMethod = require('./GetMethod');
 var isObject = require('../helpers/isObject');
 var isIteratorRecord = require('../helpers/records/iterator-record-2023');
 
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 
 var $then = callBound('Promise.prototype.then', true);
 

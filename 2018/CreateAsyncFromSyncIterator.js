@@ -21,7 +21,7 @@ var isIteratorRecord = require('../helpers/records/iterator-record-2023');
 
 var SLOT = require('internal-slot');
 
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 
 var $then = callBound('Promise.prototype.then', true);
 

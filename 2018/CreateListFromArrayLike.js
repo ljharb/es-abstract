@@ -1,6 +1,6 @@
 'use strict';
 
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 
 var $TypeError = require('es-errors/type');
 var $indexOf = callBound('Array.prototype.indexOf', true) || callBound('String.prototype.indexOf');

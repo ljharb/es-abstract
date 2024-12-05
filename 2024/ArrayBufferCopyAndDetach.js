@@ -7,7 +7,7 @@ var $TypeError = require('es-errors/type');
 var $ArrayBuffer = GetIntrinsic('%ArrayBuffer%', true);
 var $Uint8Array = GetIntrinsic('%Uint8Array%', true);
 
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 
 var byteLength = require('array-buffer-byte-length');
 var $maxByteLength = callBound('%ArrayBuffer.prototype.maxByteLength%', true);

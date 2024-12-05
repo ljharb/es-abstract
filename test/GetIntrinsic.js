@@ -10,7 +10,7 @@ var asyncFns = require('make-async-function').list();
 var asyncGenFns = require('make-async-generator-function')();
 var mockProperty = require('mock-property');
 
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 var v = require('es-value-fixtures');
 var $gOPD = require('gopd');
 var DefinePropertyOrThrow = require('../2021/DefinePropertyOrThrow');

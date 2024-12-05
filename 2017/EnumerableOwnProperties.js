@@ -6,7 +6,7 @@ var $TypeError = require('es-errors/type');
 
 var objectKeys = require('object-keys');
 
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 
 var callBind = require('call-bind');
 

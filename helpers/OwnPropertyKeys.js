@@ -3,7 +3,7 @@
 var GetIntrinsic = require('get-intrinsic');
 
 var callBind = require('call-bind');
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 
 var $ownKeys = GetIntrinsic('%Reflect.ownKeys%', true);
 var $pushApply = callBind.apply(GetIntrinsic('%Array.prototype.push%'));

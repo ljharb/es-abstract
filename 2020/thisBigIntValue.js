@@ -1,6 +1,6 @@
 'use strict';
 
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 
 var $SyntaxError = require('es-errors/syntax');
 var $bigIntValueOf = callBound('BigInt.prototype.valueOf', true);

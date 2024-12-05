@@ -6,7 +6,7 @@ var $SyntaxError = require('es-errors/syntax');
 var $TypeError = require('es-errors/type');
 var $Promise = GetIntrinsic('%Promise%', true);
 
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 
 var CreateIterResultObject = require('./CreateIterResultObject');
 var IteratorComplete = require('./IteratorComplete');

@@ -1,6 +1,6 @@
 'use strict';
 
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 var SLOT = require('internal-slot');
 
 var $TypeError = require('es-errors/type');

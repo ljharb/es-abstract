@@ -6,7 +6,7 @@ var $parseInt = GetIntrinsic('%parseInt%');
 var $abs = GetIntrinsic('%Math.abs%');
 var $floor = GetIntrinsic('%Math.floor%');
 
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 
 var $strIndexOf = callBound('String.prototype.indexOf');
 var $strSlice = callBound('String.prototype.slice');

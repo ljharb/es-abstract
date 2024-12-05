@@ -4,7 +4,7 @@ var $TypeError = require('es-errors/type');
 
 var isInteger = require('../helpers/isInteger');
 
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 
 var $slice = callBound('String.prototype.slice');
 

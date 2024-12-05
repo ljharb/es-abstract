@@ -2,7 +2,7 @@
 
 var $TypeError = require('es-errors/type');
 
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 var regexTester = require('safe-regex-test');
 var every = require('../helpers/every');
 

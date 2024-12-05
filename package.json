@@ -60,6 +60,7 @@
 		"arraybuffer.prototype.slice": "^1.0.3",
 		"available-typed-arrays": "^1.0.7",
 		"call-bind": "^1.0.7",
+		"call-bound": "^1.0.1",
 		"data-view-buffer": "^1.0.1",
 		"data-view-byte-length": "^1.0.1",
 		"data-view-byte-offset": "^1.0.0",

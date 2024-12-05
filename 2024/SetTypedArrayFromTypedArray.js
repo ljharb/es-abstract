@@ -19,7 +19,7 @@ var TypedArrayLength = require('./TypedArrayLength');
 var typedArrayBuffer = require('typed-array-buffer');
 var typedArrayByteOffset = require('typed-array-byte-offset');
 var whichTypedArray = require('which-typed-array');
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 
 var isInteger = require('../helpers/isInteger');
 
