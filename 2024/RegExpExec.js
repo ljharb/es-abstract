@@ -2,7 +2,7 @@
 
 var $TypeError = require('es-errors/type');
 
-var regexExec = require('call-bind/callBound')('RegExp.prototype.exec');
+var regexExec = require('call-bound')('RegExp.prototype.exec');
 
 var Call = require('./Call');
 var Get = require('./Get');

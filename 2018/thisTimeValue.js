@@ -1,6 +1,6 @@
 'use strict';
 
-var $DateGetTime = require('call-bind/callBound')('Date.prototype.getTime');
+var $DateGetTime = require('call-bound')('Date.prototype.getTime');
 
 // https://262.ecma-international.org/6.0/#sec-properties-of-the-date-prototype-object
 

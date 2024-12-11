@@ -7,7 +7,7 @@ var $TypeError = require('es-errors/type');
 var min = GetIntrinsic('%Math.min%');
 
 var $isNaN = require('../helpers/isNaN');
-var $charCodeAt = require('call-bind/callBound')('String.prototype.charCodeAt');
+var $charCodeAt = require('call-bound')('String.prototype.charCodeAt');
 
 var StringToBigInt = require('./StringToBigInt');
 var ToNumeric = require('./ToNumeric');
