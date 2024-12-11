@@ -1,15 +1,14 @@
 'use strict';
 
-var callBound = require('call-bound');
-
 var $TypeError = require('es-errors/type');
+var callBound = require('call-bound');
+var isInteger = require('math-intrinsics/isInteger');
 
 var Get = require('./Get');
 var HasProperty = require('./HasProperty');
 var ToString = require('./ToString');
 
 var isAbstractClosure = require('../helpers/isAbstractClosure');
-var isInteger = require('../helpers/isInteger');
 var isObject = require('../helpers/isObject');
 
 var $push = callBound('Array.prototype.push');

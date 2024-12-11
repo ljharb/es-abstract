@@ -18,6 +18,7 @@ var defaultElementTypes = ['Undefined', 'Null', 'Boolean', 'String', 'Symbol', '
 
 // https://262.ecma-international.org/11.0/#sec-createlistfromarraylike
 
+/** @type {(obj: object, elementTypes?: typeof defaultElementTypes) => unknown[]} */
 module.exports = function CreateListFromArrayLike(obj) {
 	var elementTypes = arguments.length > 1
 		? arguments[1]
@@ -30,6 +31,7 @@ module.exports = function CreateListFromArrayLike(obj) {
 		throw new $TypeError('Assertion failed: `elementTypes`, if provided, must be an array');
 	}
 	var len = LengthOfArrayLike(obj);
+	/** @type {(typeof elementTypes)[]} */
 	var list = [];
 	var index = 0;
 	while (index < len) {

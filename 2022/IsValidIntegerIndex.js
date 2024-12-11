@@ -1,11 +1,10 @@
 'use strict';
 
 var $TypeError = require('es-errors/type');
+var isNegativeZero = require('math-intrinsics/isNegativeZero');
 
 var IsDetachedBuffer = require('./IsDetachedBuffer');
 var IsIntegralNumber = require('./IsIntegralNumber');
-
-var isNegativeZero = require('../helpers/isNegativeZero');
 
 var typedArrayBuffer = require('typed-array-buffer');
 

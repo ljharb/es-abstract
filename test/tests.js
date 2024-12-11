@@ -27,6 +27,8 @@ var mockProperty = require('mock-property');
 var isRegisteredSymbol = require('is-registered-symbol');
 var hasNamedCaptures = require('has-named-captures')();
 var $defineProperty = require('es-define-property');
+var MAX_SAFE_INTEGER = require('math-intrinsics/constants/maxSafeInteger');
+var MAX_VALUE = require('math-intrinsics/constants/maxValue');
 
 var $getProto = require('../helpers/getProto');
 var $setProto = require('../helpers/setProto');
@@ -37,8 +39,6 @@ var diffOps = require('./diffOps');
 var fromPropertyDescriptor = require('../helpers/fromPropertyDescriptor');
 var getInferredName = require('../helpers/getInferredName');
 var isPromiseCapabilityRecord = require('../helpers/records/promise-capability-record');
-var MAX_SAFE_INTEGER = require('../helpers/maxSafeInteger');
-var MAX_VALUE = require('../helpers/maxValue');
 var reduce = require('../helpers/reduce');
 var safeBigInt = require('safe-bigint');
 var unserialize = require('./helpers/unserializeNumeric');

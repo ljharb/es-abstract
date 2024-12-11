@@ -2,9 +2,7 @@
 
 var $SyntaxError = require('es-errors/syntax');
 var $TypeError = require('es-errors/type');
-
-var isInteger = require('../helpers/isInteger');
-
+var isInteger = require('math-intrinsics/isInteger');
 var whichTypedArray = require('which-typed-array');
 
 // https://262.ecma-international.org/13.0/#sec-typedarrayelementsize

@@ -5,12 +5,12 @@ var GetIntrinsic = require('get-intrinsic');
 var $Array = GetIntrinsic('%Array%');
 var $species = GetIntrinsic('%Symbol.species%', true);
 var $TypeError = require('es-errors/type');
+var isInteger = require('math-intrinsics/isInteger');
 
 var Get = require('./Get');
 var IsArray = require('./IsArray');
 var IsConstructor = require('./IsConstructor');
 
-var isInteger = require('../helpers/isInteger');
 var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/6.0/#sec-arrayspeciescreate

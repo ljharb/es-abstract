@@ -4,13 +4,11 @@ var GetIntrinsic = require('get-intrinsic');
 
 var $SyntaxError = require('es-errors/syntax');
 var $TypeError = require('es-errors/type');
+var callBound = require('call-bound');
+var isInteger = require('math-intrinsics/isInteger');
 var $Uint8Array = GetIntrinsic('%Uint8Array%', true);
 
-var callBound = require('call-bound');
-
 var $slice = callBound('Array.prototype.slice');
-
-var isInteger = require('../helpers/isInteger');
 
 var IsDetachedBuffer = require('./IsDetachedBuffer');
 var RawBytesToNumeric = require('./RawBytesToNumeric');

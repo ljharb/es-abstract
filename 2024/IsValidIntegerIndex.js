@@ -8,7 +8,7 @@ var IsTypedArrayOutOfBounds = require('./IsTypedArrayOutOfBounds');
 var MakeTypedArrayWithBufferWitnessRecord = require('./MakeTypedArrayWithBufferWitnessRecord');
 var TypedArrayLength = require('./TypedArrayLength');
 
-var isNegativeZero = require('../helpers/isNegativeZero');
+var isNegativeZero = require('math-intrinsics/isNegativeZero');
 
 var isTypedArray = require('is-typed-array');
 var typedArrayBuffer = require('typed-array-buffer');

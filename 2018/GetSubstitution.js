@@ -14,13 +14,13 @@ var $parseInt = parseInt;
 var isDigit = regexTester(/^[0-9]$/);
 
 var inspect = require('object-inspect');
+var isInteger = require('math-intrinsics/isInteger');
 
 var Get = require('./Get');
 var IsArray = require('./IsArray');
 var ToObject = require('./ToObject');
 var ToString = require('./ToString');
 
-var isInteger = require('../helpers/isInteger');
 var isStringOrUndefined = require('../helpers/isStringOrUndefined');
 
 // http://262.ecma-international.org/9.0/#sec-getsubstitution

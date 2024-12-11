@@ -20,8 +20,7 @@ var typedArrayBuffer = require('typed-array-buffer');
 var typedArrayByteOffset = require('typed-array-byte-offset');
 var whichTypedArray = require('which-typed-array');
 var callBound = require('call-bound');
-
-var isInteger = require('../helpers/isInteger');
+var isInteger = require('math-intrinsics/isInteger');
 
 var $ArrayBuffer = callBound('ArrayBuffer', true);
 

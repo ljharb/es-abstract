@@ -1,9 +1,7 @@
 'use strict';
 
 var $TypeError = require('es-errors/type');
-
-var isInteger = require('../helpers/isInteger');
-
+var isInteger = require('math-intrinsics/isInteger');
 var callBound = require('call-bound');
 
 var $slice = callBound('String.prototype.slice');

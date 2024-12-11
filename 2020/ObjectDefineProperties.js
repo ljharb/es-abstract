@@ -14,9 +14,12 @@ var OwnPropertyKeys = require('../helpers/OwnPropertyKeys');
 var $push = callBound('Array.prototype.push');
 
 // https://262.ecma-international.org/6.0/#sec-objectdefineproperties
+
+/** @type {<T extends Record<PropertyKey, unknown> = {}>(O: T, Properties: object) => T} */
 module.exports = function ObjectDefineProperties(O, Properties) {
 	var props = ToObject(Properties); // step 1
 	var keys = OwnPropertyKeys(props); // step 2
+	/** @type {[string | symbol, import('../types').Descriptor][]} */
 	var descriptors = []; // step 3
 
 	forEach(keys, function (nextKey) { // step 4

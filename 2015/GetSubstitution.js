@@ -7,7 +7,7 @@ var $TypeError = require('es-errors/type');
 var $parseInt = GetIntrinsic('%parseInt%');
 
 var inspect = require('object-inspect');
-
+var isInteger = require('math-intrinsics/isInteger');
 var regexTester = require('safe-regex-test');
 var callBound = require('call-bound');
 var every = require('../helpers/every');
@@ -19,7 +19,6 @@ var $strSlice = callBound('String.prototype.slice');
 
 var IsArray = require('./IsArray');
 
-var isInteger = require('../helpers/isInteger');
 var isStringOrUndefined = require('../helpers/isStringOrUndefined');
 
 // https://262.ecma-international.org/6.0/#sec-getsubstitution

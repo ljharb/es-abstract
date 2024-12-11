@@ -1,6 +1,7 @@
 'use strict';
 
 var $TypeError = require('es-errors/type');
+var isNegativeZero = require('math-intrinsics/isNegativeZero');
 
 var callBound = require('call-bound');
 var $charAt = callBound('String.prototype.charAt');
@@ -11,8 +12,6 @@ var IsIntegralNumber = require('./IsIntegralNumber');
 var IsPropertyKey = require('./IsPropertyKey');
 
 var isObject = require('../helpers/isObject');
-
-var isNegativeZero = require('is-negative-zero');
 
 // https://262.ecma-international.org/12.0/#sec-stringgetownproperty
 

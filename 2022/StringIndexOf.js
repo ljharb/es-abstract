@@ -3,8 +3,7 @@
 var callBound = require('call-bound');
 
 var $TypeError = require('es-errors/type');
-
-var isInteger = require('../helpers/isInteger');
+var isInteger = require('math-intrinsics/isInteger');
 
 var $slice = callBound('String.prototype.slice');
 

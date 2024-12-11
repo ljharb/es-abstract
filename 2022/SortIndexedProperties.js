@@ -3,6 +3,7 @@
 var callBound = require('call-bound');
 
 var $TypeError = require('es-errors/type');
+var isInteger = require('math-intrinsics/isInteger');
 
 var DeletePropertyOrThrow = require('./DeletePropertyOrThrow');
 var Get = require('./Get');
@@ -11,7 +12,6 @@ var Set = require('./Set');
 var ToString = require('./ToString');
 
 var isAbstractClosure = require('../helpers/isAbstractClosure');
-var isInteger = require('../helpers/isInteger');
 var isObject = require('../helpers/isObject');
 
 var $push = callBound('Array.prototype.push');

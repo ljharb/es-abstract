@@ -5,7 +5,7 @@ var GetIntrinsic = require('get-intrinsic');
 var $TypeError = require('es-errors/type');
 var $Uint8Array = GetIntrinsic('%Uint8Array%', true);
 
-var isInteger = require('../helpers/isInteger');
+var isInteger = require('math-intrinsics/isInteger');
 
 var IsDetachedBuffer = require('./IsDetachedBuffer');
 var ToInt16 = require('./ToInt16');

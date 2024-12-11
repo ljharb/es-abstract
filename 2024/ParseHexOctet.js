@@ -6,7 +6,7 @@ var $TypeError = require('es-errors/type');
 var IsIntegralNumber = require('./IsIntegralNumber');
 var substring = require('./substring');
 
-var isNaN = require('../helpers/isNaN');
+var isNaN = require('math-intrinsics/isNaN');
 
 // https://262.ecma-international.org/14.0/#sec-parsehexoctet
 

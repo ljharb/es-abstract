@@ -4,9 +4,9 @@ var GetIntrinsic = require('get-intrinsic');
 
 var $Date = GetIntrinsic('%Date%');
 
-var $isFinite = require('../helpers/isFinite');
+var $isFinite = require('math-intrinsics/isFinite');
+var abs = require('math-intrinsics/abs');
 
-var abs = require('./abs');
 var ToNumber = require('./ToNumber');
 
 // https://262.ecma-international.org/5.1/#sec-15.9.1.14

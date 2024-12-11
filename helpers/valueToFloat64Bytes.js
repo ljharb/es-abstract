@@ -3,8 +3,9 @@
 var GetIntrinsic = require('get-intrinsic');
 
 var $parseInt = GetIntrinsic('%parseInt%');
-var $abs = GetIntrinsic('%Math.abs%');
-var $floor = GetIntrinsic('%Math.floor%');
+var $abs = require('math-intrinsics/abs');
+var $floor = require('math-intrinsics/floor');
+var isNegativeZero = require('math-intrinsics/isNegativeZero');
 
 var callBound = require('call-bound');
 
@@ -13,7 +14,6 @@ var $strSlice = callBound('String.prototype.slice');
 
 var fractionToBitString = require('../helpers/fractionToBinaryString');
 var intToBinString = require('../helpers/intToBinaryString');
-var isNegativeZero = require('./isNegativeZero');
 
 var float64bias = 1023;
 

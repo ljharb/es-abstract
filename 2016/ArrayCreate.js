@@ -6,12 +6,10 @@ var $ArrayPrototype = GetIntrinsic('%Array.prototype%');
 var $RangeError = require('es-errors/range');
 var $SyntaxError = require('es-errors/syntax');
 var $TypeError = require('es-errors/type');
-
-var isInteger = require('../helpers/isInteger');
+var isInteger = require('math-intrinsics/isInteger');
+var MAX_ARRAY_LENGTH = require('math-intrinsics/constants/maxArrayLength');
 
 var hasProto = require('has-proto')();
-
-var MAX_ARRAY_LENGTH = Math.pow(2, 32) - 1;
 
 var $setProto = GetIntrinsic('%Object.setPrototypeOf%', true) || (
 	hasProto

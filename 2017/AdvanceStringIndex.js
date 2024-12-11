@@ -1,9 +1,10 @@
 'use strict';
 
-var isInteger = require('../helpers/isInteger');
+var isInteger = require('math-intrinsics/isInteger');
+var MAX_SAFE_INTEGER = require('math-intrinsics/constants/maxSafeInteger');
+
 var isLeadingSurrogate = require('../helpers/isLeadingSurrogate');
 var isTrailingSurrogate = require('../helpers/isTrailingSurrogate');
-var MAX_SAFE_INTEGER = require('../helpers/maxSafeInteger');
 
 var $TypeError = require('es-errors/type');
 

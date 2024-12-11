@@ -1,6 +1,6 @@
 'use strict';
 
-var MAX_SAFE_INTEGER = require('../helpers/maxSafeInteger');
+var MAX_SAFE_INTEGER = require('math-intrinsics/constants/maxSafeInteger');
 
 var ToInteger = require('./ToInteger');
 

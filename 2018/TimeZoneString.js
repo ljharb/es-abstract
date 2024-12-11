@@ -5,7 +5,7 @@ var GetIntrinsic = require('get-intrinsic');
 var $Date = GetIntrinsic('%Date%');
 var $TypeError = require('es-errors/type');
 
-var isNaN = require('../helpers/isNaN');
+var isNaN = require('math-intrinsics/isNaN');
 
 var callBound = require('call-bound');
 

@@ -3,9 +3,8 @@
 var $TypeError = require('es-errors/type');
 
 var regexTester = require('safe-regex-test');
-var every = require('../helpers/every');
-
 var inspect = require('object-inspect');
+var isInteger = require('math-intrinsics/isInteger');
 
 var Get = require('./Get');
 var IsArray = require('./IsArray');
@@ -15,7 +14,7 @@ var StringToNumber = require('./StringToNumber');
 var substring = require('./substring');
 var ToString = require('./ToString');
 
-var isInteger = require('../helpers/isInteger');
+var every = require('../helpers/every');
 var isObject = require('../helpers/isObject');
 var isPrefixOf = require('../helpers/isPrefixOf');
 var isStringOrUndefined = require('../helpers/isStringOrUndefined');

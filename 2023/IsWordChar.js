@@ -1,8 +1,8 @@
 'use strict';
 
 var $TypeError = require('es-errors/type');
-
 var callBound = require('call-bound');
+var isInteger = require('math-intrinsics/isInteger');
 
 var $indexOf = callBound('String.prototype.indexOf');
 
@@ -10,7 +10,6 @@ var IsArray = require('./IsArray');
 var WordCharacters = require('./WordCharacters');
 
 var every = require('../helpers/every');
-var isInteger = require('../helpers/isInteger');
 var isRegExpRecord = require('../helpers/records/regexp-record');
 
 var isChar = function isChar(c) {

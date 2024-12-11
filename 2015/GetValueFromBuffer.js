@@ -5,6 +5,7 @@ var GetIntrinsic = require('get-intrinsic');
 var $TypeError = require('es-errors/type');
 var $Uint8Array = GetIntrinsic('%Uint8Array%', true);
 
+var isInteger = require('math-intrinsics/isInteger');
 var callBound = require('call-bound');
 
 var $charAt = callBound('String.prototype.charAt');
@@ -15,7 +16,6 @@ var bytesAsFloat32 = require('../helpers/bytesAsFloat32');
 var bytesAsFloat64 = require('../helpers/bytesAsFloat64');
 var bytesAsInteger = require('../helpers/bytesAsInteger');
 var defaultEndianness = require('../helpers/defaultEndianness');
-var isInteger = require('../helpers/isInteger');
 
 var IsDetachedBuffer = require('./IsDetachedBuffer');
 

@@ -1,6 +1,7 @@
 'use strict';
 
 var $TypeError = require('es-errors/type');
+var isInteger = require('math-intrinsics/isInteger');
 
 var Call = require('./Call');
 var Get = require('./Get');
@@ -8,7 +9,6 @@ var ToBoolean = require('./ToBoolean');
 var IsCallable = require('./IsCallable');
 var ToString = require('./ToString');
 
-var isInteger = require('../helpers/isInteger');
 var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/15.0/#sec-findviapredicate

@@ -1,6 +1,8 @@
 'use strict';
 
 var $TypeError = require('es-errors/type');
+var isNegativeZero = require('math-intrinsics/isNegativeZero');
+var MAX_SAFE_INTEGER = require('math-intrinsics/constants/maxSafeInteger');
 
 var AddValueToKeyedGroup = require('./AddValueToKeyedGroup');
 var Call = require('./Call');
@@ -12,9 +14,6 @@ var IteratorValue = require('./IteratorValue');
 var RequireObjectCoercible = require('./RequireObjectCoercible');
 var ThrowCompletion = require('./ThrowCompletion');
 var ToPropertyKey = require('./ToPropertyKey');
-
-var isNegativeZero = require('../helpers/isNegativeZero');
-var maxSafeInteger = require('../helpers/maxSafeInteger');
 
 // https://262.ecma-international.org/15.0/#sec-groupby
 
@@ -37,7 +36,7 @@ module.exports = function GroupBy(items, callbackfn, keyCoercion) {
 
 	// eslint-disable-next-line no-constant-condition
 	while (true) { // step 6
-		if (k >= maxSafeInteger) { // step 6.a
+		if (k >= MAX_SAFE_INTEGER) { // step 6.a
 			var error = ThrowCompletion(new $TypeError('k must be less than 2 ** 53 - 1')); // step 6.a.i
 			IteratorClose(iteratorRecord, error); // step 6.a.ii
 			return void undefined;

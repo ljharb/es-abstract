@@ -4,9 +4,8 @@ var GetIntrinsic = require('get-intrinsic');
 
 var $SyntaxError = require('es-errors/syntax');
 var $TypeError = require('es-errors/type');
+var isInteger = require('math-intrinsics/isInteger');
 var $Uint8Array = GetIntrinsic('%Uint8Array%', true);
-
-var isInteger = require('../helpers/isInteger');
 
 var IsBigIntElementType = require('./IsBigIntElementType');
 var IsDetachedBuffer = require('./IsDetachedBuffer');

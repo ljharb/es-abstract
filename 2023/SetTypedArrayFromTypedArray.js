@@ -3,16 +3,13 @@
 var $RangeError = require('es-errors/range');
 var $SyntaxError = require('es-errors/syntax');
 var $TypeError = require('es-errors/type');
-
+var callBound = require('call-bound');
+var isInteger = require('math-intrinsics/isInteger');
 var typedArrayBuffer = require('typed-array-buffer');
 var typedArrayByteLength = require('typed-array-byte-length');
 var typedArrayByteOffset = require('typed-array-byte-offset');
 var typedArrayLength = require('typed-array-length');
 var whichTypedArray = require('which-typed-array');
-
-var callBound = require('call-bound');
-
-var isInteger = require('../helpers/isInteger');
 
 var CloneArrayBuffer = require('./CloneArrayBuffer');
 var GetValueFromBuffer = require('./GetValueFromBuffer');
