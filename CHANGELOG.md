@@ -1,3 +1,28 @@
+1.23.6 / 2024-12-15
+=================
+  * [Fix] `ES2015` - `ES2019`: `IntegerIndexedElementSet`: reject BigInt Typed Arrays prior to ES2020
+  * [Fix] `ES2023`+: `SetTypedArrayFromTypedArray`: provide missing `cloneConstructor` argument to `CloneArrayBuffer`
+  * [Fix] `ES2024`+: `FindViaPredicate`: spec enums are uppercase now
+  * [Fix] `ES2017` - `ES2019`: `SetValueInBuffer`: handle proper number of arguments
+  * [Fix] `ES2015`+: `QuoteJSONString`: properly handle surrogates
+  * [Fix] `ES2015`+: `TestIntegrityLevel`: properly handle envs without property descriptors
+  * [patch] `ES2018` - `ES2023`: `thisSymbolValue`: only require `Symbol.prototype.valueOf` for boxed Symbols
+  * [Robustness] `ES2015` - `ES2016`: `SetValueInBuffer`: salt dictionary keys in case of pre-proto envs
+  * [Refactor] use `math-intrinsics`
+  * [Refactor] use `call-bound` directly
+  * [Refactor] `ES2015`+: `GetIterator`: hoist an object to module scope
+  * [Refactor] use `typeof` over `Type()` when possible
+  * [Refactor] `ES2015` - `ES2016`: `GetValueFromBuffer`: remove unnecessary extra helper argument
+  * [Refactor] misc cleanups
+  * [Refactor] make and use `isObject` helper
+  * [Refactor] `ES5`+: `MonthFromTime`: throw a `RangeError` for an out of range timestamp
+  * [Refactor] use `+` over `Number()`
+  * [Deps] update `arraybuffer.prototype.slice`, `call-bind`, `es-define-property`, `es-to-primitive`, `function.prototype.name`, `get-intrinsic`, `gopd`, `has-proto`, `has-symbols`, `internal-slot`, `is-data-view`, `is-regex`, `is-string`, `which-typed-array`, `is-weakref`, `safe-array-concat`, `safe-regex-test`, `string.prototype.trim`, `string.prototype.trimend`, `typed-array-byte-offset`, `typed-array-length`
+  * [meta] remove unnecessary unspackles
+  * [Tests] `isStringOrUndefined`: increase coverage
+  * [Tests] bigint tests are ES2020+ only
+  * [Dev Deps] update `array.prototype.flatmap`, `is-core-module`, `is-registered-symbol`
+
 1.23.5 / 2024-11-14
 =================
   * [Fix] `ES2015`+: `CompletionRecord`: ensure `?` works on any non-abrupt completion
