@@ -1,3 +1,11 @@
+1.23.7 / 2024-12-20
+=================
+  * [Refactor] create and use `helpers/isPropertyKey`
+  * [Refactor] add `timeValue` helper, use it
+  * [Deps] update `array-buffer-byte-length`, `data-view-buffer`, `data-view-byte-length`, `data-view-byte-offset`, `function.prototype.name`, `get-symbol-description`, `is-array-buffer`, `is-shared-array-buffer`, `is-typed-array`, `math-intrinsics`, `object.assign`, `typed-array-buffer`, `typed-array-byte-length`, `typed-array-byte-offset`, `unbox-primitive`, `which-typed-array`
+  * [Deps] remove unused dep
+  * [Dev Deps] update `array.prototype.indexof`, `has-bigints`, `is-registered-symbol`, `safe-bigint`
+
 1.23.6 / 2024-12-15
 =================
   * [Fix] `ES2015` - `ES2019`: `IntegerIndexedElementSet`: reject BigInt Typed Arrays prior to ES2020
