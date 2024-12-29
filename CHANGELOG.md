@@ -1,3 +1,8 @@
+1.23.8 / 2024-12-28
+=================
+  * [Refactor] use `own-keys`
+  * [Refactor] use `safe-push-apply`
+
 1.23.7 / 2024-12-20
 =================
   * [Refactor] create and use `helpers/isPropertyKey`
