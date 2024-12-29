@@ -4,7 +4,7 @@ var $gOPD = require('gopd');
 var $TypeError = require('es-errors/type');
 
 var every = require('../helpers/every');
-var OwnPropertyKeys = require('../helpers/OwnPropertyKeys');
+var OwnPropertyKeys = require('own-keys');
 
 var IsDataDescriptor = require('./IsDataDescriptor');
 var IsExtensible = require('./IsExtensible');

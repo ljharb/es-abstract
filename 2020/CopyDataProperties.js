@@ -5,7 +5,7 @@ var $TypeError = require('es-errors/type');
 var callBound = require('call-bound');
 var forEach = require('../helpers/forEach');
 var every = require('../helpers/every');
-var OwnPropertyKeys = require('../helpers/OwnPropertyKeys');
+var OwnPropertyKeys = require('own-keys');
 
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 

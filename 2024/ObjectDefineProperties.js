@@ -9,7 +9,7 @@ var ToPropertyDescriptor = require('./ToPropertyDescriptor');
 
 var forEach = require('../helpers/forEach');
 var getOwnPropertyDescriptor = require('gopd');
-var OwnPropertyKeys = require('../helpers/OwnPropertyKeys');
+var OwnPropertyKeys = require('own-keys');
 
 var $push = callBound('Array.prototype.push');
 

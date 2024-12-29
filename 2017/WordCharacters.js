@@ -9,7 +9,7 @@ var Canonicalize = require('./Canonicalize');
 
 var caseFolding = require('../helpers/caseFolding.json');
 var forEach = require('../helpers/forEach');
-var OwnPropertyKeys = require('../helpers/OwnPropertyKeys');
+var OwnPropertyKeys = require('own-keys');
 
 var A = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'; // step 1
 
