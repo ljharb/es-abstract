@@ -1,17 +1,12 @@
 'use strict';
 
-var GetIntrinsic = require('get-intrinsic');
-
 var $TypeError = require('es-errors/type');
 
 var objectKeys = require('object-keys');
-
 var callBound = require('call-bound');
-
-var callBind = require('call-bind');
+var safePushApply = require('safe-push-apply');
 
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
-var $pushApply = callBind.apply(GetIntrinsic('%Array.prototype.push%'));
 
 var forEach = require('../helpers/forEach');
 var isObject = require('../helpers/isObject');
@@ -31,7 +26,7 @@ module.exports = function EnumerableOwnProperties(O, kind) {
 		var results = [];
 		forEach(keys, function (key) {
 			if ($isEnumerable(O, key)) {
-				$pushApply(results, [
+				safePushApply(results, [
 					kind === 'value' ? O[key] : [key, O[key]]
 				]);
 			}
