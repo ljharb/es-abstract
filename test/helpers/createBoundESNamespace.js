@@ -2,10 +2,10 @@
 
 var bind = require('function-bind');
 
-var OwnPropertyKeys = require('../../helpers/OwnPropertyKeys');
+var ownKeys = require('own-keys');
 
 module.exports = function createBoundESNamespace(ES) {
-	var keys = OwnPropertyKeys(ES);
+	var keys = ownKeys(ES);
 	var result = {};
 
 	for (var i = 0; i < keys.length; i++) {
