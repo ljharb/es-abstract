@@ -2,16 +2,23 @@
 
 var GetIntrinsic = require('get-intrinsic');
 
+var reflectSetProto = GetIntrinsic('%Reflect.setPrototypeOf%', true);
 var originalSetProto = GetIntrinsic('%Object.setPrototypeOf%', true);
 
-var hasProto = require('has-proto')();
+var setDunderProto = require('dunder-proto/set');
 
-module.exports = originalSetProto || (
+var $TypeError = require('es-errors/type');
 
-	hasProto
-		? function (O, proto) {
-			O.__proto__ = proto; // eslint-disable-line no-proto, no-param-reassign
+module.exports = reflectSetProto
+	? function setProto(O, proto) {
+		if (reflectSetProto(O, proto)) {
 			return O;
 		}
-		: null
-);
+		throw new $TypeError('Reflect.setPrototypeOf: failed to set [[Prototype]]');
+	}
+	: originalSetProto || (
+		setDunderProto ? function setProto(O, proto) {
+			setDunderProto(O, proto);
+			return O;
+		} : null
+	);
