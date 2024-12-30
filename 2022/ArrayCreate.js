@@ -9,16 +9,7 @@ var $TypeError = require('es-errors/type');
 var isInteger = require('math-intrinsics/isInteger');
 var MAX_ARRAY_LENGTH = require('math-intrinsics/constants/maxArrayLength');
 
-var hasProto = require('has-proto')();
-
-var $setProto = GetIntrinsic('%Object.setPrototypeOf%', true) || (
-	hasProto
-		? function (O, proto) {
-			O.__proto__ = proto; // eslint-disable-line no-proto, no-param-reassign
-			return O;
-		}
-		: null
-);
+var $setProto = require('../helpers/setProto');
 
 // https://262.ecma-international.org/12.0/#sec-arraycreate
 
