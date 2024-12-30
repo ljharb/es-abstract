@@ -129,7 +129,7 @@
 		"has-named-captures": "^1.0.0",
 		"has-strict-mode": "^1.0.1",
 		"in-publish": "^2.0.1",
-		"is-core-module": "^2.16.0",
+		"is-core-module": "^2.16.1",
 		"is-registered-symbol": "^1.1.1",
 		"jackspeak": "=2.1.1",
 		"make-arrow-function": "^1.2.0",
