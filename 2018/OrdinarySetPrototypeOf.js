@@ -1,8 +1,7 @@
 'use strict';
 
 var $TypeError = require('es-errors/type');
-
-var $setProto = require('../helpers/setProto');
+var $setProto = require('set-proto');
 
 var OrdinaryGetPrototypeOf = require('./OrdinaryGetPrototypeOf');
 
