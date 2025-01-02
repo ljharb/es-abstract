@@ -1,3 +1,13 @@
+1.23.9 / 2025-01-02
+=================
+  * [Refactor] use `get-proto` directly
+  * [Refactor] use `set-proto` directly
+  * [Refactor] use `Reflect.setPrototypeOf` and `dunder-proto` in `setProto` helper
+  * [Refactor] `ES2015`+: `ArrayCreate`: use `setProto` helper
+  * [Deps] update `es-set-tostringtag`, `own-keys`
+  * [Dev Deps] update `is-core-module`
+  * [Tests] use `own-keys` directly
+
 1.23.8 / 2024-12-28
 =================
   * [Refactor] use `own-keys`
