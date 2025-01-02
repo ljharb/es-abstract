@@ -8,8 +8,7 @@ var $SyntaxError = require('es-errors/syntax');
 var $TypeError = require('es-errors/type');
 var isInteger = require('math-intrinsics/isInteger');
 var MAX_ARRAY_LENGTH = require('math-intrinsics/constants/maxArrayLength');
-
-var $setProto = require('../helpers/setProto');
+var $setProto = require('set-proto');
 
 // https://262.ecma-international.org/12.0/#sec-arraycreate
 

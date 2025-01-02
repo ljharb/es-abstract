@@ -2,7 +2,7 @@
 
 var $TypeError = require('es-errors/type');
 
-var $getProto = require('../helpers/getProto');
+var $getProto = require('get-proto');
 var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/7.0/#sec-ordinarygetprototypeof

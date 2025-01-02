@@ -30,7 +30,7 @@ var $defineProperty = require('es-define-property');
 var MAX_SAFE_INTEGER = require('math-intrinsics/constants/maxSafeInteger');
 var MAX_VALUE = require('math-intrinsics/constants/maxValue');
 
-var $getProto = require('../helpers/getProto');
+var $getProto = require('get-proto');
 var $setProto = require('set-proto');
 var bufferTestCases = require('./bufferTestCases.json');
 var caseFolding = require('../helpers/caseFolding.json');
