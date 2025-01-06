@@ -1,7 +1,6 @@
 'use strict';
 
 var tape = require('tape');
-var Test = require('tape/lib/test');
 
 var forEach = require('for-each');
 var debug = require('object-inspect');
@@ -9,7 +8,6 @@ var assign = require('object.assign');
 var keys = require('object-keys');
 var flatMap = require('array.prototype.flatmap');
 var hasOwn = require('hasown');
-var arrowFns = require('make-arrow-function').list();
 var hasStrictMode = require('has-strict-mode')();
 var functionsHaveNames = require('functions-have-names')();
 var functionsHaveConfigurableNames = require('functions-have-names').functionsHaveConfigurableNames();
@@ -24,7 +22,6 @@ var isCore = require('is-core-module');
 var isRegex = require('is-regex');
 var v = require('es-value-fixtures');
 var mockProperty = require('mock-property');
-var isRegisteredSymbol = require('is-registered-symbol');
 var hasNamedCaptures = require('has-named-captures')();
 var $defineProperty = require('es-define-property');
 var MAX_SAFE_INTEGER = require('math-intrinsics/constants/maxSafeInteger');
@@ -57,6 +54,23 @@ var reProtoIsRegex = isRegex(RegExp.prototype);
 var twoSixtyFour = hasBigInts && safeBigInt(Math.pow(2, 64));
 var twoSixtyThree = hasBigInts && safeBigInt(Math.pow(2, 63));
 
+var unknowns = [].concat(
+	v.primitives,
+	v.objects
+);
+var allButSyms = [].concat(
+	v.objects,
+	v.nonSymbolPrimitives
+);
+var invalidTATypes = [].concat(
+	v.nonStrings,
+	'not a valid type'
+);
+var nonFiniteNumbers = [].concat(
+	v.infinities,
+	NaN
+);
+
 var elementSizes = {
 	__proto__: null,
 	$Int8Array: 1,
@@ -85,22 +99,52 @@ var unclampedSignedIntegerTypes = [
 	'Uint16',
 	'Uint32'
 ];
-var unclampedIntegerTypes = unclampedUnsignedIntegerTypes.concat(unclampedSignedIntegerTypes);
+var unclampedIntegerTypes = [].concat(
+	unclampedUnsignedIntegerTypes,
+	unclampedSignedIntegerTypes
+);
 var floatTypes = [
 	'Float32',
 	'Float64'
 ];
-var integerTypes = unclampedIntegerTypes.concat(clampedTypes, floatTypes);
+var integerTypes = [].concat(
+	unclampedIntegerTypes,
+	clampedTypes
+);
 var bigIntTypes = [
 	'BigInt64',
 	'BigUint64'
 ];
-var numberTypes = floatTypes.concat(integerTypes);
-var nonIntegerTypes = floatTypes.concat(bigIntTypes);
-var unsignedElementTypes = unclampedSignedIntegerTypes.concat([
-	'BigUint64'
-]);
-var signedElementTypes = unclampedUnsignedIntegerTypes;
+var numberTypes = [].concat(
+	floatTypes,
+	integerTypes
+);
+var nonUnclampedIntegerTypes = [].concat(
+	floatTypes,
+	bigIntTypes
+);
+var unsignedElementTypes = [].concat(
+	unclampedSignedIntegerTypes,
+	hasBigInts ? 'BigUint64' : []
+);
+var signedElementTypes = [].concat(
+	unclampedUnsignedIntegerTypes,
+	floatTypes,
+	hasBigInts ? 'BigInt64' : []
+);
+var allTypes = [].concat(
+	numberTypes,
+	hasBigInts ? bigIntTypes : []
+);
+var nonTATypes = [].concat(
+	v.nonStrings,
+	'',
+	'Byte'
+);
+
+var isBigIntTAType = function isBigIntTAType(type) {
+	return type.slice(0, 3) === 'Big';
+};
 
 var canDistinguishSparseFromUndefined = 0 in [undefined]; // IE 6 - 8 have a bug where this returns false
 
@@ -120,7 +164,7 @@ var clearBuffer = function clearBuffer(buffer) {
 
 var testSetValueInBuffer = function (ES, st, testCase, isTypedArray, order) {
 	return function (type) {
-		var isBigInt = type === 'BigInt64' || type === 'BigUint64';
+		var isBigInt = isBigIntTAType(type);
 		var Z = isBigInt ? safeBigInt : Number;
 		var elementSize = elementSizes['$' + (type === 'Uint8C' ? 'Uint8Clamped' : type) + 'Array'];
 		var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
@@ -131,7 +175,7 @@ var testSetValueInBuffer = function (ES, st, testCase, isTypedArray, order) {
 			return;
 		}
 
-		var valToSet = type === 'Uint8Clamped' && value > 255 ? 255 : Z(value);
+		var valToSet = type === 'Uint8C' && value > 255 ? 255 : Z(value);
 
 		/*
 		st.equal(
@@ -151,9 +195,10 @@ var testSetValueInBuffer = function (ES, st, testCase, isTypedArray, order) {
 			void undefined,
 			'returns undefined'
 		);
+		var resultObj = result[type === 'Float64' ? 'setAsLittle' : 'setAsTruncatedLittle'];
 		st.deepEqual(
 			Array.prototype.slice.call(copyBytes, 0, elementSize),
-			Array.prototype.slice.call(new Uint8Array(result[type === 'Float64' ? 'setAsLittle' : 'setAsTruncatedLittle'].bytes), 0, elementSize),
+			Array.prototype.slice.call(new Uint8Array(resultObj.bytes), 0, elementSize),
 			'buffer holding ' + debug(value) + ' with type ' + type + ', little endian, yields expected value'
 		);
 
@@ -165,9 +210,10 @@ var testSetValueInBuffer = function (ES, st, testCase, isTypedArray, order) {
 				void undefined,
 				'returns undefined'
 			);
+			var bigResultObj = result[type === 'Float64' ? 'setAsBig' : 'setAsTruncatedBig'];
 			st.deepEqual(
 				Array.prototype.slice.call(copyBytes, 0, elementSize),
-				Array.prototype.slice.call(new Uint8Array(result[type === 'Float64' ? 'setAsBig' : 'setAsTruncatedBig'].bytes), 0, elementSizes[type + 'Array']),
+				Array.prototype.slice.call(new Uint8Array(bigResultObj.bytes), 0, elementSize),
 				'buffer holding ' + debug(value) + ' with type ' + type + ', big endian, yields expected value'
 			);
 		}
@@ -394,7 +440,11 @@ var testToNumber = function (t, ES, ToNumber) {
 
 	t.test('numbers', function (st) {
 		st.equal(NaN, ToNumber(NaN), 'NaN returns itself');
-		forEach(v.zeroes.concat(v.infinities, 42), function (num) {
+		forEach([].concat(
+			v.zeroes,
+			v.infinities,
+			42
+		), function (num) {
 			st.equal(num, ToNumber(num), num + ' returns itself');
 		});
 		st.end();
@@ -581,7 +631,11 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 			forEach(v.zeroes.concat(NaN), function (falsyNumber) {
 				st.equal(false, ES.ToBoolean(falsyNumber), 'falsy number ' + falsyNumber + ' coerces to false');
 			});
-			forEach(v.infinities.concat([42, 1]), function (truthyNumber) {
+			forEach([].concat(
+				v.infinities,
+				42,
+				1
+			), function (truthyNumber) {
 				st.equal(true, ES.ToBoolean(truthyNumber), 'truthy number ' + truthyNumber + ' coerces to true');
 			});
 
@@ -611,7 +665,11 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 
 		t.test('numbers', function (st) {
 			st.equal(NaN, ES.ToNumber(NaN), 'NaN returns itself');
-			forEach(v.zeroes.concat(v.infinities, 42), function (num) {
+			forEach([].concat(
+				v.zeroes,
+				v.infinities,
+				42
+			), function (num) {
 				st.equal(num, ES.ToNumber(num), num + ' returns itself');
 			});
 			forEach(['foo', '0', '4a', '2.0', 'Infinity', '-Infinity'], function (numString) {
@@ -688,7 +746,11 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 		forEach([NaN], function (num) {
 			t.equal(0, ES.ToInteger(num), debug(num) + ' returns +0');
 		});
-		forEach(v.zeroes.concat(v.infinities, 42), function (num) {
+		forEach([].concat(
+			v.zeroes,
+			v.infinities,
+			42
+		), function (num) {
 			t.equal(num, ES.ToInteger(num), debug(num) + ' returns itself');
 			t.equal(-num, ES.ToInteger(-num), '-' + debug(num) + ' returns itself');
 		});
@@ -699,7 +761,10 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 
 	test('ToInt32', function (t) {
 		t.equal(ES.ToInt32(NaN), 0, 'NaN coerces to +0');
-		forEach(v.zeroes.concat(v.infinities), function (num) {
+		forEach([].concat(
+			v.zeroes,
+			v.infinities
+		), function (num) {
 			t.equal(ES.ToInt32(num), 0, num + ' returns +0');
 			t.equal(ES.ToInt32(-num), 0, '-' + num + ' returns +0');
 		});
@@ -750,7 +815,7 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ToString', function (t) {
-		forEach(v.objects.concat(v.nonSymbolPrimitives), function (item) {
+		forEach(allButSyms, function (item) {
 			t.equal(ES.ToString(item), String(item), 'ES.ToString(' + debug(item) + ') ToStrings to String(' + debug(item) + ')');
 		});
 
@@ -774,16 +839,24 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 	test('CheckObjectCoercible', function (t) {
 		t['throws'](function () { return ES.CheckObjectCoercible(undefined); }, TypeError, 'undefined throws');
 		t['throws'](function () { return ES.CheckObjectCoercible(null); }, TypeError, 'null throws');
-		var checkCoercible = function (value) {
+		forEach([].concat(
+			v.objects,
+			v.nonNullPrimitives
+		), function (value) {
 			t.doesNotThrow(function () { return ES.CheckObjectCoercible(value); }, debug(value) + ' does not throw');
-		};
-		forEach(v.objects.concat(v.nonNullPrimitives), checkCoercible);
+		});
 		t.end();
 	});
 
 	test('IsCallable', function (t) {
 		t.equal(true, ES.IsCallable(function () {}), 'function is callable');
-		var nonCallables = [/a/g, {}, Object.prototype, NaN].concat(v.nonFunctions);
+		var nonCallables = [].concat(
+			/a/g,
+			{},
+			Object.prototype,
+			NaN,
+			v.nonFunctions
+		);
 		forEach(nonCallables, function (nonCallable) {
 			t.equal(false, ES.IsCallable(nonCallable), debug(nonCallable) + ' is not callable');
 		});
@@ -793,7 +866,7 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 	test('SameValue', function (t) {
 		t.equal(true, ES.SameValue(NaN, NaN), 'NaN is SameValue as NaN');
 		t.equal(false, ES.SameValue(0, -0), '+0 is not SameValue as -0');
-		forEach(v.objects.concat(v.primitives), function (val) {
+		forEach(unknowns, function (val) {
 			t.equal(val === val, ES.SameValue(val, val), debug(val) + ' is SameValue to itself');
 		});
 		t.end();
@@ -879,7 +952,7 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 		t.equal(ES.FromPropertyDescriptor(), undefined, 'no value begets undefined');
 		t.equal(ES.FromPropertyDescriptor(undefined), undefined, 'undefined value begets undefined');
 
-		forEach(v.nonNullPrimitives.concat(null), function (primitive) {
+		forEach(v.nonUndefinedPrimitives, function (primitive) {
 			t['throws'](
 				function () { ES.FromPropertyDescriptor(primitive); },
 				TypeError,
@@ -1004,7 +1077,7 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 
 	test('Abstract Equality Comparison', function (t) {
 		t.test('same types use ===', function (st) {
-			forEach(v.primitives.concat(v.objects), function (value) {
+			forEach(unknowns, function (value) {
 				st.equal(ES['Abstract Equality Comparison'](value, value), value === value, debug(value) + ' is abstractly equal to itself');
 			});
 			st.end();
@@ -1044,7 +1117,7 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 
 	test('Strict Equality Comparison', function (t) {
 		t.test('same types use ===', function (st) {
-			forEach(v.primitives.concat(v.objects), function (value) {
+			forEach(unknowns, function (value) {
 				st.equal(ES['Strict Equality Comparison'](value, value), value === value, debug(value) + ' is strictly equal to itself');
 			});
 			st.end();
@@ -1364,7 +1437,7 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 	});
 
 	test('MakeDate', function (t) {
-		forEach(v.infinities.concat(NaN), function (nonFiniteNumber) {
+		forEach(nonFiniteNumbers, function (nonFiniteNumber) {
 			t.equal(ES.MakeDate(nonFiniteNumber, 0), NaN, debug(nonFiniteNumber) + ' is not a finite `day`');
 			t.equal(ES.MakeDate(0, nonFiniteNumber), NaN, debug(nonFiniteNumber) + ' is not a finite `time`');
 		});
@@ -1379,7 +1452,7 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 	});
 
 	test('MakeTime', function (t) {
-		forEach(v.infinities.concat(NaN), function (nonFiniteNumber) {
+		forEach(nonFiniteNumbers, function (nonFiniteNumber) {
 			t.equal(ES.MakeTime(nonFiniteNumber, 0, 0, 0), NaN, debug(nonFiniteNumber) + ' is not a finite `hour`');
 			t.equal(ES.MakeTime(0, nonFiniteNumber, 0, 0), NaN, debug(nonFiniteNumber) + ' is not a finite `min`');
 			t.equal(ES.MakeTime(0, 0, nonFiniteNumber, 0), NaN, debug(nonFiniteNumber) + ' is not a finite `sec`');
@@ -1396,13 +1469,18 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 	});
 
 	test('TimeClip', function (t) {
-		forEach(v.infinities.concat(NaN), function (nonFiniteNumber) {
+		forEach(nonFiniteNumbers, function (nonFiniteNumber) {
 			t.equal(ES.TimeClip(nonFiniteNumber), NaN, debug(nonFiniteNumber) + ' is not a finite `time`');
 		});
 		t.equal(ES.TimeClip(8.64e15 + 1), NaN, '8.64e15 is the largest magnitude considered "finite"');
 		t.equal(ES.TimeClip(-8.64e15 - 1), NaN, '-8.64e15 is the largest magnitude considered "finite"');
 
-		forEach(v.zeroes.concat([-10, 10, +new Date()]), function (time) {
+		forEach([].concat(
+			v.zeroes,
+			-10,
+			10,
+			+new Date()
+		), function (time) {
 			t.looseEqual(ES.TimeClip(time), time, debug(time) + ' is a time of ' + debug(time));
 		});
 
@@ -1490,10 +1568,14 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		var notInts = v.nonNumbers.concat(
+		var notInts = [].concat(
+			v.nonNumbers,
 			v.nonIntegerNumbers,
-			v.infinities,
-			[NaN, [], new Date(), Math.pow(2, 53), -1]
+			nonFiniteNumbers,
+			[],
+			new Date(),
+			Math.pow(2, 53),
+			-1
 		);
 		forEach(notInts, function (nonInt) {
 			t['throws'](
@@ -1590,7 +1672,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ArraySetLength', function (t) {
-		forEach(v.primitives.concat(v.objects), function (nonArray) {
+		forEach(unknowns, function (nonArray) {
 			t['throws'](
 				function () { ES.ArraySetLength(nonArray, { '[[Value]]': 0 }); },
 				TypeError,
@@ -1642,7 +1724,11 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
-		forEach([-1, Math.pow(2, 32)].concat(v.nonIntegerNumbers), function (nonLength) {
+		forEach([].concat(
+			-1,
+			Math.pow(2, 32),
+			v.nonIntegerNumbers
+		), function (nonLength) {
 			t['throws'](
 				function () { ES.ArraySetLength([], v.descriptors.value(nonLength)); },
 				RangeError,
@@ -1701,7 +1787,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('works with a non-array', function (st) {
-			forEach(v.objects.concat(v.primitives), function (nonArray) {
+			forEach(unknowns, function (nonArray) {
 				var arr = ES.ArraySpeciesCreate(nonArray, 0);
 				st.ok(ES.IsArray(arr), 'is an array');
 				st.equal(arr.length, 0, 'length is correct');
@@ -1805,7 +1891,11 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 	test('Call', function (t) {
 		var receiver = {};
-		var notFuncs = v.nonFunctions.concat([/a/g, new RegExp('a', 'g')]);
+		var notFuncs = [].concat(
+			v.nonFunctions,
+			/a/g,
+			new RegExp('a', 'g')
+		);
 		t.plan(notFuncs.length + v.nonArrays.length + 5);
 
 		forEach(notFuncs, function (notFunc) {
@@ -2469,7 +2559,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('DetachArrayBuffer', function (t) {
-		forEach(v.primitives.concat(v.objects), function (nonArrayBuffer) {
+		forEach(unknowns, function (nonArrayBuffer) {
 			t['throws'](
 				function () { ES.DetachArrayBuffer(nonArrayBuffer); },
 				TypeError,
@@ -2761,7 +2851,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(arrowFns, function (arrowFn) {
+		forEach(v.arrowFunctions, function (arrowFn) {
 			t['throws'](
 				function () { ES.GetPrototypeFromConstructor(arrowFn, '%Array%'); },
 				TypeError,
@@ -2968,7 +3058,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('GetValueFromBuffer', function (t) {
-		forEach(v.primitives.concat(v.objects), function (nonAB) {
+		forEach(unknowns, function (nonAB) {
 			t['throws'](
 				function () { ES.GetValueFromBuffer(nonAB, 0, 'Int8'); },
 				TypeError,
@@ -2985,7 +3075,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			forEach(v.nonStrings.concat('not a valid type'), function (nonString) {
+			forEach(invalidTATypes, function (nonString) {
 				st['throws'](
 					function () { ES.GetValueFromBuffer(new ArrayBuffer(8), 0, nonString); },
 					TypeError,
@@ -3016,17 +3106,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 			forEach(bufferTestCases, function (testCase, name) {
 				st.test(name + ': ' + debug(testCase.value), function (s2t) {
-					forEach([
-						'Int8',
-						'Uint8',
-						'Uint8C',
-						'Int16',
-						'Uint16',
-						'Int32',
-						'Uint32',
-						'Float32',
-						'Float64'
-					], function (type) {
+					forEach(numberTypes, function (type) {
 						var view = new DataView(new ArrayBuffer(elementSizes.$Float64Array));
 						var method = type === 'Uint8C' ? 'Uint8' : type;
 						// var value = unserialize(testCase.value);
@@ -3209,7 +3289,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(v.primitives.concat(v.objects), function (nonTA) {
+		forEach(unknowns, function (nonTA) {
 			t['throws'](
 				function () { ES.IntegerIndexedElementGet(nonTA, 0); },
 				TypeError,
@@ -3219,7 +3299,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
 			forEach(availableTypedArrays, function (typedArray) {
-				var isBigInt = typedArray.slice(0, 3) === 'Big';
+				var isBigInt = isBigIntTAType(typedArray);
 				if (isBigInt && 'ToBigInt' in ES) {
 					var Z = isBigInt ? safeBigInt : Number;
 					var TA = global[typedArray];
@@ -3355,7 +3435,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.equal(true, ES.IsArray([]), '[] is array');
 		t.equal(false, ES.IsArray({}), '{} is not array');
 		t.equal(false, ES.IsArray({ length: 1, 0: true }), 'arraylike object is not array');
-		forEach(v.objects.concat(v.primitives), function (value) {
+		forEach(unknowns, function (value) {
 			t.equal(false, ES.IsArray(value), debug(value) + ' is not array');
 		});
 		t.end();
@@ -3474,7 +3554,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IsDetachedBuffer', function (t) {
-		forEach(v.primitives.concat(v.objects), function (nonArrayBuffer) {
+		forEach(unknowns, function (nonArrayBuffer) {
 			t['throws'](
 				function () { ES.IsDetachedBuffer(nonArrayBuffer); },
 				TypeError,
@@ -3545,7 +3625,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IsPromise', function (t) {
-		forEach(v.objects.concat(v.primitives), function (nonPromise) {
+		forEach(unknowns, function (nonPromise) {
 			t.equal(ES.IsPromise(nonPromise), false, debug(nonPromise) + ' is not a Promise');
 		});
 
@@ -3562,7 +3642,10 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IsPropertyKey', function (t) {
-		forEach(v.numbers.concat(v.objects), function (notKey) {
+		forEach([].concat(
+			v.numbers,
+			v.objects
+		), function (notKey) {
 			t.equal(false, ES.IsPropertyKey(notKey), debug(notKey) + ' is not property key');
 		});
 
@@ -3579,7 +3662,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			t.equal(true, ES.IsRegExp(regex), regex + ' is regex');
 		});
 
-		forEach(v.objects.concat(v.primitives), function (nonRegex) {
+		forEach(unknowns, function (nonRegex) {
 			t.equal(false, ES.IsRegExp(nonRegex), debug(nonRegex) + ' is not regex');
 		});
 
@@ -3646,7 +3729,13 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			t.equal(false, ES.IsInteger(i + 0.2), (i + 0.2) + ' is not integer');
 		}
 		t.equal(true, ES.IsInteger(-0), '-0 is integer');
-		var notInts = v.nonNumbers.concat(v.nonIntegerNumbers, v.infinities, [NaN, [], new Date()]);
+		var notInts = [].concat(
+			v.nonNumbers,
+			v.nonIntegerNumbers,
+			nonFiniteNumbers,
+			[],
+			new Date()
+		);
 		forEach(notInts, function (notInt) {
 			t.equal(false, ES.IsInteger(notInt), debug(notInt) + ' is not integer');
 		});
@@ -3724,7 +3813,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IteratorStep', function (t) {
-		forEach(v.primitives.concat(v.objects), function (nonIteratorRecord) {
+		forEach(unknowns, function (nonIteratorRecord) {
 			t['throws'](
 				function () { ES.IteratorStep(nonIteratorRecord); },
 				TypeError,
@@ -3870,7 +3959,10 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('NewPromiseCapability', function (t) {
-		forEach(v.nonFunctions.concat(v.nonConstructorFunctions), function (nonConstructor) {
+		forEach([].concat(
+			v.nonFunctions,
+			v.nonConstructorFunctions
+		), function (nonConstructor) {
 			t['throws'](
 				function () { ES.NewPromiseCapability(nonConstructor); },
 				TypeError,
@@ -4057,7 +4149,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(arrowFns, function (arrowFn) {
+		forEach(v.arrowFunctions, function (arrowFn) {
 			t['throws'](
 				function () { ES.OrdinaryCreateFromConstructor(arrowFn, '%Array.prototype%'); },
 				TypeError,
@@ -4411,17 +4503,19 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.equal(false, 'CheckObjectCoercible' in ES, 'CheckObjectCoercible -> RequireObjectCoercible in ES6');
 		t['throws'](function () { return ES.RequireObjectCoercible(undefined); }, TypeError, 'undefined throws');
 		t['throws'](function () { return ES.RequireObjectCoercible(null); }, TypeError, 'null throws');
-		var isCoercible = function (value) {
+		forEach([].concat(
+			v.objects,
+			v.nonNullPrimitives
+		), function (value) {
 			t.doesNotThrow(function () { return ES.RequireObjectCoercible(value); }, debug(value) + ' does not throw');
-		};
-		forEach(v.objects.concat(v.nonNullPrimitives), isCoercible);
+		});
 		t.end();
 	});
 
 	test('SameValueZero', function (t) {
 		t.equal(true, ES.SameValueZero(NaN, NaN), 'NaN is SameValueZero as NaN');
 		t.equal(true, ES.SameValueZero(0, -0), '+0 is SameValueZero as -0');
-		forEach(v.objects.concat(v.primitives), function (val) {
+		forEach(unknowns, function (val) {
 			t.equal(val === val, ES.SameValueZero(val, val), debug(val) + ' is SameValueZero to itself');
 		});
 		t.end();
@@ -4628,7 +4722,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('SetValueInBuffer', function (t) {
-		forEach(v.primitives.concat(v.objects), function (nonAB) {
+		forEach(unknowns, function (nonAB) {
 			t['throws'](
 				function () { ES.SetValueInBuffer(nonAB, 0, 'Int8', 0); },
 				TypeError,
@@ -4645,7 +4739,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			forEach(v.nonStrings.concat('not a valid type'), function (nonString) {
+			forEach(invalidTATypes, function (nonString) {
 				st['throws'](
 					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, nonString, 0); },
 					TypeError,
@@ -4683,17 +4777,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			});
 
 			forEach(bufferTestCases, function (testCase, name) {
-				forEach([].concat(
-					'Int8',
-					'Uint8',
-					'Uint8C',
-					'Int16',
-					'Uint16',
-					'Int32',
-					'Uint32',
-					'Float32',
-					'Float64'
-				), function (type) {
+				forEach(numberTypes, function (type) {
 					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
 					var value = unserialize(testCase.value);
@@ -4811,11 +4895,18 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(v.nonNumbers.concat(v.nonIntegerNumbers), function (nonIntegerNumber) {
+		var notInts = [].concat(
+			v.nonNumbers,
+			v.nonIntegerNumbers,
+			nonFiniteNumbers,
+			[],
+			new Date()
+		);
+		forEach(notInts, function (nonInteger) {
 			t['throws'](
-				function () { ES.SplitMatch('', nonIntegerNumber, ''); },
+				function () { ES.SplitMatch('', nonInteger, ''); },
 				TypeError,
-				'q: ' + debug(nonIntegerNumber) + ' is not an integer'
+				'q: ' + debug(nonInteger) + ' is not an integer'
 			);
 		});
 
@@ -4867,7 +4958,10 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('StringGetIndexProperty', function (t) {
-		forEach(v.nonStrings.concat(v.strings), function (nonStringObjects) {
+		forEach([].concat(
+			v.nonStrings,
+			v.strings
+		), function (nonStringObjects) {
 			t['throws'](
 				function () { ES.StringGetIndexProperty(nonStringObjects); },
 				TypeError,
@@ -4892,7 +4986,12 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		});
 
 		// a string where CanonicalNumericIndexString returns undefined, a non-integer, or -0
-		forEach(['-1', '-0', 'undefined'].concat(v.nonIntegerNumbers), function (nonIndex) {
+		forEach([].concat(
+			'-1',
+			'-0',
+			'undefined',
+			v.nonIntegerNumbers
+		), function (nonIndex) {
 			var S = Object('abc');
 			t.equal(
 				ES.StringGetIndexProperty(S, String(nonIndex)),
@@ -4927,7 +5026,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('SymbolDescriptiveString', function (t) {
-		forEach(v.nonSymbolPrimitives.concat(v.objects), function (nonSymbol) {
+		forEach(allButSyms, function (nonSymbol) {
 			t['throws'](
 				function () { ES.SymbolDescriptiveString(nonSymbol); },
 				TypeError,
@@ -5058,7 +5157,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('thisTimeValue', function (t) {
-		forEach(v.primitives.concat(v.objects), function (nonDate) {
+		forEach(unknowns, function (nonDate) {
 			t['throws'](
 				function () { ES.thisTimeValue(nonDate); },
 				TypeError,
@@ -5188,7 +5287,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ToPropertyKey', function (t) {
-		forEach(v.objects.concat(v.nonSymbolPrimitives), function (value) {
+		forEach(allButSyms, function (value) {
 			t.equal(ES.ToPropertyKey(value), String(value), 'ToPropertyKey(value) === String(value) for non-Symbols');
 		});
 
@@ -5209,7 +5308,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ToString', function (t) {
-		forEach(v.objects.concat(v.nonSymbolPrimitives), function (item) {
+		forEach(allButSyms, function (item) {
 			t.equal(ES.ToString(item), String(item), 'ES.ToString(' + debug(item) + ') ToStrings to String(' + debug(item) + ')');
 		});
 
@@ -5674,7 +5773,10 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ValidateTypedArray', function (t) {
-		forEach(v.primitives.concat(v.objects, [[]]), function (nonTA) {
+		forEach([].concat(
+			unknowns,
+			[[]]
+		), function (nonTA) {
 			t['throws'](
 				function () { ES.ValidateTypedArray(nonTA); },
 				TypeError,
@@ -5826,7 +5928,10 @@ var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 			t['throws'](function () { return ES.SameValueNonNumber.apply(ES, nums); }, TypeError, 'value must be same type and non-number');
 		});
 
-		forEach(v.objects.concat(v.nonNumberPrimitives), function (val) {
+		forEach([].concat(
+			v.objects,
+			v.nonNumberPrimitives
+		), function (val) {
 			t.equal(val === val, ES.SameValueNonNumber(val, val), debug(val) + ' is SameValueNonNumber to itself');
 		});
 
@@ -5913,7 +6018,7 @@ var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 
 	test('TypedArraySpeciesCreate', function (t) {
 		t.test('no Typed Array support', { skip: availableTypedArrays.length > 0 }, function (st) {
-			forEach(v.primitives.concat(v.objects), function (nonTA) {
+			forEach(unknowns, function (nonTA) {
 				st['throws'](
 					function () { ES.TypedArraySpeciesCreate(nonTA, []); },
 					SyntaxError,
@@ -5932,7 +6037,7 @@ var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('Typed Array support', { skip: availableTypedArrays.length === 0 }, function (st) {
-			forEach(v.primitives.concat(v.objects), function (nonTA) {
+			forEach(unknowns, function (nonTA) {
 				st['throws'](
 					function () { ES.TypedArraySpeciesCreate(nonTA, []); },
 					TypeError,
@@ -5941,7 +6046,10 @@ var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 			});
 
 			var nonArrayTA = new global[availableTypedArrays[0]]();
-			forEach(v.primitives.concat(v.nonArrays), function (nonArray) {
+			forEach([].concat(
+				v.primitives,
+				v.nonArrays
+			), function (nonArray) {
 				st['throws'](
 					function () { ES.TypedArraySpeciesCreate(nonArrayTA, nonArray); },
 					TypeError,
@@ -6217,8 +6325,9 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 
 	test('GetValueFromBuffer', function (t) {
 		var isTypedArray = true;
+		var order = 'Unordered';
 
-		forEach(v.primitives.concat(v.objects), function (nonAB) {
+		forEach(unknowns, function (nonAB) {
 			t['throws'](
 				function () { ES.GetValueFromBuffer(nonAB, 0, 'Int8', isTypedArray, 'order'); },
 				TypeError,
@@ -6229,15 +6338,15 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 		t.test('ArrayBuffers supported', { skip: typeof ArrayBuffer !== 'function' }, function (st) {
 			forEach(v.notNonNegativeIntegers, function (nonNonNegativeInteger) {
 				st['throws'](
-					function () { ES.GetValueFromBuffer(new ArrayBuffer(8), nonNonNegativeInteger, 'Int8', isTypedArray, 'order'); },
+					function () { ES.GetValueFromBuffer(new ArrayBuffer(8), nonNonNegativeInteger, 'Int8', isTypedArray, order); },
 					TypeError,
 					debug(nonNonNegativeInteger) + ' is not a valid byte index'
 				);
 			});
 
-			forEach(v.nonStrings.concat('not a valid type'), function (nonString) {
+			forEach(invalidTATypes, function (nonString) {
 				st['throws'](
-					function () { ES.GetValueFromBuffer(new ArrayBuffer(8), 0, nonString, isTypedArray, 'order'); },
+					function () { ES.GetValueFromBuffer(new ArrayBuffer(8), 0, nonString, isTypedArray, order); },
 					TypeError,
 					debug(nonString) + ' is not a valid String (or type) value'
 				);
@@ -6245,13 +6354,13 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 
 			forEach(v.nonBooleans, function (nonBoolean) {
 				st['throws'](
-					function () { ES.GetValueFromBuffer(new ArrayBuffer(8), 0, 'Int8', nonBoolean, 'order'); },
+					function () { ES.GetValueFromBuffer(new ArrayBuffer(8), 0, 'Int8', nonBoolean, order); },
 					TypeError,
 					'isTypedArray: ' + debug(nonBoolean) + ' is not a valid Boolean value'
 				);
 
 				st['throws'](
-					function () { ES.GetValueFromBuffer(new ArrayBuffer(8), 0, 'Int8', isTypedArray, 'order', nonBoolean); },
+					function () { ES.GetValueFromBuffer(new ArrayBuffer(8), 0, 'Int8', isTypedArray, order, nonBoolean); },
 					TypeError,
 					'isLittleEndian: ' + debug(nonBoolean) + ' is not a valid Boolean value'
 				);
@@ -6270,7 +6379,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 				s2t.equal(ES.DetachArrayBuffer(buffer), null, 'detaching returns null');
 
 				s2t['throws'](
-					function () { ES.GetValueFromBuffer(buffer, 0, 'Int8', isTypedArray, 'order'); },
+					function () { ES.GetValueFromBuffer(buffer, 0, 'Int8', isTypedArray, order); },
 					TypeError,
 					'detached buffers throw'
 				);
@@ -6280,17 +6389,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 
 			forEach(bufferTestCases, function (testCase, name) {
 				st.test(name + ': ' + debug(testCase.value), function (s2t) {
-					forEach([
-						'Int8',
-						'Uint8',
-						'Uint8C',
-						'Int16',
-						'Uint16',
-						'Int32',
-						'Uint32',
-						'Float32',
-						'Float64'
-					], function (type) {
+					forEach(numberTypes, function (type) {
 						var view = new DataView(new ArrayBuffer(elementSizes.$Float64Array));
 						var method = type === 'Uint8C' ? 'Uint8' : type;
 						// var value = unserialize(testCase.value);
@@ -6306,33 +6405,33 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 
 						clearBuffer(view.buffer);
 						var littleVal = unserialize(result.setAsLittle.asLittle);
-						view['set' + method](0, type.slice(0, 3) === 'Big' ? safeBigInt(littleVal) : littleVal, true);
+						view['set' + method](0, isBigIntTAType(type) ? safeBigInt(littleVal) : littleVal, true);
 
 						s2t.equal(
-							ES.GetValueFromBuffer(view.buffer, 0, type, isTypedArray, 'order', true),
+							ES.GetValueFromBuffer(view.buffer, 0, type, isTypedArray, order, true),
 							littleVal,
 							'buffer with type ' + type + ', little -> little, yields expected value'
 						);
 
 						if (hasBigEndian) {
 							s2t.equal(
-								ES.GetValueFromBuffer(view.buffer, 0, type, isTypedArray, 'order', false),
+								ES.GetValueFromBuffer(view.buffer, 0, type, isTypedArray, order, false),
 								view['get' + method](0, false),
 								'buffer with type ' + type + ', little -> big, yields expected value'
 							);
 
 							clearBuffer(view.buffer);
 							var bigVal = unserialize(result.setAsBig.asBig);
-							view['set' + method](0, type.slice(0, 3) === 'Big' ? safeBigInt(bigVal) : bigVal, false);
+							view['set' + method](0, isBigIntTAType(type) ? safeBigInt(bigVal) : bigVal, false);
 
 							s2t.equal(
-								ES.GetValueFromBuffer(view.buffer, 0, type, isTypedArray, 'order', false),
+								ES.GetValueFromBuffer(view.buffer, 0, type, isTypedArray, order, false),
 								bigVal,
 								'buffer with type ' + type + ', big -> big, yields expected value'
 							);
 
 							s2t.equal(
-								ES.GetValueFromBuffer(view.buffer, 0, type, isTypedArray, 'order', true),
+								ES.GetValueFromBuffer(view.buffer, 0, type, isTypedArray, order, true),
 								view['get' + method](0, true),
 								'buffer with type ' + type + ', big -> little, yields expected value'
 							);
@@ -6390,7 +6489,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 	});
 
 	test('NumberToRawBytes', function (t) {
-		forEach(v.nonStrings.concat('', 'Byte'), function (nonTAType) {
+		forEach(nonTATypes, function (nonTAType) {
 			t['throws'](
 				function () { ES.NumberToRawBytes(nonTAType, 0, false); },
 				TypeError,
@@ -6418,17 +6517,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 			var value = unserialize(testCase.value);
 
 			t.test(name + ': ' + value, function (st) {
-				forEach([].concat(
-					'Int8',
-					'Uint8',
-					'Uint8C',
-					'Int16',
-					'Uint16',
-					'Int32',
-					'Uint32',
-					'Float32',
-					'Float64'
-				), function (type) {
+				forEach(numberTypes, function (type) {
 					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
 					var valToSet = type === 'Uint8C' && value > 0xFF ? 0xFF : value;
@@ -6572,7 +6661,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 	});
 
 	test('RawBytesToNumber', function (t) {
-		forEach(v.nonStrings.concat('', 'Byte'), function (nonTAType) {
+		forEach(nonTATypes, function (nonTAType) {
 			t['throws'](
 				function () { ES.RawBytesToNumber(nonTAType, [], false); },
 				TypeError,
@@ -6580,7 +6669,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(v.primitives.concat(v.objects), function (nonArray) {
+		forEach(unknowns, function (nonArray) {
 			t['throws'](
 				function () { ES.RawBytesToNumber('Int8', nonArray, false); },
 				TypeError,
@@ -6606,17 +6695,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 		forEach(bufferTestCases, function (testCase, name) {
 			var value = unserialize(testCase.value);
 			t.test(name + ': ' + value, function (st) {
-				forEach([].concat(
-					'Int8',
-					'Uint8',
-					'Uint8C',
-					'Int16',
-					'Uint16',
-					'Int32',
-					'Uint32',
-					'Float32',
-					'Float64'
-				), function (type) {
+				forEach(numberTypes, function (type) {
 					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
 					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 
@@ -6749,7 +6828,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 	test('SetValueInBuffer', function (t) {
 		var order = 'Unordered';
 
-		forEach(v.primitives.concat(v.objects), function (nonAB) {
+		forEach(unknowns, function (nonAB) {
 			t['throws'](
 				function () { ES.SetValueInBuffer(nonAB, 0, 'Int8', 0, false, order); },
 				TypeError,
@@ -6768,7 +6847,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			forEach(v.nonStrings.concat('not a valid type'), function (nonString) {
+			forEach(invalidTATypes, function (nonString) {
 				st['throws'](
 					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, nonString, 0, isTypedArray, order); },
 					TypeError,
@@ -6798,20 +6877,6 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			if (hasBigInts) {
-				st['throws'](
-					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'Int8', $BigInt(0), isTypedArray, order); },
-					TypeError,
-					debug($BigInt(0)) + ' is not a number, but the given type requires one'
-				);
-
-				st['throws'](
-					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'BigUint64', 0, isTypedArray, order); },
-					TypeError,
-					debug(0) + ' is not a bigint, but the given type requires one'
-				);
-			}
-
 			st['throws'](
 				function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'Int8', 0, isTypedArray, 'invalid order'); },
 				TypeError,
@@ -6831,28 +6896,8 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 				s2t.end();
 			});
 
-			st.test('SharedArrayBuffers supported', { skip: typeof SharedArrayBuffer !== 'function' }, function (s2t) {
-				s2t['throws'](
-					function () { ES.SetValueInBuffer(new SharedArrayBuffer(0), 0, 'Int8', 0, true, order); },
-					SyntaxError,
-					'SAB not yet supported'
-				);
-
-				s2t.end();
-			});
-
 			forEach(bufferTestCases, function (testCase, name) {
-				forEach([].concat(
-					'Int8',
-					'Uint8',
-					'Uint8C',
-					'Int16',
-					'Uint16',
-					'Int32',
-					'Uint32',
-					'Float32',
-					'Float64'
-				), testSetValueInBuffer(ES, st, testCase, isTypedArray, order));
+				forEach(numberTypes, testSetValueInBuffer(ES, st, testCase, isTypedArray, order));
 			});
 
 			st.end();
@@ -6862,7 +6907,10 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 	});
 
 	test('StringGetOwnProperty', function (t) {
-		forEach(v.nonStrings.concat(v.strings), function (nonBoxedString) {
+		forEach([].concat(
+			v.nonStrings,
+			v.strings
+		), function (nonBoxedString) {
 			t['throws'](
 				function () { ES.StringGetOwnProperty(nonBoxedString, '0'); },
 				TypeError,
@@ -6948,7 +6996,10 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ValidateAtomicAccess', function (t) {
-		forEach(v.primitives.concat(v.objects, [[]]), function (nonTA) {
+		forEach([].concat(
+			unknowns,
+			[[]]
+		), function (nonTA) {
 			t['throws'](
 				function () { ES.ValidateAtomicAccess(nonTA, 0); },
 				TypeError,
@@ -7097,7 +7148,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('third argument: excludedItems', function (st) {
-			forEach(v.objects.concat(v.primitives), function (nonArray) {
+			forEach(unknowns, function (nonArray) {
 				st['throws'](
 					function () { ES.CopyDataProperties({}, {}, nonArray); },
 					TypeError,
@@ -7146,7 +7197,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 	});
 
 	test('CreateAsyncFromSyncIterator', function (t) {
-		forEach(v.primitives.concat(v.objects), function (nonIteratorRecord) {
+		forEach(unknowns, function (nonIteratorRecord) {
 			t['throws'](
 				function () { ES.CreateAsyncFromSyncIterator(nonIteratorRecord); },
 				TypeError,
@@ -7306,7 +7357,10 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 	});
 
 	test('DateString', function (t) {
-		forEach(v.nonNumbers.concat(NaN), function (nonNumberOrNaN) {
+		forEach([].concat(
+			v.nonNumbers,
+			NaN
+		), function (nonNumberOrNaN) {
 			t['throws'](
 				function () { ES.DateString(nonNumberOrNaN); },
 				TypeError,
@@ -7641,7 +7695,13 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			forEach([-1, -42, -Infinity, Infinity].concat(v.nonIntegerNumbers), function (nonPositiveInteger) {
+			forEach([].concat(
+				-1,
+				-42,
+				-Infinity,
+				Infinity,
+				v.nonIntegerNumbers
+			), function (nonPositiveInteger) {
 				st['throws'](
 					function () { ES.SetFunctionLength(HasNoLength, nonPositiveInteger); },
 					TypeError,
@@ -7658,7 +7718,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 	});
 
 	test('thisSymbolValue', function (t) {
-		forEach(v.nonSymbolPrimitives.concat(v.objects), function (nonSymbol) {
+		forEach(allButSyms, function (nonSymbol) {
 			t['throws'](
 				function () { ES.thisSymbolValue(nonSymbol); },
 				v.hasSymbols ? TypeError : SyntaxError,
@@ -7667,7 +7727,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('no native Symbols', { skip: v.hasSymbols }, function (st) {
-			forEach(v.objects.concat(v.primitives), function (value) {
+			forEach(unknowns, function (value) {
 				st['throws'](
 					function () { ES.thisSymbolValue(value); },
 					SyntaxError,
@@ -7708,7 +7768,10 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 	});
 
 	test('TimeString', function (t) {
-		forEach(v.nonNumbers.concat(NaN), function (nonNumberOrNaN) {
+		forEach([].concat(
+			v.nonNumbers,
+			NaN
+		), function (nonNumberOrNaN) {
 			t['throws'](
 				function () { ES.TimeString(nonNumberOrNaN); },
 				TypeError,
@@ -7766,7 +7829,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 	});
 
 	test('AsyncIteratorClose', function (t) {
-		forEach(v.primitives.concat(v.objects), function (nonIteratorRecord) {
+		forEach(unknowns, function (nonIteratorRecord) {
 			t['throws'](
 				function () { ES.AsyncIteratorClose(nonIteratorRecord); },
 				TypeError,
@@ -7779,7 +7842,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 		};
 		var iteratorRecord = makeIteratorRecord(iterator);
 
-		forEach(v.primitives.concat(v.objects), function (nonCompletionRecord) {
+		forEach(unknowns, function (nonCompletionRecord) {
 			t['throws'](
 				function () { ES.AsyncIteratorClose(iteratorRecord, nonCompletionRecord); },
 				TypeError,
@@ -7914,7 +7977,10 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 	});
 
 	test('TimeZoneString', function (t) {
-		forEach(v.nonNumbers.concat(NaN), function (nonIntegerNumber) {
+		forEach([].concat(
+			v.nonNumbers,
+			NaN
+		), function (nonIntegerNumber) {
 			t['throws'](
 				function () { ES.TimeZoneString(nonIntegerNumber); },
 				TypeError,
@@ -8018,24 +8084,6 @@ var es2019 = function ES2019(ES, ops, expectedMissing, skips) {
 		);
 
 		// TODO: test directly, instead of only implicitly via CreateAsyncFromSyncIterator
-
-		t.end();
-	});
-
-	test('AsyncFromSyncIteratorContinuation', function (t) {
-		forEach(v.primitives, function (nonObject) {
-			t['throws'](
-				function () { ES.AsyncFromSyncIteratorContinuation(nonObject); },
-				TypeError,
-				debug(nonObject) + ' is not an Object'
-			);
-		});
-
-		t['throws'](
-			function () { ES.AsyncFromSyncIteratorContinuation({}, null); },
-			SyntaxError,
-			'passing a promisecapability is not supported in es-abstract'
-		);
 
 		t.end();
 	});
@@ -8464,9 +8512,9 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				'x: ' + debug(nonBigInt) + ' is not a BigInt'
 			);
 			t['throws'](
-				function () { ES.Number.equal($BigInt(0), nonBigInt); },
+				function () { ES.BigInt.equal($BigInt(0), nonBigInt); },
 				TypeError,
-				'y: ' + debug(nonBigInt) + ' is not a Number'
+				'y: ' + debug(nonBigInt) + ' is not a BigInt'
 			);
 		});
 
@@ -8529,7 +8577,10 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach([0].concat(v.int32s), function (int32) {
+		forEach([].concat(
+			0,
+			v.int32s
+		), function (int32) {
 			var bigInt32 = $BigInt(int32);
 			forEach([1, 3, 5, 31, 32, 33], function (bits) {
 				var bitsN = $BigInt(bits);
@@ -8693,7 +8744,10 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach([0].concat(v.int32s), function (int32) {
+		forEach([].concat(
+			0,
+			v.int32s
+		), function (int32) {
 			var bigInt32 = $BigInt(int32);
 			forEach([1, 3, 5, 31, 32, 33], function (bits) {
 				var bitsN = $BigInt(bits);
@@ -8782,7 +8836,10 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach([0].concat(v.int32s), function (int32) {
+		forEach([].concat(
+			0,
+			v.int32s
+		), function (int32) {
 			var bigInt32 = $BigInt(int32);
 			forEach([1, 3, 5, 31, 32, 33], function (bits) {
 				var bitsN = $BigInt(bits);
@@ -8840,7 +8897,11 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.equal(ES.BinaryAnd(1, 0), 0);
 		t.equal(ES.BinaryAnd(1, 1), 1);
 
-		forEach(v.nonIntegerNumbers.concat(v.nonNumberPrimitives, v.objects), function (nonBit) {
+		forEach([].concat(
+			v.nonIntegerNumbers,
+			v.nonNumberPrimitives,
+			v.objects
+		), function (nonBit) {
 			t['throws'](
 				function () { ES.BinaryAnd(0, nonBit); },
 				TypeError
@@ -8859,7 +8920,11 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.equal(ES.BinaryOr(1, 0), 1);
 		t.equal(ES.BinaryOr(1, 1), 1);
 
-		forEach(v.nonIntegerNumbers.concat(v.nonNumberPrimitives, v.objects), function (nonBit) {
+		forEach([].concat(
+			v.nonIntegerNumbers,
+			v.nonNumberPrimitives,
+			v.objects
+		), function (nonBit) {
 			t['throws'](
 				function () { ES.BinaryOr(0, nonBit); },
 				TypeError
@@ -8878,7 +8943,11 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.equal(ES.BinaryXor(1, 0), 1);
 		t.equal(ES.BinaryXor(1, 1), 0);
 
-		forEach(v.nonIntegerNumbers.concat(v.nonNumberPrimitives, v.objects), function (nonBit) {
+		forEach([].concat(
+			v.nonIntegerNumbers,
+			v.nonNumberPrimitives,
+			v.objects
+		), function (nonBit) {
 			t['throws'](
 				function () { ES.BinaryXor(0, nonBit); },
 				TypeError
@@ -9165,7 +9234,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
-		t.test('no Symbol.asyncIterator', { skip: v.hasAsyncIterator }, function (st) {
+		t.test('no Symbol.asyncIterator', { skip: !v.hasSymbols || !Symbol.asyncIterator }, function (st) {
 			st['throws'](
 				function () { ES.GetIterator(arr, 'async'); },
 				SyntaxError,
@@ -9218,7 +9287,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	test('GetValueFromBuffer', function (t) {
 		var isTypedArray = true;
 
-		forEach(v.primitives.concat(v.objects), function (nonAB) {
+		forEach(unknowns, function (nonAB) {
 			t['throws'](
 				function () { ES.GetValueFromBuffer(nonAB, 0, 'Int8', isTypedArray, 'Unordered'); },
 				TypeError,
@@ -9235,7 +9304,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			forEach(v.nonStrings.concat('not a valid type'), function (nonString) {
+			forEach(invalidTATypes, function (nonString) {
 				st['throws'](
 					function () { ES.GetValueFromBuffer(new ArrayBuffer(8), 0, nonString, isTypedArray, 'Unordered'); },
 					TypeError,
@@ -9280,19 +9349,8 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 			forEach(bufferTestCases, function (testCase, name) {
 				st.test(name + ': ' + debug(testCase.value), function (s2t) {
-					forEach([].concat(
-						'Int8',
-						'Uint8',
-						'Uint8C',
-						'Int16',
-						'Uint16',
-						'Int32',
-						'Uint32',
-						hasBigInts ? bigIntTypes : [],
-						'Float32',
-						'Float64'
-					), function (type) {
-						var isBigInt = type.slice(0, 3) === 'Big';
+					forEach(allTypes, function (type) {
+						var isBigInt = isBigIntTAType(type);
 						var view = new DataView(new ArrayBuffer(elementSizes.$Float64Array));
 						var method = type === 'Uint8C' ? 'Uint8' : type;
 						// var value = unserialize(testCase.value);
@@ -9411,7 +9469,10 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(clampedTypes.concat(nonIntegerTypes), function (type) {
+		forEach([].concat(
+			clampedTypes,
+			nonUnclampedIntegerTypes
+		), function (type) {
 			t.equal(
 				ES.IsUnclampedIntegerElementType(type),
 				false,
@@ -9431,7 +9492,10 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(v.zeroes.concat(v.integerNumbers), function (nonNegativeInteger) {
+		forEach([].concat(
+			v.zeroes,
+			v.integerNumbers
+		), function (nonNegativeInteger) {
 			t.equal(
 				ES.IsNonNegativeInteger(nonNegativeInteger),
 				true,
@@ -9483,7 +9547,10 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IsValidIntegerIndex', function (t) {
-		forEach(v.primitives.concat(v.objects, [[]]), function (nonTA) {
+		forEach([].concat(
+			unknowns,
+			[[]]
+		), function (nonTA) {
 			t['throws'](
 				function () { ES.IsValidIntegerIndex(nonTA, 0); },
 				TypeError,
@@ -9785,18 +9852,16 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.equal(ES.Number.exponentiate(-0.9, Infinity), 0, '-0.9 ** +∞ is +0');
 		t.equal(ES.Number.exponentiate(-0.9, -Infinity), Infinity, '-0.9 ** -∞ is +∞');
 
-		forEach(v.numbers.concat(NaN), function (number) {
+		forEach([].concat(
+			v.numbers,
+			NaN
+		), function (number) {
 			t.equal(ES.Number.exponentiate(number, NaN), NaN, debug(number) + ' ** NaN is NaN');
 
 			if (number !== 0) {
 				t.equal(ES.Number.exponentiate(number, 0), 1, debug(number) + ' ** +0 is 1');
 				t.equal(ES.Number.exponentiate(number, -0), 1, debug(number) + ' ** -0 is 1');
 				t.equal(ES.Number.exponentiate(NaN, number), NaN, 'NaN ** ' + debug(number) + ' is NaN');
-			}
-
-			if (number !== 0 && isFinite(number)) {
-				t.equal(ES.Number.equal(number, number), true, debug(number) + ' is equal to itself');
-				t.equal(ES.Number.equal(number, number + 1), false, debug(number) + ' is not equal to itself plus 1');
 			}
 		});
 
@@ -9817,7 +9882,10 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach([0].concat(v.int32s), function (int32) {
+		forEach([].concat(
+			0,
+			v.int32s
+		), function (int32) {
 			forEach([1, 3, 5, 31, 32, 33], function (bits) {
 				t.equal(ES.Number.leftShift(int32, bits), int32 << bits, debug(int32) + ' << ' + bits + ' is ' + debug(int32 << bits));
 			});
@@ -9852,7 +9920,10 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.equal(ES.Number.lessThan(-Infinity, +Infinity), true, '-∞ < +∞ is true');
 		t.equal(ES.Number.lessThan(-Infinity, -Infinity), false, '-∞ < -∞ is false');
 
-		forEach(v.numbers.concat(v.infinities), function (number) {
+		forEach([].concat(
+			v.numbers,
+			v.infinities
+		), function (number) {
 			t.equal(ES.Number.lessThan(NaN, number), undefined, 'NaN < ' + debug(number) + ' is undefined');
 			t.equal(ES.Number.lessThan(number, NaN), undefined, debug(number) + ' < NaN is undefined');
 
@@ -9904,7 +9975,10 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.equal(ES.Number.multiply(-0, +0), -0, '-0 * 0 is -0');
 		t.equal(ES.Number.multiply(-0, -0), +0, '-0 * -0 is +0');
 
-		forEach(v.numbers.concat(NaN), function (number) {
+		forEach([].concat(
+			v.numbers,
+			NaN
+		), function (number) {
 			t.equal(ES.Number.multiply(NaN, number), NaN, 'NaN * ' + debug(number) + ' is NaN');
 			t.equal(ES.Number.multiply(number, NaN), NaN, debug(number) + ' * NaN is NaN');
 
@@ -10037,7 +10111,10 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach([0].concat(v.int32s), function (int32) {
+		forEach([].concat(
+			0,
+			v.int32s
+		), function (int32) {
 			forEach([1, 3, 5, 31, 32, 33], function (bits) {
 				t.equal(ES.Number.signedRightShift(int32, bits), int32 >> bits, debug(int32) + ' >> ' + bits + ' is ' + debug(int32 >> bits));
 			});
@@ -10124,7 +10201,10 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach([0].concat(v.int32s), function (int32) {
+		forEach([].concat(
+			0,
+			v.int32s
+		), function (int32) {
 			forEach([1, 3, 5, 31, 32, 33], function (bits) {
 				t.equal(ES.Number.unsignedRightShift(int32, bits), int32 >>> bits, debug(int32) + ' >>> ' + bits + ' is ' + debug(int32 >>> bits));
 			});
@@ -10184,7 +10264,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	});
 
 	test('NumericToRawBytes', function (t) {
-		forEach(v.nonStrings.concat('', 'Byte'), function (nonTAType) {
+		forEach(nonTATypes, function (nonTAType) {
 			t['throws'](
 				function () { ES.NumericToRawBytes(nonTAType, 0, false); },
 				TypeError,
@@ -10212,19 +10292,8 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			var value = unserialize(testCase.value);
 
 			t.test(name + ': ' + value, function (st) {
-				forEach([].concat(
-					'Int8',
-					'Uint8',
-					'Uint8C',
-					'Int16',
-					'Uint16',
-					'Int32',
-					'Uint32',
-					hasBigInts ? bigIntTypes : [],
-					'Float32',
-					'Float64'
-				), function (type) {
-					var isBigInt = type.slice(0, 3) === 'Big';
+				forEach(allTypes, function (type) {
+					var isBigInt = isBigIntTAType(type);
 					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
 
@@ -10420,7 +10489,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	});
 
 	test('RawBytesToNumeric', function (t) {
-		forEach(v.nonStrings.concat('', 'Byte'), function (nonTAType) {
+		forEach(nonTATypes, function (nonTAType) {
 			t['throws'](
 				function () { ES.RawBytesToNumeric(nonTAType, [], false); },
 				TypeError,
@@ -10428,7 +10497,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(v.primitives.concat(v.objects), function (nonArray) {
+		forEach(unknowns, function (nonArray) {
 			t['throws'](
 				function () { ES.RawBytesToNumeric('Int8', nonArray, false); },
 				TypeError,
@@ -10454,18 +10523,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		forEach(bufferTestCases, function (testCase, name) {
 			var value = unserialize(testCase.value);
 			t.test(name + ': ' + value, function (st) {
-				forEach([].concat(
-					'Int8',
-					'Uint8',
-					'Uint8C',
-					'Int16',
-					'Uint16',
-					'Int32',
-					'Uint32',
-					hasBigInts ? bigIntTypes : [],
-					'Float32',
-					'Float64'
-				), function (type) {
+				forEach(allTypes, function (type) {
 					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
 					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 
@@ -10558,7 +10616,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				'Int16 with less than 2 bytes throws a RangeError'
 			);
 			st['throws'](
-				function () { ES.RawBytesToNumeric('Uint8C', [0, 0, 0], false); },
+				function () { ES.RawBytesToNumeric('Int16', [0, 0, 0], false); },
 				RangeError,
 				'Int16 with more than 2 bytes throws a RangeError'
 			);
@@ -10661,7 +10719,10 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			t['throws'](function () { return ES.SameValueNonNumeric.apply(ES, nums); }, TypeError, 'value must be same type and non-number/bigint: got ' + debug(nums[0]) + ' and ' + debug(nums[1]));
 		});
 
-		forEach(v.objects.concat(v.nonNumberPrimitives), function (val) {
+		forEach([].concat(
+			v.objects,
+			v.nonNumberPrimitives
+		), function (val) {
 			t.equal(val === val, ES.SameValueNonNumeric(val, val), debug(val) + ' is SameValueNonNumeric to itself');
 		});
 
@@ -10671,7 +10732,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	test('SetValueInBuffer', function (t) {
 		var order = 'Unordered';
 
-		forEach(v.primitives.concat(v.objects), function (nonAB) {
+		forEach(unknowns, function (nonAB) {
 			t['throws'](
 				function () { ES.SetValueInBuffer(nonAB, 0, 'Int8', 0, false, order); },
 				TypeError,
@@ -10690,7 +10751,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			forEach(v.nonStrings.concat('not a valid type'), function (nonString) {
+			forEach(invalidTATypes, function (nonString) {
 				st['throws'](
 					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, nonString, 0, isTypedArray, order); },
 					TypeError,
@@ -10764,18 +10825,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			});
 
 			forEach(bufferTestCases, function (testCase, name) {
-				forEach([].concat(
-					'Int8',
-					'Uint8',
-					'Uint8C',
-					'Int16',
-					'Uint16',
-					'Int32',
-					'Uint32',
-					hasBigInts ? bigIntTypes : [],
-					'Float32',
-					'Float64'
-				), testSetValueInBuffer(ES, st, testCase, isTypedArray, order));
+				forEach(allTypes, testSetValueInBuffer(ES, st, testCase, isTypedArray, order));
 			});
 
 			st.end();
@@ -10785,7 +10835,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	});
 
 	test('StringToBigInt', function (t) {
-		test('actual BigInts', { skip: !hasBigInts }, function (st) {
+		t.test('actual BigInts', { skip: !hasBigInts }, function (st) {
 			forEach(v.bigints, function (bigint) {
 				st.equal(
 					ES.StringToBigInt(String(bigint)),
@@ -10817,7 +10867,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
-		test('BigInt not supported', { skip: hasBigInts }, function (st) {
+		t.test('BigInt not supported', { skip: hasBigInts }, function (st) {
 			st['throws'](
 				function () { ES.StringToBigInt('0'); },
 				SyntaxError,
@@ -10860,7 +10910,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	});
 
 	test('thisBigIntValue', function (t) {
-		test('actual BigInts', { skip: !hasBigInts }, function (st) {
+		t.test('actual BigInts', { skip: !hasBigInts }, function (st) {
 			st.equal(ES.thisBigIntValue(BigInt(42)), BigInt(42));
 			st.equal(ES.thisBigIntValue(Object(BigInt(42))), BigInt(42));
 
@@ -10879,7 +10929,11 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ToBigInt', function (t) {
-		forEach([null, undefined].concat(v.symbols, v.numbers), function (nonBigIntCoercible) {
+		forEach([].concat(
+			v.nullPrimitives,
+			v.symbols,
+			v.numbers
+		), function (nonBigIntCoercible) {
 			t['throws'](
 				function () { ES.ToBigInt(nonBigIntCoercible); },
 				hasBigInts ? TypeError : SyntaxError,
@@ -10895,7 +10949,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		test('actual BigInts', { skip: !hasBigInts }, function (st) {
+		t.test('actual BigInts', { skip: !hasBigInts }, function (st) {
 			st.equal(ES.ToBigInt(true), BigInt(1), 'true becomes 1n');
 			st.equal(ES.ToBigInt(false), BigInt(0), 'true becomes 0n');
 
@@ -11139,7 +11193,13 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ApplyStringOrNumericBinaryOperator', function (t) {
-		forEach(v.nonStrings.concat('', '^^', '//', '***'), function (nonOp) {
+		forEach([].concat(
+			v.nonStrings,
+			'',
+			'^^',
+			'//',
+			'***'
+		), function (nonOp) {
 			t['throws'](
 				function () { ES.ApplyStringOrNumericBinaryOperator(null, nonOp, null); },
 				TypeError,
@@ -11384,7 +11444,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 	});
 
 	test('CloneArrayBuffer', function (t) {
-		forEach(v.primitives.concat(v.objects), function (nonArrayBuffer) {
+		forEach(unknowns, function (nonArrayBuffer) {
 			t['throws'](
 				function () { ES.CloneArrayBuffer(nonArrayBuffer, 0, 0, Object); },
 				TypeError,
@@ -11410,7 +11470,10 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			});
 
 			// node < 6 lacks Reflect.construct, so `v.nonConstructorFunctions` can't be detected
-			forEach(v.nonFunctions.concat(typeof Reflect === 'object' ? v.nonConstructorFunctions : []), function (nonConstructor) {
+			forEach([].concat(
+				v.nonFunctions,
+				typeof Reflect === 'object' ? v.nonConstructorFunctions : []
+			), function (nonConstructor) {
 				st['throws'](
 					function () { ES.CloneArrayBuffer(emptyBuffer, 0, 0, nonConstructor); },
 					TypeError,
@@ -11448,7 +11511,10 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(v.notNonNegativeIntegers.concat(0x10FFFF + 1), function (nonCodePoint) {
+		forEach([].concat(
+			v.notNonNegativeIntegers,
+			0x10FFFF + 1
+		), function (nonCodePoint) {
 			t['throws'](
 				function () { ES.CodePointsToString([nonCodePoint]); },
 				TypeError,
@@ -11462,7 +11528,10 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 	});
 
 	test('GetPromiseResolve', function (t) {
-		forEach(v.nonFunctions.concat(v.nonConstructorFunctions), function (nonConstructor) {
+		forEach([].concat(
+			v.nonFunctions,
+			v.nonConstructorFunctions
+		), function (nonConstructor) {
 			t['throws'](
 				function () { ES.GetPromiseResolve(nonConstructor); },
 				TypeError,
@@ -11501,7 +11570,13 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			t.equal(false, ES.IsIntegralNumber(i + 0.2), (i + 0.2) + ' is not integer');
 		}
 		t.equal(true, ES.IsIntegralNumber(-0), '-0 is integer');
-		var notInts = v.nonNumbers.concat(v.nonIntegerNumbers, v.infinities, [NaN, [], new Date()]);
+		var notInts = [].concat(
+			v.nonNumbers,
+			v.nonIntegerNumbers,
+			nonFiniteNumbers,
+			[],
+			new Date()
+		);
 		forEach(notInts, function (notInt) {
 			t.equal(false, ES.IsIntegralNumber(notInt), debug(notInt) + ' is not integer');
 		});
@@ -11522,7 +11597,10 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 	});
 
 	test('SetTypedArrayFromArrayLike', function (t) {
-		forEach(v.primitives.concat(v.objects, [[]]), function (nonTA) {
+		forEach([].concat(
+			unknowns,
+			[[]]
+		), function (nonTA) {
 			t['throws'](
 				function () { ES.SetTypedArrayFromArrayLike(nonTA, 0, []); },
 				TypeError,
@@ -11567,7 +11645,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			});
 
 			forEach(availableTypedArrays, function (name) {
-				var isBigInt = name.slice(0, 3) === 'Big';
+				var isBigInt = isBigIntTAType(name);
 				var Z = isBigInt ? safeBigInt : Number;
 				var TA = global[name];
 
@@ -11605,7 +11683,10 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 	});
 
 	test('SetTypedArrayFromTypedArray', { skip: availableTypedArrays.length === 0 }, function (t) {
-		forEach(v.primitives.concat(v.objects, [[]]), function (nonTA) {
+		forEach([].concat(
+			unknowns,
+			[[]]
+		), function (nonTA) {
 			t['throws'](
 				function () { ES.SetTypedArrayFromTypedArray(nonTA, 0, new Uint8Array(0)); },
 				TypeError,
@@ -11655,7 +11736,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 		});
 
 		forEach(availableTypedArrays, function (name) {
-			var isBigInt = name.slice(0, 3) === 'Big';
+			var isBigInt = isBigIntTAType(name);
 			var Z = isBigInt ? safeBigInt : Number;
 			var TA = global[name];
 
@@ -11762,7 +11843,12 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			forEach([-1, -42, -Infinity].concat(v.nonIntegerNumbers), function (nonPositiveInteger) {
+			forEach([].concat(
+				-1,
+				-42,
+				-Infinity,
+				v.nonIntegerNumbers
+			), function (nonPositiveInteger) {
 				st['throws'](
 					function () { ES.SetFunctionLength(HasNoLength, nonPositiveInteger); },
 					TypeError,
@@ -11793,7 +11879,14 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(v.nonNumbers.concat(v.nonIntegerNumbers), function (nonIntegerNumber) {
+		var notInts = [].concat(
+			v.nonNumbers,
+			v.nonIntegerNumbers,
+			nonFiniteNumbers,
+			[],
+			new Date()
+		);
+		forEach(notInts, function (nonIntegerNumber) {
 			t['throws'](
 				function () { ES.SplitMatch('', nonIntegerNumber, ''); },
 				TypeError,
@@ -11896,7 +11989,14 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(v.nonNumbers.concat(v.nonIntegerNumbers), function (nonIntegerNumber) {
+		var notInts = [].concat(
+			v.nonNumbers,
+			v.nonIntegerNumbers,
+			nonFiniteNumbers,
+			[],
+			new Date()
+		);
+		forEach(notInts, function (nonIntegerNumber) {
 			t['throws'](
 				function () { ES.substring('', nonIntegerNumber); },
 				TypeError,
@@ -12004,7 +12104,10 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ValidateAtomicAccess', function (t) {
-		forEach(v.primitives.concat(v.objects, [[]]), function (nonTA) {
+		forEach([].concat(
+			unknowns,
+			[[]]
+		), function (nonTA) {
 			t['throws'](
 				function () { ES.ValidateAtomicAccess(nonTA, 0); },
 				TypeError,
@@ -12064,7 +12167,10 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(v.primitives.concat(v.objects, [[]]), function (nonTA) {
+		forEach([].concat(
+			unknowns,
+			[[]]
+		), function (nonTA) {
 			t['throws'](
 				function () { ES.ValidateIntegerTypedArray(nonTA); },
 				TypeError,
@@ -12121,7 +12227,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 	});
 
 	test('WeakRefDeref', function (t) {
-		forEach(v.primitives.concat(v.objects), function (nonWeakRef) {
+		forEach(unknowns, function (nonWeakRef) {
 			t['throws'](
 				function () { ES.WeakRefDeref(nonWeakRef); },
 				TypeError,
@@ -12352,8 +12458,8 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(v.primitives.concat(
-			v.objects,
+		forEach([].concat(
+			unknowns,
 			{ '[[StartIndex]]': -1 },
 			{ '[[StartIndex]]': 1.2, '[[EndIndex]]': 0 },
 			{ '[[StartIndex]]': 1, '[[EndIndex]]': 0 }
@@ -12400,8 +12506,8 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(v.primitives.concat(
-			v.objects,
+		forEach([].concat(
+			unknowns,
 			{ '[[StartIndex]]': -1 },
 			{ '[[StartIndex]]': 1.2, '[[EndIndex]]': 0 },
 			{ '[[StartIndex]]': 1, '[[EndIndex]]': 0 }
@@ -12719,7 +12825,7 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 
 	test('IsStrictlyEqual', function (t) {
 		t.test('same types use ===', function (st) {
-			forEach(v.primitives.concat(v.objects), function (value) {
+			forEach(unknowns, function (value) {
 				st.equal(ES.IsStrictlyEqual(value, value), value === value, debug(value) + ' is strictly equal to itself');
 			});
 			st.end();
@@ -12756,7 +12862,7 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 
 	test('IsLooselyEqual', function (t) {
 		t.test('same types use ===', function (st) {
-			forEach(v.primitives.concat(v.objects), function (value) {
+			forEach(unknowns, function (value) {
 				st.equal(ES.IsLooselyEqual(value, value), value === value, debug(value) + ' is abstractly equal to itself');
 			});
 			st.end();
@@ -12918,7 +13024,10 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(v.strings.concat(wholePoo), function (string) {
+		forEach([].concat(
+			v.strings,
+			wholePoo
+		), function (string) {
 			t.equal(ES.IsStringWellFormedUnicode(string), true, debug(string) + ' is well-formed unicode');
 		});
 
@@ -13105,11 +13214,12 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 		});
 
 		forEach(
-			v.nonFunctions.concat(
+			[].concat(
+				v.nonFunctions,
 				function () {},
 				function f(a, b) { return 0; },
 				function (a) { return 0; },
-				arrowFns.length > 0 ? [
+				v.arrowFunctions.length > 0 ? [
 					/* eslint no-new-func: 1 */
 					Function('return () => {}')(),
 					Function('return (a) => {}')(),
@@ -13125,12 +13235,13 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 			}
 		);
 
-		forEach([
-			function (a, b) { return 0; }
-		].concat(arrowFns.length > 0 ? [
-			/* eslint no-new-func: 1 */
-			Function('return (a, b) => 0')()
-		] : []), function (ac) {
+		forEach([].concat(
+			function (a, b) { return 0; },
+			v.arrowFunctions.length > 0 ? [
+				/* eslint no-new-func: 1 */
+				Function('return (a, b) => 0')()
+			] : []
+		), function (ac) {
 			t.doesNotThrow(
 				function () { ES.SortIndexedProperties({}, 0, ac); },
 				'an abstract closure taking two args is accepted'
@@ -13181,7 +13292,7 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 	});
 
 	test('StringToBigInt', function (t) {
-		test('actual BigInts', { skip: !hasBigInts }, function (st) {
+		t.test('actual BigInts', { skip: !hasBigInts }, function (st) {
 			forEach(v.bigints, function (bigint) {
 				st.equal(
 					ES.StringToBigInt(String(bigint)),
@@ -13213,7 +13324,7 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
-		test('BigInt not supported', { skip: hasBigInts }, function (st) {
+		t.test('BigInt not supported', { skip: hasBigInts }, function (st) {
 			st['throws'](
 				function () { ES.StringToBigInt('0'); },
 				SyntaxError,
@@ -13265,7 +13376,7 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 	});
 
 	test('TypedArrayElementSize', function (t) {
-		forEach(v.primitives.concat(v.objects), function (nonTA) {
+		forEach(unknowns, function (nonTA) {
 			t['throws'](
 				function () { ES.TypedArrayElementSize(nonTA); },
 				TypeError,
@@ -13292,7 +13403,7 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 	});
 
 	test('TypedArrayElementType', function (t) {
-		forEach(v.primitives.concat(v.objects), function (nonTA) {
+		forEach(unknowns, function (nonTA) {
 			t['throws'](
 				function () { ES.TypedArrayElementType(nonTA); },
 				TypeError,
@@ -13370,10 +13481,15 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		test('BigInts are supported', { skip: !hasBigInts }, function (st) {
-			forEach(v.nonIntegerNumbers.concat(0, 1, 37), function (nonIntegerNumber) {
+		t.test('BigInts are supported', { skip: !hasBigInts }, function (st) {
+			forEach([].concat(
+				v.nonIntegerNumbers,
+				0,
+				1,
+				37
+			), function (nonIntegerNumber) {
 				st['throws'](
-					function () { ES.Number.toString($BigInt(0), nonIntegerNumber); },
+					function () { ES.BigInt.toString($BigInt(0), nonIntegerNumber); },
 					TypeError,
 					debug(nonIntegerNumber) + ' is not an integer [2, 36]'
 				);
@@ -13672,9 +13788,8 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 					TypeError,
 					'can not install ' + debug(propertyKey) + ' on non-extensible object'
 				);
-				t.notEqual(
-					notExtensible[propertyKey],
-					sentinel,
+				t.notOk(
+					propertyKey in notExtensible,
 					debug(sentinel) + ' is not installed on "' + debug(propertyKey) + '" on the object'
 				);
 			}
@@ -14465,7 +14580,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IteratorStep', function (t) {
-		forEach(v.primitives.concat(v.objects), function (nonIteratorRecord) {
+		forEach(unknowns, function (nonIteratorRecord) {
 			t['throws'](
 				function () { ES.IteratorStep(nonIteratorRecord); },
 				TypeError,
@@ -14541,7 +14656,12 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(v.nonIntegerNumbers.concat(0, 1, 37), function (nonIntegerNumber) {
+		forEach([].concat(
+			v.nonIntegerNumbers,
+			0,
+			1,
+			37
+		), function (nonIntegerNumber) {
 			t['throws'](
 				function () { ES.Number.toString(0, nonIntegerNumber); },
 				TypeError,
@@ -14651,7 +14771,11 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 			t['throws'](function () { return ES.SameValueNonNumber.apply(ES, nums); }, TypeError, 'value must be same type and non-number: got ' + debug(nums[0]) + ' and ' + debug(nums[1]));
 		});
 
-		forEach(v.objects.concat(v.nonNumberPrimitives).concat(v.bigints), function (val) {
+		forEach([].concat(
+			v.objects,
+			v.nonNumberPrimitives,
+			v.bigints
+		), function (val) {
 			t.equal(val === val, ES.SameValueNonNumber(val, val), debug(val) + ' is SameValueNonNumber to itself');
 		});
 
@@ -14659,7 +14783,10 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 	});
 
 	test('SetTypedArrayFromArrayLike', function (t) {
-		forEach(v.primitives.concat(v.objects, [[]]), function (nonTA) {
+		forEach([].concat(
+			unknowns,
+			[[]]
+		), function (nonTA) {
 			t['throws'](
 				function () { ES.SetTypedArrayFromArrayLike(nonTA, 0, []); },
 				TypeError,
@@ -14704,7 +14831,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 			});
 
 			forEach(availableTypedArrays, function (name) {
-				var isBigInt = name.slice(0, 3) === 'Big';
+				var isBigInt = isBigIntTAType(name);
 				var Z = isBigInt ? safeBigInt : Number;
 				var TA = global[name];
 
@@ -14763,11 +14890,12 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 		});
 
 		forEach(
-			v.nonFunctions.concat(
+			[].concat(
+				v.nonFunctions,
 				function () {},
 				function f(a, b) { return 0; },
 				function (a) { return 0; },
-				arrowFns.length > 0 ? [
+				v.arrowFunctions.length > 0 ? [
 					/* eslint no-new-func: 1 */
 					Function('return () => {}')(),
 					Function('return (a) => {}')(),
@@ -14783,12 +14911,13 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 			}
 		);
 
-		forEach([
-			function (a, b) { return 0; }
-		].concat(arrowFns.length > 0 ? [
-			/* eslint no-new-func: 1 */
-			Function('return (a, b) => 0')()
-		] : []), function (ac) {
+		forEach([].concat(
+			function (a, b) { return 0; },
+			v.arrowFunctions.length > 0 ? [
+				/* eslint no-new-func: 1 */
+				Function('return (a, b) => 0')()
+			] : []
+		), function (ac) {
 			t.doesNotThrow(
 				function () { ES.SortIndexedProperties({}, 0, ac, 'skip-holes'); },
 				'an abstract closure taking two args is accepted'
@@ -14854,7 +14983,10 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 	});
 
 	test('TimeZoneString', function (t) {
-		forEach(v.nonIntegerNumbers.concat(v.infinities, NaN), function (nonIntegerNumber) {
+		forEach([].concat(
+			v.nonIntegerNumbers,
+			nonFiniteNumbers
+		), function (nonIntegerNumber) {
 			t['throws'](
 				function () { ES.TimeZoneString(nonIntegerNumber); },
 				TypeError,
@@ -14871,7 +15003,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 
 	test('TypedArrayCreateSameType', function (t) {
 		t.test('no Typed Array support', { skip: availableTypedArrays.length > 0 }, function (st) {
-			forEach(v.primitives.concat(v.objects), function (nonTA) {
+			forEach(unknowns, function (nonTA) {
 				st['throws'](
 					function () { ES.TypedArrayCreateSameType(nonTA, []); },
 					SyntaxError,
@@ -14881,7 +15013,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 
 			forEach(v.nonArrays, function (nonArray) {
 				st['throws'](
-					function () { ES.TypedArrayCreate(Array, nonArray); },
+					function () { ES.TypedArrayCreateSameType(Array, nonArray); },
 					SyntaxError,
 					'no Typed Array support'
 				);
@@ -14891,7 +15023,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('Typed Array support', { skip: availableTypedArrays.length === 0 }, function (st) {
-			forEach(v.primitives.concat(v.objects), function (nonTA) {
+			forEach(unknowns, function (nonTA) {
 				st['throws'](
 					function () { ES.TypedArrayCreateSameType(nonTA, []); },
 					TypeError,
@@ -14943,7 +15075,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 	});
 
 	test('WordCharacters', function (t) {
-		forEach([].concat(v.primitives, v.objects), function (nonRER) {
+		forEach(unknowns, function (nonRER) {
 			t['throws'](
 				function () { ES.WordCharacters(nonRER); },
 				TypeError,
@@ -15051,10 +15183,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	test('ArrayBufferByteLength', function (t) {
 		var order = 'UNORDERED';
 
-		forEach([].concat(
-			v.primitives,
-			v.objects
-		), function (nonAB) {
+		forEach(unknowns, function (nonAB) {
 			t['throws'](
 				function () { ES.ArrayBufferByteLength(nonAB, order); },
 				TypeError,
@@ -15095,10 +15224,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ArrayBufferCopyAndDetach', function (t) {
-		forEach([].concat(
-			v.primitives,
-			v.objects
-		), function (nonAB) {
+		forEach(unknowns, function (nonAB) {
 			t['throws'](
 				function () { ES.ArrayBufferCopyAndDetach(nonAB, 0, 'FIXED-LENGTH'); },
 				TypeError,
@@ -15783,7 +15909,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 		var isTypedArray = true;
 		var order = 'UNORDERED';
 
-		forEach(v.primitives.concat(v.objects), function (nonAB) {
+		forEach(unknowns, function (nonAB) {
 			t['throws'](
 				function () { ES.GetValueFromBuffer(nonAB, 0, 'int8', isTypedArray, order); },
 				TypeError,
@@ -15800,7 +15926,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			forEach(v.nonStrings.concat('not a valid type'), function (nonString) {
+			forEach(invalidTATypes, function (nonString) {
 				st['throws'](
 					function () { ES.GetValueFromBuffer(new ArrayBuffer(8), 0, nonString, isTypedArray, order); },
 					TypeError,
@@ -15845,19 +15971,8 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 
 			forEach(bufferTestCases, function (testCase, name) {
 				st.test(name + ': ' + debug(testCase.value), function (s2t) {
-					forEach([].concat(
-						'Int8',
-						'Uint8',
-						'Uint8C',
-						'Int16',
-						'Uint16',
-						'Int32',
-						'Uint32',
-						hasBigInts ? bigIntTypes : [],
-						'Float32',
-						'Float64'
-					), function (type) {
-						var isBigInt = type.slice(0, 3) === 'Big';
+					forEach(allTypes, function (type) {
+						var isBigInt = isBigIntTAType(type);
 						var view = new DataView(new ArrayBuffer(elementSizes.$Float64Array));
 						var method = type === 'Uint8C' ? 'Uint8' : type;
 						// var value = unserialize(testCase.value);
@@ -15928,7 +16043,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('GetViewByteLength', function (t) {
-		forEach(v.primitives.concat(v.objects), function (nonDVWBWRecord) {
+		forEach(unknowns, function (nonDVWBWRecord) {
 			t['throws'](
 				function () { ES.GetViewByteLength(nonDVWBWRecord); },
 				TypeError,
@@ -16055,7 +16170,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('HasEitherUnicodeFlag', function (t) {
-		forEach([].concat(v.primitives, v.objects), function (nonRER) {
+		forEach(unknowns, function (nonRER) {
 			t['throws'](
 				function () { ES.HasEitherUnicodeFlag(nonRER); },
 				TypeError,
@@ -16104,7 +16219,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IsArrayBufferViewOutOfBounds', function (t) {
-		forEach([].concat(v.primitives, v.objects), function (nonABV) {
+		forEach(unknowns, function (nonABV) {
 			t['throws'](
 				function () { ES.IsArrayBufferViewOutOfBounds(nonABV); },
 				TypeError,
@@ -16169,7 +16284,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IsFixedLengthArrayBuffer', function (t) {
-		forEach(v.primitives.concat(v.objects), function (nonAB) {
+		forEach(unknowns, function (nonAB) {
 			t['throws'](
 				function () { ES.IsFixedLengthArrayBuffer(nonAB); },
 				TypeError,
@@ -16233,7 +16348,10 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IsTypedArrayOutOfBounds', function (t) {
-		forEach(v.primitives.concat(v.objects, [[]]), function (nonTAWBWR) {
+		forEach([].concat(
+			unknowns,
+			[[]]
+		), function (nonTAWBWR) {
 			t['throws'](
 				function () { ES.IsTypedArrayOutOfBounds(nonTAWBWR); },
 				TypeError,
@@ -16276,7 +16394,10 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(clampedTypes.concat(nonIntegerTypes), function (type) {
+		forEach([].concat(
+			clampedTypes,
+			nonUnclampedIntegerTypes
+		), function (type) {
 			t.equal(
 				ES.IsUnclampedIntegerElementType(type.toUpperCase()),
 				false,
@@ -16308,7 +16429,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IsViewOutOfBounds', function (t) {
-		forEach(v.primitives.concat(v.objects), function (nonDVWBWRecord) {
+		forEach(unknowns, function (nonDVWBWRecord) {
 			t['throws'](
 				function () { ES.IsViewOutOfBounds(nonDVWBWRecord); },
 				TypeError,
@@ -16353,7 +16474,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IteratorStepValue', function (t) {
-		forEach(v.primitives.concat(v.objects), function (nonIteratorRecord) {
+		forEach(unknowns, function (nonIteratorRecord) {
 			t['throws'](
 				function () { ES.IteratorStepValue(nonIteratorRecord); },
 				TypeError,
@@ -16593,7 +16714,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('NumericToRawBytes', function (t) {
-		forEach(v.nonStrings.concat('', 'Byte'), function (nonTAType) {
+		forEach(nonTATypes, function (nonTAType) {
 			t['throws'](
 				function () { ES.NumericToRawBytes(nonTAType, 0, false); },
 				TypeError,
@@ -16621,19 +16742,8 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 			var value = unserialize(testCase.value);
 
 			t.test(name + ': ' + value, function (st) {
-				forEach([].concat(
-					'Int8',
-					'Uint8',
-					'Uint8C',
-					'Int16',
-					'Uint16',
-					'Int32',
-					'Uint32',
-					hasBigInts ? bigIntTypes : [],
-					'Float32',
-					'Float64'
-				), function (type) {
-					var isBigInt = type.slice(0, 3) === 'Big';
+				forEach(allTypes, function (type) {
+					var isBigInt = isBigIntTAType(type);
 					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
 
@@ -16762,7 +16872,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('RawBytesToNumeric', function (t) {
-		forEach(v.nonStrings.concat('', 'Byte'), function (nonTAType) {
+		forEach(nonTATypes, function (nonTAType) {
 			t['throws'](
 				function () { ES.RawBytesToNumeric(nonTAType, [], false); },
 				TypeError,
@@ -16770,7 +16880,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(v.primitives.concat(v.objects), function (nonArray) {
+		forEach(unknowns, function (nonArray) {
 			t['throws'](
 				function () { ES.RawBytesToNumeric('INT8', nonArray, false); },
 				TypeError,
@@ -16796,18 +16906,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 		forEach(bufferTestCases, function (testCase, name) {
 			var value = unserialize(testCase.value);
 			t.test(name + ': ' + value, function (st) {
-				forEach([].concat(
-					'Int8',
-					'Uint8',
-					'Uint8C',
-					'Int16',
-					'Uint16',
-					'Int32',
-					'Uint32',
-					hasBigInts ? bigIntTypes : [],
-					'Float32',
-					'Float64'
-				), function (type) {
+				forEach(allTypes, function (type) {
 					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
 					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 
@@ -16983,7 +17082,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 
 	test('SetValueInBuffer', function (t) {
 		var order = 'UNORDERED';
-		forEach(v.primitives.concat(v.objects), function (nonAB) {
+		forEach(unknowns, function (nonAB) {
 			t['throws'](
 				function () { ES.SetValueInBuffer(nonAB, 0, 'INT8', 0, true, order); },
 				TypeError,
@@ -17000,11 +17099,11 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			forEach(v.nonStrings.concat('not a valid type'), function (nonString) {
+			forEach(invalidTATypes, function (invalidType) {
 				st['throws'](
-					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, nonString, 0, true, order); },
+					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, invalidType, 0, true, order); },
 					TypeError,
-					'type: ' + debug(nonString) + ' is not a valid String (or type) value'
+					'type: ' + debug(invalidType) + ' is not a valid String (or type) value'
 				);
 			});
 
@@ -17056,19 +17155,8 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 			});
 
 			forEach(bufferTestCases, function (testCase, name) {
-				forEach([].concat(
-					'Int8',
-					'Uint8',
-					'Uint8C',
-					'Int16',
-					'Uint16',
-					'Int32',
-					'Uint32',
-					hasBigInts ? bigIntTypes : [],
-					'Float32',
-					'Float64'
-				), function (type) {
-					var isBigInt = type === 'BigInt64' || type === 'BigUint64';
+				forEach(allTypes, function (type) {
+					var isBigInt = isBigIntTAType(type);
 					var Z = isBigInt ? safeBigInt : Number;
 					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
@@ -17224,7 +17312,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ThisBigIntValue', function (t) {
-		test('actual BigInts', { skip: !hasBigInts }, function (st) {
+		t.test('actual BigInts', { skip: !hasBigInts }, function (st) {
 			st.equal(ES.ThisBigIntValue(BigInt(42)), BigInt(42));
 			st.equal(ES.ThisBigIntValue(Object(BigInt(42))), BigInt(42));
 
@@ -17297,7 +17385,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ThisSymbolValue', function (t) {
-		forEach(v.nonSymbolPrimitives.concat(v.objects), function (nonSymbol) {
+		forEach(allButSyms, function (nonSymbol) {
 			t['throws'](
 				function () { ES.ThisSymbolValue(nonSymbol); },
 				v.hasSymbols ? TypeError : SyntaxError,
@@ -17306,7 +17394,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('no native Symbols', { skip: v.hasSymbols }, function (st) {
-			forEach(v.objects.concat(v.primitives), function (value) {
+			forEach(unknowns, function (value) {
 				st['throws'](
 					function () { ES.ThisSymbolValue(value); },
 					SyntaxError,
@@ -17334,7 +17422,10 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('TypedArrayByteLength', function (t) {
-		forEach(v.primitives.concat(v.objects, [[]]), function (nonTAWBWR) {
+		forEach([].concat(
+			unknowns,
+			[[]]
+		), function (nonTAWBWR) {
 			t['throws'](
 				function () { ES.TypedArrayByteLength(nonTAWBWR); },
 				TypeError,
@@ -17460,7 +17551,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('TypedArrayElementType', function (t) {
-		forEach(v.primitives.concat(v.objects), function (nonTA) {
+		forEach(unknowns, function (nonTA) {
 			t['throws'](
 				function () { ES.TypedArrayElementType(nonTA); },
 				TypeError,
@@ -17485,7 +17576,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('TypedArrayGetElement', function (t) {
-		forEach(v.primitives.concat(v.objects), function (nonTA) {
+		forEach(unknowns, function (nonTA) {
 			t['throws'](
 				function () { ES.TypedArrayGetElement(nonTA, 0); },
 				TypeError,
@@ -17505,7 +17596,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 			});
 
 			forEach(availableTypedArrays, function (TypedArray) {
-				var isBigInt = TypedArray.slice(0, 3) === 'Big';
+				var isBigInt = isBigIntTAType(TypedArray);
 				var Z = isBigInt ? safeBigInt : Number;
 				var TA = global[TypedArray];
 
@@ -17524,7 +17615,10 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('TypedArrayLength', function (t) {
-		forEach(v.primitives.concat(v.objects, [[]]), function (nonTAWBWR) {
+		forEach([].concat(
+			unknowns,
+			[[]]
+		), function (nonTAWBWR) {
 			t['throws'](
 				function () { ES.TypedArrayLength(nonTAWBWR); },
 				TypeError,
@@ -17570,7 +17664,10 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ValidateAtomicAccess', function (t) {
-		forEach(v.primitives.concat(v.objects, [[]]), function (nonTAWBWR) {
+		forEach([].concat(
+			unknowns,
+			[[]]
+		), function (nonTAWBWR) {
 			t['throws'](
 				function () { ES.ValidateAtomicAccess(nonTAWBWR, 0); },
 				TypeError,
@@ -17623,7 +17720,10 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ValidateAtomicAccessOnIntegerTypedArray', function (t) {
-		forEach(v.primitives.concat(v.objects, [[]]), function (nonTA) {
+		forEach([].concat(
+			unknowns,
+			[[]]
+		), function (nonTA) {
 			t['throws'](
 				function () { ES.ValidateAtomicAccessOnIntegerTypedArray(nonTA, 0); },
 				TypeError,
@@ -17714,7 +17814,10 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(v.primitives.concat(v.objects, [[]]), function (nonTA) {
+		forEach([].concat(
+			unknowns,
+			[[]]
+		), function (nonTA) {
 			t['throws'](
 				function () { ES.ValidateIntegerTypedArray(nonTA, false); },
 				TypeError,
@@ -17763,7 +17866,10 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	test('ValidateTypedArray', function (t) {
 		var order = 'UNORDERED';
 
-		forEach(v.primitives.concat(v.objects, [[]]), function (nonTA) {
+		forEach([].concat(
+			unknowns,
+			[[]]
+		), function (nonTA) {
 			t['throws'](
 				function () { ES.ValidateTypedArray(nonTA, order); },
 				TypeError,
