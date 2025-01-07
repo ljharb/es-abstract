@@ -48,8 +48,6 @@ var $BigInt = hasBigInts ? BigInt : null;
 var supportedRegexFlags = require('available-regexp-flags');
 var whichTypedArray = require('which-typed-array');
 
-var $symbolFor = v.hasSymbols && Symbol['for']; // eslint-disable-line no-restricted-properties
-
 /* globals postMessage */
 var canDetach = typeof structuredClone === 'function' || typeof postMessage === 'function' || isCore('worker_threads');
 
@@ -13523,12 +13521,19 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(v.symbols.concat($symbolFor ? $symbolFor('registered!') : []), function (symbol) {
-			var isReg = isRegisteredSymbol(symbol);
+		forEach(v.unregisteredSymbols, function (symbol) {
 			t.equal(
 				ES.CanBeHeldWeakly(symbol),
-				!isReg,
-				debug(symbol) + ' can' + (isReg ? ' not' : '') + ' be held weakly'
+				true,
+				debug(symbol) + ' can be held weakly'
+			);
+		});
+
+		forEach(v.registeredSymbols, function (symbol) {
+			t.equal(
+				ES.CanBeHeldWeakly(symbol),
+				false,
+				debug(symbol) + ' can not be held weakly'
 			);
 		});
 
@@ -14582,10 +14587,18 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(v.symbols.concat($symbolFor ? $symbolFor('registered!') : []), function (symbol) {
+		forEach(v.registeredSymbols, function (symbol) {
 			t.equal(
 				ES.KeyForSymbol(symbol),
-				isRegisteredSymbol(symbol) ? ES.SymbolDescriptiveString(symbol).slice(7, -1) : undefined,
+				ES.SymbolDescriptiveString(symbol).slice(7, -1),
+				debug(symbol) + ' yields expected key'
+			);
+		});
+
+		forEach(v.unregisteredSymbols, function (symbol) {
+			t.equal(
+				ES.KeyForSymbol(symbol),
+				undefined,
 				debug(symbol) + ' yields expected key'
 			);
 		});
