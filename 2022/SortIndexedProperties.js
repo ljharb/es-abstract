@@ -14,7 +14,6 @@ var ToString = require('./ToString');
 var isAbstractClosure = require('../helpers/isAbstractClosure');
 var isObject = require('../helpers/isObject');
 
-var $push = callBound('Array.prototype.push');
 var $sort = callBound('Array.prototype.sort');
 
 // https://262.ecma-international.org/13.0/#sec-sortindexedproperties
@@ -39,7 +38,7 @@ module.exports = function SortIndexedProperties(obj, len, SortCompare) {
 		var kPresent = HasProperty(obj, Pk);
 		if (kPresent) {
 			var kValue = Get(obj, Pk);
-			$push(items, kValue);
+			items[items.length] = kValue;
 		}
 		k += 1;
 	}

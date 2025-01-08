@@ -1,8 +1,5 @@
 'use strict';
 
-var callBound = require('call-bound');
-var $arrayPush = callBound('Array.prototype.push');
-
 var getIteratorMethod = require('../helpers/getIteratorMethod');
 var AdvanceStringIndex = require('./AdvanceStringIndex');
 var GetIterator = require('./GetIterator');
@@ -29,7 +26,7 @@ module.exports = function IterableToArrayLike(items) {
 			next = IteratorStep(iterator);
 			if (next) {
 				var nextValue = IteratorValue(next);
-				$arrayPush(values, nextValue);
+				values[values.length] = nextValue;
 			}
 		}
 		return values;

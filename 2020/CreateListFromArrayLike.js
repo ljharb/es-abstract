@@ -4,7 +4,6 @@ var callBound = require('call-bound');
 
 var $TypeError = require('es-errors/type');
 var $indexOf = callBound('Array.prototype.indexOf', true) || callBound('String.prototype.indexOf');
-var $push = callBound('Array.prototype.push');
 
 var Get = require('./Get');
 var IsArray = require('./IsArray');
@@ -41,7 +40,7 @@ module.exports = function CreateListFromArrayLike(obj) {
 		if ($indexOf(elementTypes, nextType) < 0) {
 			throw new $TypeError('item type ' + nextType + ' is not a valid elementType');
 		}
-		$push(list, next);
+		list[list.length] = next;
 		index += 1;
 	}
 	return list;

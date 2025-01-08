@@ -1,7 +1,5 @@
 'use strict';
 
-var callBound = require('call-bound');
-
 var DefinePropertyOrThrow = require('./DefinePropertyOrThrow');
 var Get = require('./Get');
 var ToObject = require('./ToObject');
@@ -10,8 +8,6 @@ var ToPropertyDescriptor = require('./ToPropertyDescriptor');
 var forEach = require('../helpers/forEach');
 var getOwnPropertyDescriptor = require('gopd');
 var OwnPropertyKeys = require('own-keys');
-
-var $push = callBound('Array.prototype.push');
 
 // https://262.ecma-international.org/15.0/#sec-objectdefineproperties
 
@@ -25,7 +21,7 @@ module.exports = function ObjectDefineProperties(O, Properties) {
 		if (typeof propDesc !== 'undefined' && propDesc['[[Enumerable]]']) { // step 4.b
 			var descObj = Get(props, nextKey); // step 4.b.i
 			var desc = ToPropertyDescriptor(descObj); // step 4.b.ii
-			$push(descriptors, { '[[Key]]': nextKey, '[[Descriptor]]': desc }); // step 4.b.iii
+			descriptors[descriptors.length] = { '[[Key]]': nextKey, '[[Descriptor]]': desc }; // step 4.b.iii
 		}
 	});
 
