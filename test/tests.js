@@ -12171,6 +12171,11 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 						function () { ES.ValidateIntegerTypedArray(ta); },
 						debug(ta) + ' is an integer TypedArray'
 					);
+					st.equal(
+						ES.ValidateIntegerTypedArray(ta),
+						ta.buffer,
+						'returns the buffer of a waitable integer TypedArray'
+					);
 				}
 
 				var isWaitable = TypedArray === 'Int32Array' || TypedArray === 'BigInt64Array';
@@ -12178,6 +12183,11 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 					st.doesNotThrow(
 						function () { ES.ValidateIntegerTypedArray(ta, true); },
 						debug(ta) + ' is a waitable integer TypedArray'
+					);
+					st.equal(
+						ES.ValidateIntegerTypedArray(ta, true),
+						ta.buffer,
+						'returns the buffer of a waitable integer TypedArray'
 					);
 				} else {
 					st['throws'](
