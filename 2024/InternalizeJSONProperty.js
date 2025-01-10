@@ -35,7 +35,7 @@ module.exports = function InternalizeJSONProperty(holder, name, reviver) {
 		if (isArray) { // step 2.b
 			var I = 0; // step 2.b.i
 
-			var len = LengthOfArrayLike(val, 'length'); // step 2.b.ii
+			var len = LengthOfArrayLike(val); // step 2.b.ii
 
 			while (I < len) { // step 2.b.iii
 				var newElement = InternalizeJSONProperty(val, ToString(I), reviver); // step 2.b.iv.1
