@@ -11796,6 +11796,18 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
+		t.test('different type, same content type', { skip: !hasBigInts || typeof BigInt64Array !== 'function' }, function (st) {
+			var bta = new Float32Array([10, 11]);
+			ES.SetTypedArrayFromTypedArray(bta, 0, new Float64Array([0, 1]));
+			st.deepEqual(bta, new Float32Array([0, 1]));
+
+			var nta = new Float64Array([0, 1]);
+			ES.SetTypedArrayFromTypedArray(nta, 0, new Float32Array([10, 11]));
+			st.deepEqual(nta, new Float64Array([10, 11]));
+
+			st.end();
+		});
+
 		// TODO: add a test where source and target have the same buffer,
 		// covering that the AO uses CloneArrayBuffer,
 		// presumably so as not to overwrite the source data as the same buffer is written to
