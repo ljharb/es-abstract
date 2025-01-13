@@ -1626,14 +1626,14 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			);
 
 			st.equal(
-				ES.ArraySetLength(a, { '[[Value]]': 0 }),
+				ES.ArraySetLength(a, v.descriptors.value(0)),
 				false,
 				'setting a lower value on a non-writable length fails'
 			);
 			st.equal(a.length, 1, 'array still has a length of 1');
 
 			st.equal(
-				ES.ArraySetLength(a, { '[[Value]]': 2 }),
+				ES.ArraySetLength(a, v.descriptors.value(2)),
 				false,
 				'setting a higher value on a non-writable length fails'
 			);
@@ -1644,7 +1644,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		forEach([-1, Math.pow(2, 32)].concat(v.nonIntegerNumbers), function (nonLength) {
 			t['throws'](
-				function () { ES.ArraySetLength([], { '[[Value]]': nonLength }); },
+				function () { ES.ArraySetLength([], v.descriptors.value(nonLength)); },
 				RangeError,
 				'a non-integer, negative, or > (2**31 - 1) is not a valid length: ' + debug(nonLength)
 			);
@@ -1652,14 +1652,14 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		var arr = [];
 		t.equal(
-			ES.ArraySetLength(arr, { '[[Value]]': 7 }),
+			ES.ArraySetLength(arr, v.descriptors.value(7)),
 			true,
 			'set length succeeded'
 		);
 		t.equal(arr.length, 7, 'array now has a length of 0 -> 7');
 
 		t.equal(
-			ES.ArraySetLength(arr, { '[[Value]]': 2 }),
+			ES.ArraySetLength(arr, v.descriptors.value(2)),
 			true,
 			'set length succeeded'
 		);
@@ -5375,7 +5375,6 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			st.test('accessor descriptor', { skip: !$defineProperty }, function (s2t) {
 				var count = 0;
 				var accessor = v.accessorDescriptor();
-				accessor['[[Enumerable]]'] = true;
 				accessor['[[Get]]'] = function () {
 					count += 1;
 					return count;
@@ -5516,8 +5515,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				'false if Desc and current are both accessors with a !== Get function'
 			);
 
-			var descLackingEnumerable = v.accessorDescriptor();
-			delete descLackingEnumerable['[[Enumerable]]'];
+			var descLackingEnumerable = v.descriptors.configurable(v.descriptors.getter());
 			st.equal(
 				ES.ValidateAndApplyPropertyDescriptor(
 					undefined,
@@ -5634,8 +5632,8 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 					undefined,
 					'property key',
 					true,
-					v.descriptors.configurable({ '[[Value]]': 42 }),
-					ES.CompletePropertyDescriptor(v.descriptors.nonWritable({ '[[Value]]': 7 }))
+					v.descriptors.configurable(v.descriptors.value(42)),
+					ES.CompletePropertyDescriptor(v.descriptors.nonWritable(v.descriptors.value(7)))
 				),
 				false,
 				'false if nonwritable current has a different value than Desc'
