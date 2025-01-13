@@ -4697,7 +4697,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
 					var value = unserialize(testCase.value);
-					var valToSet = type === 'Uint8Clamped' && value > 255 ? 255 : value;
+					var valToSet = type === 'Uint8C' && value > 255 ? 255 : value;
 
 					/*
 					st.equal(
@@ -17031,7 +17031,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 						return;
 					}
 
-					var valToSet = type === 'Uint8Clamped' && value > 255 ? 255 : Z(value);
+					var valToSet = type === 'Uint8C' && value > 255 ? 255 : Z(value);
 
 					/*
 					st.equal(
