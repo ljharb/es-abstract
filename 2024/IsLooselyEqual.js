@@ -6,14 +6,14 @@ var IsStrictlyEqual = require('./IsStrictlyEqual');
 var StringToBigInt = require('./StringToBigInt');
 var ToNumber = require('./ToNumber');
 var ToPrimitive = require('./ToPrimitive');
-var Type = require('./Type');
 
+var isSameType = require('../helpers/isSameType');
 var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/13.0/#sec-islooselyequal
 
 module.exports = function IsLooselyEqual(x, y) {
-	if (Type(x) === Type(y)) {
+	if (isSameType(x, y)) {
 		return IsStrictlyEqual(x, y);
 	}
 	if (x == null && y == null) {

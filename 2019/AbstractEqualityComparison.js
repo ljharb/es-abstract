@@ -2,14 +2,14 @@
 
 var ToNumber = require('./ToNumber');
 var ToPrimitive = require('./ToPrimitive');
-var Type = require('./Type');
 
+var isSameType = require('../helpers/isSameType');
 var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/6.0/#sec-abstract-equality-comparison
 
 module.exports = function AbstractEqualityComparison(x, y) {
-	if (Type(x) === Type(y)) {
+	if (isSameType(x, y)) {
 		return x === y; // ES6+ specified this shortcut anyways.
 	}
 	if (x == null && y == null) {

@@ -11,10 +11,11 @@ var IsStringPrefix = require('./IsStringPrefix');
 var StringToBigInt = require('./StringToBigInt');
 var ToNumeric = require('./ToNumeric');
 var ToPrimitive = require('./ToPrimitive');
-var Type = require('./Type');
 
 var BigIntLessThan = require('./BigInt/lessThan');
 var NumberLessThan = require('./Number/lessThan');
+
+var isSameType = require('../helpers/isSameType');
 
 // https://262.ecma-international.org/11.0/#sec-abstract-relational-comparison
 
@@ -61,7 +62,7 @@ module.exports = function AbstractRelationalComparison(x, y, LeftFirst) {
 
 	nx = ToNumeric(px);
 	ny = ToNumeric(py);
-	if (Type(nx) === Type(ny)) {
+	if (isSameType(nx, ny)) {
 		return typeof nx === 'number' ? NumberLessThan(nx, ny) : BigIntLessThan(nx, ny);
 	}
 
