@@ -2,11 +2,11 @@
 
 var DefinePropertyOrThrow = require('./DefinePropertyOrThrow');
 var Get = require('./Get');
+var OrdinaryGetOwnProperty = require('./OrdinaryGetOwnProperty');
 var ToObject = require('./ToObject');
 var ToPropertyDescriptor = require('./ToPropertyDescriptor');
 
 var forEach = require('../helpers/forEach');
-var getOwnPropertyDescriptor = require('gopd');
 var OwnPropertyKeys = require('own-keys');
 
 // https://262.ecma-international.org/15.0/#sec-objectdefineproperties
@@ -17,7 +17,7 @@ module.exports = function ObjectDefineProperties(O, Properties) {
 	var descriptors = []; // step 3
 
 	forEach(keys, function (nextKey) { // step 4
-		var propDesc = ToPropertyDescriptor(getOwnPropertyDescriptor(props, nextKey)); // step 4.a
+		var propDesc = OrdinaryGetOwnProperty(props, nextKey); // ToPropertyDescriptor(getOwnPropertyDescriptor(props, nextKey)); // step 4.a
 		if (typeof propDesc !== 'undefined' && propDesc['[[Enumerable]]']) { // step 4.b
 			var descObj = Get(props, nextKey); // step 4.b.i
 			var desc = ToPropertyDescriptor(descObj); // step 4.b.ii
