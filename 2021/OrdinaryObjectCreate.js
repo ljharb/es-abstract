@@ -5,11 +5,11 @@ var GetIntrinsic = require('get-intrinsic');
 var $ObjectCreate = GetIntrinsic('%Object.create%', true);
 var $TypeError = require('es-errors/type');
 var $SyntaxError = require('es-errors/syntax');
+var isObject = require('es-object-atoms/isObject');
 
 var IsArray = require('./IsArray');
 
 var forEach = require('../helpers/forEach');
-var isObject = require('../helpers/isObject');
 
 var SLOT = require('internal-slot');
 

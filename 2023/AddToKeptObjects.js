@@ -3,10 +3,9 @@
 var SLOT = require('internal-slot');
 
 var $TypeError = require('es-errors/type');
+var isObject = require('es-object-atoms/isObject');
 
 var ClearKeptObjects = require('./ClearKeptObjects');
-
-var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/12.0/#sec-addtokeptobjects
 

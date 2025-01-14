@@ -4,6 +4,7 @@ var callBound = require('call-bound');
 
 var $TypeError = require('es-errors/type');
 var isInteger = require('math-intrinsics/isInteger');
+var isObject = require('es-object-atoms/isObject');
 
 var DeletePropertyOrThrow = require('./DeletePropertyOrThrow');
 var Get = require('./Get');
@@ -12,7 +13,6 @@ var Set = require('./Set');
 var ToString = require('./ToString');
 
 var isAbstractClosure = require('../helpers/isAbstractClosure');
-var isObject = require('../helpers/isObject');
 
 var $sort = callBound('Array.prototype.sort');
 

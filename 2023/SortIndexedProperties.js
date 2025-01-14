@@ -3,13 +3,13 @@
 var $TypeError = require('es-errors/type');
 var callBound = require('call-bound');
 var isInteger = require('math-intrinsics/isInteger');
+var isObject = require('es-object-atoms/isObject');
 
 var Get = require('./Get');
 var HasProperty = require('./HasProperty');
 var ToString = require('./ToString');
 
 var isAbstractClosure = require('../helpers/isAbstractClosure');
-var isObject = require('../helpers/isObject');
 
 var $sort = callBound('Array.prototype.sort');
 

@@ -6,8 +6,8 @@ var ToNumber = require('./ToNumber');
 var ToPrimitive = require('./ToPrimitive');
 
 var isNaN = require('math-intrinsics/isNaN');
+var isObject = require('es-object-atoms/isObject');
 var isSameType = require('../helpers/isSameType');
-var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/11.0/#sec-abstract-equality-comparison
 

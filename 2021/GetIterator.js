@@ -4,6 +4,7 @@ var GetIntrinsic = require('get-intrinsic');
 
 var $TypeError = require('es-errors/type');
 var $SyntaxError = require('es-errors/syntax');
+var isObject = require('es-object-atoms/isObject');
 var $asyncIterator = GetIntrinsic('%Symbol.asyncIterator%', true);
 
 var inspect = require('object-inspect');
@@ -14,8 +15,6 @@ var AdvanceStringIndex = require('./AdvanceStringIndex');
 var Call = require('./Call');
 var GetMethod = require('./GetMethod');
 var IsArray = require('./IsArray');
-
-var isObject = require('../helpers/isObject');
 
 var ES = {
 	AdvanceStringIndex: AdvanceStringIndex,

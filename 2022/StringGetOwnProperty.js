@@ -2,6 +2,7 @@
 
 var $TypeError = require('es-errors/type');
 var isNegativeZero = require('math-intrinsics/isNegativeZero');
+var isObject = require('es-object-atoms/isObject');
 
 var callBound = require('call-bound');
 var $charAt = callBound('String.prototype.charAt');
@@ -10,7 +11,6 @@ var $stringToString = callBound('String.prototype.toString');
 var CanonicalNumericIndexString = require('./CanonicalNumericIndexString');
 var IsIntegralNumber = require('./IsIntegralNumber');
 
-var isObject = require('../helpers/isObject');
 var isPropertyKey = require('../helpers/isPropertyKey');
 
 // https://262.ecma-international.org/12.0/#sec-stringgetownproperty

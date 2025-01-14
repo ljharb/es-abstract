@@ -8,7 +8,7 @@ var Call = require('./Call');
 var GetMethod = require('./GetMethod');
 var IsArray = require('./IsArray');
 
-var isObject = require('../helpers/isObject');
+var isObject = require('es-object-atoms/isObject');
 
 var ES = {
 	AdvanceStringIndex: AdvanceStringIndex,

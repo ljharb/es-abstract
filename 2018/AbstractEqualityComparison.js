@@ -4,7 +4,8 @@ var ToNumber = require('./ToNumber');
 var ToPrimitive = require('./ToPrimitive');
 
 var isSameType = require('../helpers/isSameType');
-var isObject = require('../helpers/isObject');
+
+var isObject = require('es-object-atoms/isObject');
 
 // https://262.ecma-international.org/6.0/#sec-abstract-equality-comparison
 

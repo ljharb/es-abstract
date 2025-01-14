@@ -1,6 +1,7 @@
 'use strict';
 
 var $TypeError = require('es-errors/type');
+var isObject = require('es-object-atoms/isObject');
 
 var DefineOwnProperty = require('../helpers/DefineOwnProperty');
 var isFullyPopulatedPropertyDescriptor = require('../helpers/isFullyPopulatedPropertyDescriptor');
@@ -13,8 +14,6 @@ var IsGenericDescriptor = require('./IsGenericDescriptor');
 var isPropertyKey = require('../helpers/isPropertyKey');
 var SameValue = require('./SameValue');
 var Type = require('./Type');
-
-var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/13.0/#sec-validateandapplypropertydescriptor
 

@@ -1,6 +1,7 @@
 'use strict';
 
 var $TypeError = require('es-errors/type');
+var isObject = require('es-object-atoms/isObject');
 
 var callBound = require('call-bound');
 var forEach = require('../helpers/forEach');
@@ -16,8 +17,6 @@ var isPropertyKey = require('../helpers/isPropertyKey');
 var SameValue = require('./SameValue');
 var ToNumber = require('./ToNumber');
 var ToObject = require('./ToObject');
-
-var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/9.0/#sec-copydataproperties
 

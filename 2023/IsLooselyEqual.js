@@ -1,6 +1,7 @@
 'use strict';
 
 var isFinite = require('math-intrinsics/isFinite');
+var isObject = require('es-object-atoms/isObject');
 
 var IsStrictlyEqual = require('./IsStrictlyEqual');
 var StringToBigInt = require('./StringToBigInt');
@@ -8,7 +9,6 @@ var ToNumber = require('./ToNumber');
 var ToPrimitive = require('./ToPrimitive');
 
 var isSameType = require('../helpers/isSameType');
-var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/13.0/#sec-islooselyequal
 

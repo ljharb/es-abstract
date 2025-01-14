@@ -1,12 +1,13 @@
 'use strict';
 
 var $TypeError = require('es-errors/type');
-
+var isObject = require('es-object-atoms/isObject');
 var callBound = require('call-bound');
+var OwnPropertyKeys = require('own-keys');
+
 var forEach = require('../helpers/forEach');
 var every = require('../helpers/every');
 var some = require('../helpers/some');
-var OwnPropertyKeys = require('own-keys');
 
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 
@@ -18,8 +19,6 @@ var isPropertyKey = require('../helpers/isPropertyKey');
 var SameValue = require('./SameValue');
 var ToNumber = require('./ToNumber');
 var ToObject = require('./ToObject');
-
-var isObject = require('../helpers/isObject');
 
 // https://262.ecma-international.org/12.0/#sec-copydataproperties
 

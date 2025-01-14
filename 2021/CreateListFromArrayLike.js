@@ -3,6 +3,7 @@
 var callBound = require('call-bound');
 
 var $TypeError = require('es-errors/type');
+var isObject = require('es-object-atoms/isObject');
 var $indexOf = callBound('Array.prototype.indexOf', true) || callBound('String.prototype.indexOf');
 
 var Get = require('./Get');
@@ -10,8 +11,6 @@ var IsArray = require('./IsArray');
 var LengthOfArrayLike = require('./LengthOfArrayLike');
 var ToString = require('./ToString');
 var Type = require('./Type');
-
-var isObject = require('../helpers/isObject');
 
 var defaultElementTypes = ['Undefined', 'Null', 'Boolean', 'String', 'Symbol', 'Number', 'BigInt', 'Object'];
 
