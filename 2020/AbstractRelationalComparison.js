@@ -16,7 +16,7 @@ var Type = require('./Type');
 var BigIntLessThan = require('./BigInt/lessThan');
 var NumberLessThan = require('./Number/lessThan');
 
-// https://262.ecma-international.org/9.0/#sec-abstract-relational-comparison
+// https://262.ecma-international.org/11.0/#sec-abstract-relational-comparison
 
 // eslint-disable-next-line max-statements, max-lines-per-function
 module.exports = function AbstractRelationalComparison(x, y, LeftFirst) {
