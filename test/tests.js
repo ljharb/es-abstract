@@ -12,7 +12,6 @@ var hasStrictMode = require('has-strict-mode')();
 var functionsHaveNames = require('functions-have-names')();
 var functionsHaveConfigurableNames = require('functions-have-names').functionsHaveConfigurableNames();
 var boundFunctionsHaveNames = require('functions-have-names').boundFunctionsHaveNames();
-var hasBigInts = require('has-bigints')();
 var getOwnPropertyDescriptor = require('gopd');
 var SLOT = require('internal-slot');
 var availableTypedArrays = require('available-typed-arrays')();
@@ -39,141 +38,28 @@ var isPromiseCapabilityRecord = require('../helpers/records/promise-capability-r
 var reduce = require('../helpers/reduce');
 var safeBigInt = require('safe-bigint');
 var unserialize = require('./helpers/unserializeNumeric');
+var getNamelessFunction = require('./helpers/getNamelessFunction');
 
-var $BigInt = hasBigInts ? BigInt : null;
+var esV = require('./helpers/v');
+
+var $BigInt = esV.hasBigInts ? BigInt : null;
 
 var supportedRegexFlags = require('available-regexp-flags');
 var whichTypedArray = require('which-typed-array');
 
-/* globals postMessage */
-var canDetach = typeof structuredClone === 'function' || typeof postMessage === 'function' || isCore('worker_threads');
-
 // in node < 6, RegExp.prototype is an actual regex
 var reProtoIsRegex = isRegex(RegExp.prototype);
 
-var twoSixtyFour = hasBigInts && safeBigInt(Math.pow(2, 64));
-var twoSixtyThree = hasBigInts && safeBigInt(Math.pow(2, 63));
+var twoSixtyFour = safeBigInt && safeBigInt(Math.pow(2, 64));
+var twoSixtyThree = safeBigInt && safeBigInt(Math.pow(2, 63));
 
-var unknowns = [].concat(
-	v.primitives,
-	v.objects
-);
-var allButSyms = [].concat(
-	v.objects,
-	v.nonSymbolPrimitives
-);
-var invalidTATypes = [].concat(
-	v.nonStrings,
-	'not a valid type'
-);
-var nonFiniteNumbers = [].concat(
-	v.infinities,
-	NaN
-);
-var notInts = [].concat(
-	v.nonNumbers,
-	v.nonIntegerNumbers,
-	nonFiniteNumbers,
-	[],
-	new Date()
-);
-
-var elementSizes = {
-	__proto__: null,
-	$Int8Array: 1,
-	$Uint8Array: 1,
-	$Uint8ClampedArray: 1,
-	$Int16Array: 2,
-	$Uint16Array: 2,
-	$Int32Array: 4,
-	$Uint32Array: 4,
-	$BigInt64Array: 8,
-	$BigUint64Array: 8,
-	$Float32Array: 4,
-	$Float64Array: 8
-};
-
-var unclampedUnsignedIntegerTypes = [
-	'Int8',
-	'Int16',
-	'Int32'
-];
-var clampedTypes = [
-	'Uint8C'
-];
-var unclampedSignedIntegerTypes = [
-	'Uint8',
-	'Uint16',
-	'Uint32'
-];
-var unclampedIntegerTypes = [].concat(
-	unclampedUnsignedIntegerTypes,
-	unclampedSignedIntegerTypes
-);
-var floatTypes = [
-	'Float32',
-	'Float64'
-];
-var integerTypes = [].concat(
-	unclampedIntegerTypes,
-	clampedTypes
-);
-var bigIntTypes = [
-	'BigInt64',
-	'BigUint64'
-];
-var numberTypes = [].concat(
-	floatTypes,
-	integerTypes
-);
-var nonUnclampedIntegerTypes = [].concat(
-	floatTypes,
-	bigIntTypes
-);
-var unsignedElementTypes = [].concat(
-	unclampedSignedIntegerTypes,
-	hasBigInts ? 'BigUint64' : []
-);
-var signedElementTypes = [].concat(
-	unclampedUnsignedIntegerTypes,
-	floatTypes,
-	hasBigInts ? 'BigInt64' : []
-);
-var allTypes = [].concat(
-	numberTypes,
-	hasBigInts ? bigIntTypes : []
-);
-var nonTATypes = [].concat(
-	v.nonStrings,
-	'',
-	'Byte'
-);
-
-var isBigIntTAType = function isBigIntTAType(type) {
-	return type.slice(0, 3) === 'Big';
-};
-
-var canDistinguishSparseFromUndefined = 0 in [undefined]; // IE 6 - 8 have a bug where this returns false
-
-// IE 9 does not throw in strict mode when writability/configurability/extensibility is violated
-var noThrowOnStrictViolation = (function () {
-	try {
-		delete [].length;
-		return true;
-	} catch (e) {
-	}
-	return false;
-}());
-
-var clearBuffer = function clearBuffer(buffer) {
-	new DataView(buffer).setFloat64(0, 0, true); // clear the buffer
-};
+var clearBuffer = require('./helpers/clearBuffer');
 
 var testSetValueInBuffer = function (ES, st, testCase, isTypedArray, order) {
 	return function (type) {
-		var isBigInt = isBigIntTAType(type);
+		var isBigInt = esV.isBigIntTAType(type);
 		var Z = isBigInt ? safeBigInt : Number;
-		var elementSize = elementSizes['$' + (type === 'Uint8C' ? 'Uint8Clamped' : type) + 'Array'];
+		var elementSize = esV.elementSizes['$' + (type === 'Uint8C' ? 'Uint8Clamped' : type) + 'Array'];
 		var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 		var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
 		var value = unserialize(testCase.value);
@@ -192,7 +78,7 @@ var testSetValueInBuffer = function (ES, st, testCase, isTypedArray, order) {
 		);
 		*/
 
-		var buffer = new ArrayBuffer(elementSizes.$Float64Array);
+		var buffer = new ArrayBuffer(esV.elementSizes.$Float64Array);
 		var copyBytes = new Uint8Array(buffer);
 
 		clearBuffer(buffer);
@@ -269,18 +155,7 @@ var makeTest = function makeTest(ES, skips) {
 	};
 };
 
-var throwsSentinel = function throwsSentinel(fn, sentinel, message) {
-	try {
-		fn();
-		this.fail('did not throw: ' + message);
-	} catch (e) {
-		this.equal(e, sentinel, message);
-	}
-};
-
-var leadingPoo = '\uD83D';
-var trailingPoo = '\uDCA9';
-var wholePoo = leadingPoo + trailingPoo;
+var throwsSentinel = require('./helpers/throwsSentinel');
 
 var getArraySubclassWithSpeciesConstructor = function getArraySubclass(speciesConstructor) {
 	var Bar = function Bar() {
@@ -296,69 +171,16 @@ var getArraySubclassWithSpeciesConstructor = function getArraySubclass(speciesCo
 	return Bar;
 };
 
-var testIterator = function (t, iterator, expected) {
-	var resultCount = 0;
-	var result;
-	while (result = iterator.next(), !result.done && resultCount < expected.length + 1) { // eslint-disable-line no-sequences
-		t.deepEqual(result, { done: false, value: expected[resultCount] }, 'result ' + resultCount);
-		resultCount += 1;
-	}
-	t.equal(resultCount, expected.length, 'expected ' + expected.length + ', got ' + (result.done ? '' : 'more than ') + resultCount);
-};
+var testIterator = require('./helpers/testIterator');
+var testAsyncIterator = require('./helpers/testAsyncIterator');
 
-var testAsyncIterator = function (t, asyncIterator, expected) {
-	var results = arguments.length > 3 ? arguments[3] : [];
+var testRESIterator = require('./helpers/testRESIterator');
 
-	var nextResult = asyncIterator.next();
-
-	return Promise.resolve(nextResult).then(function (result) {
-		results.push(result);
-		if (!result.done && results.length < expected.length) {
-			t.deepEqual(result, { done: false, value: expected[results.length - 1] }, 'result ' + (results.length - 1));
-			return testAsyncIterator(t, asyncIterator, expected, results);
-		}
-
-		t.equal(results.length, expected.length, 'expected ' + expected.length + ', got ' + (result.done ? '' : 'more than ') + results.length);
-		return results.length;
-	});
-};
-
-var testRESIterator = function testRegExpStringIterator(ES, t, regex, str, global, unicode, expected) {
-	var iterator = ES.CreateRegExpStringIterator(regex, str, global, unicode);
-	t.equal(typeof iterator, 'object', 'iterator is an object');
-	t.equal(typeof iterator.next, 'function', '`.next` is a function');
-
-	t.test('has symbols', { skip: !v.hasSymbols }, function (st) {
-		st.equal(typeof iterator[Symbol.iterator], 'function', '[`Symbol.iterator`] is a function');
-		st.end();
-	});
-
-	testIterator(t, iterator, expected);
-};
-
-var makeIteratorRecord = function makeIteratorRecord(iterator) {
-	return {
-		'[[Iterator]]': iterator,
-		'[[NextMethod]]': iterator.next,
-		'[[Done]]': false
-	};
-};
+var makeIteratorRecord = require('./helpers/makeIteratorRecord');
 
 var hasSpecies = v.hasSymbols && Symbol.species;
 
-var hasLastIndex = 'lastIndex' in (/a/).exec('a'); // IE 8
-var hasGroups = 'groups' in (/a/).exec('a'); // modern engines
-var kludgeMatch = function kludgeMatch(R, matchObject) {
-	if (hasGroups) {
-		assign(matchObject, { groups: matchObject.groups });
-	}
-	if (hasLastIndex) {
-		assign(matchObject, { lastIndex: matchObject.lastIndex || R.lastIndex });
-	} else {
-		delete matchObject.lastIndex; // eslint-disable-line no-param-reassign
-	}
-	return matchObject;
-};
+var kludgeMatch = require('./helpers/kludgeMatch');
 
 var testEnumerableOwnNames = function (t, enumerableOwnNames) {
 	forEach(v.primitives, function (nonObject) {
@@ -567,7 +389,7 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.equal(ES.Canonicalize(leadingPoo, false), leadingPoo, 'when IgnoreCase is false, ch is returned');
+		t.equal(ES.Canonicalize(esV.poo.leading, false), esV.poo.leading, 'when IgnoreCase is false, ch is returned');
 		t.equal(ES.Canonicalize('ƒ', true), 'Ƒ', 'when IgnoreCase is true, ch is canonicalized');
 
 		t.end();
@@ -835,7 +657,7 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ToString', function (t) {
-		forEach(allButSyms, function (item) {
+		forEach(esV.allButSyms, function (item) {
 			t.equal(ES.ToString(item), String(item), 'ES.ToString(' + debug(item) + ') ToStrings to String(' + debug(item) + ')');
 		});
 
@@ -886,7 +708,7 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 	test('SameValue', function (t) {
 		t.equal(true, ES.SameValue(NaN, NaN), 'NaN is SameValue as NaN');
 		t.equal(false, ES.SameValue(0, -0), '+0 is not SameValue as -0');
-		forEach(unknowns, function (val) {
+		forEach(esV.unknowns, function (val) {
 			t.equal(val === val, ES.SameValue(val, val), debug(val) + ' is SameValue to itself');
 		});
 		t.end();
@@ -1097,7 +919,7 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 
 	test('Abstract Equality Comparison', function (t) {
 		t.test('same types use ===', function (st) {
-			forEach(unknowns, function (value) {
+			forEach(esV.unknowns, function (value) {
 				st.equal(ES['Abstract Equality Comparison'](value, value), value === value, debug(value) + ' is abstractly equal to itself');
 			});
 			st.end();
@@ -1137,7 +959,7 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 
 	test('Strict Equality Comparison', function (t) {
 		t.test('same types use ===', function (st) {
-			forEach(unknowns, function (value) {
+			forEach(esV.unknowns, function (value) {
 				st.equal(ES['Strict Equality Comparison'](value, value), value === value, debug(value) + ' is strictly equal to itself');
 			});
 			st.end();
@@ -1262,15 +1084,10 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	var msPerSecond = 1e3;
-	var msPerMinute = 60 * msPerSecond;
-	var msPerHour = 60 * msPerMinute;
-	var msPerDay = 24 * msPerHour;
-
 	test('Day', function (t) {
 		var time = Date.UTC(2019, 8, 10, 2, 3, 4, 5);
 		var add = 2.5;
-		var later = new Date(time + (add * msPerDay));
+		var later = new Date(time + (add * esV.msPerDay));
 
 		t.equal(ES.Day(later.getTime()), ES.Day(time) + Math.floor(add), 'adding 2.5 days worth of ms, gives a Day delta of 2');
 		t.end();
@@ -1289,9 +1106,9 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 	test('TimeWithinDay', function (t) {
 		var time = Date.UTC(2019, 8, 10, 2, 3, 4, 5);
 		var add = 2.5;
-		var later = new Date(time + (add * msPerDay));
+		var later = new Date(time + (add * esV.msPerDay));
 
-		t.equal(ES.TimeWithinDay(later.getTime()), ES.TimeWithinDay(time) + (0.5 * msPerDay), 'adding 2.5 days worth of ms, gives a TimeWithinDay delta of +0.5');
+		t.equal(ES.TimeWithinDay(later.getTime()), ES.TimeWithinDay(time) + (0.5 * esV.msPerDay), 'adding 2.5 days worth of ms, gives a TimeWithinDay delta of +0.5');
 		t.end();
 	});
 
@@ -1314,7 +1131,7 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 		var now = new Date();
 		var today = now.getUTCDay();
 		for (var i = 0; i < 7; i += 1) {
-			var weekDay = ES.WeekDay(now.getTime() + (i * msPerDay));
+			var weekDay = ES.WeekDay(now.getTime() + (i * esV.msPerDay));
 			t.equal(weekDay, (today + i) % 7, i + ' days after today (' + today + '), WeekDay is ' + weekDay);
 		}
 		t.end();
@@ -1457,22 +1274,22 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 	});
 
 	test('MakeDate', function (t) {
-		forEach(nonFiniteNumbers, function (nonFiniteNumber) {
+		forEach(esV.nonFiniteNumbers, function (nonFiniteNumber) {
 			t.equal(ES.MakeDate(nonFiniteNumber, 0), NaN, debug(nonFiniteNumber) + ' is not a finite `day`');
 			t.equal(ES.MakeDate(0, nonFiniteNumber), NaN, debug(nonFiniteNumber) + ' is not a finite `time`');
 		});
 		t.equal(ES.MakeDate(0, 0), 0, 'zero day and zero time is zero date');
 		t.equal(ES.MakeDate(0, 123), 123, 'zero day and nonzero time is a date of the "time"');
-		t.equal(ES.MakeDate(1, 0), msPerDay, 'day of 1 and zero time is a date of "ms per day"');
-		t.equal(ES.MakeDate(3, 0), 3 * msPerDay, 'day of 3 and zero time is a date of thrice "ms per day"');
-		t.equal(ES.MakeDate(1, 123), msPerDay + 123, 'day of 1 and nonzero time is a date of "ms per day" plus the "time"');
-		t.equal(ES.MakeDate(3, 123), (3 * msPerDay) + 123, 'day of 3 and nonzero time is a date of thrice "ms per day" plus the "time"');
+		t.equal(ES.MakeDate(1, 0), esV.msPerDay, 'day of 1 and zero time is a date of "ms per day"');
+		t.equal(ES.MakeDate(3, 0), 3 * esV.msPerDay, 'day of 3 and zero time is a date of thrice "ms per day"');
+		t.equal(ES.MakeDate(1, 123), esV.msPerDay + 123, 'day of 1 and nonzero time is a date of "ms per day" plus the "time"');
+		t.equal(ES.MakeDate(3, 123), (3 * esV.msPerDay) + 123, 'day of 3 and nonzero time is a date of thrice "ms per day" plus the "time"');
 
 		t.end();
 	});
 
 	test('MakeTime', function (t) {
-		forEach(nonFiniteNumbers, function (nonFiniteNumber) {
+		forEach(esV.nonFiniteNumbers, function (nonFiniteNumber) {
 			t.equal(ES.MakeTime(nonFiniteNumber, 0, 0, 0), NaN, debug(nonFiniteNumber) + ' is not a finite `hour`');
 			t.equal(ES.MakeTime(0, nonFiniteNumber, 0, 0), NaN, debug(nonFiniteNumber) + ' is not a finite `min`');
 			t.equal(ES.MakeTime(0, 0, nonFiniteNumber, 0), NaN, debug(nonFiniteNumber) + ' is not a finite `sec`');
@@ -1481,7 +1298,7 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 
 		t.equal(
 			ES.MakeTime(1.2, 2.3, 3.4, 4.5),
-			(1 * msPerHour) + (2 * msPerMinute) + (3 * msPerSecond) + 4,
+			(1 * esV.msPerHour) + (2 * esV.msPerMinute) + (3 * esV.msPerSecond) + 4,
 			'all numbers are converted to integer, multiplied by the right number of ms, and summed'
 		);
 
@@ -1489,7 +1306,7 @@ var es5 = function ES5(ES, ops, expectedMissing, skips) {
 	});
 
 	test('TimeClip', function (t) {
-		forEach(nonFiniteNumbers, function (nonFiniteNumber) {
+		forEach(esV.nonFiniteNumbers, function (nonFiniteNumber) {
 			t.equal(ES.TimeClip(nonFiniteNumber), NaN, debug(nonFiniteNumber) + ' is not a finite `time`');
 		});
 		t.equal(ES.TimeClip(8.64e15 + 1), NaN, '8.64e15 is the largest magnitude considered "finite"');
@@ -1537,14 +1354,6 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	}));
 	var test = makeTest(ES, skips);
 
-	var getNamelessFunction = function () {
-		var f = Object(function () {});
-		try {
-			delete f.name;
-		} catch (e) { /**/ }
-		return f;
-	};
-
 	test('Abstract Equality Comparison', { skip: !v.hasSymbols }, function (t) {
 		t.equal(
 			ES['Abstract Equality Comparison'](Symbol(), Symbol()),
@@ -1588,7 +1397,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(notInts, function (nonInt) {
+		forEach(esV.notInts, function (nonInt) {
 			t['throws'](
 				function () { ES.AdvanceStringIndex('abc', nonInt); },
 				TypeError,
@@ -1604,7 +1413,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		var str = 'a' + wholePoo + 'c';
+		var str = 'a' + esV.poo.whole + 'c';
 
 		t.test('non-unicode mode', function (st) {
 			for (var i = 0; i < str.length + 2; i += 1) {
@@ -1625,7 +1434,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('lone surrogates', function (st) {
-			var halfPoo = 'a' + leadingPoo + 'c';
+			var halfPoo = 'a' + esV.poo.leading + 'c';
 
 			st.equal(ES.AdvanceStringIndex(halfPoo, 0, true), 1, '0 advances to 1');
 			st.equal(ES.AdvanceStringIndex(halfPoo, 1, true), 2, '1 advances to 2');
@@ -1641,7 +1450,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 			st.equal(ES.AdvanceStringIndex(lowestPair, 0, true), 2, 'lowest surrogate pair, 0 -> 2');
 			st.equal(ES.AdvanceStringIndex(highestPair, 0, true), 2, 'highest surrogate pair, 0 -> 2');
-			st.equal(ES.AdvanceStringIndex(wholePoo, 0, true), 2, 'poop, 0 -> 2');
+			st.equal(ES.AdvanceStringIndex(esV.poo.whole, 0, true), 2, 'poop, 0 -> 2');
 
 			st.end();
 		});
@@ -1683,7 +1492,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ArraySetLength', function (t) {
-		forEach(unknowns, function (nonArray) {
+		forEach(esV.unknowns, function (nonArray) {
 			t['throws'](
 				function () { ES.ArraySetLength(nonArray, { '[[Value]]': 0 }); },
 				TypeError,
@@ -1798,7 +1607,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('works with a non-array', function (st) {
-			forEach(unknowns, function (nonArray) {
+			forEach(esV.unknowns, function (nonArray) {
 				var arr = ES.ArraySpeciesCreate(nonArray, 0);
 				st.ok(ES.IsArray(arr), 'is an array');
 				st.equal(arr.length, 0, 'length is correct');
@@ -1985,7 +1794,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.equal(ES.Canonicalize(leadingPoo, false, false), leadingPoo, 'when IgnoreCase is false, ch is returned');
+		t.equal(ES.Canonicalize(esV.poo.leading, false, false), esV.poo.leading, 'when IgnoreCase is false, ch is returned');
 
 		forEach(keys(caseFolding.C), function (input) {
 			var output = caseFolding.C[input];
@@ -2570,7 +2379,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('DetachArrayBuffer', function (t) {
-		forEach(unknowns, function (nonArrayBuffer) {
+		forEach(esV.unknowns, function (nonArrayBuffer) {
 			t['throws'](
 				function () { ES.DetachArrayBuffer(nonArrayBuffer); },
 				TypeError,
@@ -2586,7 +2395,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				new ArrayBuffer(420)
 			];
 
-			st.test('can detach', { skip: !canDetach }, function (s2t) {
+			st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 				forEach(buffers, function (buffer) {
 					s2t.doesNotThrow(
 						function () { return new Float32Array(buffer); },
@@ -2611,7 +2420,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			});
 
 			// throws SyntaxError in node < 11
-			st.test('can not detach', { skip: canDetach }, function (s2t) {
+			st.test('can not detach', { skip: esV.canDetach }, function (s2t) {
 				forEach(buffers, function (buffer) {
 					s2t.doesNotThrow(
 						function () { return new Float32Array(buffer); },
@@ -3069,7 +2878,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('GetValueFromBuffer', function (t) {
-		forEach(unknowns, function (nonAB) {
+		forEach(esV.unknowns, function (nonAB) {
 			t['throws'](
 				function () { ES.GetValueFromBuffer(nonAB, 0, 'Int8'); },
 				TypeError,
@@ -3086,7 +2895,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			forEach(invalidTATypes, function (nonString) {
+			forEach(esV.invalidTATypes, function (nonString) {
 				st['throws'](
 					function () { ES.GetValueFromBuffer(new ArrayBuffer(8), 0, nonString); },
 					TypeError,
@@ -3102,7 +2911,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			st.test('can detach', { skip: !canDetach }, function (s2t) {
+			st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 				var buffer = new ArrayBuffer(8);
 				s2t.equal(ES.DetachArrayBuffer(buffer), null, 'detaching returns null');
 
@@ -3117,8 +2926,8 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 			forEach(bufferTestCases, function (testCase, name) {
 				st.test(name + ': ' + debug(testCase.value), function (s2t) {
-					forEach(numberTypes, function (type) {
-						var view = new DataView(new ArrayBuffer(elementSizes.$Float64Array));
+					forEach(esV.numberTypes, function (type) {
+						var view = new DataView(new ArrayBuffer(esV.elementSizes.$Float64Array));
 						var method = type === 'Uint8C' ? 'Uint8' : type;
 						// var value = unserialize(testCase.value);
 						var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
@@ -3300,7 +3109,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(unknowns, function (nonTA) {
+		forEach(esV.unknowns, function (nonTA) {
 			t['throws'](
 				function () { ES.IntegerIndexedElementGet(nonTA, 0); },
 				TypeError,
@@ -3310,7 +3119,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
 			forEach(availableTypedArrays, function (typedArray) {
-				var isBigInt = isBigIntTAType(typedArray);
+				var isBigInt = esV.isBigIntTAType(typedArray);
 				if (!isBigInt || 'ToBigInt' in ES) {
 					var Z = isBigInt ? safeBigInt : Number;
 					var TA = global[typedArray];
@@ -3338,7 +3147,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		});
 
 		forEach([].concat(
-			unknowns,
+			esV.unknowns,
 			[[]]
 		), function (nonTA) {
 			t['throws'](
@@ -3349,8 +3158,8 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
-			if (hasBigInts) {
-				forEach(bigIntTypes, function (bigIntType) {
+			if (esV.hasBigInts) {
+				forEach(esV.bigIntTypes, function (bigIntType) {
 					var TA = global[bigIntType + 'Array'];
 					var ta = new TA(0);
 					st['throws'](
@@ -3362,10 +3171,10 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			}
 
 			forEach(availableTypedArrays, function (TypedArray) {
-				if (!isBigIntTAType(TypedArray)) {
+				if (!esV.isBigIntTAType(TypedArray)) {
 					var ta = new global[TypedArray](8);
 
-					st.test('can detach', { skip: !canDetach }, function (s2t) {
+					st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 						var taD = new global[TypedArray](8);
 						ES.DetachArrayBuffer(taD.buffer);
 
@@ -3529,7 +3338,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.equal(true, ES.IsArray([]), '[] is array');
 		t.equal(false, ES.IsArray({}), '{} is not array');
 		t.equal(false, ES.IsArray({ length: 1, 0: true }), 'arraylike object is not array');
-		forEach(unknowns, function (value) {
+		forEach(esV.unknowns, function (value) {
 			t.equal(false, ES.IsArray(value), debug(value) + ' is not array');
 		});
 		t.end();
@@ -3648,7 +3457,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IsDetachedBuffer', function (t) {
-		forEach(unknowns, function (nonArrayBuffer) {
+		forEach(esV.unknowns, function (nonArrayBuffer) {
 			t['throws'](
 				function () { ES.IsDetachedBuffer(nonArrayBuffer); },
 				TypeError,
@@ -3664,7 +3473,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				new ArrayBuffer(420)
 			];
 
-			st.test('can detach', { skip: !canDetach }, function (s2t) {
+			st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 				forEach(buffers, function (buffer) {
 					s2t.equal(ES.IsDetachedBuffer(buffer), false, debug(buffer) + ' is not detached');
 					s2t.doesNotThrow(
@@ -3686,7 +3495,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			});
 
 			// throws SyntaxError in node < 11
-			st.test('can not detach', { skip: canDetach }, function (s2t) {
+			st.test('can not detach', { skip: esV.canDetach }, function (s2t) {
 				forEach(buffers, function (buffer) {
 					s2t.doesNotThrow(
 						function () { return new Float32Array(buffer); },
@@ -3719,7 +3528,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IsPromise', function (t) {
-		forEach(unknowns, function (nonPromise) {
+		forEach(esV.unknowns, function (nonPromise) {
 			t.equal(ES.IsPromise(nonPromise), false, debug(nonPromise) + ' is not a Promise');
 		});
 
@@ -3756,7 +3565,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			t.equal(true, ES.IsRegExp(regex), regex + ' is regex');
 		});
 
-		forEach(unknowns, function (nonRegex) {
+		forEach(esV.unknowns, function (nonRegex) {
 			t.equal(false, ES.IsRegExp(nonRegex), debug(nonRegex) + ' is not regex');
 		});
 
@@ -3823,7 +3632,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			t.equal(false, ES.IsInteger(i + 0.2), (i + 0.2) + ' is not integer');
 		}
 		t.equal(true, ES.IsInteger(-0), '-0 is integer');
-		forEach(notInts, function (notInt) {
+		forEach(esV.notInts, function (notInt) {
 			t.equal(false, ES.IsInteger(notInt), debug(notInt) + ' is not integer');
 		});
 		t.equal(false, ES.IsInteger(v.uncoercibleObject), 'uncoercibleObject is not integer');
@@ -3900,7 +3709,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IteratorStep', function (t) {
-		forEach(unknowns, function (nonIteratorRecord) {
+		forEach(esV.unknowns, function (nonIteratorRecord) {
 			t['throws'](
 				function () { ES.IteratorStep(nonIteratorRecord); },
 				TypeError,
@@ -4486,9 +4295,9 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		t.equal(ES.QuoteJSONString('\\'), '"\\\\"', '"\\\\" gets properly JSON-quoted');
 		t.equal(ES.QuoteJSONString('\u000B'), '"\\u000b"', '"\\u000B" gets properly JSON-quoted');
 		t.equal(ES.QuoteJSONString('\u0019'), '"\\u0019"', '"\\u0019" gets properly JSON-quoted');
-		t.equal(ES.QuoteJSONString(leadingPoo), '"\ud83d"', 'leading poo gets properly JSON-quoted');
-		t.equal(ES.QuoteJSONString(trailingPoo), '"\udca9"', 'trailing poo gets properly JSON-quoted');
-		t.equal(ES.QuoteJSONString(wholePoo), '"\ud83d\udca9"', 'whole poo gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString(esV.poo.leading), '"\ud83d"', 'leading poo gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString(esV.poo.trailing), '"\udca9"', 'trailing poo gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString(esV.poo.whole), '"\ud83d\udca9"', 'whole poo gets properly JSON-quoted');
 
 		t.end();
 	});
@@ -4602,7 +4411,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	test('SameValueZero', function (t) {
 		t.equal(true, ES.SameValueZero(NaN, NaN), 'NaN is SameValueZero as NaN');
 		t.equal(true, ES.SameValueZero(0, -0), '+0 is SameValueZero as -0');
-		forEach(unknowns, function (val) {
+		forEach(esV.unknowns, function (val) {
 			t.equal(val === val, ES.SameValueZero(val, val), debug(val) + ' is SameValueZero to itself');
 		});
 		t.end();
@@ -4668,7 +4477,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
-		t.test('doesn’t call [[Get]] in conforming strict mode environments', { skip: noThrowOnStrictViolation }, function (st) {
+		t.test('doesn’t call [[Get]] in conforming strict mode environments', { skip: esV.noThrowOnStrictViolation }, function (st) {
 			var getterCalled = false;
 			var setterCalls = 0;
 			var obj = {};
@@ -4783,7 +4592,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 		);
 
 		var O = { a: 1 };
-		t.test('sealed', { skip: !Object.preventExtensions || noThrowOnStrictViolation }, function (st) {
+		t.test('sealed', { skip: !Object.preventExtensions || esV.noThrowOnStrictViolation }, function (st) {
 			st.equal(ES.SetIntegrityLevel(O, 'sealed'), true);
 			st['throws'](
 				function () { O.b = 2; },
@@ -4795,7 +4604,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
-		t.test('frozen', { skip: !Object.freeze || noThrowOnStrictViolation }, function (st) {
+		t.test('frozen', { skip: !Object.freeze || esV.noThrowOnStrictViolation }, function (st) {
 			st.equal(ES.SetIntegrityLevel(O, 'frozen'), true);
 			st['throws'](
 				function () { O.a = 3; },
@@ -4809,7 +4618,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('SetValueInBuffer', function (t) {
-		forEach(unknowns, function (nonAB) {
+		forEach(esV.unknowns, function (nonAB) {
 			t['throws'](
 				function () { ES.SetValueInBuffer(nonAB, 0, 'Int8', 0); },
 				TypeError,
@@ -4826,7 +4635,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			forEach(invalidTATypes, function (nonString) {
+			forEach(esV.invalidTATypes, function (nonString) {
 				st['throws'](
 					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, nonString, 0); },
 					TypeError,
@@ -4850,7 +4659,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			st.test('can detach', { skip: !canDetach }, function (s2t) {
+			st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 				var buffer = new ArrayBuffer(8);
 				s2t.equal(ES.DetachArrayBuffer(buffer), null, 'detaching returns null');
 
@@ -4864,7 +4673,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			});
 
 			forEach(bufferTestCases, function (testCase, name) {
-				forEach(numberTypes, function (type) {
+				forEach(esV.numberTypes, function (type) {
 					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
 					var value = unserialize(testCase.value);
@@ -4878,9 +4687,9 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 					);
 					*/
 
-					var elementSize = elementSizes['$' + (type === 'Uint8C' ? 'Uint8Clamped' : type) + 'Array'];
+					var elementSize = esV.elementSizes['$' + (type === 'Uint8C' ? 'Uint8Clamped' : type) + 'Array'];
 
-					var buffer = new ArrayBuffer(elementSizes.$Float64Array);
+					var buffer = new ArrayBuffer(esV.elementSizes.$Float64Array);
 					var copyBytes = new Uint8Array(buffer);
 
 					clearBuffer(buffer);
@@ -4982,7 +4791,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(notInts, function (nonInteger) {
+		forEach(esV.notInts, function (nonInteger) {
 			t['throws'](
 				function () { ES.SplitMatch('', nonInteger, ''); },
 				TypeError,
@@ -5004,8 +4813,8 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 		t.equal(ES.SplitMatch('a', 0, 'ab'), false, 'R longer than S yields false');
 
-		var s = 'a' + wholePoo + 'c';
-		t.equal(ES.SplitMatch(s, 1, wholePoo), 3, debug(wholePoo) + ' is found at index 1, before index 3, in ' + debug(s));
+		var s = 'a' + esV.poo.whole + 'c';
+		t.equal(ES.SplitMatch(s, 1, esV.poo.whole), 3, debug(esV.poo.whole) + ' is found at index 1, before index 3, in ' + debug(s));
 
 		t.end();
 	});
@@ -5106,7 +4915,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('SymbolDescriptiveString', function (t) {
-		forEach(allButSyms, function (nonSymbol) {
+		forEach(esV.allButSyms, function (nonSymbol) {
 			t['throws'](
 				function () { ES.SymbolDescriptiveString(nonSymbol); },
 				TypeError,
@@ -5237,7 +5046,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('thisTimeValue', function (t) {
-		forEach(unknowns, function (nonDate) {
+		forEach(esV.unknowns, function (nonDate) {
 			t['throws'](
 				function () { ES.thisTimeValue(nonDate); },
 				TypeError,
@@ -5367,7 +5176,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ToPropertyKey', function (t) {
-		forEach(allButSyms, function (value) {
+		forEach(esV.allButSyms, function (value) {
 			t.equal(ES.ToPropertyKey(value), String(value), 'ToPropertyKey(value) === String(value) for non-Symbols');
 		});
 
@@ -5388,7 +5197,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ToString', function (t) {
-		forEach(allButSyms, function (item) {
+		forEach(esV.allButSyms, function (item) {
 			t.equal(ES.ToString(item), String(item), 'ES.ToString(' + debug(item) + ') ToStrings to String(' + debug(item) + ')');
 		});
 
@@ -5854,7 +5663,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 
 	test('ValidateTypedArray', function (t) {
 		forEach([].concat(
-			unknowns,
+			esV.unknowns,
 			[[]]
 		), function (nonTA) {
 			t['throws'](
@@ -5872,7 +5681,7 @@ var es2015 = function ES2015(ES, ops, expectedMissing, skips) {
 					debug(ta) + ' is a TypedArray'
 				);
 
-				st.test('can detach', { skip: !canDetach }, function (s2t) {
+				st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 					ES.DetachArrayBuffer(ta.buffer);
 
 					s2t['throws'](
@@ -6098,7 +5907,7 @@ var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 
 	test('TypedArraySpeciesCreate', function (t) {
 		t.test('no Typed Array support', { skip: availableTypedArrays.length > 0 }, function (st) {
-			forEach(unknowns, function (nonTA) {
+			forEach(esV.unknowns, function (nonTA) {
 				st['throws'](
 					function () { ES.TypedArraySpeciesCreate(nonTA, []); },
 					SyntaxError,
@@ -6117,7 +5926,7 @@ var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('Typed Array support', { skip: availableTypedArrays.length === 0 }, function (st) {
-			forEach(unknowns, function (nonTA) {
+			forEach(esV.unknowns, function (nonTA) {
 				st['throws'](
 					function () { ES.TypedArraySpeciesCreate(nonTA, []); },
 					TypeError,
@@ -6212,26 +6021,26 @@ var es2016 = function ES2016(ES, ops, expectedMissing, skips) {
 			'0x10FFFF + 1 is > 0x10FFFF'
 		);
 
-		t.equal(ES.UTF16Encoding(0xD83D), leadingPoo, '0xD83D is the first half of ' + wholePoo);
-		t.equal(ES.UTF16Encoding(0xDCA9), trailingPoo, '0xDCA9 is the last half of ' + wholePoo);
-		t.equal(ES.UTF16Encoding(0x1F4A9), wholePoo, '0xDCA9 is the last half of ' + wholePoo);
+		t.equal(ES.UTF16Encoding(0xD83D), esV.poo.leading, '0xD83D is the first half of ' + esV.poo.whole);
+		t.equal(ES.UTF16Encoding(0xDCA9), esV.poo.trailing, '0xDCA9 is the last half of ' + esV.poo.whole);
+		t.equal(ES.UTF16Encoding(0x1F4A9), esV.poo.whole, '0xDCA9 is the last half of ' + esV.poo.whole);
 
 		t.end();
 	});
 
 	test('UTF16Decode', function (t) {
 		t['throws'](
-			function () { ES.UTF16Decode('a'.charCodeAt(0), trailingPoo.charCodeAt(0)); },
+			function () { ES.UTF16Decode('a'.charCodeAt(0), esV.poo.trailing.charCodeAt(0)); },
 			TypeError,
 			'"a" is not a leading surrogate'
 		);
 		t['throws'](
-			function () { ES.UTF16Decode(leadingPoo.charCodeAt(0), 'b'.charCodeAt(0)); },
+			function () { ES.UTF16Decode(esV.poo.leading.charCodeAt(0), 'b'.charCodeAt(0)); },
 			TypeError,
 			'"b" is not a trailing surrogate'
 		);
 
-		t.equal(ES.UTF16Decode(leadingPoo.charCodeAt(0), trailingPoo.charCodeAt(0)), wholePoo);
+		t.equal(ES.UTF16Decode(esV.poo.leading.charCodeAt(0), esV.poo.trailing.charCodeAt(0)), esV.poo.whole);
 
 		t.end();
 	});
@@ -6408,7 +6217,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 		var isTypedArray = true;
 		var order = 'Unordered';
 
-		forEach(unknowns, function (nonAB) {
+		forEach(esV.unknowns, function (nonAB) {
 			t['throws'](
 				function () { ES.GetValueFromBuffer(nonAB, 0, 'Int8', isTypedArray, 'order'); },
 				TypeError,
@@ -6425,7 +6234,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			forEach(invalidTATypes, function (nonString) {
+			forEach(esV.invalidTATypes, function (nonString) {
 				st['throws'](
 					function () { ES.GetValueFromBuffer(new ArrayBuffer(8), 0, nonString, isTypedArray, order); },
 					TypeError,
@@ -6455,7 +6264,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			st.test('can detach', { skip: !canDetach }, function (s2t) {
+			st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 				var buffer = new ArrayBuffer(8);
 				s2t.equal(ES.DetachArrayBuffer(buffer), null, 'detaching returns null');
 
@@ -6470,8 +6279,8 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 
 			forEach(bufferTestCases, function (testCase, name) {
 				st.test(name + ': ' + debug(testCase.value), function (s2t) {
-					forEach(numberTypes, function (type) {
-						var view = new DataView(new ArrayBuffer(elementSizes.$Float64Array));
+					forEach(esV.numberTypes, function (type) {
+						var view = new DataView(new ArrayBuffer(esV.elementSizes.$Float64Array));
 						var method = type === 'Uint8C' ? 'Uint8' : type;
 						// var value = unserialize(testCase.value);
 						var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
@@ -6486,7 +6295,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 
 						clearBuffer(view.buffer);
 						var littleVal = unserialize(result.setAsLittle.asLittle);
-						view['set' + method](0, isBigIntTAType(type) ? safeBigInt(littleVal) : littleVal, true);
+						view['set' + method](0, esV.isBigIntTAType(type) ? safeBigInt(littleVal) : littleVal, true);
 
 						s2t.equal(
 							ES.GetValueFromBuffer(view.buffer, 0, type, isTypedArray, order, true),
@@ -6503,7 +6312,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 
 							clearBuffer(view.buffer);
 							var bigVal = unserialize(result.setAsBig.asBig);
-							view['set' + method](0, isBigIntTAType(type) ? safeBigInt(bigVal) : bigVal, false);
+							view['set' + method](0, esV.isBigIntTAType(type) ? safeBigInt(bigVal) : bigVal, false);
 
 							s2t.equal(
 								ES.GetValueFromBuffer(view.buffer, 0, type, isTypedArray, order, false),
@@ -6570,7 +6379,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 	});
 
 	test('NumberToRawBytes', function (t) {
-		forEach(nonTATypes, function (nonTAType) {
+		forEach(esV.nonTATypes, function (nonTAType) {
 			t['throws'](
 				function () { ES.NumberToRawBytes(nonTAType, 0, false); },
 				TypeError,
@@ -6598,7 +6407,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 			var value = unserialize(testCase.value);
 
 			t.test(name + ': ' + value, function (st) {
-				forEach(numberTypes, function (type) {
+				forEach(esV.numberTypes, function (type) {
 					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
 					var valToSet = type === 'Uint8C' && value > 0xFF ? 0xFF : value;
@@ -6742,7 +6551,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 	});
 
 	test('RawBytesToNumber', function (t) {
-		forEach(nonTATypes, function (nonTAType) {
+		forEach(esV.nonTATypes, function (nonTAType) {
 			t['throws'](
 				function () { ES.RawBytesToNumber(nonTAType, [], false); },
 				TypeError,
@@ -6750,7 +6559,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(unknowns, function (nonArray) {
+		forEach(esV.unknowns, function (nonArray) {
 			t['throws'](
 				function () { ES.RawBytesToNumber('Int8', nonArray, false); },
 				TypeError,
@@ -6776,7 +6585,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 		forEach(bufferTestCases, function (testCase, name) {
 			var value = unserialize(testCase.value);
 			t.test(name + ': ' + value, function (st) {
-				forEach(numberTypes, function (type) {
+				forEach(esV.numberTypes, function (type) {
 					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
 					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 
@@ -6909,7 +6718,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 	test('SetValueInBuffer', function (t) {
 		var order = 'Unordered';
 
-		forEach(unknowns, function (nonAB) {
+		forEach(esV.unknowns, function (nonAB) {
 			t['throws'](
 				function () { ES.SetValueInBuffer(nonAB, 0, 'Int8', 0, false, order); },
 				TypeError,
@@ -6928,7 +6737,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			forEach(invalidTATypes, function (nonString) {
+			forEach(esV.invalidTATypes, function (nonString) {
 				st['throws'](
 					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, nonString, 0, isTypedArray, order); },
 					TypeError,
@@ -6964,7 +6773,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 				'invalid order'
 			);
 
-			st.test('can detach', { skip: !canDetach }, function (s2t) {
+			st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 				var buffer = new ArrayBuffer(8);
 				s2t.equal(ES.DetachArrayBuffer(buffer), null, 'detaching returns null');
 
@@ -6978,7 +6787,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 			});
 
 			forEach(bufferTestCases, function (testCase, name) {
-				forEach(numberTypes, testSetValueInBuffer(ES, st, testCase, isTypedArray, order));
+				forEach(esV.numberTypes, testSetValueInBuffer(ES, st, testCase, isTypedArray, order));
 			});
 
 			st.end();
@@ -7078,7 +6887,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 
 	test('ValidateAtomicAccess', function (t) {
 		forEach([].concat(
-			unknowns,
+			esV.unknowns,
 			[[]]
 		), function (nonTA) {
 			t['throws'](
@@ -7154,26 +6963,7 @@ var es2017 = function ES2017(ES, ops, expectedMissing, skips) {
 	});
 };
 
-var makeAsyncFromSyncIterator = function makeAsyncFromSyncIterator(ES, end, throwMethod, returnMethod) {
-	var i = 0;
-	var iterator = {
-		next: function next() {
-			try {
-				return {
-					done: i > end,
-					value: i
-				};
-			} finally {
-				i += 1;
-			}
-		},
-		'return': returnMethod,
-		'throw': throwMethod
-	};
-	var syncIteratorRecord = makeIteratorRecord(iterator);
-
-	return ES.CreateAsyncFromSyncIterator(syncIteratorRecord);
-};
+var makeAsyncFromSyncIterator = require('./helpers/makeAsyncFromSyncIterator');
 
 var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 	es2017(ES, ops, expectedMissing, assign({}, skips, {
@@ -7229,7 +7019,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('third argument: excludedItems', function (st) {
-			forEach(unknowns, function (nonArray) {
+			forEach(esV.unknowns, function (nonArray) {
 				st['throws'](
 					function () { ES.CopyDataProperties({}, {}, nonArray); },
 					TypeError,
@@ -7278,7 +7068,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 	});
 
 	test('CreateAsyncFromSyncIterator', function (t) {
-		forEach(unknowns, function (nonIteratorRecord) {
+		forEach(esV.unknowns, function (nonIteratorRecord) {
 			t['throws'](
 				function () { ES.CreateAsyncFromSyncIterator(nonIteratorRecord); },
 				TypeError,
@@ -7287,7 +7077,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('with Promise support', { skip: typeof Promise === 'undefined' }, function (st) {
-			var asyncIteratorRecord = makeAsyncFromSyncIterator(ES, 5);
+			var asyncIteratorRecord = makeAsyncFromSyncIterator(ES.CreateAsyncFromSyncIterator, 5);
 
 			st.deepEqual(
 				keys(asyncIteratorRecord).sort(),
@@ -7344,7 +7134,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 
 			st.test('.throw()', function (s2t) {
 				var asyncThrows = makeAsyncFromSyncIterator(
-					ES,
+					ES.CreateAsyncFromSyncIterator,
 					5,
 					function throws(x) {
 						s2t.equal(x, arguments.length === 1 ? false : void undefined, '.throw() called with `false`, or nothing');
@@ -7354,7 +7144,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 				)['[[Iterator]]'];
 
 				var asyncThrowReturnsNonObject = makeAsyncFromSyncIterator(
-					ES,
+					ES.CreateAsyncFromSyncIterator,
 					5,
 					function throws(x) {
 						s2t.equal(x, arguments.length === 1 ? false : void undefined, '.throw() called with `false`, or nothing');
@@ -7362,7 +7152,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 				)['[[Iterator]]'];
 
 				var asyncThrowReturnsObject = makeAsyncFromSyncIterator(
-					ES,
+					ES.CreateAsyncFromSyncIterator,
 					5,
 					function throws(x) {
 						s2t.equal(x, arguments.length === 1 ? false : void undefined, '.throw() called with `false`, or nothing');
@@ -7388,7 +7178,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 
 			st.test('.return()', function (s2t) {
 				var asyncThrows = makeAsyncFromSyncIterator(
-					ES,
+					ES.CreateAsyncFromSyncIterator,
 					5,
 					void undefined,
 					function returns(x) {
@@ -7399,7 +7189,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 				)['[[Iterator]]'];
 
 				var asyncThrowReturnsNonObject = makeAsyncFromSyncIterator(
-					ES,
+					ES.CreateAsyncFromSyncIterator,
 					5,
 					void undefined,
 					function returns(x) {
@@ -7408,7 +7198,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 				)['[[Iterator]]'];
 
 				var asyncThrowReturnsObject = makeAsyncFromSyncIterator(
-					ES,
+					ES.CreateAsyncFromSyncIterator,
 					5,
 					void undefined,
 					function returns(x) {
@@ -7799,7 +7589,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 	});
 
 	test('thisSymbolValue', function (t) {
-		forEach(allButSyms, function (nonSymbol) {
+		forEach(esV.allButSyms, function (nonSymbol) {
 			t['throws'](
 				function () { ES.thisSymbolValue(nonSymbol); },
 				v.hasSymbols ? TypeError : SyntaxError,
@@ -7808,7 +7598,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('no native Symbols', { skip: v.hasSymbols }, function (st) {
-			forEach(unknowns, function (value) {
+			forEach(esV.unknowns, function (value) {
 				st['throws'](
 					function () { ES.thisSymbolValue(value); },
 					SyntaxError,
@@ -7887,8 +7677,8 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 
 		t.equal(ES.UnicodeEscape(' '), '\\u0020');
 		t.equal(ES.UnicodeEscape('a'), '\\u0061');
-		t.equal(ES.UnicodeEscape(leadingPoo), '\\ud83d');
-		t.equal(ES.UnicodeEscape(trailingPoo), '\\udca9');
+		t.equal(ES.UnicodeEscape(esV.poo.leading), '\\ud83d');
+		t.equal(ES.UnicodeEscape(esV.poo.trailing), '\\udca9');
 
 		t.end();
 	});
@@ -7910,7 +7700,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 	});
 
 	test('AsyncIteratorClose', function (t) {
-		forEach(unknowns, function (nonIteratorRecord) {
+		forEach(esV.unknowns, function (nonIteratorRecord) {
 			t['throws'](
 				function () { ES.AsyncIteratorClose(nonIteratorRecord); },
 				TypeError,
@@ -7923,7 +7713,7 @@ var es2018 = function ES2018(ES, ops, expectedMissing, skips) {
 		};
 		var iteratorRecord = makeIteratorRecord(iterator);
 
-		forEach(unknowns, function (nonCompletionRecord) {
+		forEach(esV.unknowns, function (nonCompletionRecord) {
 			t['throws'](
 				function () { ES.AsyncIteratorClose(iteratorRecord, nonCompletionRecord); },
 				TypeError,
@@ -8245,9 +8035,9 @@ var es2019 = function ES2019(ES, ops, expectedMissing, skips) {
 		t.equal(ES.QuoteJSONString('\\'), '"\\\\"', '"\\\\" gets properly JSON-quoted');
 		t.equal(ES.QuoteJSONString('\u000B'), '"\\u000b"', '"\\u000B" gets properly JSON-quoted');
 		t.equal(ES.QuoteJSONString('\u0019'), '"\\u0019"', '"\\u0019" gets properly JSON-quoted');
-		t.equal(ES.QuoteJSONString(leadingPoo), '"\\ud83d"', 'leading poo gets properly JSON-quoted');
-		t.equal(ES.QuoteJSONString(trailingPoo), '"\\udca9"', 'trailing poo gets properly JSON-quoted');
-		t.equal(ES.QuoteJSONString(wholePoo), '"\\ud83d\\udca9"', 'whole poo gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString(esV.poo.leading), '"\\ud83d"', 'leading poo gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString(esV.poo.trailing), '"\\udca9"', 'trailing poo gets properly JSON-quoted');
+		t.equal(ES.QuoteJSONString(esV.poo.whole), '"\\ud83d\\udca9"', 'whole poo gets properly JSON-quoted');
 
 		t.end();
 	});
@@ -8296,7 +8086,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	}));
 	var test = makeTest(ES, skips);
 
-	test('abs (with BigInts)', { skip: !hasBigInts }, function (t) {
+	test('abs (with BigInts)', { skip: !esV.hasBigInts }, function (t) {
 		t.equal(ES.abs(BigInt(0)), BigInt(0), '0n -> 0n');
 
 		t.equal(ES.abs(BigInt(1)), BigInt(1), '+1n -> +1n');
@@ -8305,7 +8095,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('Abstract Equality Comparison', { skip: !hasBigInts }, function (t) {
+	test('Abstract Equality Comparison', { skip: !esV.hasBigInts }, function (t) {
 		t.equal(
 			ES['Abstract Equality Comparison'](BigInt(1), 1),
 			true,
@@ -8388,7 +8178,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('Abstract Relational Comparison', { skip: !hasBigInts }, function (t) {
+	test('Abstract Relational Comparison', { skip: !esV.hasBigInts }, function (t) {
 		forEach(v.bigints, function (bigint) {
 			t.equal(
 				ES['Abstract Relational Comparison'](bigint, bigint + BigInt(1), false),
@@ -8461,7 +8251,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::add', { skip: !hasBigInts }, function (t) {
+	test('BigInt::add', { skip: !esV.hasBigInts }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.add(nonBigInt, 0); },
@@ -8488,7 +8278,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::bitwiseAND', { skip: !hasBigInts }, function (t) {
+	test('BigInt::bitwiseAND', { skip: !esV.hasBigInts }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.bitwiseAND(nonBigInt, $BigInt(0)); },
@@ -8516,7 +8306,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.test('actual BigInts', { skip: !hasBigInts }, function (st) {
+		t.test('actual BigInts', { skip: !esV.hasBigInts }, function (st) {
 			forEach(v.int32s, function (int32) {
 				var bigInt32 = $BigInt(int32);
 				st.equal(ES.BigInt.bitwiseNOT(bigInt32), ~bigInt32, debug(bigInt32) + ' becomes ~' + debug(bigInt32));
@@ -8527,7 +8317,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::bitwiseOR', { skip: !hasBigInts }, function (t) {
+	test('BigInt::bitwiseOR', { skip: !esV.hasBigInts }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.bitwiseOR(nonBigInt, $BigInt(0)); },
@@ -8546,7 +8336,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::bitwiseXOR', { skip: !hasBigInts }, function (t) {
+	test('BigInt::bitwiseXOR', { skip: !esV.hasBigInts }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.bitwiseXOR(nonBigInt, $BigInt(0)); },
@@ -8565,7 +8355,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::divide', { skip: !hasBigInts }, function (t) {
+	test('BigInt::divide', { skip: !esV.hasBigInts }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.divide(nonBigInt, $BigInt(0)); },
@@ -8595,7 +8385,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::equal', { skip: !hasBigInts }, function (t) {
+	test('BigInt::equal', { skip: !esV.hasBigInts }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.equal(nonBigInt, $BigInt(0)); },
@@ -8619,7 +8409,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::exponentiate', { skip: !hasBigInts }, function (t) {
+	test('BigInt::exponentiate', { skip: !esV.hasBigInts }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.exponentiate(nonBigInt, $BigInt(0)); },
@@ -8654,7 +8444,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::leftShift', { skip: !hasBigInts }, function (t) {
+	test('BigInt::leftShift', { skip: !esV.hasBigInts }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.leftShift(nonBigInt, $BigInt(0)); },
@@ -8686,7 +8476,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::lessThan', { skip: !hasBigInts }, function (t) {
+	test('BigInt::lessThan', { skip: !esV.hasBigInts }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.lessThan(nonBigInt, $BigInt(0)); },
@@ -8712,7 +8502,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::multiply', { skip: !hasBigInts }, function (t) {
+	test('BigInt::multiply', { skip: !esV.hasBigInts }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.multiply(nonBigInt, $BigInt(0)); },
@@ -8739,7 +8529,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::remainder', { skip: !hasBigInts }, function (t) {
+	test('BigInt::remainder', { skip: !esV.hasBigInts }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.remainder(nonBigInt, $BigInt(0)); },
@@ -8777,7 +8567,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::sameValue', { skip: !hasBigInts }, function (t) {
+	test('BigInt::sameValue', { skip: !esV.hasBigInts }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.sameValue(nonBigInt, $BigInt(0)); },
@@ -8800,7 +8590,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::sameValueZero', { skip: !hasBigInts }, function (t) {
+	test('BigInt::sameValueZero', { skip: !esV.hasBigInts }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.sameValueZero(nonBigInt, $BigInt(0)); },
@@ -8821,7 +8611,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::signedRightShift', { skip: !hasBigInts }, function (t) {
+	test('BigInt::signedRightShift', { skip: !esV.hasBigInts }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.signedRightShift(nonBigInt, $BigInt(0)); },
@@ -8853,7 +8643,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::subtract', { skip: !hasBigInts }, function (t) {
+	test('BigInt::subtract', { skip: !esV.hasBigInts }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.subtract(nonBigInt, $BigInt(0)); },
@@ -8903,7 +8693,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.test('actual BigInts', { skip: !hasBigInts }, function (st) {
+		t.test('actual BigInts', { skip: !esV.hasBigInts }, function (st) {
 			forEach(v.bigints, function (bigint) {
 				st.equal(ES.BigInt.unaryMinus(bigint), -bigint, debug(bigint) + ' produces -' + debug(bigint));
 			});
@@ -8913,7 +8703,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('BigInt::unsignedRightShift', { skip: !hasBigInts }, function (t) {
+	test('BigInt::unsignedRightShift', { skip: !esV.hasBigInts }, function (t) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.BigInt.unsignedRightShift(nonBigInt, $BigInt(0)); },
@@ -8954,7 +8744,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.test('BigInt support', { skip: !hasBigInts }, function (st) {
+		t.test('BigInt support', { skip: !esV.hasBigInts }, function (st) {
 			st['throws'](
 				function () { ES.BigIntBitwiseOp('&', 1, BigInt(1)); },
 				TypeError,
@@ -9087,8 +8877,8 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			'[[IsUnpairedSurrogate]]': false
 		});
 
-		var strWithHalfPoo = 'a' + leadingPoo + 'c';
-		var strWithWholePoo = 'a' + wholePoo + 'd';
+		var strWithHalfPoo = 'a' + esV.poo.leading + 'c';
+		var strWithWholePoo = 'a' + esV.poo.whole + 'd';
 
 		t.deepEqual(ES.CodePointAt(strWithHalfPoo, 0), {
 			'[[CodePoint]]': 'a',
@@ -9096,7 +8886,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			'[[IsUnpairedSurrogate]]': false
 		});
 		t.deepEqual(ES.CodePointAt(strWithHalfPoo, 1), {
-			'[[CodePoint]]': leadingPoo,
+			'[[CodePoint]]': esV.poo.leading,
 			'[[CodeUnitCount]]': 1,
 			'[[IsUnpairedSurrogate]]': true
 		});
@@ -9112,12 +8902,12 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			'[[IsUnpairedSurrogate]]': false
 		});
 		t.deepEqual(ES.CodePointAt(strWithWholePoo, 1), {
-			'[[CodePoint]]': wholePoo,
+			'[[CodePoint]]': esV.poo.whole,
 			'[[CodeUnitCount]]': 2,
 			'[[IsUnpairedSurrogate]]': false
 		});
 		t.deepEqual(ES.CodePointAt(strWithWholePoo, 2), {
-			'[[CodePoint]]': trailingPoo,
+			'[[CodePoint]]': esV.poo.trailing,
 			'[[CodeUnitCount]]': 1,
 			'[[IsUnpairedSurrogate]]': true
 		});
@@ -9130,7 +8920,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('CreateListFromArrayLike', { skip: !hasBigInts }, function (t) {
+	test('CreateListFromArrayLike', { skip: !esV.hasBigInts }, function (t) {
 		t.deepEqual(
 			ES.CreateListFromArrayLike({ length: 2, 0: BigInt(1), 1: 'b', 2: 'c' }),
 			[BigInt(1), 'b'],
@@ -9184,17 +8974,17 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				var expected = [
 					assign(['a'], kludgeMatch(regex, { index: 0, input: str, lastIndex: 1 }))
 				];
-				testRESIterator(ES, s2t, regex, str, false, false, expected);
+				testRESIterator(ES.CreateRegExpStringIterator, s2t, regex, str, false, false, expected);
 				s2t.end();
 			});
 
 			st.test('non-global unicode regex', { skip: !('unicode' in RegExp.prototype) }, function (s2t) {
-				var regex = new RegExp(wholePoo, 'u');
-				var str = 'a' + wholePoo + 'ca' + wholePoo + 'c';
+				var regex = new RegExp(esV.poo.whole, 'u');
+				var str = 'a' + esV.poo.whole + 'ca' + esV.poo.whole + 'c';
 				var expected = [
-					assign([wholePoo], kludgeMatch(regex, { index: 1, input: str, lastIndex: 1 }))
+					assign([esV.poo.whole], kludgeMatch(regex, { index: 1, input: str, lastIndex: 1 }))
 				];
-				testRESIterator(ES, s2t, regex, str, false, true, expected);
+				testRESIterator(ES.CreateRegExpStringIterator, s2t, regex, str, false, true, expected);
 				s2t.end();
 			});
 
@@ -9205,7 +8995,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 					assign(['a'], kludgeMatch(regex, { index: 0, input: str, lastIndex: 1 })),
 					assign(['a'], kludgeMatch(regex, { index: 3, input: str, lastIndex: 4 }))
 				];
-				testRESIterator(ES, s2t, regex, str, true, false, expected);
+				testRESIterator(ES.CreateRegExpStringIterator, s2t, regex, str, true, false, expected);
 
 				var emptyRegex = /(?:)/g;
 				var abc = 'abc';
@@ -9215,19 +9005,19 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 					assign([''], kludgeMatch(emptyRegex, { index: 2, input: abc, lastIndex: 3 })),
 					assign([''], kludgeMatch(emptyRegex, { index: 3, input: abc, lastIndex: 4 }))
 				];
-				testRESIterator(ES, s2t, emptyRegex, abc, true, false, expected2);
+				testRESIterator(ES.CreateRegExpStringIterator, s2t, emptyRegex, abc, true, false, expected2);
 
 				s2t.end();
 			});
 
 			st.test('global unicode regex', { skip: !('unicode' in RegExp.prototype) }, function (s2t) {
-				var regex = new RegExp(wholePoo, 'gu');
-				var str = 'a' + wholePoo + 'ca' + wholePoo + 'c';
+				var regex = new RegExp(esV.poo.whole, 'gu');
+				var str = 'a' + esV.poo.whole + 'ca' + esV.poo.whole + 'c';
 				var expected = [
-					assign([wholePoo], kludgeMatch(regex, { index: 1, input: str })),
-					assign([wholePoo], kludgeMatch(regex, { index: 5, input: str }))
+					assign([esV.poo.whole], kludgeMatch(regex, { index: 1, input: str })),
+					assign([esV.poo.whole], kludgeMatch(regex, { index: 5, input: str }))
 				];
-				testRESIterator(ES, s2t, regex, str, true, true, expected);
+				testRESIterator(ES.CreateRegExpStringIterator, s2t, regex, str, true, true, expected);
 				s2t.end();
 			});
 
@@ -9242,17 +9032,17 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				var expected = [
 					assign(['a'], kludgeMatch(regex, { index: 0, input: str }))
 				];
-				testRESIterator(ES, s2t, regex, str, true, false, expected);
+				testRESIterator(ES.CreateRegExpStringIterator, s2t, regex, str, true, false, expected);
 				s2t.end();
 			});
 
 			st.test('non-global unicode regex', { skip: !('unicode' in RegExp.prototype) }, function (s2t) {
-				var regex = new RegExp(wholePoo, 'u');
-				var str = 'a' + wholePoo + 'ca' + wholePoo + 'c';
+				var regex = new RegExp(esV.poo.whole, 'u');
+				var str = 'a' + esV.poo.whole + 'ca' + esV.poo.whole + 'c';
 				var expected = [
-					assign([wholePoo], kludgeMatch(regex, { index: 1, input: str }))
+					assign([esV.poo.whole], kludgeMatch(regex, { index: 1, input: str }))
 				];
-				testRESIterator(ES, s2t, regex, str, true, true, expected);
+				testRESIterator(ES.CreateRegExpStringIterator, s2t, regex, str, true, true, expected);
 				s2t.end();
 			});
 
@@ -9263,18 +9053,18 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 					assign(['a'], kludgeMatch(regex, { index: 0, input: str })),
 					assign(['a'], kludgeMatch(regex, { index: 3, input: str }))
 				];
-				testRESIterator(ES, s2t, regex, str, false, false, expected);
+				testRESIterator(ES.CreateRegExpStringIterator, s2t, regex, str, false, false, expected);
 				s2t.end();
 			});
 
 			st.test('global unicode regex', { skip: !('unicode' in RegExp.prototype) }, function (s2t) {
-				var regex = new RegExp(wholePoo, 'gu');
-				var str = 'a' + wholePoo + 'ca' + wholePoo + 'c';
+				var regex = new RegExp(esV.poo.whole, 'gu');
+				var str = 'a' + esV.poo.whole + 'ca' + esV.poo.whole + 'c';
 				var expected = [
-					assign([wholePoo], kludgeMatch(regex, { index: 1, input: str })),
-					assign([wholePoo], kludgeMatch(regex, { index: 5, input: str }))
+					assign([esV.poo.whole], kludgeMatch(regex, { index: 1, input: str })),
+					assign([esV.poo.whole], kludgeMatch(regex, { index: 5, input: str }))
 				];
-				testRESIterator(ES, s2t, regex, str, false, true, expected);
+				testRESIterator(ES.CreateRegExpStringIterator, s2t, regex, str, false, true, expected);
 				s2t.end();
 			});
 
@@ -9295,7 +9085,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('floor (with BigInts)', { skip: !hasBigInts }, function (t) {
+	test('floor (with BigInts)', { skip: !esV.hasBigInts }, function (t) {
 		t.equal(ES.floor(BigInt(3)), BigInt(3), 'floor(3n) is 3n');
 		t.equal(ES.floor(BigInt(-3)), BigInt(-3), 'floor(-3n) is -3n');
 		t.equal(ES.floor(BigInt(0)), BigInt(0), 'floor(0n) is 0n');
@@ -9378,7 +9168,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	test('GetValueFromBuffer', function (t) {
 		var isTypedArray = true;
 
-		forEach(unknowns, function (nonAB) {
+		forEach(esV.unknowns, function (nonAB) {
 			t['throws'](
 				function () { ES.GetValueFromBuffer(nonAB, 0, 'Int8', isTypedArray, 'Unordered'); },
 				TypeError,
@@ -9395,7 +9185,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			forEach(invalidTATypes, function (nonString) {
+			forEach(esV.invalidTATypes, function (nonString) {
 				st['throws'](
 					function () { ES.GetValueFromBuffer(new ArrayBuffer(8), 0, nonString, isTypedArray, 'Unordered'); },
 					TypeError,
@@ -9425,7 +9215,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			st.test('can detach', { skip: !canDetach }, function (s2t) {
+			st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 				var buffer = new ArrayBuffer(8);
 				s2t.equal(ES.DetachArrayBuffer(buffer), null, 'detaching returns null');
 
@@ -9440,9 +9230,9 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 			forEach(bufferTestCases, function (testCase, name) {
 				st.test(name + ': ' + debug(testCase.value), function (s2t) {
-					forEach(allTypes, function (type) {
-						var isBigInt = isBigIntTAType(type);
-						var view = new DataView(new ArrayBuffer(elementSizes.$Float64Array));
+					forEach(esV.allTypes, function (type) {
+						var isBigInt = esV.isBigIntTAType(type);
+						var view = new DataView(new ArrayBuffer(esV.elementSizes.$Float64Array));
 						var method = type === 'Uint8C' ? 'Uint8' : type;
 						// var value = unserialize(testCase.value);
 						var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
@@ -9521,7 +9311,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		});
 
 		forEach([].concat(
-			unknowns,
+			esV.unknowns,
 			[[]]
 		), function (nonTA) {
 			t['throws'](
@@ -9533,12 +9323,12 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 		t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
 			forEach(availableTypedArrays, function (TypedArray) {
-				var isBigInt = isBigIntTAType(TypedArray);
+				var isBigInt = esV.isBigIntTAType(TypedArray);
 				var Z = isBigInt ? safeBigInt : Number;
 
 				var ta = new global[TypedArray](8);
 
-				st.test('can detach', { skip: !canDetach }, function (s2t) {
+				st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 					var taD = new global[TypedArray](8);
 					ES.DetachArrayBuffer(taD.buffer);
 
@@ -9586,7 +9376,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IsBigIntElementType', function (t) {
-		forEach(bigIntTypes, function (type) {
+		forEach(esV.bigIntTypes, function (type) {
 			t.equal(
 				ES.IsBigIntElementType(type),
 				true,
@@ -9594,7 +9384,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(numberTypes, function (type) {
+		forEach(esV.numberTypes, function (type) {
 			t.equal(
 				ES.IsBigIntElementType(type),
 				false,
@@ -9606,7 +9396,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IsUnsignedElementType', function (t) {
-		forEach(unsignedElementTypes, function (type) {
+		forEach(esV.unsignedElementTypes, function (type) {
 			t.equal(
 				ES.IsUnsignedElementType(type),
 				true,
@@ -9614,7 +9404,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(signedElementTypes, function (type) {
+		forEach(esV.signedElementTypes, function (type) {
 			t.equal(
 				ES.IsUnsignedElementType(type),
 				false,
@@ -9626,7 +9416,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IsUnclampedIntegerElementType', function (t) {
-		forEach(unclampedIntegerTypes, function (type) {
+		forEach(esV.unclampedIntegerTypes, function (type) {
 			t.equal(
 				ES.IsUnclampedIntegerElementType(type),
 				true,
@@ -9635,8 +9425,8 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		});
 
 		forEach([].concat(
-			clampedTypes,
-			nonUnclampedIntegerTypes
+			esV.clampedTypes,
+			esV.nonUnclampedIntegerTypes
 		), function (type) {
 			t.equal(
 				ES.IsUnclampedIntegerElementType(type),
@@ -9672,7 +9462,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IsNoTearConfiguration', function (t) {
-		forEach(unclampedIntegerTypes, function (type) {
+		forEach(esV.unclampedIntegerTypes, function (type) {
 			t.equal(
 				ES.IsNoTearConfiguration(type),
 				true,
@@ -9680,7 +9470,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(bigIntTypes, function (type) {
+		forEach(esV.bigIntTypes, function (type) {
 			t.equal(
 				ES.IsNoTearConfiguration(type, 'Init'),
 				false,
@@ -9700,7 +9490,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(clampedTypes, function (type) {
+		forEach(esV.clampedTypes, function (type) {
 			t.equal(
 				ES.IsNoTearConfiguration(type),
 				false,
@@ -9713,7 +9503,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 	test('IsValidIntegerIndex', function (t) {
 		forEach([].concat(
-			unknowns,
+			esV.unknowns,
 			[[]]
 		), function (nonTA) {
 			t['throws'](
@@ -10395,7 +10185,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.test('actual BigInts', { skip: !hasBigInts }, function (st) {
+		t.test('actual BigInts', { skip: !esV.hasBigInts }, function (st) {
 			forEach(v.integerNumbers, function (int) {
 				if (int >= 1e17) {
 					// BigInt(1e17) throws on node v10.4 - v10.8
@@ -10415,7 +10205,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
-		t.test('no BigInts', { skip: hasBigInts }, function (st) {
+		t.test('no BigInts', { skip: esV.hasBigInts }, function (st) {
 			st['throws'](
 				function () { ES.NumberToBigInt(0); },
 				SyntaxError,
@@ -10429,7 +10219,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	});
 
 	test('NumericToRawBytes', function (t) {
-		forEach(nonTATypes, function (nonTAType) {
+		forEach(esV.nonTATypes, function (nonTAType) {
 			t['throws'](
 				function () { ES.NumericToRawBytes(nonTAType, 0, false); },
 				TypeError,
@@ -10457,8 +10247,8 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			var value = unserialize(testCase.value);
 
 			t.test(name + ': ' + value, function (st) {
-				forEach(allTypes, function (type) {
-					var isBigInt = isBigIntTAType(type);
+				forEach(esV.allTypes, function (type) {
+					var isBigInt = esV.isBigIntTAType(type);
 					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
 
@@ -10500,7 +10290,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('BigInt64', function (st) {
-			st.test('bigints available', { skip: !hasBigInts }, function (s2t) {
+			st.test('bigints available', { skip: !esV.hasBigInts }, function (s2t) {
 				forEach([
 					[BigInt(0), [0, 0, 0, 0, 0, 0, 0, 0]],
 					[BigInt(1), [1, 0, 0, 0, 0, 0, 0, 0]],
@@ -10542,7 +10332,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('BigUint64', function (st) {
-			st.test('bigints available', { skip: !hasBigInts }, function (s2t) {
+			st.test('bigints available', { skip: !esV.hasBigInts }, function (s2t) {
 				forEach([
 					[BigInt(0), [0, 0, 0, 0, 0, 0, 0, 0]],
 					[BigInt(1), [1, 0, 0, 0, 0, 0, 0, 0]],
@@ -10654,7 +10444,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	});
 
 	test('RawBytesToNumeric', function (t) {
-		forEach(nonTATypes, function (nonTAType) {
+		forEach(esV.nonTATypes, function (nonTAType) {
 			t['throws'](
 				function () { ES.RawBytesToNumeric(nonTAType, [], false); },
 				TypeError,
@@ -10662,7 +10452,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(unknowns, function (nonArray) {
+		forEach(esV.unknowns, function (nonArray) {
 			t['throws'](
 				function () { ES.RawBytesToNumeric('Int8', nonArray, false); },
 				TypeError,
@@ -10688,7 +10478,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		forEach(bufferTestCases, function (testCase, name) {
 			var value = unserialize(testCase.value);
 			t.test(name + ': ' + value, function (st) {
-				forEach(allTypes, function (type) {
+				forEach(esV.allTypes, function (type) {
 					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
 					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 
@@ -10844,7 +10634,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
-		t.test('bigint types, no bigints', { skip: hasBigInts }, function (st) {
+		t.test('bigint types, no bigints', { skip: esV.hasBigInts }, function (st) {
 			st['throws'](
 				function () { ES.RawBytesToNumeric('BigInt64', [0, 0, 0, 0, 0, 0, 0, 0], false); },
 				SyntaxError,
@@ -10897,7 +10687,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	test('SetValueInBuffer', function (t) {
 		var order = 'Unordered';
 
-		forEach(unknowns, function (nonAB) {
+		forEach(esV.unknowns, function (nonAB) {
 			t['throws'](
 				function () { ES.SetValueInBuffer(nonAB, 0, 'Int8', 0, false, order); },
 				TypeError,
@@ -10916,7 +10706,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			forEach(invalidTATypes, function (nonString) {
+			forEach(esV.invalidTATypes, function (nonString) {
 				st['throws'](
 					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, nonString, 0, isTypedArray, order); },
 					TypeError,
@@ -10946,7 +10736,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			if (hasBigInts) {
+			if (esV.hasBigInts) {
 				st['throws'](
 					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'Int8', $BigInt(0), isTypedArray, order); },
 					TypeError,
@@ -10966,7 +10756,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 				'invalid order'
 			);
 
-			st.test('can detach', { skip: !canDetach }, function (s2t) {
+			st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 				var buffer = new ArrayBuffer(8);
 				s2t.equal(ES.DetachArrayBuffer(buffer), null, 'detaching returns null');
 
@@ -10992,13 +10782,13 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			});
 
 			forEach(bufferTestCases, function (testCase, name) {
-				forEach(allTypes, testSetValueInBuffer(ES, st, testCase, isTypedArray, order));
+				forEach(esV.allTypes, testSetValueInBuffer(ES, st, testCase, isTypedArray, order));
 			});
 
 			st.end();
 		});
 
-		t.test('bigints', { skip: !hasBigInts }, function (st) {
+		t.test('bigints', { skip: !esV.hasBigInts }, function (st) {
 			forEach(v.bigints, function (bigint) {
 				var buffer = new ArrayBuffer(8);
 				ES.SetValueInBuffer(buffer, 0, 'BigUint64', bigint, true, order);
@@ -11016,7 +10806,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	});
 
 	test('StringToBigInt', function (t) {
-		t.test('actual BigInts', { skip: !hasBigInts }, function (st) {
+		t.test('actual BigInts', { skip: !esV.hasBigInts }, function (st) {
 			forEach(v.bigints, function (bigint) {
 				st.equal(
 					ES.StringToBigInt(String(bigint)),
@@ -11048,7 +10838,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
-		t.test('BigInt not supported', { skip: hasBigInts }, function (st) {
+		t.test('BigInt not supported', { skip: esV.hasBigInts }, function (st) {
 			st['throws'](
 				function () { ES.StringToBigInt('0'); },
 				SyntaxError,
@@ -11091,7 +10881,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	});
 
 	test('thisBigIntValue', function (t) {
-		t.test('actual BigInts', { skip: !hasBigInts }, function (st) {
+		t.test('actual BigInts', { skip: !esV.hasBigInts }, function (st) {
 			st.equal(ES.thisBigIntValue(BigInt(42)), BigInt(42));
 			st.equal(ES.thisBigIntValue(Object(BigInt(42))), BigInt(42));
 
@@ -11101,7 +10891,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.thisBigIntValue(nonBigInt); },
-				hasBigInts ? TypeError : SyntaxError,
+				esV.hasBigInts ? TypeError : SyntaxError,
 				debug(nonBigInt) + ' is not a BigInt'
 			);
 		});
@@ -11117,7 +10907,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		), function (nonBigIntCoercible) {
 			t['throws'](
 				function () { ES.ToBigInt(nonBigIntCoercible); },
-				hasBigInts ? TypeError : SyntaxError,
+				esV.hasBigInts ? TypeError : SyntaxError,
 				debug(nonBigIntCoercible) + ' throws'
 			);
 		});
@@ -11125,12 +10915,12 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		forEach(v.symbols, function (sym) {
 			t['throws'](
 				function () { ES.ToBigInt(sym); },
-				hasBigInts ? TypeError : SyntaxError,
+				esV.hasBigInts ? TypeError : SyntaxError,
 				debug(sym) + ' throws'
 			);
 		});
 
-		t.test('actual BigInts', { skip: !hasBigInts }, function (st) {
+		t.test('actual BigInts', { skip: !esV.hasBigInts }, function (st) {
 			st.equal(ES.ToBigInt(true), BigInt(1), 'true becomes 1n');
 			st.equal(ES.ToBigInt(false), BigInt(0), 'true becomes 0n');
 
@@ -11185,7 +10975,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('ToBigInt64', { skip: !hasBigInts }, function (t) {
+	test('ToBigInt64', { skip: !esV.hasBigInts }, function (t) {
 		var twoSixtyThreeMinusOne = twoSixtyThree - BigInt(1);
 		var negTwoSixtyThreeMinusOne = -twoSixtyThree - BigInt(1);
 
@@ -11206,7 +10996,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
-	test('ToBigUint64', { skip: !hasBigInts }, function (t) {
+	test('ToBigUint64', { skip: !esV.hasBigInts }, function (t) {
 		var twoSixtyFourMinusOne = twoSixtyFour - BigInt(1);
 		var twoSixtyThreeMinusOne = twoSixtyThree - BigInt(1);
 		var negTwoSixtyThreeMinusOne = -twoSixtyThree - BigInt(1);
@@ -11267,17 +11057,17 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 
 	test('UTF16DecodeSurrogatePair', function (t) {
 		t['throws'](
-			function () { ES.UTF16DecodeSurrogatePair('a'.charCodeAt(0), trailingPoo.charCodeAt(0)); },
+			function () { ES.UTF16DecodeSurrogatePair('a'.charCodeAt(0), esV.poo.trailing.charCodeAt(0)); },
 			TypeError,
 			'"a" is not a leading surrogate'
 		);
 		t['throws'](
-			function () { ES.UTF16DecodeSurrogatePair(leadingPoo.charCodeAt(0), 'b'.charCodeAt(0)); },
+			function () { ES.UTF16DecodeSurrogatePair(esV.poo.leading.charCodeAt(0), 'b'.charCodeAt(0)); },
 			TypeError,
 			'"b" is not a trailing surrogate'
 		);
 
-		t.equal(ES.UTF16DecodeSurrogatePair(leadingPoo.charCodeAt(0), trailingPoo.charCodeAt(0)), wholePoo);
+		t.equal(ES.UTF16DecodeSurrogatePair(esV.poo.leading.charCodeAt(0), esV.poo.trailing.charCodeAt(0)), esV.poo.whole);
 
 		t.end();
 	});
@@ -11312,7 +11102,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 	test('ToNumeric', function (t) {
 		testToNumber(t, ES, ES.ToNumeric);
 
-		t.test('BigInts', { skip: !hasBigInts }, function (st) {
+		t.test('BigInts', { skip: !esV.hasBigInts }, function (st) {
 			st.equal(ES.ToNumeric(BigInt(42)), BigInt(42), debug(BigInt(42)) + ' is ' + debug(BigInt(42)));
 			st.equal(ES.ToNumeric(Object(BigInt(42))), BigInt(42), debug(Object(BigInt(42))) + ' is ' + debug(BigInt(42)));
 
@@ -11340,7 +11130,7 @@ var es2020 = function ES2020(ES, ops, expectedMissing, skips) {
 		});
 
 		t.deepEqual(ES.UTF16DecodeString('abc'), ['a', 'b', 'c'], 'code units get split');
-		t.deepEqual(ES.UTF16DecodeString('a' + wholePoo + 'c'), ['a', wholePoo, 'c'], 'code points get split too');
+		t.deepEqual(ES.UTF16DecodeString('a' + esV.poo.whole + 'c'), ['a', esV.poo.whole, 'c'], 'code points get split too');
 
 		t.end();
 	});
@@ -11494,7 +11284,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.test('BigInt support', { skip: !hasBigInts }, function (st) {
+		t.test('BigInt support', { skip: !esV.hasBigInts }, function (st) {
 			forEach(v.bigints, function (bigint) {
 				st['throws'](
 					function () { ES.ApplyStringOrNumericBinaryOperator(Number(bigint), '+', bigint); },
@@ -11626,7 +11416,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 	});
 
 	test('CloneArrayBuffer', function (t) {
-		forEach(unknowns, function (nonArrayBuffer) {
+		forEach(esV.unknowns, function (nonArrayBuffer) {
 			t['throws'](
 				function () { ES.CloneArrayBuffer(nonArrayBuffer, 0, 0, Object); },
 				TypeError,
@@ -11704,7 +11494,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.equal(ES.CodePointsToString([0xD83D, 0xDCA9]), wholePoo, 'code points are converted to a string');
+		t.equal(ES.CodePointsToString([0xD83D, 0xDCA9]), esV.poo.whole, 'code points are converted to a string');
 
 		t.end();
 	});
@@ -11756,7 +11546,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 		});
 
 		forEach([].concat(
-			unknowns,
+			esV.unknowns,
 			[[]]
 		), function (nonTA) {
 			t['throws'](
@@ -11768,12 +11558,12 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 
 		t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
 			forEach(availableTypedArrays, function (TypedArray) {
-				var isBigInt = isBigIntTAType(TypedArray);
+				var isBigInt = esV.isBigIntTAType(TypedArray);
 				var Z = isBigInt ? safeBigInt : Number;
 
 				var ta = new global[TypedArray](8);
 
-				st.test('can detach', { skip: !canDetach }, function (s2t) {
+				st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 					var taD = new global[TypedArray](8);
 					ES.DetachArrayBuffer(taD.buffer);
 
@@ -11826,7 +11616,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			t.equal(false, ES.IsIntegralNumber(i + 0.2), (i + 0.2) + ' is not integer');
 		}
 		t.equal(true, ES.IsIntegralNumber(-0), '-0 is integer');
-		forEach(notInts, function (notInt) {
+		forEach(esV.notInts, function (notInt) {
 			t.equal(false, ES.IsIntegralNumber(notInt), debug(notInt) + ' is not integer');
 		});
 		t.equal(false, ES.IsIntegralNumber(v.uncoercibleObject), 'uncoercibleObject is not integer');
@@ -11847,7 +11637,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 
 	test('SetTypedArrayFromArrayLike', function (t) {
 		forEach([].concat(
-			unknowns,
+			esV.unknowns,
 			[[]]
 		), function (nonTA) {
 			t['throws'](
@@ -11880,7 +11670,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 				'source: must not be a TypedArray'
 			);
 
-			st.test('can detach', { skip: !canDetach }, function (s2t) {
+			st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 				var arr = new Uint8Array(0);
 				ES.DetachArrayBuffer(arr.buffer);
 
@@ -11894,7 +11684,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			});
 
 			forEach(availableTypedArrays, function (name) {
-				var isBigInt = isBigIntTAType(name);
+				var isBigInt = esV.isBigIntTAType(name);
 				var Z = isBigInt ? safeBigInt : Number;
 				var TA = global[name];
 
@@ -11911,7 +11701,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 				st.deepEqual(ta, new TA([Z(1), Z(10), Z(3)]), name + ': target is updated');
 			});
 
-			st.test('getters are supported, and can detach', { skip: !$defineProperty || !canDetach }, function (s2t) {
+			st.test('getters are supported, and can detach', { skip: !$defineProperty || !esV.canDetach }, function (s2t) {
 				var ta = new Uint8Array([1, 2, 3]);
 				var obj = { length: 1 };
 				$defineProperty(obj, '0', { get: function () { ES.DetachArrayBuffer(ta.buffer); return 10; } });
@@ -11933,7 +11723,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 
 	test('SetTypedArrayFromTypedArray', { skip: availableTypedArrays.length === 0 }, function (t) {
 		forEach([].concat(
-			unknowns,
+			esV.unknowns,
 			[[]]
 		), function (nonTA) {
 			t['throws'](
@@ -11965,7 +11755,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			'targetOffset: ' + debug(Infinity) + ' is not a finite integer'
 		);
 
-		t.test('can detach', { skip: !canDetach }, function (st) {
+		t.test('can detach', { skip: !esV.canDetach }, function (st) {
 			var arr = new Uint8Array(0);
 			ES.DetachArrayBuffer(arr.buffer);
 
@@ -11985,7 +11775,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 		});
 
 		forEach(availableTypedArrays, function (name) {
-			var isBigInt = isBigIntTAType(name);
+			var isBigInt = esV.isBigIntTAType(name);
 			var Z = isBigInt ? safeBigInt : Number;
 			var TA = global[name];
 
@@ -12011,7 +11801,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			}
 		});
 
-		t.test('mixed content type', { skip: !hasBigInts || typeof BigInt64Array !== 'function' }, function (st) {
+		t.test('mixed content type', { skip: !esV.hasBigInts || typeof BigInt64Array !== 'function' }, function (st) {
 			var bta = new BigInt64Array([$BigInt(0)]);
 			var nta = new Float64Array([0]);
 
@@ -12030,7 +11820,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
-		t.test('different type, same content type', { skip: !hasBigInts || typeof BigInt64Array !== 'function' }, function (st) {
+		t.test('different type, same content type', { skip: !esV.hasBigInts || typeof BigInt64Array !== 'function' }, function (st) {
 			var bta = new Float32Array([10, 11]);
 			ES.SetTypedArrayFromTypedArray(bta, 0, new Float64Array([0, 1]));
 			st.deepEqual(bta, new Float32Array([0, 1]));
@@ -12128,7 +11918,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(notInts, function (nonIntegerNumber) {
+		forEach(esV.notInts, function (nonIntegerNumber) {
 			t['throws'](
 				function () { ES.SplitMatch('', nonIntegerNumber, ''); },
 				TypeError,
@@ -12150,8 +11940,8 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 
 		t.equal(ES.SplitMatch('a', 0, 'ab'), 'not-matched', 'R longer than S yields false');
 
-		var s = 'a' + wholePoo + 'c';
-		t.equal(ES.SplitMatch(s, 1, wholePoo), 3, debug(wholePoo) + ' is found at index 1, before index 3, in ' + debug(s));
+		var s = 'a' + esV.poo.whole + 'c';
+		t.equal(ES.SplitMatch(s, 1, esV.poo.whole), 3, debug(esV.poo.whole) + ' is found at index 1, before index 3, in ' + debug(s));
 
 		t.end();
 	});
@@ -12179,7 +11969,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		var str = 'abc' + wholePoo + 'abc';
+		var str = 'abc' + esV.poo.whole + 'abc';
 		t.equal(ES.StringIndexOf(str, 'a', 0), 0, 'a: first index found');
 		t.equal(ES.StringIndexOf(str, 'a', 1), 5, 'a: second index found');
 		t.equal(ES.StringIndexOf(str, 'a', 6), -1, 'a: second index not found');
@@ -12192,12 +11982,12 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 		t.equal(ES.StringIndexOf(str, 'c', 3), 7, 'c: second index found');
 		t.equal(ES.StringIndexOf(str, 'c', 8), -1, 'c: second index not found');
 
-		t.equal(ES.StringIndexOf(str, leadingPoo, 0), 3, 'first half of ' + wholePoo + ' found');
-		t.equal(ES.StringIndexOf(str, leadingPoo, 4), -1, 'first half of ' + wholePoo + ' not found');
-		t.equal(ES.StringIndexOf(str, trailingPoo, 0), 4, 'second half of ' + wholePoo + ' found');
-		t.equal(ES.StringIndexOf(str, trailingPoo, 5), -1, 'second half of ' + wholePoo + ' not found');
-		t.equal(ES.StringIndexOf(str, wholePoo, 0), 3, wholePoo + ' found');
-		t.equal(ES.StringIndexOf(str, wholePoo, 4), -1, wholePoo + ' not found');
+		t.equal(ES.StringIndexOf(str, esV.poo.leading, 0), 3, 'first half of ' + esV.poo.whole + ' found');
+		t.equal(ES.StringIndexOf(str, esV.poo.leading, 4), -1, 'first half of ' + esV.poo.whole + ' not found');
+		t.equal(ES.StringIndexOf(str, esV.poo.trailing, 0), 4, 'second half of ' + esV.poo.whole + ' found');
+		t.equal(ES.StringIndexOf(str, esV.poo.trailing, 5), -1, 'second half of ' + esV.poo.whole + ' not found');
+		t.equal(ES.StringIndexOf(str, esV.poo.whole, 0), 3, esV.poo.whole + ' found');
+		t.equal(ES.StringIndexOf(str, esV.poo.whole, 4), -1, esV.poo.whole + ' not found');
 
 		t.equal(ES.StringIndexOf('', 'a', 0), -1, 'empty string contains nothing');
 		for (var i = 0; i < str.length; i += 1) {
@@ -12217,7 +12007,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 		});
 
 		t.deepEqual(ES.StringToCodePoints('abc'), ['a', 'b', 'c'], 'code units get split');
-		t.deepEqual(ES.StringToCodePoints('a' + wholePoo + 'c'), ['a', wholePoo, 'c'], 'code points get split too');
+		t.deepEqual(ES.StringToCodePoints('a' + esV.poo.whole + 'c'), ['a', esV.poo.whole, 'c'], 'code points get split too');
 
 		t.end();
 	});
@@ -12231,7 +12021,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(notInts, function (nonIntegerNumber) {
+		forEach(esV.notInts, function (nonIntegerNumber) {
 			t['throws'](
 				function () { ES.substring('', nonIntegerNumber); },
 				TypeError,
@@ -12295,17 +12085,17 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 
 	test('UTF16SurrogatePairToCodePoint', function (t) {
 		t['throws'](
-			function () { ES.UTF16SurrogatePairToCodePoint('a'.charCodeAt(0), trailingPoo.charCodeAt(0)); },
+			function () { ES.UTF16SurrogatePairToCodePoint('a'.charCodeAt(0), esV.poo.trailing.charCodeAt(0)); },
 			TypeError,
 			'"a" is not a leading surrogate'
 		);
 		t['throws'](
-			function () { ES.UTF16SurrogatePairToCodePoint(leadingPoo.charCodeAt(0), 'b'.charCodeAt(0)); },
+			function () { ES.UTF16SurrogatePairToCodePoint(esV.poo.leading.charCodeAt(0), 'b'.charCodeAt(0)); },
 			TypeError,
 			'"b" is not a trailing surrogate'
 		);
 
-		t.equal(ES.UTF16SurrogatePairToCodePoint(leadingPoo.charCodeAt(0), trailingPoo.charCodeAt(0)), wholePoo);
+		t.equal(ES.UTF16SurrogatePairToCodePoint(esV.poo.leading.charCodeAt(0), esV.poo.trailing.charCodeAt(0)), esV.poo.whole);
 
 		t.end();
 	});
@@ -12331,8 +12121,8 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 			'0x10FFFF + 1 is > 0x10FFFF'
 		);
 
-		t.equal(ES.UTF16EncodeCodePoint(0xd83d), leadingPoo.charAt(0), '0xD83D is the first half of ' + wholePoo);
-		t.equal(ES.UTF16EncodeCodePoint(0xdca9), trailingPoo.charAt(0), '0xD83D is the last half of ' + wholePoo);
+		t.equal(ES.UTF16EncodeCodePoint(0xd83d), esV.poo.leading.charAt(0), '0xD83D is the first half of ' + esV.poo.whole);
+		t.equal(ES.UTF16EncodeCodePoint(0xdca9), esV.poo.trailing.charAt(0), '0xD83D is the last half of ' + esV.poo.whole);
 		t.equal(ES.UTF16EncodeCodePoint(0x10000), '𐀀', '0x10000 is "𐀀"');
 
 		t.end();
@@ -12340,7 +12130,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 
 	test('ValidateAtomicAccess', function (t) {
 		forEach([].concat(
-			unknowns,
+			esV.unknowns,
 			[[]]
 		), function (nonTA) {
 			t['throws'](
@@ -12375,7 +12165,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 					'a requestIndex > length throws'
 				);
 
-				var elementSize = elementSizes['$' + TypedArray];
+				var elementSize = esV.elementSizes['$' + TypedArray];
 
 				st.equal(ES.ValidateAtomicAccess(ta, 0), elementSize * 0, TypedArray + ': requestIndex of 0 gives 0');
 				st.equal(ES.ValidateAtomicAccess(ta, 1), elementSize * 1, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 1));
@@ -12403,7 +12193,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 		});
 
 		forEach([].concat(
-			unknowns,
+			esV.unknowns,
 			[[]]
 		), function (nonTA) {
 			t['throws'](
@@ -12462,7 +12252,7 @@ var es2021 = function ES2021(ES, ops, expectedMissing, skips) {
 	});
 
 	test('WeakRefDeref', function (t) {
-		forEach(unknowns, function (nonWeakRef) {
+		forEach(esV.unknowns, function (nonWeakRef) {
 			t['throws'](
 				function () { ES.WeakRefDeref(nonWeakRef); },
 				TypeError,
@@ -12694,7 +12484,7 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 		});
 
 		forEach([].concat(
-			unknowns,
+			esV.unknowns,
 			{ '[[StartIndex]]': -1 },
 			{ '[[StartIndex]]': 1.2, '[[EndIndex]]': 0 },
 			{ '[[StartIndex]]': 1, '[[EndIndex]]': 0 }
@@ -12742,7 +12532,7 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 		});
 
 		forEach([].concat(
-			unknowns,
+			esV.unknowns,
 			{ '[[StartIndex]]': -1 },
 			{ '[[StartIndex]]': 1.2, '[[EndIndex]]': 0 },
 			{ '[[StartIndex]]': 1, '[[EndIndex]]': 0 }
@@ -12797,7 +12587,7 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		var strWithWholePoo = 'a' + wholePoo + 'c';
+		var strWithWholePoo = 'a' + esV.poo.whole + 'c';
 		t.equal(ES.GetStringIndex(strWithWholePoo, 0), 0, 'index 0 yields 0');
 		t.equal(ES.GetStringIndex(strWithWholePoo, 1), 1, 'index 1 yields 1');
 		t.equal(ES.GetStringIndex(strWithWholePoo, 2), 3, 'index 2 yields 3');
@@ -13060,7 +12850,7 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 
 	test('IsStrictlyEqual', function (t) {
 		t.test('same types use ===', function (st) {
-			forEach(unknowns, function (value) {
+			forEach(esV.unknowns, function (value) {
 				st.equal(ES.IsStrictlyEqual(value, value), value === value, debug(value) + ' is strictly equal to itself');
 			});
 			st.end();
@@ -13097,7 +12887,7 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 
 	test('IsLooselyEqual', function (t) {
 		t.test('same types use ===', function (st) {
-			forEach(unknowns, function (value) {
+			forEach(esV.unknowns, function (value) {
 				st.equal(ES.IsLooselyEqual(value, value), value === value, debug(value) + ' is abstractly equal to itself');
 			});
 			st.end();
@@ -13119,7 +12909,7 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 				[Number(String(v.coercibleObject)), v.coercibleObject],
 				[Number(v.coercibleObject), v.coercibleObject],
 				[String(Number(v.coercibleObject)), v.coercibleObject]
-			].concat(hasBigInts ? [
+			].concat(esV.hasBigInts ? [
 				[BigInt(0), 0],
 				[0, BigInt(0)],
 				[BigInt(1), 1],
@@ -13208,7 +12998,7 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 		t.equal(ES.IsLessThan(v.coercibleObject, '3', false), false, '!LeftFirst: coercible object is not less than "3"');
 		t.equal(ES.IsLessThan('3', v.coercibleObject, false), false, '!LeftFirst: "3" is not less than coercible object');
 
-		t.test('BigInts are supported', { skip: !hasBigInts }, function (st) {
+		t.test('BigInts are supported', { skip: !esV.hasBigInts }, function (st) {
 			st.equal(ES.IsLessThan($BigInt(0), '1', true), true, 'LeftFirst: 0n is less than "1"');
 			st.equal(ES.IsLessThan('1', $BigInt(0), true), false, 'LeftFirst: "1" is not less than 0n');
 			st.equal(ES.IsLessThan($BigInt(0), '1', false), true, '!LeftFirst: 0n is less than "1"');
@@ -13261,12 +13051,12 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 
 		forEach([].concat(
 			v.strings,
-			wholePoo
+			esV.poo.whole
 		), function (string) {
 			t.equal(ES.IsStringWellFormedUnicode(string), true, debug(string) + ' is well-formed unicode');
 		});
 
-		forEach([leadingPoo, trailingPoo], function (badString) {
+		forEach([esV.poo.leading, esV.poo.trailing], function (badString) {
 			t.equal(ES.IsStringWellFormedUnicode(badString), false, debug(badString) + ' is not well-formed unicode');
 		});
 
@@ -13527,7 +13317,7 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 	});
 
 	test('StringToBigInt', function (t) {
-		t.test('actual BigInts', { skip: !hasBigInts }, function (st) {
+		t.test('actual BigInts', { skip: !esV.hasBigInts }, function (st) {
 			forEach(v.bigints, function (bigint) {
 				st.equal(
 					ES.StringToBigInt(String(bigint)),
@@ -13559,7 +13349,7 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
-		t.test('BigInt not supported', { skip: hasBigInts }, function (st) {
+		t.test('BigInt not supported', { skip: esV.hasBigInts }, function (st) {
 			st['throws'](
 				function () { ES.StringToBigInt('0'); },
 				SyntaxError,
@@ -13611,7 +13401,7 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 	});
 
 	test('TypedArrayElementSize', function (t) {
-		forEach(unknowns, function (nonTA) {
+		forEach(esV.unknowns, function (nonTA) {
 			t['throws'](
 				function () { ES.TypedArrayElementSize(nonTA); },
 				TypeError,
@@ -13620,7 +13410,7 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 		});
 
 		forEach(availableTypedArrays, function (TA) {
-			var elementSize = elementSizes['$' + TA];
+			var elementSize = esV.elementSizes['$' + TA];
 
 			var ta = new global[TA](0);
 
@@ -13638,7 +13428,7 @@ var es2022 = function ES2022(ES, ops, expectedMissing, skips) {
 	});
 
 	test('TypedArrayElementType', function (t) {
-		forEach(unknowns, function (nonTA) {
+		forEach(esV.unknowns, function (nonTA) {
 			t['throws'](
 				function () { ES.TypedArrayElementType(nonTA); },
 				TypeError,
@@ -13716,7 +13506,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.test('BigInts are supported', { skip: !hasBigInts }, function (st) {
+		t.test('BigInts are supported', { skip: !esV.hasBigInts }, function (st) {
 			forEach([].concat(
 				v.nonIntegerNumbers,
 				0,
@@ -13848,7 +13638,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.equal(ES.Canonicalize(rer, leadingPoo), leadingPoo, 'when IgnoreCase is false, ch is returned');
+		t.equal(ES.Canonicalize(rer, esV.poo.leading), esV.poo.leading, 'when IgnoreCase is false, ch is returned');
 
 		forEach(keys(caseFolding.C), function (input) {
 			var output = caseFolding.C[input];
@@ -13942,7 +13732,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 			TypeError,
 			'one String argument throws a TypeError'
 		);
-		if (hasBigInts) {
+		if (esV.hasBigInts) {
 			t['throws'](
 				function () { ES.CompareTypedArrayElements(1, twoSixtyFour); },
 				TypeError,
@@ -14815,7 +14605,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IteratorStep', function (t) {
-		forEach(unknowns, function (nonIteratorRecord) {
+		forEach(esV.unknowns, function (nonIteratorRecord) {
 			t['throws'](
 				function () { ES.IteratorStep(nonIteratorRecord); },
 				TypeError,
@@ -15019,7 +14809,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 
 	test('SetTypedArrayFromArrayLike', function (t) {
 		forEach([].concat(
-			unknowns,
+			esV.unknowns,
 			[[]]
 		), function (nonTA) {
 			t['throws'](
@@ -15052,7 +14842,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 				'source: must not be a TypedArray'
 			);
 
-			st.test('can detach', { skip: !canDetach }, function (s2t) {
+			st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 				var arr = new Uint8Array(0);
 				ES.DetachArrayBuffer(arr.buffer);
 
@@ -15066,7 +14856,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 			});
 
 			forEach(availableTypedArrays, function (name) {
-				var isBigInt = isBigIntTAType(name);
+				var isBigInt = esV.isBigIntTAType(name);
 				var Z = isBigInt ? safeBigInt : Number;
 				var TA = global[name];
 
@@ -15083,7 +14873,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 				st.deepEqual(ta, new TA([Z(1), Z(10), Z(3)]), name + ': target is updated');
 			});
 
-			st.test('getters are supported, and can detach', { skip: !defineProperty.oDP || !canDetach }, function (s2t) {
+			st.test('getters are supported, and can detach', { skip: !defineProperty.oDP || !esV.canDetach }, function (s2t) {
 				var ta = new Uint8Array([1, 2, 3]);
 				var obj = { length: 1 };
 				defineProperty.oDP(obj, '0', { get: function () { ES.DetachArrayBuffer(ta.buffer); return 10; } });
@@ -15220,7 +15010,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 	test('TimeZoneString', function (t) {
 		forEach([].concat(
 			v.nonIntegerNumbers,
-			nonFiniteNumbers
+			esV.nonFiniteNumbers
 		), function (nonIntegerNumber) {
 			t['throws'](
 				function () { ES.TimeZoneString(nonIntegerNumber); },
@@ -15238,7 +15028,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 
 	test('TypedArrayCreateSameType', function (t) {
 		t.test('no Typed Array support', { skip: availableTypedArrays.length > 0 }, function (st) {
-			forEach(unknowns, function (nonTA) {
+			forEach(esV.unknowns, function (nonTA) {
 				st['throws'](
 					function () { ES.TypedArrayCreateSameType(nonTA, []); },
 					SyntaxError,
@@ -15258,7 +15048,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('Typed Array support', { skip: availableTypedArrays.length === 0 }, function (st) {
-			forEach(unknowns, function (nonTA) {
+			forEach(esV.unknowns, function (nonTA) {
 				st['throws'](
 					function () { ES.TypedArrayCreateSameType(nonTA, []); },
 					TypeError,
@@ -15310,7 +15100,7 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 	});
 
 	test('WordCharacters', function (t) {
-		forEach(unknowns, function (nonRER) {
+		forEach(esV.unknowns, function (nonRER) {
 			t['throws'](
 				function () { ES.WordCharacters(nonRER); },
 				TypeError,
@@ -15418,7 +15208,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	test('ArrayBufferByteLength', function (t) {
 		var order = 'UNORDERED';
 
-		forEach(unknowns, function (nonAB) {
+		forEach(esV.unknowns, function (nonAB) {
 			t['throws'](
 				function () { ES.ArrayBufferByteLength(nonAB, order); },
 				TypeError,
@@ -15459,7 +15249,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ArrayBufferCopyAndDetach', function (t) {
-		forEach(unknowns, function (nonAB) {
+		forEach(esV.unknowns, function (nonAB) {
 			t['throws'](
 				function () { ES.ArrayBufferCopyAndDetach(nonAB, 0, 'FIXED-LENGTH'); },
 				TypeError,
@@ -15470,7 +15260,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 		t.test('ArrayBuffers supported', { skip: typeof ArrayBuffer !== 'function' }, function (st) {
 			var ab = new Uint8Array([1, 2, 3, 4]).buffer;
 
-			st.test('can not detach', { skip: canDetach }, function (s2t) {
+			st.test('can not detach', { skip: esV.canDetach }, function (s2t) {
 				s2t['throws'](
 					function () { ES.ArrayBufferCopyAndDetach(new ArrayBuffer(8), 0, 'FIXED-LENGTH'); },
 					SyntaxError,
@@ -15480,7 +15270,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 				s2t.end();
 			});
 
-			st.test('can detach', { skip: !canDetach }, function (s2t) {
+			st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 				forEach(v.nonStrings, function (nonString) {
 					s2t['throws'](
 						function () { ES.ArrayBufferCopyAndDetach(ab, 0, nonString); },
@@ -16174,7 +15964,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 		var isTypedArray = true;
 		var order = 'UNORDERED';
 
-		forEach(unknowns, function (nonAB) {
+		forEach(esV.unknowns, function (nonAB) {
 			t['throws'](
 				function () { ES.GetValueFromBuffer(nonAB, 0, 'INT8', isTypedArray, order); },
 				TypeError,
@@ -16191,7 +15981,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			forEach(invalidTATypes, function (nonString) {
+			forEach(esV.invalidTATypes, function (nonString) {
 				st['throws'](
 					function () { ES.GetValueFromBuffer(new ArrayBuffer(8), 0, nonString, isTypedArray, order); },
 					TypeError,
@@ -16221,7 +16011,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			st.test('can detach', { skip: !canDetach }, function (s2t) {
+			st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 				var buffer = new ArrayBuffer(8);
 				s2t.equal(ES.DetachArrayBuffer(buffer), null, 'detaching returns null');
 
@@ -16236,9 +16026,9 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 
 			forEach(bufferTestCases, function (testCase, name) {
 				st.test(name + ': ' + debug(testCase.value), function (s2t) {
-					forEach(allTypes, function (type) {
-						var isBigInt = isBigIntTAType(type);
-						var view = new DataView(new ArrayBuffer(elementSizes.$Float64Array));
+					forEach(esV.allTypes, function (type) {
+						var isBigInt = esV.isBigIntTAType(type);
+						var view = new DataView(new ArrayBuffer(esV.elementSizes.$Float64Array));
 						var method = type === 'Uint8C' ? 'Uint8' : type;
 						// var value = unserialize(testCase.value);
 						var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
@@ -16308,7 +16098,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('GetViewByteLength', function (t) {
-		forEach(unknowns, function (nonDVWBWRecord) {
+		forEach(esV.unknowns, function (nonDVWBWRecord) {
 			t['throws'](
 				function () { ES.GetViewByteLength(nonDVWBWRecord); },
 				TypeError,
@@ -16356,7 +16146,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 				}
 			);
 
-			st.test('can detach', { skip: !canDetach }, function (s2t) {
+			st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 				var dab = new ArrayBuffer(1);
 				var ddv = new DataView(dab);
 
@@ -16489,7 +16279,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('HasEitherUnicodeFlag', function (t) {
-		forEach(unknowns, function (nonRER) {
+		forEach(esV.unknowns, function (nonRER) {
 			t['throws'](
 				function () { ES.HasEitherUnicodeFlag(nonRER); },
 				TypeError,
@@ -16538,7 +16328,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IsArrayBufferViewOutOfBounds', function (t) {
-		forEach(unknowns, function (nonABV) {
+		forEach(esV.unknowns, function (nonABV) {
 			t['throws'](
 				function () { ES.IsArrayBufferViewOutOfBounds(nonABV); },
 				TypeError,
@@ -16559,7 +16349,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 				st.equal(ES.IsArrayBufferViewOutOfBounds(ta), false, debug(ta) + ' is not out of bounds');
 			});
 
-			st.test('can detach', { skip: !canDetach }, function (s2t) {
+			st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 				ES.DetachArrayBuffer(ab);
 
 				s2t.equal(ES.IsArrayBufferViewOutOfBounds(dv), true, 'DataView with detached buffer is out of bounds');
@@ -16583,7 +16373,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IsBigIntElementType', function (t) {
-		forEach(bigIntTypes, function (type) {
+		forEach(esV.bigIntTypes, function (type) {
 			t.equal(
 				ES.IsBigIntElementType(type.toUpperCase()),
 				true,
@@ -16591,7 +16381,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(numberTypes, function (type) {
+		forEach(esV.numberTypes, function (type) {
 			t.equal(
 				ES.IsBigIntElementType(type.toUpperCase()),
 				false,
@@ -16603,7 +16393,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IsFixedLengthArrayBuffer', function (t) {
-		forEach(unknowns, function (nonAB) {
+		forEach(esV.unknowns, function (nonAB) {
 			t['throws'](
 				function () { ES.IsFixedLengthArrayBuffer(nonAB); },
 				TypeError,
@@ -16627,7 +16417,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IsNoTearConfiguration', function (t) {
-		forEach(unclampedIntegerTypes, function (type) {
+		forEach(esV.unclampedIntegerTypes, function (type) {
 			t.equal(
 				ES.IsNoTearConfiguration(type.toUpperCase()),
 				true,
@@ -16635,7 +16425,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(bigIntTypes, function (type) {
+		forEach(esV.bigIntTypes, function (type) {
 			t.equal(
 				ES.IsNoTearConfiguration(type.toUpperCase(), 'INIT'),
 				false,
@@ -16655,7 +16445,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(clampedTypes, function (type) {
+		forEach(esV.clampedTypes, function (type) {
 			t.equal(
 				ES.IsNoTearConfiguration(type.toUpperCase()),
 				false,
@@ -16668,7 +16458,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 
 	test('IsTypedArrayOutOfBounds', function (t) {
 		forEach([].concat(
-			unknowns,
+			esV.unknowns,
 			[[]]
 		), function (nonTAWBWR) {
 			t['throws'](
@@ -16678,7 +16468,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.test('detached buffer', { skip: !canDetach }, function (st) {
+		t.test('detached buffer', { skip: !esV.canDetach }, function (st) {
 			var ab = new ArrayBuffer(8);
 
 			var ta = new Uint8Array(ab);
@@ -16705,7 +16495,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IsUnclampedIntegerElementType', function (t) {
-		forEach(unclampedIntegerTypes, function (type) {
+		forEach(esV.unclampedIntegerTypes, function (type) {
 			t.equal(
 				ES.IsUnclampedIntegerElementType(type.toUpperCase()),
 				true,
@@ -16714,8 +16504,8 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 		});
 
 		forEach([].concat(
-			clampedTypes,
-			nonUnclampedIntegerTypes
+			esV.clampedTypes,
+			esV.nonUnclampedIntegerTypes
 		), function (type) {
 			t.equal(
 				ES.IsUnclampedIntegerElementType(type.toUpperCase()),
@@ -16728,7 +16518,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IsUnsignedElementType', function (t) {
-		forEach(unsignedElementTypes, function (type) {
+		forEach(esV.unsignedElementTypes, function (type) {
 			t.equal(
 				ES.IsUnsignedElementType(type.toUpperCase()),
 				true,
@@ -16736,7 +16526,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(signedElementTypes, function (type) {
+		forEach(esV.signedElementTypes, function (type) {
 			t.equal(
 				ES.IsUnsignedElementType(type.toUpperCase()),
 				false,
@@ -16748,7 +16538,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IsViewOutOfBounds', function (t) {
-		forEach(unknowns, function (nonDVWBWRecord) {
+		forEach(esV.unknowns, function (nonDVWBWRecord) {
 			t['throws'](
 				function () { ES.IsViewOutOfBounds(nonDVWBWRecord); },
 				TypeError,
@@ -16759,7 +16549,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 		t.test('DataViews supported', { skip: typeof DataView !== 'function' }, function (st) {
 			var ab = new ArrayBuffer(8);
 
-			st.test('can detach', { skip: !canDetach }, function (s2t) {
+			st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 				var dab = new ArrayBuffer(1);
 				var ddv = new DataView(dab);
 
@@ -16796,7 +16586,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IteratorStepValue', function (t) {
-		forEach(unknowns, function (nonIteratorRecord) {
+		forEach(esV.unknowns, function (nonIteratorRecord) {
 			t['throws'](
 				function () { ES.IteratorStepValue(nonIteratorRecord); },
 				TypeError,
@@ -17036,7 +16826,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('NumericToRawBytes', function (t) {
-		forEach(nonTATypes, function (nonTAType) {
+		forEach(esV.nonTATypes, function (nonTAType) {
 			t['throws'](
 				function () { ES.NumericToRawBytes(nonTAType, 0, false); },
 				TypeError,
@@ -17064,8 +16854,8 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 			var value = unserialize(testCase.value);
 
 			t.test(name + ': ' + value, function (st) {
-				forEach(allTypes, function (type) {
-					var isBigInt = isBigIntTAType(type);
+				forEach(esV.allTypes, function (type) {
+					var isBigInt = esV.isBigIntTAType(type);
 					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
 
@@ -17107,7 +16897,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('BigInt64', function (st) {
-			st.test('bigints available', { skip: !hasBigInts }, function (s2t) {
+			st.test('bigints available', { skip: !esV.hasBigInts }, function (s2t) {
 				forEach([
 					[BigInt(0), [0, 0, 0, 0, 0, 0, 0, 0]],
 					[BigInt(1), [1, 0, 0, 0, 0, 0, 0, 0]],
@@ -17149,7 +16939,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('BigUint64', function (st) {
-			st.test('bigints available', { skip: !hasBigInts }, function (s2t) {
+			st.test('bigints available', { skip: !esV.hasBigInts }, function (s2t) {
 				forEach([
 					[BigInt(0), [0, 0, 0, 0, 0, 0, 0, 0]],
 					[BigInt(1), [1, 0, 0, 0, 0, 0, 0, 0]],
@@ -17194,7 +16984,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('RawBytesToNumeric', function (t) {
-		forEach(nonTATypes, function (nonTAType) {
+		forEach(esV.nonTATypes, function (nonTAType) {
 			t['throws'](
 				function () { ES.RawBytesToNumeric(nonTAType, [], false); },
 				TypeError,
@@ -17202,7 +16992,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		forEach(unknowns, function (nonArray) {
+		forEach(esV.unknowns, function (nonArray) {
 			t['throws'](
 				function () { ES.RawBytesToNumeric('INT8', nonArray, false); },
 				TypeError,
@@ -17228,7 +17018,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 		forEach(bufferTestCases, function (testCase, name) {
 			var value = unserialize(testCase.value);
 			t.test(name + ': ' + value, function (st) {
-				forEach(allTypes, function (type) {
+				forEach(esV.allTypes, function (type) {
 					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
 					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 
@@ -17384,7 +17174,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 			st.end();
 		});
 
-		t.test('bigint types, no bigints', { skip: hasBigInts }, function (st) {
+		t.test('bigint types, no bigints', { skip: esV.hasBigInts }, function (st) {
 			st['throws'](
 				function () { ES.RawBytesToNumeric('BIGINT64', [0, 0, 0, 0, 0, 0, 0, 0], false); },
 				SyntaxError,
@@ -17404,7 +17194,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 
 	test('SetValueInBuffer', function (t) {
 		var order = 'UNORDERED';
-		forEach(unknowns, function (nonAB) {
+		forEach(esV.unknowns, function (nonAB) {
 			t['throws'](
 				function () { ES.SetValueInBuffer(nonAB, 0, 'INT8', 0, true, order); },
 				TypeError,
@@ -17421,7 +17211,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			forEach(invalidTATypes, function (invalidType) {
+			forEach(esV.invalidTATypes, function (invalidType) {
 				st['throws'](
 					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, invalidType, 0, true, order); },
 					TypeError,
@@ -17443,7 +17233,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 				);
 			});
 
-			if (hasBigInts) {
+			if (esV.hasBigInts) {
 				st['throws'](
 					function () { ES.SetValueInBuffer(new ArrayBuffer(8), 0, 'INT8', $BigInt(0), true, order); },
 					TypeError,
@@ -17463,7 +17253,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 				'invalid order'
 			);
 
-			st.test('can detach', { skip: !canDetach }, function (s2t) {
+			st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 				var buffer = new ArrayBuffer(8);
 				s2t.equal(ES.DetachArrayBuffer(buffer), null, 'detaching returns null');
 
@@ -17479,16 +17269,16 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 			});
 
 			forEach(bufferTestCases, function (testCase, name) {
-				forEach(allTypes, function (type) {
-					var isBigInt = isBigIntTAType(type);
+				forEach(esV.allTypes, function (type) {
+					var isBigInt = esV.isBigIntTAType(type);
 					var Z = isBigInt ? safeBigInt : Number;
 					var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 					var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
 					var value = unserialize(testCase.value);
 
-					var elementSize = elementSizes['$' + (type === 'Uint8C' ? 'Uint8Clamped' : type) + 'Array'];
+					var elementSize = esV.elementSizes['$' + (type === 'Uint8C' ? 'Uint8Clamped' : type) + 'Array'];
 
-					var buffer = new ArrayBuffer(elementSizes.$Float64Array);
+					var buffer = new ArrayBuffer(esV.elementSizes.$Float64Array);
 
 					if (isBigInt) {
 						st['throws'](
@@ -17644,7 +17434,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ThisBigIntValue', function (t) {
-		t.test('actual BigInts', { skip: !hasBigInts }, function (st) {
+		t.test('actual BigInts', { skip: !esV.hasBigInts }, function (st) {
 			st.equal(ES.ThisBigIntValue(BigInt(42)), BigInt(42));
 			st.equal(ES.ThisBigIntValue(Object(BigInt(42))), BigInt(42));
 
@@ -17654,7 +17444,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			t['throws'](
 				function () { ES.ThisBigIntValue(nonBigInt); },
-				hasBigInts ? TypeError : SyntaxError,
+				esV.hasBigInts ? TypeError : SyntaxError,
 				debug(nonBigInt) + ' is not a BigInt'
 			);
 		});
@@ -17717,7 +17507,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('ThisSymbolValue', function (t) {
-		forEach(allButSyms, function (nonSymbol) {
+		forEach(esV.allButSyms, function (nonSymbol) {
 			t['throws'](
 				function () { ES.ThisSymbolValue(nonSymbol); },
 				v.hasSymbols ? TypeError : SyntaxError,
@@ -17726,7 +17516,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 		});
 
 		t.test('no native Symbols', { skip: v.hasSymbols }, function (st) {
-			forEach(unknowns, function (value) {
+			forEach(esV.unknowns, function (value) {
 				st['throws'](
 					function () { ES.ThisSymbolValue(value); },
 					SyntaxError,
@@ -17755,7 +17545,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 
 	test('TypedArrayByteLength', function (t) {
 		forEach([].concat(
-			unknowns,
+			esV.unknowns,
 			[[]]
 		), function (nonTAWBWR) {
 			t['throws'](
@@ -17772,7 +17562,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 					var ta = new TA(8);
 					var record = ES.MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
 
-					var elementSize = elementSizes['$' + TypedArray];
+					var elementSize = esV.elementSizes['$' + TypedArray];
 
 					tat.equal(ES.TypedArrayByteLength(record), 8 * elementSize, 'fixed length array, returns byteLength');
 
@@ -17782,7 +17572,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 
 					tat.equal(ES.TypedArrayByteLength(zRecord), 0, 'fixed zero length array, returns zero');
 
-					tat.test('can detach', { skip: !canDetach }, function (s2t) {
+					tat.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 						ES.DetachArrayBuffer(ta.buffer);
 
 						record = ES.MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
@@ -17807,7 +17597,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 						tast.end();
 					});
 
-					tat.test('non-fixed length, detached returns zero', { skip: !canDetach }, function (tast) {
+					tat.test('non-fixed length, detached returns zero', { skip: !esV.canDetach }, function (tast) {
 						var ab = new ArrayBuffer(8, { maxByteLength: 64 });
 						var rta = new Uint8Array(ab);
 
@@ -17907,7 +17697,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('TypedArrayElementType', function (t) {
-		forEach(unknowns, function (nonTA) {
+		forEach(esV.unknowns, function (nonTA) {
 			t['throws'](
 				function () { ES.TypedArrayElementType(nonTA); },
 				TypeError,
@@ -17932,7 +17722,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('TypedArrayGetElement', function (t) {
-		forEach(unknowns, function (nonTA) {
+		forEach(esV.unknowns, function (nonTA) {
 			t['throws'](
 				function () { ES.TypedArrayGetElement(nonTA, 0); },
 				TypeError,
@@ -17952,7 +17742,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 			});
 
 			forEach(availableTypedArrays, function (TypedArray) {
-				var isBigInt = isBigIntTAType(TypedArray);
+				var isBigInt = esV.isBigIntTAType(TypedArray);
 				var Z = isBigInt ? safeBigInt : Number;
 				var TA = global[TypedArray];
 
@@ -17972,7 +17762,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 
 	test('TypedArrayLength', function (t) {
 		forEach([].concat(
-			unknowns,
+			esV.unknowns,
 			[[]]
 		), function (nonTAWBWR) {
 			t['throws'](
@@ -17991,7 +17781,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 
 					tat.equal(ES.TypedArrayLength(record), 8, 'fixed length array, returns byteLength');
 
-					tat.test('can detach', { skip: !canDetach }, function (s2t) {
+					tat.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 						ES.DetachArrayBuffer(ta.buffer);
 
 						record = ES.MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
@@ -18007,7 +17797,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 
 					// TODO: actual TA byteLength auto, but not fixed length? (may not be possible)
 
-					var elementSize = elementSizes['$' + type];
+					var elementSize = esV.elementSizes['$' + type];
 
 					tat.test(
 						'non-fixed length, return floor((byteLength - byteOffset) / elementSize)',
@@ -18029,7 +17819,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 
 					tat.test(
 						'non-fixed length, detached throws',
-						{ skip: !('resizable' in ArrayBuffer.prototype) || !canDetach },
+						{ skip: !('resizable' in ArrayBuffer.prototype) || !esV.canDetach },
 						function (tsat) {
 							var rab = new ArrayBuffer(17, { maxByteLength: 64 });
 							var arr = new TA(rab, 8);
@@ -18063,7 +17853,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('TypedArraySetElement', function (t) {
-		forEach(unknowns, function (nonTA) {
+		forEach(esV.unknowns, function (nonTA) {
 			t['throws'](
 				function () { ES.TypedArraySetElement(nonTA, 0, 0); },
 				TypeError,
@@ -18073,7 +17863,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 
 		t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
 			forEach(availableTypedArrays, function (typedArray) {
-				var isBigInt = isBigIntTAType(typedArray);
+				var isBigInt = esV.isBigIntTAType(typedArray);
 				var Z = isBigInt ? safeBigInt : Number;
 				var TA = global[typedArray];
 				var ta = new TA(16);
@@ -18096,7 +17886,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 					'non-number/bigint-coercible value ' + debug(v.uncoercibleObject) + ' throws'
 				);
 
-				st.test('can detach', { skip: !canDetach }, function (s2t) {
+				st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 					ES.DetachArrayBuffer(ta.buffer);
 
 					s2t.equal(ta[0], undefined, 'is initially undefined');
@@ -18115,7 +17905,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 
 	test('ValidateAtomicAccess', function (t) {
 		forEach([].concat(
-			unknowns,
+			esV.unknowns,
 			[[]]
 		), function (nonTAWBWR) {
 			t['throws'](
@@ -18151,7 +17941,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 					'a requestIndex > length throws'
 				);
 
-				var elementSize = elementSizes['$' + TypedArray];
+				var elementSize = esV.elementSizes['$' + TypedArray];
 
 				st.equal(ES.ValidateAtomicAccess(taRecord, 0), elementSize * 0, TypedArray + ': requestIndex of 0 gives 0');
 				st.equal(ES.ValidateAtomicAccess(taRecord, 1), elementSize * 1, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 1));
@@ -18171,7 +17961,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 
 	test('ValidateAtomicAccessOnIntegerTypedArray', function (t) {
 		forEach([].concat(
-			unknowns,
+			esV.unknowns,
 			[[]]
 		), function (nonTA) {
 			t['throws'](
@@ -18215,7 +18005,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 						'a requestIndex > length throws'
 					);
 
-					var elementSize = elementSizes['$' + TypedArray];
+					var elementSize = esV.elementSizes['$' + TypedArray];
 
 					st.equal(ES.ValidateAtomicAccessOnIntegerTypedArray(ta, 0), elementSize * 0, TypedArray + ': requestIndex of 0 gives 0');
 					st.equal(ES.ValidateAtomicAccessOnIntegerTypedArray(ta, 1), elementSize * 1, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 1));
@@ -18265,7 +18055,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 		});
 
 		forEach([].concat(
-			unknowns,
+			esV.unknowns,
 			[[]]
 		), function (nonTA) {
 			t['throws'](
@@ -18317,7 +18107,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 		var order = 'UNORDERED';
 
 		forEach([].concat(
-			unknowns,
+			esV.unknowns,
 			[[]]
 		), function (nonTA) {
 			t['throws'](
@@ -18335,7 +18125,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 					debug(ta) + ' is a TypedArray'
 				);
 
-				st.test('can detach', { skip: !canDetach }, function (s2t) {
+				st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 					ES.DetachArrayBuffer(ta.buffer);
 
 					s2t['throws'](
