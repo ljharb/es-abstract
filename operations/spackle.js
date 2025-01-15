@@ -75,11 +75,7 @@ const writtenOps = [5].concat(years).flatMap((year, i, arr) => {
 	});
 }).filter(Boolean);
 
-const exceptions = {
-	AbstractEqualityComparison: 'Abstract Equality Comparison',
-	AbstractRelationalComparison: 'Abstract Relational Comparison',
-	StrictEqualityComparison: 'Strict Equality Comparison',
-};
+const exceptions = require('../test/helpers/aoMap.json');
 
 const willBeQuotedOp = (/^'[^' ]+ [^']+'/);
 

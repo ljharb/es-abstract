@@ -7,11 +7,7 @@ var filter = require('array.prototype.filter');
 var forEach = require('for-each');
 var keys = require('object-keys');
 
-var map = {
-	AbstractEqualityComparison: 'Abstract Equality Comparison',
-	AbstractRelationalComparison: 'Abstract Relational Comparison',
-	StrictEqualityComparison: 'Strict Equality Comparison'
-};
+var aoMap = require('./aoMap.json');
 
 module.exports = function runManifestTest(test, ES, edition) {
 	test('ES' + edition + ' manifest', { skip: !fs.readdirSync }, function (t) {
@@ -21,9 +17,10 @@ module.exports = function runManifestTest(test, ES, edition) {
 		);
 		forEach(files, function (file) {
 			var name = path.basename(file, path.extname(file));
-			var actual = ES[map[name] || name];
+			var actualName = aoMap[name] in ES ? aoMap[name] : name;
+			var actual = ES[actualName];
 			var expected = require(path.join(__dirname, '../../' + edition + '/', file)); // eslint-disable-line global-require
-			t.equal(actual, expected, 'ES["' + name + '"] === ' + file);
+			t.equal(actual, expected, 'ES["' + actualName + '"] === ' + file);
 		});
 		var actualCount = keys(ES).length;
 		t.equal(actualCount, files.length, 'expected ' + files.length + ' files, got ' + actualCount);
