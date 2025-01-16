@@ -4,8 +4,9 @@ var $TypeError = require('es-errors/type');
 var isObject = require('es-object-atoms/isObject');
 var callBound = require('call-bound');
 var OwnPropertyKeys = require('own-keys');
-var forEach = require('../helpers/forEach');
+
 var every = require('../helpers/every');
+var forEach = require('../helpers/forEach');
 
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 
@@ -46,7 +47,7 @@ module.exports = function CopyDataProperties(target, source, excludedItems) {
 		});
 
 		var enumerable = $isEnumerable(from, nextKey) || (
-		// this is to handle string keys being non-enumerable in older engines
+			// this is to handle string keys being non-enumerable in older engines
 			typeof source === 'string'
 			&& nextKey >= 0
 			&& IsInteger(ToNumber(nextKey))
