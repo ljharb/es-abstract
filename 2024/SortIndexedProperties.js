@@ -26,7 +26,7 @@ module.exports = function SortIndexedProperties(obj, len, SortCompare, holes) {
 		throw new $TypeError('Assertion failed: `SortCompare` must be an abstract closure taking 2 arguments');
 	}
 	if (holes !== 'skip-holes' && holes !== 'read-through-holes') {
-		throw new $TypeError('Assertion failed: `holes` must be either `skip-holes` or `read-through-holes`');
+		throw new $TypeError('Assertion failed: `holes` must be either ~skip-holes~ or ~read-through-holes~');
 	}
 
 	var items = []; // step 1
