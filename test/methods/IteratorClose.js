@@ -7,6 +7,7 @@ var debug = require('object-inspect');
 var makeIteratorRecord = require('../helpers/makeIteratorRecord');
 var throwsSentinel = require('../helpers/throwsSentinel');
 
+/** @type {import('../testHelpers').MethodTest<'IteratorClose'>} */
 module.exports = function (t, year, IteratorClose, extras) {
 	t.ok(year >= 2015, 'ES2015+');
 
@@ -16,12 +17,13 @@ module.exports = function (t, year, IteratorClose, extras) {
 		return new CompletionRecord('throw', reason);
 	};
 
-	var unwrap = function (iteratorRecord) {
+	var unwrap = /** @param {import('../../types').IteratorRecord<unknown>} iteratorRecord */ function (iteratorRecord) {
 		return year >= 2023 ? iteratorRecord : iteratorRecord['[[Iterator]]'];
 	};
 
 	forEach(v.primitives, function (nonObject) {
 		t['throws'](
+			// @ts-expect-error
 			function () { IteratorClose(nonObject); },
 			TypeError,
 			debug(nonObject) + ' is not an Object'

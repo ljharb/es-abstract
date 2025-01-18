@@ -6,11 +6,13 @@ var debug = require('object-inspect');
 
 var defineProperty = require('../helpers/defineProperty');
 
+/** @type {import('../testHelpers').MethodTest<'InstanceofOperator'>} */
 module.exports = function (t, year, InstanceofOperator) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { InstanceofOperator(primitive, function () {}); },
 			TypeError,
 			debug(primitive) + ' is not an object'
@@ -19,14 +21,17 @@ module.exports = function (t, year, InstanceofOperator) {
 
 	forEach(v.nonFunctions, function (nonFunction) {
 		t['throws'](
+			// @ts-expect-error
 			function () { InstanceofOperator({}, nonFunction); },
 			TypeError,
 			debug(nonFunction) + ' is not callable'
 		);
 	});
 
-	var C = function C() {};
-	var D = function D() {};
+	/** @constructor */
+	function C() {}
+	/** @constructor */
+	function D() {}
 
 	t.equal(InstanceofOperator(new C(), C), true, 'constructor function has an instance of itself');
 	t.equal(InstanceofOperator(new D(), C), false, 'constructor/instance mismatch is false');
@@ -38,12 +43,13 @@ module.exports = function (t, year, InstanceofOperator) {
 		st.plan(5);
 
 		var O = {};
-		var C2 = function () {};
+		/** @constructor */
+		function C2() {}
 		st.equal(InstanceofOperator(O, C2), false, 'O is not an instance of C2');
 
 		defineProperty(C2, Symbol.hasInstance, {
 			configurable: true,
-			value: function (obj) {
+			value: /** @type {(this: C2, obj: unknown) => unknown} */ function (obj) {
 				st.equal(this, C2, 'hasInstance receiver is C2');
 				st.equal(obj, O, 'hasInstance argument is O');
 

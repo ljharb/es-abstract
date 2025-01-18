@@ -6,15 +6,18 @@ var debug = require('object-inspect');
 
 var makeIteratorRecord = require('../helpers/makeIteratorRecord');
 
+/** @type {import('../testHelpers').MethodTest<'IteratorNext'>} */
 module.exports = function (t, year, IteratorNext) {
 	t.ok(year >= 2015, 'ES2015+');
 
+	/** @type {<T>(iteratorRecord: import('../../types').IteratorRecord<T>) => import('../../types').IteratorRecord<T> | Iterator<T>} */
 	var unwrap = function (iteratorRecord) {
 		return year >= 2023 ? iteratorRecord : iteratorRecord['[[Iterator]]'];
 	};
 
 	forEach(v.primitives, function (nonObject) {
 		t['throws'](
+			// @ts-expect-error
 			function () { IteratorNext(nonObject); },
 			TypeError,
 			debug(nonObject) + ' is not an Object'
@@ -36,7 +39,7 @@ module.exports = function (t, year, IteratorNext) {
 	});
 
 	var iterator = {
-		next: function (value) {
+		next: /** @param {unknown} value */ function (value) {
 			return [arguments.length, value];
 		}
 	};
@@ -51,10 +54,9 @@ module.exports = function (t, year, IteratorNext) {
 		'returns expected value from `.next()`; `next` receives expected 1 argument'
 	);
 
-	//
-
 	forEach(v.primitives, function (nonObject) {
 		t['throws'](
+			// @ts-expect-error
 			function () { IteratorNext(nonObject); },
 			TypeError,
 			debug(nonObject) + ' is not an Object'

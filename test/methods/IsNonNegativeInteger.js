@@ -4,6 +4,7 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'IsNonNegativeInteger'>} */
 module.exports = function (t, year, IsNonNegativeInteger) {
 	t.ok(year >= 2020, 'ES2020+');
 
@@ -15,10 +16,11 @@ module.exports = function (t, year, IsNonNegativeInteger) {
 		);
 	});
 
-	forEach([].concat(
+	forEach(/** @type {number[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		v.zeroes,
 		v.integerNumbers
-	), function (nonNegativeInteger) {
+	)), function (nonNegativeInteger) {
 		t.equal(
 			IsNonNegativeInteger(nonNegativeInteger),
 			true,

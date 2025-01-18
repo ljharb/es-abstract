@@ -4,6 +4,7 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var $setProto = require('set-proto');
 
+/** @type {import('../testHelpers').MethodTest<'ArrayCreate'>} */
 module.exports = function (t, year, ArrayCreate) {
 	t.ok(year >= 2015, 'ES2015+');
 

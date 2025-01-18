@@ -7,6 +7,7 @@ var $defineProperty = require('es-define-property');
 
 var defineProperty = require('../helpers/defineProperty');
 
+/** @type {import('../testHelpers').MethodTest<'OrdinaryGetOwnProperty'>} */
 module.exports = function (t, year, OrdinaryGetOwnProperty, extras) {
 	t.ok(year >= 2015, 'ES2015+');
 
@@ -14,6 +15,7 @@ module.exports = function (t, year, OrdinaryGetOwnProperty, extras) {
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { OrdinaryGetOwnProperty(primitive, ''); },
 			TypeError,
 			'O: ' + debug(primitive) + ' is not an Object'
@@ -21,14 +23,15 @@ module.exports = function (t, year, OrdinaryGetOwnProperty, extras) {
 	});
 	forEach(v.nonPropertyKeys, function (nonPropertyKey) {
 		t['throws'](
+			// @ts-expect-error
 			function () { OrdinaryGetOwnProperty({}, nonPropertyKey); },
 			TypeError,
 			'P: ' + debug(nonPropertyKey) + ' is not a Property Key'
 		);
 	});
 
-	t.equal(OrdinaryGetOwnProperty({}, 'not in the object'), undefined, 'missing property yields undefined');
-	t.equal(OrdinaryGetOwnProperty({}, 'toString'), undefined, 'inherited non-own property yields undefined');
+	t.equal(OrdinaryGetOwnProperty(/** @type {Record<PropertyKey, unknown>} */ ({}), 'not in the object'), undefined, 'missing property yields undefined');
+	t.equal(OrdinaryGetOwnProperty(/** @type {Record<PropertyKey, unknown>} */ ({}), 'toString'), undefined, 'inherited non-own property yields undefined');
 
 	t.deepEqual(
 		OrdinaryGetOwnProperty({ a: 1 }, 'a'),

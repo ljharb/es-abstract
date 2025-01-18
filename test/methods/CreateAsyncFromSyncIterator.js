@@ -9,6 +9,7 @@ var makeAsyncFromSyncIterator = require('../helpers/makeAsyncFromSyncIterator');
 var makeIteratorRecord = require('../helpers/makeIteratorRecord');
 var testAsyncIterator = require('../helpers/testAsyncIterator');
 
+/** @type {import('../testHelpers').MethodTest<'CreateAsyncFromSyncIterator'>} */
 module.exports = function (t, year, CreateAsyncFromSyncIterator) {
 	t.ok(year >= 2018, 'ES2018+');
 

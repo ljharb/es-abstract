@@ -6,11 +6,13 @@ var debug = require('object-inspect');
 var SLOT = require('internal-slot');
 var $setProto = require('set-proto');
 
+/** @type {import('../testHelpers').MethodTest<'OrdinaryObjectCreate'>} */
 module.exports = function (t, year, OrdinaryObjectCreate) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.nonNullPrimitives, function (value) {
 		t['throws'](
+			// @ts-expect-error
 			function () { OrdinaryObjectCreate(value); },
 			TypeError,
 			debug(value) + ' is not null, or an object'
@@ -62,7 +64,7 @@ module.exports = function (t, year, OrdinaryObjectCreate) {
 		st.end();
 	});
 
-	t.test('null proto when no native Object.create', { skip: Object.create || $setProto }, function (st) {
+	t.test('null proto when no native Object.create', { skip: !!Object.create || !!$setProto }, function (st) {
 		st['throws'](
 			function () { OrdinaryObjectCreate(null); },
 			SyntaxError,

@@ -6,6 +6,7 @@ var forEach = require('for-each');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'Abstract Equality Comparison'>} */
 module.exports = function (t, year, AbstractEqualityComparison) {
 	t.ok(year >= 5, 'ES5+');
 

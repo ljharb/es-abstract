@@ -12,11 +12,13 @@ var getAOs = require('./getAOs');
 
 var index = require('../../');
 
+/** @type {(year: import('../testHelpers').TestYear, expectedMissing: string[]) => void} */
 module.exports = function testYear(year, expectedMissing) {
 	var methods = getAOs(year);
 
-	var ES = index['ES' + year];
+	var ES = index[/** @type {`ES${year}`} */ ('ES' + year)];
 
+	/** @type {<M extends keyof ES>(method: M) => typeof ES[M] | null} */
 	var getAO = function getAO(method) {
 		var parts = method.split('::');
 		var obj = ES;

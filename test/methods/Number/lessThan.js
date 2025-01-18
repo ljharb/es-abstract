@@ -4,16 +4,19 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../../testHelpers').MethodTest<'Number::lessThan'>} */
 module.exports = function (t, year, NumberLessThan) {
 	t.ok(year >= 2020, 'ES2020+');
 
 	forEach(v.nonNumbers, function (nonNumber) {
 		t['throws'](
+			// @ts-expect-error
 			function () { NumberLessThan(nonNumber, 0); },
 			TypeError,
 			'x: ' + debug(nonNumber) + ' is not a Number'
 		);
 		t['throws'](
+			// @ts-expect-error
 			function () { NumberLessThan(0, nonNumber); },
 			TypeError,
 			'y: ' + debug(nonNumber) + ' is not a Number'
@@ -32,10 +35,11 @@ module.exports = function (t, year, NumberLessThan) {
 	t.equal(NumberLessThan(-Infinity, +Infinity), true, '-∞ < +∞ is true');
 	t.equal(NumberLessThan(-Infinity, -Infinity), false, '-∞ < -∞ is false');
 
-	forEach([].concat(
+	forEach(/** @type {number[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		v.numbers,
 		v.infinities
-	), function (number) {
+	)), function (number) {
 		t.equal(NumberLessThan(NaN, number), undefined, 'NaN < ' + debug(number) + ' is undefined');
 		t.equal(NumberLessThan(number, NaN), undefined, debug(number) + ' < NaN is undefined');
 

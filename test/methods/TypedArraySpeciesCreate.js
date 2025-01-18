@@ -12,12 +12,14 @@ var esV = require('../helpers/v');
 
 var hasSpecies = v.hasSymbols && Symbol.species;
 
+/** @type {import('../testHelpers').MethodTest<'TypedArraySpeciesCreate'>} */
 module.exports = function (t, year, TypedArraySpeciesCreate) {
 	t.ok(year >= 2016, 'ES2016+');
 
 	t.test('no Typed Array support', { skip: availableTypedArrays.length > 0 }, function (st) {
 		forEach(esV.unknowns, function (nonTA) {
 			st['throws'](
+				// @ts-expect-error
 				function () { TypedArraySpeciesCreate(nonTA, []); },
 				SyntaxError,
 				'no Typed Array support'
@@ -26,6 +28,7 @@ module.exports = function (t, year, TypedArraySpeciesCreate) {
 
 		forEach(v.nonArrays, function (nonArray) {
 			st['throws'](
+				// @ts-expect-error
 				function () { TypedArraySpeciesCreate(Array, nonArray); },
 				SyntaxError,
 				'no Typed Array support'
@@ -37,13 +40,14 @@ module.exports = function (t, year, TypedArraySpeciesCreate) {
 	t.test('Typed Array support', { skip: availableTypedArrays.length === 0 }, function (st) {
 		forEach(esV.unknowns, function (nonTA) {
 			st['throws'](
+				// @ts-expect-error
 				function () { TypedArraySpeciesCreate(nonTA, []); },
 				TypeError,
 				debug(nonTA) + ' is not a Typed Array'
 			);
 		});
 
-		var nonArrayTA = new global[availableTypedArrays[0]]();
+		var nonArrayTA = new global[/** @type {Exclude<typeof availableTypedArrays, []>} */ (availableTypedArrays)[0]]();
 		forEach([].concat(
 			v.primitives,
 			v.nonArrays
@@ -71,7 +75,8 @@ module.exports = function (t, year, TypedArraySpeciesCreate) {
 			forEach(availableTypedArrays, function (TypedArray) {
 				var Constructor = global[TypedArray];
 
-				var Bar = function Bar() {};
+				/** @constructor */
+				function Bar() {}
 				Bar[Symbol.species] = null;
 				var taBar = new Constructor();
 				defineProperty(taBar, 'constructor', { value: Bar });
@@ -82,7 +87,8 @@ module.exports = function (t, year, TypedArraySpeciesCreate) {
 					TypedArray + ': undefined/null Symbol.species creates with the default constructor'
 				);
 
-				var Baz = function Baz() {};
+				/** @constructor */
+				function Baz() {}
 				Baz[Symbol.species] = Bar;
 				var taBaz = new Constructor();
 				defineProperty(taBaz, 'constructor', { value: Baz });

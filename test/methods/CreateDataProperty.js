@@ -7,11 +7,13 @@ var $defineProperty = require('es-define-property');
 
 var defineProperty = require('../helpers/defineProperty');
 
+/** @type {import('../testHelpers').MethodTest<'CreateDataProperty'>} */
 module.exports = function (t, year, CreateDataProperty) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { CreateDataProperty(primitive); },
 			TypeError,
 			debug(primitive) + ' is not an object'
@@ -20,6 +22,7 @@ module.exports = function (t, year, CreateDataProperty) {
 
 	forEach(v.nonPropertyKeys, function (nonPropertyKey) {
 		t['throws'](
+			// @ts-expect-error
 			function () { CreateDataProperty({}, nonPropertyKey); },
 			TypeError,
 			debug(nonPropertyKey) + ' is not a property key'
@@ -29,6 +32,7 @@ module.exports = function (t, year, CreateDataProperty) {
 	var sentinel = { id: 'sentinel' };
 	var secondSentinel = { id: 'second sentinel' };
 	forEach(v.propertyKeys, function (propertyKey) {
+		/** @type {Record<PropertyKey, unknown>} */
 		var obj = {};
 		var status = CreateDataProperty(obj, propertyKey, sentinel);
 		t.equal(status, true, 'status is true');

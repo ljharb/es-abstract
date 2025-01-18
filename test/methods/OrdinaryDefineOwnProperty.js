@@ -5,6 +5,7 @@ var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 var gOPD = require('gopd');
 
+/** @type {import('../testHelpers').MethodTest<'OrdinaryDefineOwnProperty'>} */
 module.exports = function (t, year, OrdinaryDefineOwnProperty, extras) {
 	t.ok(year >= 2015, 'ES2015+');
 
@@ -13,6 +14,7 @@ module.exports = function (t, year, OrdinaryDefineOwnProperty, extras) {
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { OrdinaryDefineOwnProperty(primitive, {}, []); },
 			TypeError,
 			'O: ' + debug(primitive) + ' is not an Object'
@@ -20,6 +22,7 @@ module.exports = function (t, year, OrdinaryDefineOwnProperty, extras) {
 	});
 	forEach(v.nonPropertyKeys, function (nonPropertyKey) {
 		t['throws'](
+			// @ts-expect-error
 			function () { OrdinaryDefineOwnProperty({}, nonPropertyKey, v.genericDescriptor()); },
 			TypeError,
 			'P: ' + debug(nonPropertyKey) + ' is not a Property Key'
@@ -27,14 +30,16 @@ module.exports = function (t, year, OrdinaryDefineOwnProperty, extras) {
 	});
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { OrdinaryDefineOwnProperty({}, '', primitive); },
 			TypeError,
 			'Desc: ' + debug(primitive) + ' is not a Property Descriptor'
 		);
 	});
 
+	/** @type {Record<PropertyKey, unknown>} */
 	var O = {};
-	var P = 'property key';
+	var P = /** @type {const} */ ('property key');
 	var Desc = v.accessorDescriptor();
 	t.equal(
 		OrdinaryDefineOwnProperty(O, P, Desc),

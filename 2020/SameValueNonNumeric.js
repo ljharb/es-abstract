@@ -7,7 +7,7 @@ var Type = require('./Type');
 
 // https://262.ecma-international.org/11.0/#sec-samevaluenonnumeric
 
-/** @type {(x: null | undefined | string | boolean | symbol | object, y: typeof x) => boolean} */
+/** @type {<T extends null | undefined | string | boolean | symbol | object>(x: T, y: T) => boolean} */
 module.exports = function SameValueNonNumeric(x, y) {
 	if (typeof x === 'number' || typeof x === 'bigint') {
 		throw new $TypeError('Assertion failed: SameValueNonNumeric does not accept Number or BigInt values');

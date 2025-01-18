@@ -3,6 +3,7 @@
 var forEach = require('for-each');
 var v = require('es-value-fixtures');
 
+/** @type {import('../testHelpers').MethodTest<'ToInt8'>} */
 module.exports = function (t, year, ToInt8) {
 	t.ok(year >= 2015, 'ES2015+');
 

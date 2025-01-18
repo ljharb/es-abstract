@@ -6,25 +6,29 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'TimeZoneString'>} */
 module.exports = function (t, year, TimeZoneString) {
 	t.ok(year >= 2018, 'ES2018+');
 
 	if (year < 2023) {
-		forEach([].concat(
+		forEach(/** @type {((typeof v.nonNumbers)[number] | number)[]} */ ([].concat(
+			// @ts-expect-error TS sucks with concat
 			v.nonNumbers,
 			NaN
-		), function (nonIntegerNumber) {
+		)), function (nonIntegerNumber) {
 			t['throws'](
+				// @ts-expect-error
 				function () { TimeZoneString(nonIntegerNumber); },
 				TypeError,
 				debug(nonIntegerNumber) + ' is not a non-NaN Number'
 			);
 		});
 	} else {
-		forEach([].concat(
+		forEach(/** @type {(typeof v.nonIntegerNumbers | typeof esV.nonFiniteNumbers)[number][]} */ ([].concat(
+			// @ts-expect-error TS sucks with concat
 			v.nonIntegerNumbers,
 			esV.nonFiniteNumbers
-		), function (nonIntegerNumber) {
+		)), function (nonIntegerNumber) {
 			t['throws'](
 				function () { TimeZoneString(nonIntegerNumber); },
 				TypeError,

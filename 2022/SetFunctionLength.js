@@ -22,7 +22,7 @@ module.exports = function SetFunctionLength(F, length) {
 	if (length !== Infinity && (!isInteger(length) || length < 0)) {
 		throw new $TypeError('Assertion failed: `length` must be ∞, or an integer >= 0');
 	}
-	return DefinePropertyOrThrow(F, 'length', {
+	return DefinePropertyOrThrow(/** @type {Parameters<typeof DefinePropertyOrThrow>[0]} */ (/** @type {unknown} */ (F)), 'length', {
 		'[[Configurable]]': true,
 		'[[Enumerable]]': false,
 		'[[Value]]': length,

@@ -9,6 +9,7 @@ var clearBuffer = require('../helpers/clearBuffer');
 var unserialize = require('../helpers/unserializeNumeric');
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'GetValueFromBuffer'>} */
 module.exports = function (t, year, actual, extras) {
 	t.ok(year >= 2015, 'ES2015+');
 
@@ -42,6 +43,7 @@ module.exports = function (t, year, actual, extras) {
 
 		forEach(esV.invalidTATypes, function (nonString) {
 			st['throws'](
+				// @ts-expect-error
 				function () { GetValueFromBuffer(new ArrayBuffer(8), 0, nonString, true, order); },
 				TypeError,
 				debug(nonString) + ' is not a valid String value'
@@ -94,7 +96,7 @@ module.exports = function (t, year, actual, extras) {
 					*/
 
 					if (year >= 2024) {
-						type = type.toUpperCase(); // eslint-disable-line no-param-reassign
+						type = /** @type {Uppercase<typeof type>} */ (type.toUpperCase()); // eslint-disable-line no-param-reassign
 					}
 
 					clearBuffer(view.buffer);

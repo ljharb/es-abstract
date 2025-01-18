@@ -7,11 +7,13 @@ var $defineProperty = require('es-define-property');
 var makeIteratorRecord = require('../helpers/makeIteratorRecord');
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'IteratorStepValue'>} */
 module.exports = function (t, year, IteratorStepValue) {
 	t.ok(year >= 2024, 'ES2024+');
 
 	forEach(esV.unknowns, function (nonIteratorRecord) {
 		t['throws'](
+			// @ts-expect-error
 			function () { IteratorStepValue(nonIteratorRecord); },
 			TypeError,
 			debug(nonIteratorRecord) + ' is not an Iterator Record'
@@ -21,6 +23,7 @@ module.exports = function (t, year, IteratorStepValue) {
 	t.test('sync iterator record', function (st) {
 		var i = 0;
 		var iterator = {
+			/** @param {unknown} [x] */
 			next: function next(x) {
 				try {
 					return {
@@ -65,8 +68,8 @@ module.exports = function (t, year, IteratorStepValue) {
 	});
 
 	t.test('.done throws', { skip: !$defineProperty }, function (st) {
-		var result = {};
-		$defineProperty(result, 'done', {
+		var result = { done: false, value: undefined };
+		/** @type {Exclude<typeof $defineProperty, false>} */ ($defineProperty)(result, 'done', {
 			configurable: true,
 			enumerable: true,
 			get: function () {
@@ -93,8 +96,8 @@ module.exports = function (t, year, IteratorStepValue) {
 	});
 
 	t.test('.value throws', { skip: !$defineProperty }, function (st) {
-		var result = { done: false };
-		$defineProperty(result, 'value', {
+		var result = { done: false, value: undefined };
+		/** @type {Exclude<typeof $defineProperty, false>} */ ($defineProperty)(result, 'value', {
 			configurable: true,
 			enumerable: true,
 			get: function () {

@@ -3,6 +3,7 @@
 var forEach = require('for-each');
 var v = require('es-value-fixtures');
 
+/** @type {import('../testHelpers').MethodTest<'ToBoolean'>} */
 module.exports = function (t, year, ToBoolean) {
 	t.ok(year >= 5, 'ES5+');
 
@@ -15,11 +16,12 @@ module.exports = function (t, year, ToBoolean) {
 		forEach(v.zeroes.concat(NaN), function (falsyNumber) {
 			st.equal(false, ToBoolean(falsyNumber), 'falsy number ' + falsyNumber + ' coerces to false');
 		});
-		forEach([].concat(
+		forEach(/** @type {number[]} */ ([].concat(
+			// @ts-expect-error TS sucks with concat
 			v.infinities,
 			42,
 			1
-		), function (truthyNumber) {
+		)), function (truthyNumber) {
 			st.equal(true, ToBoolean(truthyNumber), 'truthy number ' + truthyNumber + ' coerces to true');
 		});
 

@@ -7,12 +7,14 @@ var esV = require('../helpers/v');
 
 var testToNumber = require('./ToNumber');
 
+/** @type {import('../testHelpers').MethodTest<'ToNumeric'>} */
 module.exports = function (t, year, ToNumeric, extras) {
 	t.ok(year >= 2020, 'ES2020+');
 
 	testToNumber(
 		t,
 		year,
+		/** @type {(x: unknown) => ReturnType<typeof ToNumeric>} */
 		function (x) {
 			if (isBigInt(x)) {
 				throw new TypeError('replicate ToNumber bigint throwing');
@@ -29,6 +31,7 @@ module.exports = function (t, year, ToNumeric, extras) {
 		var valueOf = { valueOf: function () { return BigInt(7); } };
 		st.equal(ToNumeric(valueOf), valueOf.valueOf(), debug(valueOf) + ' is ' + debug(valueOf.valueOf()));
 
+		/** @type {Record<PropertyKey, unknown>} */
 		var toPrimitive = {};
 		var value = BigInt(-2);
 		toPrimitive[Symbol.toPrimitive] = function () { return value; };

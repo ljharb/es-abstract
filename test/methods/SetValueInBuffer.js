@@ -12,6 +12,7 @@ var clearBuffer = require('../helpers/clearBuffer');
 var unserialize = require('../helpers/unserializeNumeric');
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'SetValueInBuffer'>} */
 module.exports = function (t, year, actual, extras) {
 	t.ok(year >= 2015, 'ES2015+');
 
@@ -19,11 +20,11 @@ module.exports = function (t, year, actual, extras) {
 
 	var SetValueInBuffer = year >= 2017
 		? actual
-		: function SetValueInBuffer(arrayBuffer, byteIndex, type, value) {
+		: /** @type {import('../testHelpers').AOOnlyYears<'SetValueInBuffer', 2017 | 2018 | 2019 | 2020 | 2021 | 2022 | 2023 | 2024>} */ function SetValueInBuffer(arrayBuffer, byteIndex, type, value) {
 			if (arguments.length > 6) {
-				return actual(arrayBuffer, byteIndex, type, value, arguments[6]);
+				return /** @type {import('../testHelpers').AOOnlyYears<'SetValueInBuffer', 5 | 2015 | 2016>} */ (actual)(arrayBuffer, byteIndex, type, value, arguments[6]);
 			}
-			return actual(arrayBuffer, byteIndex, type, value);
+			return /** @type {import('../testHelpers').AOOnlyYears<'SetValueInBuffer', 5 | 2015 | 2016>} */ (actual)(arrayBuffer, byteIndex, type, value);
 		};
 
 	var DetachArrayBuffer = extras.getAO('DetachArrayBuffer');
@@ -80,6 +81,7 @@ module.exports = function (t, year, actual, extras) {
 		forEach([true, false], function (bool) {
 			forEach(esV.invalidTATypes, function (nonString) {
 				st['throws'](
+					// @ts-expect-error
 					function () { SetValueInBuffer(new ArrayBuffer(8), 0, nonString, 0, bool, order); },
 					TypeError,
 					'type: ' + debug(nonString) + ' is not a valid String (or type) value (isTypedArray ' + bool + ')'
@@ -142,7 +144,7 @@ module.exports = function (t, year, actual, extras) {
 				var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
 				var value = unserialize(testCase.value);
 
-				var elementSize = esV.elementSizes['$' + (type === 'Uint8C' ? 'Uint8Clamped' : type) + 'Array'];
+				var elementSize = esV.elementSizes[/** @type {`$${typeof type extends 'Uint8C' ? 'Uint8Clamped' : Exclude<typeof type, 'Uint8C'>}Array`} */ ('$' + (type === 'Uint8C' ? 'Uint8Clamped' : type) + 'Array')];
 
 				var buffer = new ArrayBuffer(esV.elementSizes.$Float64Array);
 

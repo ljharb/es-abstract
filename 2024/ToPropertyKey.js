@@ -11,7 +11,7 @@ var ToString = require('./ToString');
 
 // https://262.ecma-international.org/6.0/#sec-topropertykey
 
-/** @type {(argument: {}) => string | symbol} */
+/** @type {(argument: unknown) => string | symbol} */
 module.exports = function ToPropertyKey(argument) {
 	var key = ToPrimitive(argument, $String);
 	return typeof key === 'symbol' ? key : ToString(key);

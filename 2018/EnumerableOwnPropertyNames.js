@@ -27,7 +27,7 @@ module.exports = function EnumerableOwnPropertyNames(O, kind) {
 		return keys;
 	}
 	if (kind === 'value' || kind === 'key+value') {
-		/** @type {(V | [K, V])[]} */
+		/** @type {(V | readonly [K, V])[]} */
 		var results = [];
 		forEach(keys, function (key) {
 			if ($isEnumerable(O, key)) {

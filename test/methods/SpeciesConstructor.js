@@ -4,10 +4,13 @@ var v = require('es-value-fixtures');
 
 var hasSpecies = v.hasSymbols && Symbol.species;
 
+/** @type {import('../testHelpers').MethodTest<'SpeciesConstructor'>} */
 module.exports = function (t, year, SpeciesConstructor) {
 	t.ok(year >= 2015, 'ES2015+');
 
+	// @ts-expect-error
 	t['throws'](function () { SpeciesConstructor(null); }, TypeError);
+	// @ts-expect-error
 	t['throws'](function () { SpeciesConstructor(undefined); }, TypeError);
 
 	var defaultConstructor = function Foo() {};
@@ -19,13 +22,15 @@ module.exports = function (t, year, SpeciesConstructor) {
 	);
 
 	t['throws'](
+		// @ts-expect-error
 		function () { return SpeciesConstructor({ constructor: null }, defaultConstructor); },
 		TypeError,
 		'non-undefined non-object constructor throws'
 	);
 
 	t.test('with Symbol.species', { skip: !hasSpecies }, function (st) {
-		var Bar = function Bar() {};
+		/** @constructor */
+		function Bar() {}
 		Bar[Symbol.species] = null;
 
 		st.equal(
@@ -34,7 +39,8 @@ module.exports = function (t, year, SpeciesConstructor) {
 			'undefined/null Symbol.species returns default constructor'
 		);
 
-		var Baz = function Baz() {};
+		/** @constructor */
+		function Baz() {}
 		Baz[Symbol.species] = Bar;
 		st.equal(
 			SpeciesConstructor(new Baz(), defaultConstructor),

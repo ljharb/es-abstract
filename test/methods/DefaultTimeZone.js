@@ -1,7 +1,8 @@
 'use strict';
 
+/** @type {import('../testHelpers').MethodTest<'DefaultTimeZone'>} */
 module.exports = function (t, year, DefaultTimeZone) {
-	t.ok(year >= 2023, 'ES2023+');
+	t.equal(year, 2023, 'ES2023 only');
 
 	t.test('Intl supported', { skip: typeof Intl === 'undefined' }, function (st) {
 		st.equal(

@@ -6,17 +6,20 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'ApplyStringOrNumericBinaryOperator'>} */
 module.exports = function (t, year, ApplyStringOrNumericBinaryOperator) {
 	t.ok(year >= 2021, 'ES2021+');
 
-	forEach([].concat(
+	forEach(/** @type {(typeof v.nonStrings[number] | '' | '^^' | '//' | '***')[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		v.nonStrings,
 		'',
 		'^^',
 		'//',
 		'***'
-	), function (nonOp) {
+	)), function (nonOp) {
 		t['throws'](
+			// @ts-expect-error
 			function () { ApplyStringOrNumericBinaryOperator(null, nonOp, null); },
 			TypeError,
 			'opText must be a valid operation: ' + debug(nonOp) + ' is not an operation'

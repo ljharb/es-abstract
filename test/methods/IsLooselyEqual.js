@@ -6,6 +6,7 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'IsLooselyEqual'>} */
 module.exports = function (t, year, IsLooselyEqual) {
 	t.ok(year >= 2022, 'ES2022+');
 
@@ -17,7 +18,7 @@ module.exports = function (t, year, IsLooselyEqual) {
 	});
 
 	t.test('different types coerce', function (st) {
-		var pairs = [
+		var pairs = /** @type {const} */ ([
 			[null, undefined],
 			[3, '3'],
 			[true, '3'],
@@ -32,7 +33,7 @@ module.exports = function (t, year, IsLooselyEqual) {
 			[Number(String(v.coercibleObject)), v.coercibleObject],
 			[Number(v.coercibleObject), v.coercibleObject],
 			[String(Number(v.coercibleObject)), v.coercibleObject]
-		].concat(esV.hasBigInts ? [
+		]).concat(esV.hasBigInts ? /** @type {const} */ ([
 			[BigInt(0), 0],
 			[0, BigInt(0)],
 			[BigInt(1), 1],
@@ -45,7 +46,7 @@ module.exports = function (t, year, IsLooselyEqual) {
 			[Infinity, BigInt(0)],
 			[BigInt(0), 'Infinity'],
 			['Infinity', BigInt(0)]
-		] : []);
+		]) : []);
 		forEach(pairs, function (pair) {
 			var a = pair[0];
 			var b = pair[1];

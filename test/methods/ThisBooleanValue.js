@@ -4,11 +4,13 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'ThisBooleanValue' | 'thisBooleanValue'>} */
 module.exports = function (t, year, ThisBooleanValue) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.nonBooleans, function (nonBoolean) {
 		t['throws'](
+			// @ts-expect-error
 			function () { ThisBooleanValue(nonBoolean); },
 			TypeError,
 			debug(nonBoolean) + ' is not a Boolean'

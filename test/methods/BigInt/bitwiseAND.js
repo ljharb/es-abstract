@@ -6,6 +6,7 @@ var debug = require('object-inspect');
 
 var esV = require('../../helpers/v');
 
+/** @type {import('../../testHelpers').MethodTest<'BigInt::bitwiseAND'>} */
 module.exports = function (t, year, BigIntBitwiseAND) {
 	t.ok(year >= 2020, 'ES2020+');
 

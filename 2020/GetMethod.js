@@ -14,7 +14,7 @@ var inspect = require('object-inspect');
 
 /** @typedef {import('../types').Func} Func */
 
-/** @type {<P extends import('../types').PropertyKey>(O: Record<P, Func | null | undefined>, P: P) => undefined | Func} */
+/** @type {<P extends import('../types').PropertyKey>(O: Partial<Record<P, Func | null | undefined>>, P: P) => undefined | Func} */
 module.exports = function GetMethod(O, P) {
 	// 7.3.9.1
 	if (!isPropertyKey(P)) {

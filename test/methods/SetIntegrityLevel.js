@@ -6,11 +6,13 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'SetIntegrityLevel'>} */
 module.exports = function (t, year, SetIntegrityLevel) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { SetIntegrityLevel(primitive); },
 			TypeError,
 			debug(primitive) + ' is not an Object'
@@ -18,6 +20,7 @@ module.exports = function (t, year, SetIntegrityLevel) {
 	});
 
 	t['throws'](
+		// @ts-expect-error
 		function () { SetIntegrityLevel({}); },
 		/^TypeError: Assertion failed: `level` must be `"sealed"` or `"frozen"`$/,
 		'`level` must be `"sealed"` or `"frozen"`'
@@ -27,6 +30,7 @@ module.exports = function (t, year, SetIntegrityLevel) {
 	t.test('sealed', { skip: !Object.preventExtensions || esV.noThrowOnStrictViolation }, function (st) {
 		st.equal(SetIntegrityLevel(O, 'sealed'), true);
 		st['throws'](
+			// @ts-expect-error
 			function () { O.b = 2; },
 			/^TypeError: (Cannot|Can't) add property b, object is not extensible$/,
 			'sealing prevent new properties from being added'

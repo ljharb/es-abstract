@@ -4,11 +4,13 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'IteratorComplete'>} */
 module.exports = function (t, year, IteratorComplete) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.primitives, function (nonObject) {
 		t['throws'](
+			// @ts-expect-error
 			function () { IteratorComplete(nonObject); },
 			TypeError,
 			debug(nonObject) + ' is not an Object'

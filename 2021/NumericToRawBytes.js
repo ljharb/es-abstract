@@ -21,6 +21,8 @@ var integerToNBytes = require('../helpers/integerToNBytes');
 
 var tableTAO = require('./tables/typed-array-objects');
 
+/** @typedef {import('../types').WithoutPrefix<keyof typeof tableTAO.size, '$'>} TAType */
+
 // https://262.ecma-international.org/11.0/#table-the-typedarray-constructors
 var TypeToAO = {
 	__proto__: null,
@@ -37,7 +39,7 @@ var TypeToAO = {
 
 // https://262.ecma-international.org/11.0/#sec-numerictorawbytes
 
-/** @type {(type: Exclude<keyof typeof TypeToSizes, '__proto__'>, value: number | bigint, isLittleEndian: boolean) => number[]} */
+/** @type {(type: TAType, value: number | bigint, isLittleEndian: boolean) => number[]} */
 module.exports = function NumericToRawBytes(type, value, isLittleEndian) {
 	if (typeof type !== 'string' || !hasOwnProperty(tableTAO.size, '$' + type)) {
 		throw new $TypeError('Assertion failed: `type` must be a TypedArray element type');
@@ -57,9 +59,9 @@ module.exports = function NumericToRawBytes(type, value, isLittleEndian) {
 		return valueToFloat64Bytes(/** @type {number} */ (value), isLittleEndian);
 	} // step 3
 
-	var n = tableTAO.size['$' + type]; // step 3.a
+	var n = tableTAO.size[/** @type {`$${Exclude<typeof type, 'Float32' | 'Float64'>}`} */ ('$' + type)]; // step 3.a
 
-	var convOp = TypeToAO['$' + type]; // step 3.b
+	var convOp = TypeToAO[/** @type {`$${Exclude<typeof type, 'Float32' | 'Float64'>}`} */ ('$' + type)]; // step 3.b
 
 	var intValue = convOp(value); // step 3.c
 

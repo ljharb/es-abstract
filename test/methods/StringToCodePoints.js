@@ -6,11 +6,13 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'StringToCodePoints'>} */
 module.exports = function (t, year, StringToCodePoints) {
 	t.ok(year >= 2021, 'ES2021+');
 
 	forEach(v.nonStrings, function (nonString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { StringToCodePoints(nonString); },
 			TypeError,
 			debug(nonString) + ' is not a String'

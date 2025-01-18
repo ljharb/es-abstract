@@ -5,6 +5,7 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'IsViewOutOfBounds'>} */
 module.exports = function (t, year, IsViewOutOfBounds, extras) {
 	t.ok(year >= 2024, 'ES2024+');
 
@@ -13,6 +14,7 @@ module.exports = function (t, year, IsViewOutOfBounds, extras) {
 
 	forEach(esV.unknowns, function (nonDVWBWRecord) {
 		t['throws'](
+			// @ts-expect-error
 			function () { IsViewOutOfBounds(nonDVWBWRecord); },
 			TypeError,
 			debug(nonDVWBWRecord) + ' is not a Data View With Buffer Witness Record'

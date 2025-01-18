@@ -8,17 +8,29 @@ var v = require('es-value-fixtures');
 
 var caseFolding = require('../../helpers/caseFolding.json');
 
+/** @type {import('../testHelpers').MethodTest<'IsWordChar'>} */
 module.exports = function (t, year, actual) {
 	t.ok(year >= 2015, 'ES2015+');
 
+	/** @type {import('../testHelpers').AOOnlyYears<'IsWordChar', 2023 | 2024>} */
 	var IsWordChar = year >= 2023
-		? actual
+		? /** @type {import('../testHelpers').AOOnlyYears<'IsWordChar', 2023 | 2024>} */ (actual)
 		: year >= 2017
 			? function IsWordChar(rer, Input, e) { // ES2017 - ES2022
-				return actual(e, Input.length, Input, rer['[[IgnoreCase]]'], rer['[[Unicode]]']);
+				return /** @type {import('../testHelpers').AOOnlyYears<'IsWordChar', 2017 | 2018 | 2019 | 2020 | 2021 | 2022>} */ (actual)(
+					e,
+					Input.length,
+					Input,
+					rer['[[IgnoreCase]]'],
+					rer['[[Unicode]]']
+				);
 			}
-			: function IsWordChar(rer, Input, e) { // ES2015 - ES2016
-				return actual(e, Input.length, Input);
+			: function IsWordChar(_rer, Input, e) { // ES2015 - ES2016
+				return /** @type {import('../testHelpers').AOOnlyYears<'IsWordChar', 2015 | 2016>} */ (actual)(
+					e,
+					Input.length,
+					Input
+				);
 			};
 
 	var rer = {
@@ -31,6 +43,7 @@ module.exports = function (t, year, actual) {
 
 	forEach(v.nonIntegerNumbers, function (nonInteger) {
 		t['throws'](
+			// @ts-expect-error
 			function () { IsWordChar(rer, { length: nonInteger }); },
 			TypeError,
 			'Input.length: ' + debug(nonInteger) + ' is not an integer'
@@ -45,12 +58,14 @@ module.exports = function (t, year, actual) {
 
 	forEach(v.nonBooleans, function (nonBoolean) {
 		t['throws'](
+			// @ts-expect-error
 			function () { IsWordChar(assign({}, rer, { '[[IgnoreCase]]': nonBoolean }), '', 0); },
 			TypeError,
 			'[[IgnoreCase]]: ' + debug(nonBoolean) + ' is not a Boolean'
 		);
 
 		t['throws'](
+			// @ts-expect-error
 			function () { IsWordChar(assign({}, rer, { '[[Unicode]]': nonBoolean }), '', 0); },
 			TypeError,
 			'[[Unicode]]: ' + debug(nonBoolean) + ' is not a Boolean'
@@ -59,6 +74,7 @@ module.exports = function (t, year, actual) {
 
 	forEach(v.nonArrays, function (nonArray) {
 		t['throws'](
+			// @ts-expect-error
 			function () { return IsWordChar(rer, nonArray, 0); },
 			TypeError,
 			'Input: ' + debug(nonArray) + ' is not an Array'
@@ -67,6 +83,7 @@ module.exports = function (t, year, actual) {
 
 	forEach(v.nonStrings, function (nonString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { return IsWordChar(rer, [nonString], 0); },
 			TypeError,
 			'Input: ' + debug(nonString) + ' is not a character'
@@ -84,7 +101,7 @@ module.exports = function (t, year, actual) {
 	t.equal(IsWordChar(rer, ['!', 'b'], 1), true, 'b is a word char');
 
 	if (year >= 2017) {
-		forEach(keys(caseFolding.C), function (input) {
+		forEach(/** @type {(keyof typeof caseFolding.C)[]} */ (keys(caseFolding.C)), function (input) {
 			var isBasic = (/^[a-zA-Z0-9_]$/).test(input);
 			var isFancy = (/^[a-zA-Z0-9_]$/).test(caseFolding.C[input]);
 			t.equal(
@@ -99,7 +116,7 @@ module.exports = function (t, year, actual) {
 			);
 		});
 
-		forEach(keys(caseFolding.S), function (input) {
+		forEach(/** @type {(keyof typeof caseFolding.S)[]} */ (keys(caseFolding.S)), function (input) {
 			var isBasic = (/^[a-zA-Z0-9_]$/).test(input);
 			var isFancy = (/^[a-zA-Z0-9_]$/).test(caseFolding.S[input]);
 			t.equal(

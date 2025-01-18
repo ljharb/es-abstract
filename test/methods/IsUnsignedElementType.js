@@ -5,13 +5,13 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'IsUnsignedElementType'>} */
 module.exports = function (t, year, IsUnsignedElementType) {
 	t.ok(year >= 2020, 'ES2020+');
 
-	forEach(esV.unsignedElementTypes, function (type) {
-		if (year >= 2024) {
-			type = type.toUpperCase(); // eslint-disable-line no-param-reassign
-		}
+	forEach(esV.unsignedElementTypes, function (lowerType) {
+		var type = year >= 2024 ? /** @type {Uppercase<typeof lowerType>} */ (lowerType.toUpperCase()) : lowerType;
+
 		t.equal(
 			IsUnsignedElementType(type),
 			true,
@@ -19,10 +19,9 @@ module.exports = function (t, year, IsUnsignedElementType) {
 		);
 	});
 
-	forEach(esV.signedElementTypes, function (type) {
-		if (year >= 2024) {
-			type = type.toUpperCase(); // eslint-disable-line no-param-reassign
-		}
+	forEach(esV.signedElementTypes, function (lowerType) {
+		var type = year >= 2024 ? /** @type {Uppercase<typeof lowerType>} */ (lowerType.toUpperCase()) : lowerType;
+
 		t.equal(
 			IsUnsignedElementType(type),
 			false,

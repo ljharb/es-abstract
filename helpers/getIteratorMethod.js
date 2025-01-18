@@ -37,6 +37,7 @@ module.exports = function getIteratorMethod(ES, iterable) {
 		usingIterator = /** @type {() => Iterator<T>}} */ function () {
 			var i = 0;
 			return {
+				// @ts-expect-error TODO FIXME
 				next: function () {
 					var nextIndex = ES.AdvanceStringIndex($String(iterable), i, true);
 					var value = $stringSlice(iterable, i, nextIndex);

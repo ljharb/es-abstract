@@ -6,11 +6,13 @@ var debug = require('object-inspect');
 
 var fromPropertyDescriptor = require('../../helpers/fromPropertyDescriptor');
 
+/** @type {import('../testHelpers').MethodTest<'ObjectDefineProperties'>} */
 module.exports = function (t, year, ObjectDefineProperties) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.primitives, function (nonObject) {
 		t['throws'](
+			// @ts-expect-error
 			function () { ObjectDefineProperties(nonObject); },
 			debug(nonObject) + ' is not an Object'
 		);

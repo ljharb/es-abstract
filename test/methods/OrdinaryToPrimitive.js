@@ -4,11 +4,13 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'OrdinaryToPrimitive'>} */
 module.exports = function (t, year, OrdinaryToPrimitive) {
 	t.ok(year >= 2017, 'ES2017+');
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { OrdinaryToPrimitive(primitive, 'string'); },
 			TypeError,
 			debug(primitive) + ' is not Object'
@@ -26,6 +28,7 @@ module.exports = function (t, year, OrdinaryToPrimitive) {
 	forEach(v.nonStrings, function (nonString) {
 		if (typeof nonString !== 'number') {
 			t['throws'](
+				// @ts-expect-error
 				function () { OrdinaryToPrimitive({}, nonString); },
 				TypeError,
 				debug(nonString) + ' is not a String or a Number'

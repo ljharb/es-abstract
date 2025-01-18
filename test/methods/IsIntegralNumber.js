@@ -6,6 +6,7 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'IsIntegralNumber'>} */
 module.exports = function (t, year, IsIntegralNumber) {
 	t.ok(year >= 2015, 'ES2015+');
 
