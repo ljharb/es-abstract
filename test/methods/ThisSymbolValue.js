@@ -6,11 +6,13 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'ThisSymbolValue' | 'thisSymbolValue'>} */
 module.exports = function (t, year, ThisSymbolValue) {
 	t.ok(year >= 2018, 'ES2018+');
 
 	forEach(esV.allButSyms, function (nonSymbol) {
 		t['throws'](
+			// @ts-expect-error
 			function () { ThisSymbolValue(nonSymbol); },
 			v.hasSymbols ? TypeError : SyntaxError,
 			debug(nonSymbol) + ' is not a Symbol'
@@ -20,6 +22,7 @@ module.exports = function (t, year, ThisSymbolValue) {
 	t.test('no native Symbols', { skip: v.hasSymbols }, function (st) {
 		forEach(esV.unknowns, function (value) {
 			st['throws'](
+				// @ts-expect-error
 				function () { ThisSymbolValue(value); },
 				SyntaxError,
 				'Symbols are not supported'

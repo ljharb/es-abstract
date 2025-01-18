@@ -5,17 +5,20 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'IsTypedArrayOutOfBounds'>} */
 module.exports = function (t, year, IsTypedArrayOutOfBounds, extras) {
 	t.ok(year >= 2024, 'ES2024+');
 
 	var DetachArrayBuffer = extras.getAO('DetachArrayBuffer');
 	var MakeTypedArrayWithBufferWitnessRecord = extras.getAO('MakeTypedArrayWithBufferWitnessRecord');
 
-	forEach([].concat(
+	forEach(/** @type {unknown[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		esV.unknowns,
 		[[]]
-	), function (nonTAWBWR) {
+	)), function (nonTAWBWR) {
 		t['throws'](
+			// @ts-expect-error
 			function () { IsTypedArrayOutOfBounds(nonTAWBWR); },
 			TypeError,
 			debug(nonTAWBWR) + ' is not a Typed Array With Buffer Witness Record'

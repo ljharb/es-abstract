@@ -6,17 +6,20 @@ var debug = require('object-inspect');
 var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'TypedArrayByteLength'>} */
 module.exports = function (t, year, TypedArrayByteLength, extras) {
 	t.ok(year >= 2024, 'ES2024+');
 
 	var DetachArrayBuffer = extras.getAO('DetachArrayBuffer');
 	var MakeTypedArrayWithBufferWitnessRecord = extras.getAO('MakeTypedArrayWithBufferWitnessRecord');
 
-	forEach([].concat(
+	forEach(/** @type {unknown[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		esV.unknowns,
 		[[]]
-	), function (nonTAWBWR) {
+	)), function (nonTAWBWR) {
 		t['throws'](
+			// @ts-expect-error
 			function () { TypedArrayByteLength(nonTAWBWR); },
 			TypeError,
 			debug(nonTAWBWR) + ' is not a Typed Array With Buffer Witness Record'
@@ -31,7 +34,7 @@ module.exports = function (t, year, TypedArrayByteLength, extras) {
 				var ta = new TA(8);
 				var record = MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
 
-				var elementSize = esV.elementSizes['$' + TypedArray];
+				var elementSize = esV.elementSizes[/** @type {`$${typeof TypedArray}`} */ ('$' + TypedArray)];
 
 				tat.equal(TypedArrayByteLength(record), 8 * elementSize, 'fixed length array, returns byteLength');
 

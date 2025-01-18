@@ -2,10 +2,12 @@
 
 var v = require('es-value-fixtures');
 
+/** @type {import('../testHelpers').MethodTest<'IterableToArrayLike'>} */
 module.exports = function (t, year, IterableToArrayLike) {
 	t.equal(year, 2016, 'ES2016 only');
 
 	t.test('custom iterables', { skip: !v.hasSymbols }, function (st) {
+		/** @type {Partial<Iterable<unknown>>} */
 		var O = {};
 		O[Symbol.iterator] = function () {
 			var i = -1;

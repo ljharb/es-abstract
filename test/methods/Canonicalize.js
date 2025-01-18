@@ -10,19 +10,22 @@ var caseFolding = require('../../helpers/caseFolding.json');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'Canonicalize'>} */
 module.exports = function (t, year, actual) {
 	t.ok(year >= 5, 'ES5+');
 
+	/** @type {import('../testHelpers').AOOnlyYears<'Canonicalize', 2023 | 2024>} */
 	var Canonicalize = year >= 2023
-		? actual
+		? /** @type {import('../testHelpers').AOOnlyYears<'Canonicalize', 2023 | 2024>} */ (actual)
 		: year >= 2015
 			? function Canonicalize(rer, ch) {
-				return actual(ch, rer['[[IgnoreCase]]'], rer['[[Unicode]]']);
+				return /** @type {import('../testHelpers').AOOnlyYears<'Canonicalize', 2015 | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022>} */ (actual)(ch, rer['[[IgnoreCase]]'], rer['[[Unicode]]']);
 			}
 			: function Canonicalize(rer, ch) {
-				return actual(ch, rer['[[IgnoreCase]]']);
+				return /** @type {import('../testHelpers').AOOnlyYears<'Canonicalize', 5>} */ (actual)(ch, rer['[[IgnoreCase]]']);
 			};
 
+	/** @type {import('../../types').RegExpRecord} */
 	var rer = {
 		'[[IgnoreCase]]': false,
 		'[[Multiline]]': false,
@@ -33,6 +36,7 @@ module.exports = function (t, year, actual) {
 
 	forEach(v.nonStrings, function (nonString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { Canonicalize(rer, nonString); },
 			TypeError,
 			'ch: ' + debug(nonString) + ' is not a String'
@@ -41,14 +45,16 @@ module.exports = function (t, year, actual) {
 
 	forEach(v.nonBooleans, function (nonBoolean) {
 		t['throws'](
-			function () { Canonicalize(assign({}, rer, { '[[IgnoreCase]]': nonBoolean }), ''); },
+			// @ts-expect-error
+			function () { Canonicalize(/** @type {{ ...rer, ...{ '[[IgnoreCase]]': typeof nonBoolean } }} */ (assign({}, rer, { '[[IgnoreCase]]': nonBoolean })), ''); },
 			TypeError,
 			'IgnoreCase: ' + debug(nonBoolean) + ' is not a Boolean'
 		);
 
 		if (year >= 2015) {
 			t['throws'](
-				function () { Canonicalize(assign({}, rer, { '[[Unicode]]': nonBoolean }), ''); },
+				// @ts-expect-error
+				function () { Canonicalize(/** @type {{ ...rer, ...{ '[[Unicode]]': typeof nonBoolean } }} */ (assign({}, rer, { '[[Unicode]]': nonBoolean })), ''); },
 				TypeError,
 				'Unicode: ' + debug(nonBoolean) + ' is not a Boolean'
 			);
@@ -59,7 +65,7 @@ module.exports = function (t, year, actual) {
 	t.equal(Canonicalize(assign({}, rer, { '[[IgnoreCase]]': true }), 'ƒ'), 'Ƒ', 'when IgnoreCase is true, ch is canonicalized');
 
 	if (year >= 2015) {
-		forEach(keys(caseFolding.C), function (input) {
+		forEach(/** @type {(keyof typeof caseFolding.C)[]} */ (keys(caseFolding.C)), function (input) {
 			var output = caseFolding.C[input];
 			t.equal(
 				Canonicalize(assign({}, rer, { '[[Unicode]]': true }), input),
@@ -73,7 +79,7 @@ module.exports = function (t, year, actual) {
 			);
 		});
 
-		forEach(keys(caseFolding.S), function (input) {
+		forEach(/** @type {(keyof typeof caseFolding.S)[]} */(keys(caseFolding.S)), function (input) {
 			var output = caseFolding.S[input];
 			t.equal(
 				Canonicalize(assign({}, rer, { '[[Unicode]]': true }), input),

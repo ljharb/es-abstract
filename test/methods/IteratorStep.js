@@ -6,15 +6,18 @@ var debug = require('object-inspect');
 var makeIteratorRecord = require('../helpers/makeIteratorRecord');
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'IteratorStep'>} */
 module.exports = function (t, year, IteratorStep) {
 	t.ok(year >= 2015, 'ES2015+');
 
+	/** @type {<T>(iteratorRecord: import('../../types').IteratorRecord<T>) => import('../../types').IteratorRecord<T> | Iterator<T>} */
 	var unwrap = function (iteratorRecord) {
 		return year >= 2023 ? iteratorRecord : iteratorRecord['[[Iterator]]'];
 	};
 
 	forEach(esV.unknowns, function (nonIteratorRecord) {
 		t['throws'](
+			// @ts-expect-error
 			function () { IteratorStep(nonIteratorRecord); },
 			TypeError,
 			debug(nonIteratorRecord) + ' is not an Iterator Record'

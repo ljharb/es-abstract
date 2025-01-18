@@ -6,17 +6,20 @@ var debug = require('object-inspect');
 var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'TypedArrayLength'>} */
 module.exports = function (t, year, TypedArrayLength, extras) {
 	t.ok(year >= 2024, 'ES2024+');
 
 	var DetachArrayBuffer = extras.getAO('DetachArrayBuffer');
 	var MakeTypedArrayWithBufferWitnessRecord = extras.getAO('MakeTypedArrayWithBufferWitnessRecord');
 
-	forEach([].concat(
+	forEach(/** @type {unknown[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		esV.unknowns,
 		[[]]
-	), function (nonTAWBWR) {
+	)), function (nonTAWBWR) {
 		t['throws'](
+			// @ts-expect-error
 			function () { TypedArrayLength(nonTAWBWR); },
 			TypeError,
 			debug(nonTAWBWR) + ' is not a Typed Array With Buffer Witness Record'
@@ -48,7 +51,7 @@ module.exports = function (t, year, TypedArrayLength, extras) {
 					s2t.end();
 				});
 
-				var elementSize = esV.elementSizes['$' + type];
+				var elementSize = esV.elementSizes[/** @type {`$${typeof type}`} */ ('$' + type)];
 
 				// TODO: actual TA byteLength auto, but not fixed length? (may not be possible)
 

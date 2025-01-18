@@ -6,24 +6,28 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'GetMatchString'>} */
 module.exports = function (t, year, GetMatchString) {
 	t.ok(year >= 2022, 'ES2022+');
 
 	forEach(v.nonStrings, function (notString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { return GetMatchString(notString); },
 			TypeError,
 			debug(notString) + ' is not a string'
 		);
 	});
 
-	forEach([].concat(
+	forEach(/** @type {unknown[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		esV.unknowns,
 		{ '[[StartIndex]]': -1 },
 		{ '[[StartIndex]]': 1.2, '[[EndIndex]]': 0 },
 		{ '[[StartIndex]]': 1, '[[EndIndex]]': 0 }
-	), function (notMatchRecord) {
+	)), function (notMatchRecord) {
 		t['throws'](
+			// @ts-expect-error
 			function () { return GetMatchString('', notMatchRecord); },
 			TypeError,
 			debug(notMatchRecord) + ' is not a Match Record'

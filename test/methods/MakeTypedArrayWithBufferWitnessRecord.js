@@ -6,11 +6,13 @@ var debug = require('object-inspect');
 var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'MakeTypedArrayWithBufferWitnessRecord'>} */
 module.exports = function (t, year, MakeTypedArrayWithBufferWitnessRecord) {
 	t.ok(year >= 2024, 'ES2024+');
 
 	forEach(esV.unknowns, function (nonTA) {
 		t['throws'](
+			// @ts-expect-error
 			function () { MakeTypedArrayWithBufferWitnessRecord(nonTA, 'UNORDERED'); },
 			TypeError,
 			debug(nonTA) + ' is not a TypedArray'
@@ -25,6 +27,7 @@ module.exports = function (t, year, MakeTypedArrayWithBufferWitnessRecord) {
 				var ta = new TA(8);
 
 				tat['throws'](
+					// @ts-expect-error
 					function () { MakeTypedArrayWithBufferWitnessRecord(ta, 'not a valid order'); },
 					TypeError,
 					'invalid order enum value throws'

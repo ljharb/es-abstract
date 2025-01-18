@@ -7,6 +7,7 @@ var v = require('es-value-fixtures');
 var makeIteratorRecord = require('../helpers/makeIteratorRecord');
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'IteratorToList'>} */
 module.exports = function (t, year, IteratorToList) {
 	t.ok(year >= 2023, 'ES2023+');
 

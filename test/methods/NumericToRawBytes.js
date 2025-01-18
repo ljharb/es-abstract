@@ -12,11 +12,13 @@ var esV = require('../helpers/v');
 var getTypedArrays = require('../helpers/typedArrays');
 var unserialize = require('../helpers/unserializeNumeric');
 
+/** @type {import('../testHelpers').MethodTest<'NumericToRawBytes'>} */
 module.exports = function (t, year, NumericToRawBytes) {
 	t.ok(year >= 2017, 'ES2017+');
 
 	forEach(esV.nonTATypes, function (nonTAType) {
 		t['throws'](
+			// @ts-expect-error
 			function () { NumericToRawBytes(nonTAType, 0, false); },
 			TypeError,
 			debug(nonTAType) + ' is not a String, or not a TypedArray type'
@@ -25,6 +27,7 @@ module.exports = function (t, year, NumericToRawBytes) {
 
 	forEach(v.nonNumbers, function (nonNumber) {
 		t['throws'](
+			// @ts-expect-error
 			function () { NumericToRawBytes(year >= 2024 ? 'INT8' : 'Int8', nonNumber, false); },
 			TypeError,
 			debug(nonNumber) + ' is not a Number'
@@ -33,6 +36,7 @@ module.exports = function (t, year, NumericToRawBytes) {
 
 	forEach(v.nonBooleans, function (nonBoolean) {
 		t['throws'](
+			// @ts-expect-error
 			function () { NumericToRawBytes(year >= 2024 ? 'INT8' : 'Int8', 0, nonBoolean); },
 			TypeError,
 			debug(nonBoolean) + ' is not a Boolean'
@@ -55,6 +59,7 @@ module.exports = function (t, year, NumericToRawBytes) {
 				var valToSet = type === 'Uint8C' && value > 0xFF ? 0xFF : isBigInt ? safeBigInt(value) : value;
 
 				st.test(type, function (s2t) {
+					var typeActual = year >= 2024 ? /** @type {Uppercase<typeof type>} */ (type.toUpperCase()) : type;
 					/*
 					s2t.equal(
 						GetValueFromBuffer(testCase.buffer, 0, type, true, 'Unordered'),
@@ -64,14 +69,14 @@ module.exports = function (t, year, NumericToRawBytes) {
 					*/
 
 					s2t.deepEqual(
-						NumericToRawBytes(year >= 2024 ? type.toUpperCase() : type, valToSet, true),
+						NumericToRawBytes(typeActual, valToSet, true),
 						result[type === 'Float64' ? 'setAsLittle' : 'setAsTruncatedLittle'].bytes,
 						debug(value) + ' with type ' + type + ', little endian, yields expected value'
 					);
 
 					if (hasBigEndian) {
 						s2t.deepEqual(
-							NumericToRawBytes(year >= 2024 ? type.toUpperCase() : type, valToSet, false),
+							NumericToRawBytes(typeActual, valToSet, false),
 							result[type === 'Float64' ? 'setAsBig' : 'setAsTruncatedBig'].bytes,
 							debug(value) + ' with type ' + type + ', big endian, yields expected value'
 						);
@@ -90,7 +95,7 @@ module.exports = function (t, year, NumericToRawBytes) {
 
 		t.test('BigInt64', function (st) {
 			st.test('bigints available', { skip: !esV.hasBigInts }, function (s2t) {
-				forEach([
+				forEach(/** @type {const} */ ([
 					[BigInt(0), [0, 0, 0, 0, 0, 0, 0, 0]],
 					[BigInt(1), [1, 0, 0, 0, 0, 0, 0, 0]],
 					// [BigInt(-1), [255, 255, 255, 255, 255, 255, 255, 255]],
@@ -99,7 +104,7 @@ module.exports = function (t, year, NumericToRawBytes) {
 					// [BigInt(-2147483647), [1, 0, 0, 128, 255, 255, 255, 255]],
 					[BigInt(2147483648), [0, 0, 0, 128, 0, 0, 0, 0]]
 				// [BigInt(-2147483648), [0, 0, 0, 128, 255, 255, 255, 255]]
-				], function (pair) {
+				]), function (pair) {
 					var int = pair[0];
 					var bytes = pair[1];
 
@@ -133,7 +138,7 @@ module.exports = function (t, year, NumericToRawBytes) {
 
 		t.test('BigUint64', function (st) {
 			st.test('bigints available', { skip: !esV.hasBigInts }, function (s2t) {
-				forEach([
+				forEach(/** @type {const} */ ([
 					[BigInt(0), [0, 0, 0, 0, 0, 0, 0, 0]],
 					[BigInt(1), [1, 0, 0, 0, 0, 0, 0, 0]],
 					// [BigInt(-1), [255, 255, 255, 255, 255, 255, 255, 255]],
@@ -142,7 +147,7 @@ module.exports = function (t, year, NumericToRawBytes) {
 					// [BigInt(-2147483647), [1, 0, 0, 128, 255, 255, 255, 255]],
 					[BigInt(2147483648), [0, 0, 0, 128, 0, 0, 0, 0]]
 				// [BigInt(-2147483648), [0, 0, 0, 128, 255, 255, 255, 255]]
-				], function (pair) {
+				]), function (pair) {
 					var int = pair[0];
 					var bytes = pair[1];
 
@@ -155,7 +160,7 @@ module.exports = function (t, year, NumericToRawBytes) {
 						);
 					}
 
-					var type = year >= 2024 ? 'BIGUINT64' : 'BigUint64';
+					var type = year >= 2024 ? /** @type {const} */ ('BIGUINT64') : /** @type {const} */ ('BigUint64');
 					s2t.deepEqual(
 						NumericToRawBytes(type, int, true),
 						bytes,

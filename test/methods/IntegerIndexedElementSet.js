@@ -7,6 +7,7 @@ var getTypedArrays = require('../helpers/typedArrays');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'IntegerIndexedElementSet'>} */
 module.exports = function (t, year, IntegerIndexedElementSet, extras) {
 	t.ok(year >= 2015, 'ES2015+');
 
@@ -14,17 +15,20 @@ module.exports = function (t, year, IntegerIndexedElementSet, extras) {
 
 	forEach(v.nonNumbers, function (nonNumber) {
 		t['throws'](
+			// @ts-expect-error
 			function () { IntegerIndexedElementSet(null, nonNumber, null); },
 			TypeError,
 			debug(nonNumber) + ' is not a Number'
 		);
 	});
 
-	forEach([].concat(
+	forEach(/** @type {unknown[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		esV.unknowns,
 		[[]]
-	), function (nonTA) {
+	)), function (nonTA) {
 		t['throws'](
+			// @ts-expect-error
 			function () { IntegerIndexedElementSet(nonTA, 0, null); },
 			TypeError,
 			debug(nonTA) + ' is not a TypedArray'
@@ -36,7 +40,7 @@ module.exports = function (t, year, IntegerIndexedElementSet, extras) {
 	t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
 		if (year < 2020 && esV.hasBigInts) {
 			forEach(esV.bigIntTypes, function (bigIntType) {
-				var TA = global[bigIntType + 'Array'];
+				var TA = global[/** @type {`${typeof bigIntType}Array`} */ (bigIntType + 'Array')];
 				var ta = new TA(0);
 				st['throws'](
 					function () { IntegerIndexedElementSet(ta, 0, BigInt(0)); },
@@ -83,10 +87,11 @@ module.exports = function (t, year, IntegerIndexedElementSet, extras) {
 						);
 					});
 
-					forEach([].concat(
+					forEach(/** @type {number[]} */ ([].concat(
+						// @ts-expect-error TS sucks with concat
 						v.notNonNegativeIntegers,
 						-0
-					), function (notNonNegativeInt) {
+					)), function (notNonNegativeInt) {
 						if (typeof notNonNegativeInt === 'number') {
 							var expectedFail = year >= 2021 ? undefined : false;
 							st.equal(

@@ -6,6 +6,7 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'IsStrictlyEqual'>} */
 module.exports = function (t, year, IsStrictlyEqual) {
 	t.ok(year >= 2022, 'ES2022+');
 

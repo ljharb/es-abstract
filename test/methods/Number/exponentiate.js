@@ -4,16 +4,19 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../../testHelpers').MethodTest<'Number::exponentiate'>} */
 module.exports = function (t, year, NumberExponentiate) {
 	t.ok(year >= 2020, 'ES2020+');
 
 	forEach(v.nonNumbers, function (nonNumber) {
 		t['throws'](
+			// @ts-expect-error
 			function () { NumberExponentiate(nonNumber, 0); },
 			TypeError,
 			'base: ' + debug(nonNumber) + ' is not a Number'
 		);
 		t['throws'](
+			// @ts-expect-error
 			function () { NumberExponentiate(0, nonNumber); },
 			TypeError,
 			'exponent: ' + debug(nonNumber) + ' is not a Number'
@@ -57,10 +60,11 @@ module.exports = function (t, year, NumberExponentiate) {
 	t.equal(NumberExponentiate(-0.9, Infinity), 0, '-0.9 ** +∞ is +0');
 	t.equal(NumberExponentiate(-0.9, -Infinity), Infinity, '-0.9 ** -∞ is +∞');
 
-	forEach([].concat(
+	forEach(/** @type {number[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		v.numbers,
 		NaN
-	), function (number) {
+	)), function (number) {
 		t.equal(NumberExponentiate(number, NaN), NaN, debug(number) + ' ** NaN is NaN');
 
 		if (number !== 0) {

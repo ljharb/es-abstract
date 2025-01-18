@@ -5,12 +5,14 @@ var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 var $getProto = require('get-proto');
 
+/** @type {import('../testHelpers').MethodTest<'OrdinarySetPrototypeOf'>} */
 module.exports = function (t, year, OrdinarySetPrototypeOf) {
 	t.ok(year >= 2016, 'ES2016+');
 
 	forEach(v.primitives, function (primitive) {
 		if (primitive !== null) {
 			t['throws'](
+				// @ts-expect-error
 				function () { OrdinarySetPrototypeOf({}, primitive); },
 				TypeError,
 				debug(primitive) + ' is not an Object or null'
@@ -18,6 +20,7 @@ module.exports = function (t, year, OrdinarySetPrototypeOf) {
 		}
 	});
 
+	/** @type {unknown[]} */
 	var a = [];
 	var proto = {};
 

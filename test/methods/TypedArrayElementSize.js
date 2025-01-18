@@ -6,11 +6,13 @@ var debug = require('object-inspect');
 var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'TypedArrayElementSize'>} */
 module.exports = function (t, year, TypedArrayElementSize) {
 	t.ok(year >= 2022, 'ES2022+');
 
 	forEach(esV.unknowns, function (nonTA) {
 		t['throws'](
+			// @ts-expect-error
 			function () { TypedArrayElementSize(nonTA); },
 			TypeError,
 			debug(nonTA) + ' is not a TypedArray'
@@ -18,7 +20,7 @@ module.exports = function (t, year, TypedArrayElementSize) {
 	});
 
 	forEach(getTypedArrays(year), function (TA) {
-		var elementSize = esV.elementSizes['$' + TA];
+		var elementSize = esV.elementSizes[/** @type {`$${typeof TA}`} */ ('$' + TA)];
 
 		var ta = new global[TA](0);
 

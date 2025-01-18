@@ -4,17 +4,20 @@ var forEach = require('for-each');
 var debug = require('object-inspect');
 var v = require('es-value-fixtures');
 
+/** @type {import('../testHelpers').MethodTest<'IsDataDescriptor'>} */
 module.exports = function (t, year, IsDataDescriptor) {
 	t.ok(year >= 5, 'ES5+');
 
 	forEach(v.nonUndefinedPrimitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { IsDataDescriptor(primitive); },
 			TypeError,
 			debug(primitive) + ' is not a Property Descriptor'
 		);
 	});
 
+	// @ts-expect-error
 	t.equal(IsDataDescriptor(), false, 'no value is not a Data Descriptor');
 	t.equal(IsDataDescriptor(undefined), false, 'undefined value is not a Data Descriptor');
 

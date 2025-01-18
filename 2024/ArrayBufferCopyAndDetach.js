@@ -41,7 +41,7 @@ var isSharedArrayBuffer = require('is-shared-array-buffer');
 
 // https://262.ecma-international.org/15.0/#sec-arraybuffercopyanddetach
 
-/** @type {(arrayBuffer: ArrayBuffer, newLength: import('../types').arrayLength, preserveResizability: 'PRESERVE-RESIZABILITY' | 'FIXED-LENGTH') => ArrayBuffer} */
+/** @type {(arrayBuffer: ArrayBuffer | SharedArrayBuffer, newLength: import('../types').arrayLength | undefined, preserveResizability: 'PRESERVE-RESIZABILITY' | 'FIXED-LENGTH') => ArrayBuffer} */
 module.exports = function ArrayBufferCopyAndDetach(arrayBuffer, newLength, preserveResizability) {
 	if (preserveResizability !== 'PRESERVE-RESIZABILITY' && preserveResizability !== 'FIXED-LENGTH') {
 		throw new $TypeError('`preserveResizability` must be ~PRESERVE-RESIZABILITY~ or ~FIXED-LENGTH~');
@@ -76,7 +76,6 @@ module.exports = function ArrayBufferCopyAndDetach(arrayBuffer, newLength, prese
 
 	// 8. If arrayBuffer.[[ArrayBufferDetachKey]] is not undefined, throw a TypeError exception.
 
-	// @ts-expect-error TS doesn't yet know about resizable ArrayBuffers
 	// 9. Let newBuffer be ? AllocateArrayBuffer(%ArrayBuffer%, newByteLength, newMaxByteLength).
 	var newBuffer = newMaxByteLength === 'EMPTY' ? new $ArrayBuffer(newByteLength) : new $ArrayBuffer(newByteLength, { maxByteLength: newMaxByteLength });
 

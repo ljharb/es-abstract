@@ -5,11 +5,13 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'IsFixedLengthArrayBuffer'>} */
 module.exports = function (t, year, IsFixedLengthArrayBuffer) {
 	t.ok(year >= 2024, 'ES2024+');
 
 	forEach(esV.unknowns, function (nonAB) {
 		t['throws'](
+			// @ts-expect-error
 			function () { IsFixedLengthArrayBuffer(nonAB); },
 			TypeError,
 			debug(nonAB) + ' is not an ArrayBuffer or SharedArrayBuffer'

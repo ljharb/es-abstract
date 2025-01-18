@@ -6,21 +6,24 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'IsStringWellFormedUnicode'>} */
 module.exports = function (t, year, IsStringWellFormedUnicode) {
 	t.ok(year >= 2022, 'ES2022+');
 
 	forEach(v.nonStrings, function (notString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { return IsStringWellFormedUnicode(notString); },
 			TypeError,
 			debug(notString) + ' is not a string'
 		);
 	});
 
-	forEach([].concat(
+	forEach(/** @type {string[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		v.strings,
 		esV.poo.whole
-	), function (string) {
+	)), function (string) {
 		t.equal(IsStringWellFormedUnicode(string), true, debug(string) + ' is well-formed unicode');
 	});
 

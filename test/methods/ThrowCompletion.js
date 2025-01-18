@@ -2,6 +2,7 @@
 
 var SLOT = require('internal-slot');
 
+/** @type {import('../testHelpers').MethodTest<'ThrowCompletion'>} */
 module.exports = function (t, year, ThrowCompletion, extras) {
 	t.ok(year >= 2018, 'ES2018+');
 

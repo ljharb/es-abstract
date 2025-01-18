@@ -6,11 +6,13 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'NumberToBigInt'>} */
 module.exports = function (t, year, NumberToBigInt) {
 	t.ok(year >= 2020, 'ES2020+');
 
 	forEach(v.nonNumbers, function (nonNumber) {
 		t['throws'](
+			// @ts-expect-error
 			function () { NumberToBigInt(nonNumber); },
 			TypeError,
 			debug(nonNumber) + ' is not a Number'

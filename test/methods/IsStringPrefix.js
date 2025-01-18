@@ -4,16 +4,19 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'IsStringPrefix'>} */
 module.exports = function (t, year, IsStringPrefix) {
 	t.ok(year >= 2018 && year <= 2022, 'ES2018 - ES2022');
 
 	forEach(v.nonStrings, function (nonString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { IsStringPrefix(nonString, 'a'); },
 			TypeError,
 			'first arg: ' + debug(nonString) + ' is not a string'
 		);
 		t['throws'](
+			// @ts-expect-error
 			function () { IsStringPrefix('a', nonString); },
 			TypeError,
 			'second arg: ' + debug(nonString) + ' is not a string'

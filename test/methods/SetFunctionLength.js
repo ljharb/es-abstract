@@ -6,11 +6,13 @@ var hasOwn = require('hasown');
 var debug = require('object-inspect');
 var functionsHaveConfigurableNames = require('functions-have-names').functionsHaveConfigurableNames();
 
+/** @type {import('../testHelpers').MethodTest<'SetFunctionLength'>} */
 module.exports = function (t, year, SetFunctionLength) {
 	t.ok(year >= 2018, 'ES2018+');
 
 	forEach(v.nonFunctions, function (nonFunction) {
 		t['throws'](
+			// @ts-expect-error
 			function () { SetFunctionLength(nonFunction, 0); },
 			TypeError,
 			debug(nonFunction) + ' is not a Function'
@@ -29,6 +31,7 @@ module.exports = function (t, year, SetFunctionLength) {
 		st.end();
 	});
 
+	/** @type {<T>(_: T) => T} */
 	var HasLength = function HasLength(_) { return _; };
 	t.equal(hasOwn(HasLength, 'length'), true, 'precondition: `HasLength` has own length');
 	t['throws'](
@@ -39,25 +42,28 @@ module.exports = function (t, year, SetFunctionLength) {
 
 	t.test('no length', { skip: !functionsHaveConfigurableNames }, function (st) {
 		var HasNoLength = function HasNoLength() {};
+		// @ts-expect-error hush, TS, you can delete a configurable nonwritable property
 		delete HasNoLength.length;
 
 		st.equal(hasOwn(HasNoLength, 'length'), false, 'precondition: `HasNoLength` has no own length');
 
 		forEach(v.nonNumbers, function (nonNumber) {
 			st['throws'](
+				// @ts-expect-error
 				function () { SetFunctionLength(HasNoLength, nonNumber); },
 				TypeError,
 				debug(nonNumber) + ' is not a Number'
 			);
 		});
 
-		forEach([].concat(
+		forEach(/** @type {number[]} */ ([].concat(
+			// @ts-expect-error TS sucks with concat
 			-1,
 			-42,
 			-Infinity,
 			year >= 2021 ? [] : Infinity,
 			v.nonIntegerNumbers
-		), function (nonPositiveInteger) {
+		)), function (nonPositiveInteger) {
 			st['throws'](
 				function () { SetFunctionLength(HasNoLength, nonPositiveInteger); },
 				TypeError,

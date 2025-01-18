@@ -3,6 +3,7 @@
 var forEach = require('for-each');
 var v = require('es-value-fixtures');
 
+/** @type {import('../testHelpers').MethodTest<'ToUint32'>} */
 module.exports = function (t, year, ToUint32, extras) {
 	t.ok(year >= 5, 'ES5+');
 

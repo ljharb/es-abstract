@@ -7,22 +7,27 @@ var typedArrayByteLength = require('typed-array-byte-length');
 var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'ValidateAtomicAccess'>} */
 module.exports = function (t, year, actual) {
 	t.ok(year >= 2017, 'ES2017+');
 
+	/** @param {import('../../types').TypedArray} ta */
 	var makeTAWBR = function (ta) {
 		return { '[[Object]]': ta, '[[CachedBufferByteLength]]': typedArrayByteLength(ta) };
 	};
 
-	var ValidateAtomicAccess = year >= 2024 ? actual : function ValidateAtomicAccess(taRecord, requestIndex) {
+	/** @type {import('../testHelpers').AOOnlyYears<'ValidateAtomicAccess', 2024>} */
+	var ValidateAtomicAccess = year >= 2024 ? /** @type {import('../testHelpers').AOOnlyYears<'ValidateAtomicAccess', 2024>} */ (actual) : function ValidateAtomicAccess(taRecord, requestIndex) {
 		return actual(taRecord['[[Object]]'], requestIndex);
 	};
 
-	forEach([].concat(
+	forEach(/** @type {unknown[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		esV.unknowns,
 		[[]]
-	), function (nonTA) {
+	)), function (nonTA) {
 		t['throws'](
+			// @ts-expect-error
 			function () { ValidateAtomicAccess(nonTA, 0); },
 			TypeError,
 			debug(nonTA) + ' is not a TypedArray'
@@ -56,7 +61,7 @@ module.exports = function (t, year, actual) {
 				'a requestIndex > length throws'
 			);
 
-			var elementSize = esV.elementSizes['$' + TypedArray];
+			var elementSize = esV.elementSizes[/** @type {`$${typeof TypedArray}`} */ ('$' + TypedArray)];
 
 			st.equal(
 				ValidateAtomicAccess(makeTAWBR(ta), 0),

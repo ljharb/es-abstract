@@ -7,14 +7,17 @@ var debug = require('object-inspect');
 var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'IsValidIntegerIndex'>} */
 module.exports = function (t, year, IsValidIntegerIndex) {
 	t.ok(year >= 2020, 'ES2020+');
 
-	forEach([].concat(
+	forEach(/** @type {unknown[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		esV.unknowns,
 		[[]]
-	), function (nonTA) {
+	)), function (nonTA) {
 		t['throws'](
+			// @ts-expect-error
 			function () { IsValidIntegerIndex(nonTA, 0); },
 			TypeError,
 			debug(nonTA) + ' is not a TypedArray'
@@ -30,6 +33,7 @@ module.exports = function (t, year, IsValidIntegerIndex) {
 
 				forEach(v.nonNumbers, function (nonNumber) {
 					s2t['throws'](
+						// @ts-expect-error
 						function () { IsValidIntegerIndex(ta, nonNumber); },
 						TypeError,
 						'index: ' + debug(nonNumber) + ' is not a Number'

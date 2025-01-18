@@ -5,11 +5,13 @@ var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 var SLOT = require('internal-slot');
 
+/** @type {import('../testHelpers').MethodTest<'OrdinaryCreateFromConstructor'>} */
 module.exports = function (t, year, OrdinaryCreateFromConstructor) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.nonFunctions, function (nonFunction) {
 		t['throws'](
+			// @ts-expect-error
 			function () { OrdinaryCreateFromConstructor(nonFunction, '%Array.prototype%'); },
 			TypeError,
 			debug(nonFunction) + ' is not a constructor'
@@ -18,6 +20,7 @@ module.exports = function (t, year, OrdinaryCreateFromConstructor) {
 
 	forEach(v.arrowFunctions, function (arrowFn) {
 		t['throws'](
+			// @ts-expect-error
 			function () { OrdinaryCreateFromConstructor(arrowFn, '%Array.prototype%'); },
 			TypeError,
 			debug(arrowFn) + ' is not a constructor'
@@ -25,7 +28,8 @@ module.exports = function (t, year, OrdinaryCreateFromConstructor) {
 	});
 
 	t.test('proto arg', function (st) {
-		var Parent = function Parent() {};
+		/** @constructor */
+		function Parent() {}
 		Parent.prototype.foo = {};
 		var child = OrdinaryCreateFromConstructor(Parent, '%Array.prototype%');
 		st.equal(child instanceof Parent, true, 'child is instanceof Parent');

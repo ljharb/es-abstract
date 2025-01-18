@@ -8,6 +8,7 @@ var $defineProperty = require('es-define-property');
 
 var defineProperty = require('../helpers/defineProperty');
 
+/** @type {import('../testHelpers').MethodTest<'EnumerableOwnProperties' | 'EnumerableOwnNames'>} */
 module.exports = function (t, year, actual) {
 	t.ok(year >= 2015, 'ES2015+');
 
@@ -15,7 +16,7 @@ module.exports = function (t, year, actual) {
 		if (kind !== 'key') {
 			throw new EvalError('test error: this wrapper should only be invoked with kind `key`');
 		}
-		return actual(obj);
+		return /** @type {import('../../es2016').EnumerableOwnNames} */ (actual)(obj);
 	};
 
 	forEach(v.primitives, function (nonObject) {

@@ -9,16 +9,19 @@ var $defineProperty = require('es-define-property');
 var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'SetTypedArrayFromArrayLike'>} */
 module.exports = function (t, year, SetTypedArrayFromArrayLike, extras) {
 	t.ok(year >= 2021, 'ES2021+');
 
 	var DetachArrayBuffer = extras.getAO('DetachArrayBuffer');
 
-	forEach([].concat(
+	forEach(/** @type {unknown[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		esV.unknowns,
 		[[]]
-	), function (nonTA) {
+	)), function (nonTA) {
 		t['throws'](
+			// @ts-expect-error
 			function () { SetTypedArrayFromArrayLike(nonTA, 0, []); },
 			TypeError,
 			'target: ' + debug(nonTA) + ' is not a TypedArray'

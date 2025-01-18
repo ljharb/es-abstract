@@ -9,6 +9,7 @@ var whichTypedArray = require('which-typed-array');
 var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'TypedArrayCreateSameType'>} */
 module.exports = function (t, year, TypedArrayCreateSameType) {
 	t.ok(year >= 2023, 'ES2023+');
 
@@ -17,6 +18,7 @@ module.exports = function (t, year, TypedArrayCreateSameType) {
 	t.test('no Typed Array support', { skip: availableTypedArrays.length > 0 }, function (st) {
 		forEach(esV.unknowns, function (nonTA) {
 			st['throws'](
+				// @ts-expect-error
 				function () { TypedArrayCreateSameType(nonTA, []); },
 				SyntaxError,
 				'no Typed Array support'
@@ -25,6 +27,7 @@ module.exports = function (t, year, TypedArrayCreateSameType) {
 
 		forEach(v.nonArrays, function (nonArray) {
 			st['throws'](
+				// @ts-expect-error
 				function () { TypedArrayCreateSameType(Array, nonArray); },
 				SyntaxError,
 				'no Typed Array support'
@@ -37,6 +40,7 @@ module.exports = function (t, year, TypedArrayCreateSameType) {
 	t.test('Typed Array support', { skip: availableTypedArrays.length === 0 }, function (st) {
 		forEach(esV.unknowns, function (nonTA) {
 			st['throws'](
+				// @ts-expect-error
 				function () { TypedArrayCreateSameType(nonTA, []); },
 				TypeError,
 				debug(nonTA) + ' is not a Typed Array'
@@ -45,6 +49,7 @@ module.exports = function (t, year, TypedArrayCreateSameType) {
 
 		forEach(v.nonArrays, function (nonArray) {
 			st['throws'](
+				// @ts-expect-error
 				function () { TypedArrayCreateSameType(new global[availableTypedArrays[0]](), nonArray); },
 				TypeError,
 				debug(nonArray) + ' is not an Array'

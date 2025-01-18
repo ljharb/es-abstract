@@ -1,9 +1,11 @@
 'use strict';
 
+/** @type {import('../testHelpers').MethodTest<'StringPad'>} */
 module.exports = function (t, year, StringPad) {
 	t.ok(year >= 2020, 'ES2020+');
 
 	t['throws'](
+		// @ts-expect-error
 		function () { StringPad('', 0, '', 'not start or end'); },
 		TypeError,
 		'`placement` must be "start" or "end"'

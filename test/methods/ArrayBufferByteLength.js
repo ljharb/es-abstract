@@ -5,13 +5,15 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'ArrayBufferByteLength'>} */
 module.exports = function (t, year, ArrayBufferByteLength) {
 	t.ok(year >= 2024, 'ES2024+');
 
-	var order = 'UNORDERED';
+	var order = /** @type {const} */ ('UNORDERED');
 
 	forEach(esV.unknowns, function (nonAB) {
 		t['throws'](
+			// @ts-expect-error
 			function () { ArrayBufferByteLength(nonAB, order); },
 			TypeError,
 			debug(nonAB) + ' is not an ArrayBuffer'
@@ -21,6 +23,7 @@ module.exports = function (t, year, ArrayBufferByteLength) {
 	t.test('ArrayBuffers supported', { skip: typeof ArrayBuffer !== 'function' }, function (st) {
 		var ab = new ArrayBuffer(8);
 		st['throws'](
+			// @ts-expect-error
 			function () { ArrayBufferByteLength(ab, 'not a valid order'); },
 			TypeError,
 			'invalid order enum value throws'

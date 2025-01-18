@@ -4,16 +4,19 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../../testHelpers').MethodTest<'Number::multiply'>} */
 module.exports = function (t, year, NumberMultiply) {
 	t.ok(year >= 2020, 'ES2020+');
 
 	forEach(v.nonNumbers, function (nonNumber) {
 		t['throws'](
+			// @ts-expect-error
 			function () { NumberMultiply(nonNumber, 0); },
 			TypeError,
 			'x: ' + debug(nonNumber) + ' is not a Number'
 		);
 		t['throws'](
+			// @ts-expect-error
 			function () { NumberMultiply(0, nonNumber); },
 			TypeError,
 			'y: ' + debug(nonNumber) + ' is not a Number'
@@ -38,10 +41,11 @@ module.exports = function (t, year, NumberMultiply) {
 	t.equal(NumberMultiply(-0, +0), -0, '-0 * 0 is -0');
 	t.equal(NumberMultiply(-0, -0), +0, '-0 * -0 is +0');
 
-	forEach([].concat(
+	forEach(/** @type {number[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		v.numbers,
 		NaN
-	), function (number) {
+	)), function (number) {
 		t.equal(NumberMultiply(NaN, number), NaN, 'NaN * ' + debug(number) + ' is NaN');
 		t.equal(NumberMultiply(number, NaN), NaN, debug(number) + ' * NaN is NaN');
 

@@ -4,11 +4,13 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'GetIteratorFromMethod'>} */
 module.exports = function (t, year, GetIteratorFromMethod) {
 	t.ok(year >= 2023, 'ES2023+');
 
 	forEach(v.nonFunctions, function (nonCallable) {
 		t['throws'](
+			// @ts-expect-error
 			function () { GetIteratorFromMethod(null, nonCallable); },
 			TypeError,
 			debug(nonCallable) + ' is not callable'
@@ -19,6 +21,7 @@ module.exports = function (t, year, GetIteratorFromMethod) {
 
 	forEach(v.primitives, function (nonObject) {
 		t['throws'](
+			// @ts-expect-error
 			function () { GetIteratorFromMethod(sentinel, function () { return nonObject; }); },
 			TypeError,
 			'method return value, ' + debug(nonObject) + ', is not an object'
@@ -26,11 +29,9 @@ module.exports = function (t, year, GetIteratorFromMethod) {
 	});
 
 	var iterator = {
-		next: function next() {
-
-		}
+		next: function next() {}
 	};
-	var iteratorRecord = GetIteratorFromMethod(sentinel, function () {
+	var iteratorRecord = GetIteratorFromMethod(sentinel, /** @type {(this: unknown) => typeof iterator} */ function () {
 		t.equal(this, sentinel, 'method is called with the correct this value');
 		t.equal(arguments.length, 0, 'method is called with no arguments');
 

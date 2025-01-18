@@ -180,19 +180,45 @@ export type InferIterableType<T> = T extends Iterable<infer U> ? U : never;
 export type InferIteratorType<T> = T extends Iterator<infer U> ? U : never;
 export type ArrayLikeType<T> = T extends ArrayLike<infer U> ? U : never;
 
-export type ES = Record<PropertyKey, unknown> & (
-	| typeof import('./es5')
-	| typeof import('./es2015')
-	| typeof import('./es2016')
-	| typeof import('./es2017')
-	| typeof import('./es2018')
-	| typeof import('./es2019')
-	| typeof import('./es2020')
-	| typeof import('./es2021')
-	| typeof import('./es2022')
-	| typeof import('./es2023')
-	| typeof import('./es2024')
-);
+import ES5 from './es5';
+import ES2015 from './es2015';
+import ES2016 from './es2016';
+import ES2017 from './es2017';
+import ES2018 from './es2017';
+import ES2019 from './es2018';
+import ES2020 from './es2020';
+import ES2021 from './es2021';
+import ES2022 from './es2022';
+import ES2023 from './es2023';
+import ES2024 from './es2024';
+
+export type ES =
+	| typeof ES5
+	| typeof ES2015
+	| typeof ES2016
+	| typeof ES2017
+	| typeof ES2018
+	| typeof ES2019
+	| typeof ES2020
+	| typeof ES2021
+	| typeof ES2022
+	| typeof ES2023
+	| typeof ES2024
+;
+
+export interface ESByYear {
+	5: typeof ES5;
+	2015: typeof ES2015;
+	2016: typeof ES2016;
+	2017: typeof ES2017;
+	2018: typeof ES2018;
+	2019: typeof ES2019;
+	2020: typeof ES2020;
+	2021: typeof ES2021;
+	2022: typeof ES2022;
+	2023: typeof ES2023;
+	2024: typeof ES2024;
+}
 
 declare function toString(argument: symbol): never;
 declare function toString(argument: null | undefined | boolean | string | number | bigint | object): string;
@@ -267,8 +293,16 @@ export type InternalSlot = `[[${string}]]`;
 
 export type UnicodeEscapeChar = `\\u${HexDigit}${HexDigit}${HexDigit}${HexDigit}`;
 
-declare function compareTypedArrayElements(x: number, y: number, compareFn: (x: number, y: number) => number | undefined): number;
-declare function compareTypedArrayElements(x: bigint, y: bigint, compareFn: (x: bigint, y: bigint) => bigint | undefined): bigint;
+declare function compareTypedArrayElements(
+	x: number,
+	y: number,
+	compareFn?: (x: number, y: number) => number | undefined,
+): number;
+declare function compareTypedArrayElements(
+	x: bigint,
+	y: bigint,
+	compareFn?: (x: bigint, y: bigint) => bigint | undefined,
+): bigint;
 
 export type CompareTypedArrayElements = typeof compareTypedArrayElements;
 
@@ -289,10 +323,10 @@ declare function bytesAsInteger(rawBytes: ByteValue[], elementSize: integer, isU
 
 export type BytesAsInteger = typeof bytesAsInteger;
 
-declare function enumerableOwnPropertyNames<V, O extends Record<string, V>>(O: O, kind: 'key'): (keyof O)[];
-declare function enumerableOwnPropertyNames<V, O extends Record<string, V>>(O: O, kind: 'value'): V[];
-declare function enumerableOwnPropertyNames<V, O extends Record<string, V>>(O: O, kind: 'key+value'): [keyof O, V];
-declare function enumerableOwnPropertyNames<V, O extends Record<string, V>>(O: O, kind: never): [keyof O, V] | V[] | (keyof O)[];
+declare function enumerableOwnPropertyNames<V, O extends Record<string, V>>(O: O, kind: 'key'): readonly (keyof O)[];
+declare function enumerableOwnPropertyNames<V, O extends Record<string, V>>(O: O, kind: 'value'): readonly V[];
+declare function enumerableOwnPropertyNames<V, O extends Record<string, V>>(O: O, kind: 'key+value'): readonly [keyof O, V];
+declare function enumerableOwnPropertyNames<V, O extends Record<string, V>>(O: O, kind: never): readonly [keyof O, V] | readonly V[] | readonly (keyof O)[];
 
 export type EnumerableOwnPropertyNames = typeof enumerableOwnPropertyNames;
 
@@ -312,7 +346,7 @@ declare function validateAndApplyPropertyDescriptor<V, T extends Record<Property
 	P: PropertyKey,
 	extensible: boolean,
 	Desc: Descriptor<V>,
-	current: undefined | Descriptor<V>
+	current?: undefined | Descriptor<V>
 ): boolean;
 
 declare function validateAndApplyPropertyDescriptor<V, T extends Record<PropertyKey, V> | undefined>(
@@ -320,7 +354,7 @@ declare function validateAndApplyPropertyDescriptor<V, T extends Record<Property
 	P: PropertyKey | undefined,
 	extensible: boolean,
 	Desc: Descriptor<V>,
-	current: undefined | Descriptor<V>
+	current?: undefined | Descriptor<V>
 ): boolean
 
 export type ValidateAndApplyPropertyDescriptor = typeof validateAndApplyPropertyDescriptor;
@@ -345,3 +379,8 @@ declare function deletePropertyOrThrow<O>(
 ): true;
 
 export type DeletePropertyOrThrow = typeof deletePropertyOrThrow;
+
+declare function abs(x: number): number;
+declare function abs(x: bigint): bigint;
+
+export type Abs = typeof abs;

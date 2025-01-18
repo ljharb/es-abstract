@@ -4,12 +4,14 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'TrimString'>} */
 module.exports = function (t, year, TrimString) {
 	t.ok(year >= 2019, 'ES2019+');
 
 	t.test('non-object string', function (st) {
 		forEach(v.nullPrimitives, function (nullish) {
 			st['throws'](
+				// @ts-expect-error
 				function () { TrimString(nullish); },
 				debug(nullish) + ' is not an Object'
 			);
@@ -18,6 +20,7 @@ module.exports = function (t, year, TrimString) {
 	});
 
 	t['throws'](
+		// @ts-expect-error
 		function () { TrimString('abc', 'not start, end, or start+end'); },
 		TypeError,
 		'invalid `where` value'

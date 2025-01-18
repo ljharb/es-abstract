@@ -4,15 +4,17 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'StringGetIndexProperty'>} */
 module.exports = function (t, year, StringGetIndexProperty) {
 	t.ok(year >= 2015, 'ES2015+');
 
-	forEach([].concat(
+	forEach(/** @type {(typeof v.nonStrings | typeof v.strings)[number][]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		v.nonStrings,
 		v.strings
-	), function (nonStringObjects) {
+	)), function (nonStringObjects) {
 		t['throws'](
-			function () { StringGetIndexProperty(nonStringObjects); },
+			function () { StringGetIndexProperty(nonStringObjects, ''); },
 			TypeError,
 			debug(nonStringObjects) + ' is not a boxed String Object'
 		);
@@ -20,6 +22,7 @@ module.exports = function (t, year, StringGetIndexProperty) {
 
 	forEach(v.nonPropertyKeys, function (nonPropertyKey) {
 		t['throws'](
+			// @ts-expect-error
 			function () { StringGetIndexProperty('', nonPropertyKey); },
 			TypeError,
 			debug(nonPropertyKey) + ' is not a Property Key'
@@ -35,12 +38,13 @@ module.exports = function (t, year, StringGetIndexProperty) {
 	});
 
 	// a string where CanonicalNumericIndexString returns undefined, a non-integer, or -0
-	forEach([].concat(
+	forEach(/** @type {(typeof v.nonIntegerNumbers[number] | string)[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		'-1',
 		'-0',
 		'undefined',
 		v.nonIntegerNumbers
-	), function (nonIndex) {
+	)), function (nonIndex) {
 		var S = Object('abc');
 		t.equal(
 			StringGetIndexProperty(S, String(nonIndex)),

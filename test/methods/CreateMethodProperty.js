@@ -7,11 +7,13 @@ var gOPD = require('gopd');
 var functionsHaveNames = require('functions-have-names')();
 var functionsHaveConfigurableNames = require('functions-have-names').functionsHaveConfigurableNames();
 
+/** @type {import('../testHelpers').MethodTest<'CreateMethodProperty'>} */
 module.exports = function (t, year, CreateMethodProperty) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { CreateMethodProperty(primitive, 'key'); },
 			TypeError,
 			'O must be an Object; ' + debug(primitive) + ' is not one'
@@ -20,6 +22,7 @@ module.exports = function (t, year, CreateMethodProperty) {
 
 	forEach(v.nonPropertyKeys, function (nonPropertyKey) {
 		t['throws'](
+			// @ts-expect-error
 			function () { CreateMethodProperty({}, nonPropertyKey); },
 			TypeError,
 			debug(nonPropertyKey) + ' is not a Property Key'

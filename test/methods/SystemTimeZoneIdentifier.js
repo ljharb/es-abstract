@@ -1,5 +1,6 @@
 'use strict';
 
+/** @type {import('../testHelpers').MethodTest<'SystemTimeZoneIdentifier'>} */
 module.exports = function (t, year, SystemTimeZoneIdentifier) {
 	t.ok(year >= 2024, 'ES2024+');
 

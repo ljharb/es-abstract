@@ -5,11 +5,13 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'HasEitherUnicodeFlag'>} */
 module.exports = function (t, year, HasEitherUnicodeFlag) {
 	t.ok(year >= 2024, 'ES2024+');
 
 	forEach(esV.unknowns, function (nonRER) {
 		t['throws'](
+			// @ts-expect-error
 			function () { HasEitherUnicodeFlag(nonRER); },
 			TypeError,
 			debug(nonRER) + ' is not a Regular Expression Record'

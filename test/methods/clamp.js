@@ -6,21 +6,25 @@ var debug = require('object-inspect');
 
 var MAX_SAFE_INTEGER = require('math-intrinsics/constants/maxSafeInteger');
 
+/** @type {import('../testHelpers').MethodTest<'clamp'>} */
 module.exports = function (t, year, clamp) {
 	t.ok(year >= 2021, 'ES2021+');
 
 	forEach(v.nonNumbers, function (nonNumber) {
 		t['throws'](
+			// @ts-expect-error
 			function () { clamp(nonNumber, -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER); },
 			TypeError,
 			'argument 1: ' + debug(nonNumber) + ' is not a number'
 		);
 		t['throws'](
+			// @ts-expect-error
 			function () { clamp(0, nonNumber, MAX_SAFE_INTEGER); },
 			TypeError,
 			'argument 2: ' + debug(nonNumber) + ' is not a number'
 		);
 		t['throws'](
+			// @ts-expect-error
 			function () { clamp(0, -MAX_SAFE_INTEGER, nonNumber); },
 			TypeError,
 			'argument 3: ' + debug(nonNumber) + ' is not a number'

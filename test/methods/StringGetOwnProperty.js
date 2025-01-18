@@ -4,14 +4,17 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'StringGetOwnProperty'>} */
 module.exports = function (t, year, StringGetOwnProperty) {
 	t.ok(year >= 2017, 'ES2017+');
 
-	forEach([].concat(
+	forEach(/** @type {unknown[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		v.nonStrings,
 		v.strings
-	), function (nonBoxedString) {
+	)), function (nonBoxedString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { StringGetOwnProperty(nonBoxedString, '0'); },
 			TypeError,
 			debug(nonBoxedString) + ' is not a boxed String'
@@ -19,6 +22,7 @@ module.exports = function (t, year, StringGetOwnProperty) {
 	});
 	forEach(v.nonPropertyKeys, function (nonPropertyKey) {
 		t['throws'](
+			// @ts-expect-error
 			function () { StringGetOwnProperty(Object(''), nonPropertyKey); },
 			TypeError,
 			debug(nonPropertyKey) + ' is not a Property Key'
@@ -29,6 +33,7 @@ module.exports = function (t, year, StringGetOwnProperty) {
 
 	forEach(v.symbols, function (symbol) {
 		t.equal(
+			// @ts-expect-error
 			StringGetOwnProperty(Object('abc'), symbol),
 			undefined,
 			debug(symbol) + ' is not a String, and yields undefined'
@@ -39,7 +44,7 @@ module.exports = function (t, year, StringGetOwnProperty) {
 		if (string) {
 			var S = Object(string);
 			for (var i = 0; i < string.length; i += 1) {
-				var descriptor = StringGetOwnProperty(S, String(i));
+				var descriptor = StringGetOwnProperty(S, /** @type {`${typeof i}`} */ (String(i)));
 				t.deepEqual(
 					descriptor,
 					{

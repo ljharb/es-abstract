@@ -5,6 +5,7 @@ var forEach = require('for-each');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'SameValue'>} */
 module.exports = function (t, year, SameValue) {
 	t.ok(year >= 5, 'ES5+');
 

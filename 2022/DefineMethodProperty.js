@@ -10,7 +10,7 @@ var isPropertyKey = require('../helpers/isPropertyKey');
 
 // https://262.ecma-international.org/13.0/#sec-definemethodproperty
 
-/** @type {(homeObject: Record<PropertyKey, unknown>, key: PropertyKey, closure: Function, enumerable: boolean) => void} */
+/** @type {(homeObject: object, key: PropertyKey, closure: Function, enumerable: boolean) => void} */
 module.exports = function DefineMethodProperty(homeObject, key, closure, enumerable) {
 	if (!isObject(homeObject)) {
 		throw new $TypeError('Assertion failed: `homeObject` is not an Object');
@@ -39,5 +39,5 @@ module.exports = function DefineMethodProperty(homeObject, key, closure, enumera
 		'[[Enumerable]]': enumerable,
 		'[[Configurable]]': true
 	};
-	DefinePropertyOrThrow(homeObject, key, desc); // step 3.b
+	DefinePropertyOrThrow(/** @type {Parameters<typeof DefinePropertyOrThrow>[0]} */ (homeObject), key, desc); // step 3.b
 };

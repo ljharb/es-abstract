@@ -5,17 +5,18 @@ var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 var flatMap = require('array.prototype.flatmap');
 
+/** @type {import('../testHelpers').MethodTest<'SameValueNonNumeric'>} */
 module.exports = function (t, year, SameValueNonNumeric) {
-	t.ok(year >= 2020, 'ES2020+');
+	t.ok(year >= 2020 && year <= 2022, 'ES2020 - ES2022');
 
-	var willThrow = [
+	var willThrow = /** @type {const} */ ([
 		[3, 4],
 		[NaN, 4],
 		[4, ''],
 		['abc', true],
 		[{}, false]
-	].concat(flatMap(v.bigints, function (bigint) {
-		return [
+	]).concat(flatMap(v.bigints, function (bigint) {
+		return /** @type {const} */ ([
 			[bigint, bigint],
 			[bigint, {}],
 			[{}, bigint],
@@ -23,7 +24,7 @@ module.exports = function (t, year, SameValueNonNumeric) {
 			[bigint, 3],
 			['', bigint],
 			[bigint, '']
-		];
+		]);
 	}));
 	forEach(willThrow, function (nums) {
 		t['throws'](
@@ -33,10 +34,11 @@ module.exports = function (t, year, SameValueNonNumeric) {
 		);
 	});
 
-	forEach([].concat(
+	forEach(/** @type {(typeof v.objects | typeof v.nonNumberPrimitives)[number][]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		v.objects,
 		v.nonNumberPrimitives
-	), function (val) {
+	)), function (val) {
 		t.equal(
 			SameValueNonNumeric(val, val),
 			val === val,

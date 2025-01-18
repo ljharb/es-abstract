@@ -6,8 +6,7 @@ var forEach = require('for-each');
 
 var esV = require('../helpers/v');
 
-var $BigInt = esV.hasBigInts ? BigInt : null;
-
+/** @type {import('../testHelpers').MethodTest<'Abstract Relational Comparison'>} */
 module.exports = function (t, year, AbstractRelationalComparison) {
 	t.ok(year >= 5, 'ES5+');
 
@@ -21,6 +20,7 @@ module.exports = function (t, year, AbstractRelationalComparison) {
 
 	forEach(v.nonBooleans, function (nonBoolean) {
 		t['throws'](
+			// @ts-expect-error
 			function () { AbstractRelationalComparison(3, 4, nonBoolean); },
 			TypeError,
 			debug(nonBoolean) + ' is not a Boolean'
@@ -108,40 +108,40 @@ module.exports = function (t, year, AbstractRelationalComparison) {
 			);
 		});
 
-		st.equal(AbstractRelationalComparison($BigInt(0), '1', true), true, 'LeftFirst: 0n is less than "1"');
-		st.equal(AbstractRelationalComparison('1', $BigInt(0), true), false, 'LeftFirst: "1" is not less than 0n');
-		st.equal(AbstractRelationalComparison($BigInt(0), '1', false), true, '!LeftFirst: 0n is less than "1"');
-		st.equal(AbstractRelationalComparison('1', $BigInt(0), false), false, '!LeftFirst: "1" is not less than 0n');
+		st.equal(AbstractRelationalComparison(BigInt(0), '1', true), true, 'LeftFirst: 0n is less than "1"');
+		st.equal(AbstractRelationalComparison('1', BigInt(0), true), false, 'LeftFirst: "1" is not less than 0n');
+		st.equal(AbstractRelationalComparison(BigInt(0), '1', false), true, '!LeftFirst: 0n is less than "1"');
+		st.equal(AbstractRelationalComparison('1', BigInt(0), false), false, '!LeftFirst: "1" is not less than 0n');
 
-		st.equal(AbstractRelationalComparison($BigInt(0), 1, true), true, 'LeftFirst: 0n is less than 1');
-		st.equal(AbstractRelationalComparison(1, $BigInt(0), true), false, 'LeftFirst: 1 is not less than 0n');
-		st.equal(AbstractRelationalComparison($BigInt(0), 1, false), true, '!LeftFirst: 0n is less than 1');
-		st.equal(AbstractRelationalComparison(1, $BigInt(0), false), false, '!LeftFirst: 1 is not less than 0n');
+		st.equal(AbstractRelationalComparison(BigInt(0), 1, true), true, 'LeftFirst: 0n is less than 1');
+		st.equal(AbstractRelationalComparison(1, BigInt(0), true), false, 'LeftFirst: 1 is not less than 0n');
+		st.equal(AbstractRelationalComparison(BigInt(0), 1, false), true, '!LeftFirst: 0n is less than 1');
+		st.equal(AbstractRelationalComparison(1, BigInt(0), false), false, '!LeftFirst: 1 is not less than 0n');
 
-		st.equal(AbstractRelationalComparison($BigInt(0), $BigInt(1), true), true, 'LeftFirst: 0n is less than 1n');
-		st.equal(AbstractRelationalComparison($BigInt(1), $BigInt(0), true), false, 'LeftFirst: 1n is not less than 0n');
-		st.equal(AbstractRelationalComparison($BigInt(0), $BigInt(1), false), true, '!LeftFirst: 0n is less than 1n');
-		st.equal(AbstractRelationalComparison($BigInt(1), $BigInt(0), false), false, '!LeftFirst: 1n is not less than 0n');
+		st.equal(AbstractRelationalComparison(BigInt(0), BigInt(1), true), true, 'LeftFirst: 0n is less than 1n');
+		st.equal(AbstractRelationalComparison(BigInt(1), BigInt(0), true), false, 'LeftFirst: 1n is not less than 0n');
+		st.equal(AbstractRelationalComparison(BigInt(0), BigInt(1), false), true, '!LeftFirst: 0n is less than 1n');
+		st.equal(AbstractRelationalComparison(BigInt(1), BigInt(0), false), false, '!LeftFirst: 1n is not less than 0n');
 
-		st.equal(AbstractRelationalComparison($BigInt(0), 'NaN', true), undefined, 'LeftFirst: 0n and "NaN" produce `undefined`');
-		st.equal(AbstractRelationalComparison('NaN', $BigInt(0), true), undefined, 'LeftFirst: "NaN" and 0n produce `undefined`');
-		st.equal(AbstractRelationalComparison($BigInt(0), 'NaN', false), undefined, '!LeftFirst: 0n and "NaN" produce `undefined`');
-		st.equal(AbstractRelationalComparison('NaN', $BigInt(0), false), undefined, '!LeftFirst: "NaN" and 0n produce `undefined`');
+		st.equal(AbstractRelationalComparison(BigInt(0), 'NaN', true), undefined, 'LeftFirst: 0n and "NaN" produce `undefined`');
+		st.equal(AbstractRelationalComparison('NaN', BigInt(0), true), undefined, 'LeftFirst: "NaN" and 0n produce `undefined`');
+		st.equal(AbstractRelationalComparison(BigInt(0), 'NaN', false), undefined, '!LeftFirst: 0n and "NaN" produce `undefined`');
+		st.equal(AbstractRelationalComparison('NaN', BigInt(0), false), undefined, '!LeftFirst: "NaN" and 0n produce `undefined`');
 
-		st.equal(AbstractRelationalComparison($BigInt(0), NaN, true), undefined, 'LeftFirst: 0n and NaN produce `undefined`');
-		st.equal(AbstractRelationalComparison(NaN, $BigInt(0), true), undefined, 'LeftFirst: NaN and 0n produce `undefined`');
-		st.equal(AbstractRelationalComparison($BigInt(0), NaN, false), undefined, '!LeftFirst: 0n and NaN produce `undefined`');
-		st.equal(AbstractRelationalComparison(NaN, $BigInt(0), false), undefined, '!LeftFirst: NaN and 0n produce `undefined`');
+		st.equal(AbstractRelationalComparison(BigInt(0), NaN, true), undefined, 'LeftFirst: 0n and NaN produce `undefined`');
+		st.equal(AbstractRelationalComparison(NaN, BigInt(0), true), undefined, 'LeftFirst: NaN and 0n produce `undefined`');
+		st.equal(AbstractRelationalComparison(BigInt(0), NaN, false), undefined, '!LeftFirst: 0n and NaN produce `undefined`');
+		st.equal(AbstractRelationalComparison(NaN, BigInt(0), false), undefined, '!LeftFirst: NaN and 0n produce `undefined`');
 
-		st.equal(AbstractRelationalComparison($BigInt(0), Infinity, true), true, 'LeftFirst: 0n is less than Infinity');
-		st.equal(AbstractRelationalComparison(Infinity, $BigInt(0), true), false, 'LeftFirst: Infinity is not less than 0n');
-		st.equal(AbstractRelationalComparison($BigInt(0), Infinity, false), true, '!LeftFirst: 0n is less than Infinity');
-		st.equal(AbstractRelationalComparison(Infinity, $BigInt(0), false), false, '!LeftFirst: Infinity is not less than 0n');
+		st.equal(AbstractRelationalComparison(BigInt(0), Infinity, true), true, 'LeftFirst: 0n is less than Infinity');
+		st.equal(AbstractRelationalComparison(Infinity, BigInt(0), true), false, 'LeftFirst: Infinity is not less than 0n');
+		st.equal(AbstractRelationalComparison(BigInt(0), Infinity, false), true, '!LeftFirst: 0n is less than Infinity');
+		st.equal(AbstractRelationalComparison(Infinity, BigInt(0), false), false, '!LeftFirst: Infinity is not less than 0n');
 
-		st.equal(AbstractRelationalComparison($BigInt(0), -Infinity, true), false, 'LeftFirst: 0n is not less than -Infinity');
-		st.equal(AbstractRelationalComparison(-Infinity, $BigInt(0), true), true, 'LeftFirst: -Infinity is less than 0n');
-		st.equal(AbstractRelationalComparison($BigInt(0), -Infinity, false), false, '!LeftFirst: 0n is not less than -Infinity');
-		st.equal(AbstractRelationalComparison(-Infinity, $BigInt(0), false), true, '!LeftFirst: -Infinity is less than 0n');
+		st.equal(AbstractRelationalComparison(BigInt(0), -Infinity, true), false, 'LeftFirst: 0n is not less than -Infinity');
+		st.equal(AbstractRelationalComparison(-Infinity, BigInt(0), true), true, 'LeftFirst: -Infinity is less than 0n');
+		st.equal(AbstractRelationalComparison(BigInt(0), -Infinity, false), false, '!LeftFirst: 0n is not less than -Infinity');
+		st.equal(AbstractRelationalComparison(-Infinity, BigInt(0), false), true, '!LeftFirst: -Infinity is less than 0n');
 
 		st.end();
 	});

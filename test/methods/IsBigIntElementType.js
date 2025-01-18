@@ -5,13 +5,13 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'IsBigIntElementType'>} */
 module.exports = function (t, year, IsBigIntElementType) {
 	t.ok(year >= 2020, 'ES2020+');
 
-	forEach(esV.bigIntTypes, function (type) {
-		if (year >= 2024) {
-			type = type.toUpperCase(); // eslint-disable-line no-param-reassign
-		}
+	forEach(esV.bigIntTypes, function (lowerType) {
+		var type = year >= 2024 ? /** @type {Uppercase<typeof lowerType>} */ (lowerType.toUpperCase()) : lowerType;
+
 		t.equal(
 			IsBigIntElementType(type),
 			true,
@@ -19,10 +19,9 @@ module.exports = function (t, year, IsBigIntElementType) {
 		);
 	});
 
-	forEach(esV.numberTypes, function (type) {
-		if (year >= 2024) {
-			type = type.toUpperCase(); // eslint-disable-line no-param-reassign
-		}
+	forEach(esV.numberTypes, function (lowerType) {
+		var type = year >= 2024 ? /** @type {Uppercase<typeof lowerType>} */ (lowerType.toUpperCase()) : lowerType;
+
 		t.equal(
 			IsBigIntElementType(type),
 			false,

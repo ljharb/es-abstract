@@ -5,6 +5,7 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'IsArray'>} */
 module.exports = function (t, year, IsArray) {
 	t.ok(year >= 2015, 'ES2015+');
 

@@ -1,5 +1,6 @@
 'use strict';
 
+/** @type {import('../testHelpers').MethodTest<'MonthFromTime'>} */
 module.exports = function (t, year, MonthFromTime) {
 	t.ok(year >= 5, 'ES5+');
 

@@ -68,7 +68,6 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value, 
 
 	// 4. Let block be arrayBuffer’s [[ArrayBufferData]] internal slot.
 
-	// eslint-disable-next-line no-extra-parens
 	var elementSize = tableTAO.size[/** @type {`$${typeof type}`} */ ('$' + type)]; // step 7
 
 	// 6. If isLittleEndian is not present, set isLittleEndian to either true or false. The choice is implementation dependent and should be the alternative that is most efficient for the implementation. An implementation must use the same value each time this step is executed and the same value must be used for the corresponding step in the GetValueFromBuffer abstract operation.

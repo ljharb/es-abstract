@@ -7,16 +7,21 @@ var v = require('es-value-fixtures');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'WordCharacters'>} */
 module.exports = function (t, year, actual) {
 	t.ok(year >= 2017, 'ES2017+');
 
-	var WordCharacters = year >= 2023 ? actual : function WordCharacters(rer) {
-		return actual(rer['[[IgnoreCase]]'], rer['[[Unicode]]']);
-	};
+	/** @type {import('../testHelpers').AOOnlyYears<'WordCharacters', 2023 | 2024>} */
+	var WordCharacters = year >= 2023
+		? /** @type {import('../testHelpers').AOOnlyYears<'WordCharacters', 2023 | 2024>} */ (actual)
+		: function WordCharacters(rer) {
+			return /** @type {import('../testHelpers').AOOnlyYears<'WordCharacters', Exclude<import('../testHelpers').TestYear, 2023 | 2024>>} */ (actual)(rer['[[IgnoreCase]]'], rer['[[Unicode]]']);
+		};
 
 	if (year >= 2023) {
 		forEach(esV.unknowns, function (nonRER) {
 			t['throws'](
+				// @ts-expect-error
 				function () { WordCharacters(nonRER); },
 				TypeError,
 				debug(nonRER) + ' is not a RegularExpressionRecord'

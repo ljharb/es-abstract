@@ -2,6 +2,7 @@
 
 var v = require('es-value-fixtures');
 
+/** @type {import('../testHelpers').MethodTest<'IsCompatiblePropertyDescriptor'>} */
 module.exports = function (t, year, IsCompatiblePropertyDescriptor, extras) {
 	t.ok(year >= 2015, 'ES2015+');
 

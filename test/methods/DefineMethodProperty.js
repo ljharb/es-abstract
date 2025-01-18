@@ -7,6 +7,7 @@ var gOPD = require('gopd');
 
 var defineProperty = require('../helpers/defineProperty');
 
+/** @type {import('../testHelpers').MethodTest<'DefineMethodProperty'>} */
 module.exports = function (t, year, DefineMethodProperty) {
 	t.ok(year >= 2022, 'ES2022+');
 
@@ -15,6 +16,7 @@ module.exports = function (t, year, DefineMethodProperty) {
 
 	forEach(v.primitives, function (nonObject) {
 		t['throws'](
+			// @ts-expect-error
 			function () { DefineMethodProperty(nonObject, 'key', function () {}, enumerable); },
 			TypeError,
 			'O must be an Object; ' + debug(nonObject) + ' is not one'
@@ -23,6 +25,7 @@ module.exports = function (t, year, DefineMethodProperty) {
 
 	forEach(v.nonPropertyKeys, function (nonPropertyKey) {
 		t['throws'](
+			// @ts-expect-error
 			function () { DefineMethodProperty({}, nonPropertyKey, function () {}, enumerable); },
 			TypeError,
 			debug(nonPropertyKey) + ' is not a Property Key'
@@ -31,6 +34,7 @@ module.exports = function (t, year, DefineMethodProperty) {
 
 	forEach(v.nonFunctions, function (nonFunction) {
 		t['throws'](
+			// @ts-expect-error
 			function () { DefineMethodProperty({}, 'key', nonFunction, enumerable); },
 			TypeError,
 			debug(nonFunction) + ' is not a Function'
@@ -39,6 +43,7 @@ module.exports = function (t, year, DefineMethodProperty) {
 
 	forEach(v.nonBooleans, function (nonBoolean) {
 		t['throws'](
+			// @ts-expect-error
 			function () { DefineMethodProperty({}, 'key', function () {}, nonBoolean); },
 			TypeError,
 			debug(nonBoolean) + ' is not a Boolean'
@@ -59,6 +64,7 @@ module.exports = function (t, year, DefineMethodProperty) {
 	});
 
 	t.test('defining an enumerable method', function (st) {
+		/** @type {Record<string, unknown>} */
 		var obj = {};
 		var key = 'the key';
 		var value = function () {};
@@ -85,6 +91,7 @@ module.exports = function (t, year, DefineMethodProperty) {
 
 	// test defining a non-enumerable property when descriptors are supported
 	t.test('defining a non-enumerable method', { skip: !defineProperty || !gOPD }, function (st) {
+		/** @type {Record<string, unknown>} */
 		var obj = {};
 		var key = 'the key';
 		var value = function () {};
@@ -111,6 +118,7 @@ module.exports = function (t, year, DefineMethodProperty) {
 
 	// test defining over a nonconfigurable property when descriptors are supported (unless there's an ES3 builtin that's nonconfigurable)
 	t.test('defining over a nonconfigurable property', { skip: !defineProperty || !gOPD }, function (st) {
+		/** @type {Record<string, unknown>} */
 		var obj = {};
 		var key = 'the key';
 		defineProperty(obj, key, {

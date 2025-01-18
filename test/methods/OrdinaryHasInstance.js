@@ -4,6 +4,7 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'OrdinaryHasInstance'>} */
 module.exports = function (t, year, OrdinaryHasInstance) {
 	t.ok(year >= 2015, 'ES2015+');
 
@@ -15,9 +16,11 @@ module.exports = function (t, year, OrdinaryHasInstance) {
 		t.equal(OrdinaryHasInstance(function () {}, primitive), false, debug(primitive) + ' is not an object');
 	});
 
-	var C = function C() {};
+	/** @constructor */
+	function C() {}
 	var c = new C();
-	var D = function D() {};
+	/** @constructor */
+	function D() {}
 	t.equal(OrdinaryHasInstance(C, c), true, 'constructor function has an instance of itself');
 	t.equal(OrdinaryHasInstance(C, new D()), false, 'constructor/instance mismatch is false');
 	t.equal(OrdinaryHasInstance(D, c), false, 'instance/constructor mismatch is false');

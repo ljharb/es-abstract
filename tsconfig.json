@@ -1,11 +1,11 @@
 {
 	"extends": "@ljharb/tsconfig",
 	"compilerOptions": {
-		"target": "es2022",                               /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+		"target": "ESNext",
 		"typeRoots": [
 			"types",
 			"@node_modules/@types"
-		],                   				              /* Specify multiple folders that act like `./node_modules/@types`. */
+		],
 
 		"exactOptionalPropertyTypes": true,               /* Interpret optional property types as written, rather than adding 'undefined'. */
 		"noImplicitReturns": true,                        /* Enable error reporting for codepaths that do not explicitly return in a function. */

@@ -5,6 +5,7 @@ var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 var hasNamedCaptures = require('has-named-captures')();
 
+/** @type {import('../testHelpers').MethodTest<'GetSubstitution'>} */
 module.exports = function (t, year, actual) {
 	t.ok(year >= 2015, 'ES2015+');
 
@@ -112,6 +113,7 @@ module.exports = function (t, year, actual) {
 	);
 
 	for (var i = 0; i < 100; i += 1) {
+		/** @type {string[]} */
 		var captures = [];
 		captures[i] = 'test';
 		if (i > 0) {
@@ -168,12 +170,12 @@ module.exports = function (t, year, actual) {
 
 	if (year >= 2018) {
 		t.equal(
-			GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, 'a>$<foo><z'),
+			GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, 'a>$<foo><z'),
 			year < 2022 ? 'a>$<oo><z' : 'a>$<foo><z',
 			'works with the named capture regex without named captures'
 		);
 		t.equal(
-			GetSubstitution('abcdef', 'abcdefghi', 0, captures, undefined, 'a>$<foo>$<z'),
+			GetSubstitution('abcdef', 'abcdefghi', 0, [], undefined, 'a>$<foo>$<z'),
 			year < 2022 ? 'a>$<oo>$<' : 'a>$<foo>$<z',
 			'works with a mismatched $< without named captures'
 		);
@@ -186,25 +188,25 @@ module.exports = function (t, year, actual) {
 			};
 
 			st.equal(
-				GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, 'a>$<foo><z'),
+				GetSubstitution('abcdef', 'abcdefghi', 0, [], namedCaptures, 'a>$<foo><z'),
 				'a>foo!<z',
 				'supports named captures'
 			);
 
 			st.equal(
-				GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, 'a>$<foo>$z'),
+				GetSubstitution('abcdef', 'abcdefghi', 0, [], namedCaptures, 'a>$<foo>$z'),
 				'a>foo!$z',
 				'works with a $z'
 			);
 
 			st.equal(
-				GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, '$<foo'),
+				GetSubstitution('abcdef', 'abcdefghi', 0, [], namedCaptures, '$<foo'),
 				'$<foo',
 				'supports named captures with a mismatched <'
 			);
 
 			st.equal(
-				GetSubstitution('abcdef', 'abcdefghi', 0, captures, namedCaptures, 'a>$<bar><z'),
+				GetSubstitution('abcdef', 'abcdefghi', 0, [], namedCaptures, 'a>$<bar><z'),
 				'a><z',
 				'supports named captures with a missing namedCapture'
 			);

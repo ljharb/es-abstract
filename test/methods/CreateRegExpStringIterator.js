@@ -11,11 +11,13 @@ var esV = require('../helpers/v');
 var kludgeMatch = require('../helpers/kludgeMatch');
 var testRESIterator = require('../helpers/testRESIterator');
 
+/** @type {import('../testHelpers').MethodTest<'CreateRegExpStringIterator'>} */
 module.exports = function (t, year, CreateRegExpStringIterator) {
 	t.ok(year >= 2020, 'ES2020+');
 
 	forEach(v.nonStrings, function (nonString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { CreateRegExpStringIterator({}, nonString, false, false); },
 			TypeError,
 			debug(nonString) + ' is not a String'
@@ -24,12 +26,14 @@ module.exports = function (t, year, CreateRegExpStringIterator) {
 
 	forEach(v.nonBooleans, function (nonBoolean) {
 		t['throws'](
+			// @ts-expect-error
 			function () { CreateRegExpStringIterator({}, '', nonBoolean, false); },
 			TypeError,
 			debug(nonBoolean) + ' is not a String (`global`)'
 		);
 
 		t['throws'](
+			// @ts-expect-error
 			function () { CreateRegExpStringIterator({}, '', false, nonBoolean); },
 			TypeError,
 			debug(nonBoolean) + ' is not a String (`fullUnicode`)'

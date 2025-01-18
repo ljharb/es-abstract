@@ -8,10 +8,12 @@ var testIterator = require('../helpers/testIterator');
 var testAsyncIterator = require('../helpers/testAsyncIterator');
 var makeIteratorRecord = require('../helpers/makeIteratorRecord');
 
+/** @type {import('../testHelpers').MethodTest<'GetIterator'>} */
 module.exports = function (t, year, actual) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	var arr = [1, 2];
+	/** @type {<T>(result: Iterator<T> | import('../../types').IteratorRecord<T>) => Iterator<T>} */
 	var unwrap = function (result) {
 		return year >= 2023 ? result['[[Iterator]]'] : result;
 	};
@@ -22,8 +24,8 @@ module.exports = function (t, year, actual) {
 		return actual(obj);
 	};
 
-	var hintS = year < 2024 ? 'sync' : 'SYNC';
-	var hintA = year < 2024 ? 'async' : 'ASYNC';
+	var hintS = year < 2024 ? /** @type {const} */ ('sync') : /** @type {const} */ ('SYNC');
+	var hintA = year < 2024 ? /** @type {const} */ ('async') : /** @type {const} */ ('ASYNC');
 
 	testIterator(t, unwrap(GetIterator(arr, hintS)), arr);
 
@@ -42,6 +44,7 @@ module.exports = function (t, year, actual) {
 	});
 
 	var i = 0;
+	/** @type {<T>(this: unknown) => Iterator<T>} */
 	var manualMethod = function () {
 		t.equal(this, sentinel, 'receiver is expected object');
 		return {

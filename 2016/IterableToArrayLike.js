@@ -16,7 +16,7 @@ var ES = {
 
 // https://262.ecma-international.org/7.0/#sec-iterabletoarraylike
 
-/** @type {<T>(items: Iterable<T> | T[]) => T[]} */
+/** @type {<T>(items: Partial<Iterable<T>> | T[]) => T[]} */
 module.exports = function IterableToArrayLike(items) {
 	/** @typedef {import('../types').InferIterableType<typeof items>} T */
 	var usingIterator = getIteratorMethod(ES, items);

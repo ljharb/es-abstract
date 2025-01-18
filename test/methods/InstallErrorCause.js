@@ -4,17 +4,20 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'InstallErrorCause'>} */
 module.exports = function (t, year, InstallErrorCause) {
 	t.ok(year >= 2022, 'ES2022+');
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { InstallErrorCause(primitive); },
 			TypeError,
 			'O must be an Object; ' + debug(primitive) + ' is not one'
 		);
 	});
 
+	/** @type {Record<PropertyKey, unknown>} */
 	var obj = {};
 	InstallErrorCause(obj);
 	t.notOk(
@@ -35,6 +38,7 @@ module.exports = function (t, year, InstallErrorCause) {
 	);
 	t.equal(obj.cause, undefined, 'obj.cause is `undefined`');
 
+	/** @type {Record<PropertyKey, unknown>} */
 	var obj2 = {};
 	InstallErrorCause(obj2, { cause: obj });
 	t.ok(

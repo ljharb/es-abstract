@@ -5,6 +5,7 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'MakeTime'>} */
 module.exports = function (t, year, MakeTime) {
 	t.ok(year >= 5, 'ES5+');
 

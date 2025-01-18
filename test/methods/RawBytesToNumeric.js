@@ -9,11 +9,13 @@ var bufferTestCases = require('../bufferTestCases.json');
 var esV = require('../helpers/v');
 var unserialize = require('../helpers/unserializeNumeric');
 
+/** @type {import('../testHelpers').MethodTest<'RawBytesToNumeric' | 'RawBytesToNumber'>} */
 module.exports = function (t, year, RawBytesToNumeric) {
 	t.ok(year >= 2017, 'ES2017+');
 
 	forEach(esV.nonTATypes, function (nonTAType) {
 		t['throws'](
+			// @ts-expect-error
 			function () { RawBytesToNumeric(nonTAType, [], false); },
 			TypeError,
 			debug(nonTAType) + ' is not a String, or not a TypedArray type'
@@ -22,6 +24,7 @@ module.exports = function (t, year, RawBytesToNumeric) {
 
 	forEach(esV.unknowns, function (nonArray) {
 		t['throws'](
+			// @ts-expect-error
 			function () { RawBytesToNumeric(year >= 2024 ? 'INT8' : 'Int8', nonArray, false); },
 			TypeError,
 			debug(nonArray) + ' is not an Array'
@@ -29,6 +32,7 @@ module.exports = function (t, year, RawBytesToNumeric) {
 	});
 	forEach([-1, 1.5, 256], function (nonByte) {
 		t['throws'](
+			// @ts-expect-error
 			function () { RawBytesToNumeric(year >= 2024 ? 'INT8' : 'Int8', [nonByte], false); },
 			TypeError,
 			debug(nonByte) + ' is not a valid "byte"'
@@ -37,6 +41,7 @@ module.exports = function (t, year, RawBytesToNumeric) {
 
 	forEach(v.nonBooleans, function (nonBoolean) {
 		t['throws'](
+			// @ts-expect-error
 			function () { RawBytesToNumeric(year >= 2024 ? 'INT8' : 'Int8', [0], nonBoolean); },
 			TypeError,
 			debug(nonBoolean) + ' is not a Boolean'
@@ -51,9 +56,10 @@ module.exports = function (t, year, RawBytesToNumeric) {
 				var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 
 				var littleLittle = unserialize(result.setAsLittle.asLittle);
+				var actualType = year >= 2024 ? /** @type {Uppercase<typeof type>} */ (type.toUpperCase()) : type;
 				try {
 					st.equal(
-						RawBytesToNumeric(year >= 2024 ? type.toUpperCase() : type, result.setAsLittle.bytes, true),
+						RawBytesToNumeric(actualType, result.setAsLittle.bytes, true),
 						littleLittle,
 						type + ', little-endian: bytes (' + debug(result.setAsLittle.bytes) + ') for ' + debug(littleLittle) + ' produces it'
 					);
@@ -66,7 +72,7 @@ module.exports = function (t, year, RawBytesToNumeric) {
 				if (hasBigEndian) {
 					var bigBig = unserialize(result.setAsBig.asBig);
 					st.equal(
-						RawBytesToNumeric(year >= 2024 ? type.toUpperCase() : type, result.setAsBig.bytes, false),
+						RawBytesToNumeric(actualType, result.setAsBig.bytes, false),
 						bigBig,
 						type + ', big-endian: bytes (' + debug(result.setAsBig.bytes) + ') for ' + debug(bigBig) + ' produces it'
 					);
@@ -205,14 +211,15 @@ module.exports = function (t, year, RawBytesToNumeric) {
 	});
 
 	if (year >= 2020) {
+		var RawBytesToNumeric2020 = /** @type {import('../testHelpers').AOOnlyYears<'RawBytesToNumeric', 2020 | 2021 | 2022 | 2023 | 2024>} */ (RawBytesToNumeric);
 		t.test('bigint types, no bigints', { skip: esV.hasBigInts }, function (st) {
 			st['throws'](
-				function () { RawBytesToNumeric(year >= 2024 ? 'BIGINT64' : 'BigInt64', [0, 0, 0, 0, 0, 0, 0, 0], false); },
+				function () { RawBytesToNumeric2020(year >= 2024 ? 'BIGINT64' : 'BigInt64', [0, 0, 0, 0, 0, 0, 0, 0], false); },
 				SyntaxError,
 				'BigInt64 throws a SyntaxError when BigInt is not available'
 			);
 			st['throws'](
-				function () { RawBytesToNumeric(year >= 2024 ? 'BIGUINT64' : 'BigUint64', [0, 0, 0, 0, 0, 0, 0, 0], false); },
+				function () { RawBytesToNumeric2020(year >= 2024 ? 'BIGUINT64' : 'BigUint64', [0, 0, 0, 0, 0, 0, 0, 0], false); },
 				SyntaxError,
 				'BigUint64 throws a SyntaxError when BigInt is not available'
 			);

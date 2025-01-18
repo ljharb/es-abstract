@@ -4,6 +4,7 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var MAX_SAFE_INTEGER = require('math-intrinsics/constants/maxSafeInteger');
 
+/** @type {import('../testHelpers').MethodTest<'ToLength'>} */
 module.exports = function (t, year, ToLength) {
 	t.ok(year >= 2015, 'ES2015+');
 

@@ -6,11 +6,13 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'GetStringIndex'>} */
 module.exports = function (t, year, GetStringIndex) {
 	t.ok(year >= 2022, 'ES2022+');
 
 	forEach(v.nonStrings, function (notString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { return GetStringIndex(notString); },
 			TypeError,
 			'`S`: ' + debug(notString) + ' is not a string'

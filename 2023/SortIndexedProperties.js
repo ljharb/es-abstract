@@ -15,7 +15,7 @@ var $sort = callBound('Array.prototype.sort');
 
 // https://262.ecma-international.org/14.0/#sec-sortindexedproperties
 
-/** @type {<V>(obj: ArrayLike<V>, len: import('../types').nonNegativeInteger, SortCompare: (a: unknown, b: unknown) => number, holes: 'skip-holes' | 'read-through-holes') => ArrayLike<V>} */
+/** @type {<V>(obj: import('../types').PartialBy<ArrayLike<V>, 'length'>, len: import('../types').nonNegativeInteger, SortCompare: (a: any, b: any) => number, holes: 'skip-holes' | 'read-through-holes') => V[]} */
 module.exports = function SortIndexedProperties(obj, len, SortCompare, holes) {
 	if (!isObject(obj)) {
 		throw new $TypeError('Assertion failed: Type(obj) is not Object');

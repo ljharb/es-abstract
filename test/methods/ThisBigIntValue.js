@@ -6,6 +6,7 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'ThisBigIntValue' | 'thisBigIntValue'>} */
 module.exports = function (t, year, ThisBigIntValue) {
 	t.ok(year >= 2020, 'ES2020+');
 
@@ -18,6 +19,7 @@ module.exports = function (t, year, ThisBigIntValue) {
 
 	forEach(v.nonBigInts, function (nonBigInt) {
 		t['throws'](
+			// @ts-expect-error
 			function () { ThisBigIntValue(nonBigInt); },
 			esV.hasBigInts ? TypeError : SyntaxError,
 			debug(nonBigInt) + ' is not a BigInt'

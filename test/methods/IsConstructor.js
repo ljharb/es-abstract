@@ -4,6 +4,7 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var hasOwn = require('hasown');
 
+/** @type {import('../testHelpers').MethodTest<'IsConstructor'>} */
 module.exports = function (t, year, IsConstructor) {
 	t.ok(year >= 2015, 'ES2015+');
 

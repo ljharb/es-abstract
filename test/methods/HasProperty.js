@@ -4,11 +4,13 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'HasProperty'>} */
 module.exports = function (t, year, HasProperty) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { HasProperty(primitive, 'key'); },
 			TypeError,
 			debug(primitive) + ' is not an Object'
@@ -17,6 +19,7 @@ module.exports = function (t, year, HasProperty) {
 
 	forEach(v.nonPropertyKeys, function (nonKey) {
 		t['throws'](
+			// @ts-expect-error
 			function () { HasProperty({}, nonKey); },
 			TypeError,
 			debug(nonKey) + ' is not a Property Key'

@@ -8,6 +8,7 @@ var defineProperty = require('es-define-property');
 
 var $defineProperty = require('../helpers/defineProperty');
 
+/** @type {import('../testHelpers').MethodTest<'ValidateAndApplyPropertyDescriptor'>} */
 module.exports = function (t, year, ValidateAndApplyPropertyDescriptor, extras) {
 	t.ok(year >= 2015, 'ES2015+');
 
@@ -15,6 +16,7 @@ module.exports = function (t, year, ValidateAndApplyPropertyDescriptor, extras) 
 
 	forEach(v.nonUndefinedPrimitives, function (nonUndefinedPrimitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { ValidateAndApplyPropertyDescriptor(nonUndefinedPrimitive, '', false, v.genericDescriptor(), v.genericDescriptor()); },
 			TypeError,
 			'O: ' + debug(nonUndefinedPrimitive) + ' is not undefined or an Object'
@@ -27,6 +29,7 @@ module.exports = function (t, year, ValidateAndApplyPropertyDescriptor, extras) 
 				return ValidateAndApplyPropertyDescriptor(
 					undefined,
 					'',
+					// @ts-expect-error
 					nonBoolean,
 					v.genericDescriptor(),
 					v.genericDescriptor()
@@ -45,6 +48,7 @@ module.exports = function (t, year, ValidateAndApplyPropertyDescriptor, extras) 
 					undefined,
 					'',
 					false,
+					// @ts-expect-error
 					primitive,
 					v.genericDescriptor()
 				);
@@ -63,6 +67,7 @@ module.exports = function (t, year, ValidateAndApplyPropertyDescriptor, extras) 
 					'',
 					false,
 					v.genericDescriptor(),
+					// @ts-expect-error
 					primitive
 				);
 			},
@@ -75,6 +80,7 @@ module.exports = function (t, year, ValidateAndApplyPropertyDescriptor, extras) 
 		// if O is an object, P must be a property key
 		t['throws'](
 			function () {
+				// @ts-expect-error
 				return ValidateAndApplyPropertyDescriptor(
 					{},
 					nonPropertyKey,
@@ -92,8 +98,7 @@ module.exports = function (t, year, ValidateAndApplyPropertyDescriptor, extras) 
 		var propertyKey = 'howdy';
 
 		st.test('generic descriptor', { skip: !$defineProperty }, function (s2t) {
-			var generic = v.genericDescriptor();
-			generic['[[Enumerable]]'] = true;
+			var generic = v.descriptors.configurable(v.descriptors.enumerable());
 			var O = {};
 			ValidateAndApplyPropertyDescriptor(undefined, propertyKey, true, generic);
 			s2t.equal(
@@ -107,6 +112,7 @@ module.exports = function (t, year, ValidateAndApplyPropertyDescriptor, extras) 
 				true,
 				'operation is successful'
 			);
+			/** @type {Record<PropertyKey, unknown>} */
 			var expected = {};
 			expected[propertyKey] = generic['[[Value]]'];
 			s2t.deepEqual(O, expected, 'generic descriptor has been defined as an own data property');
@@ -137,6 +143,7 @@ module.exports = function (t, year, ValidateAndApplyPropertyDescriptor, extras) 
 				true,
 				'operation is successful'
 			);
+			/** @type {Record<PropertyKey, unknown>} */
 			var expected = {};
 			expected[propertyKey] = data['[[Value]]'];
 			s2t.deepEqual(O, expected, 'data descriptor has been defined as an own data property');
@@ -164,6 +171,7 @@ module.exports = function (t, year, ValidateAndApplyPropertyDescriptor, extras) 
 				true,
 				'operation is successful'
 			);
+			/** @type {Record<PropertyKey, unknown>} */
 			var expected = {};
 			expected[propertyKey] = accessor['[[Get]]']() + 1;
 			s2t.deepEqual(O, expected, 'accessor descriptor has been defined as an own accessor property');

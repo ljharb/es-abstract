@@ -7,14 +7,17 @@ var v = require('es-value-fixtures');
 var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'ValidateAtomicAccessOnIntegerTypedArray'>} */
 module.exports = function (t, year, ValidateAtomicAccessOnIntegerTypedArray) {
 	t.ok(year >= 2024, 'ES2024+');
 
-	forEach([].concat(
+	forEach(/** @type {unknown[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		esV.unknowns,
 		[[]]
-	), function (nonTA) {
+	)), function (nonTA) {
 		t['throws'](
+			// @ts-expect-error
 			function () { ValidateAtomicAccessOnIntegerTypedArray(nonTA, 0); },
 			TypeError,
 			debug(nonTA) + ' is not a TypedArray'
@@ -57,7 +60,7 @@ module.exports = function (t, year, ValidateAtomicAccessOnIntegerTypedArray) {
 					'a requestIndex > length throws'
 				);
 
-				var elementSize = esV.elementSizes['$' + TypedArray];
+				var elementSize = esV.elementSizes[/** @type {`$${typeof TypedArray}`} */ ('$' + TypedArray)];
 
 				st.equal(ValidateAtomicAccessOnIntegerTypedArray(ta, 0), elementSize * 0, TypedArray + ': requestIndex of 0 gives 0');
 				st.equal(ValidateAtomicAccessOnIntegerTypedArray(ta, 1), elementSize * 1, TypedArray + ': requestIndex of 1 gives ' + (elementSize * 1));
@@ -70,6 +73,7 @@ module.exports = function (t, year, ValidateAtomicAccessOnIntegerTypedArray) {
 
 				forEach(v.nonBooleans, function (nonBoolean) {
 					st['throws'](
+						// @ts-expect-error
 						function () { ValidateAtomicAccessOnIntegerTypedArray(ta, 0, nonBoolean); },
 						TypeError,
 						debug(nonBoolean) + ' is not a Boolean'

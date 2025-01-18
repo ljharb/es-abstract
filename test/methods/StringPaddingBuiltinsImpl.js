@@ -1,9 +1,11 @@
 'use strict';
 
+/** @type {import('../testHelpers').MethodTest<'StringPaddingBuiltinsImpl'>} */
 module.exports = function (t, year, StringPaddingBuiltinsImpl) {
 	t.ok(year >= 2024, 'ES2024+');
 
 	t['throws'](
+		// @ts-expect-error
 		function () { StringPaddingBuiltinsImpl('', 0, '', 'not start or end'); },
 		TypeError,
 		'`placement` must be ~START~ or ~END~'

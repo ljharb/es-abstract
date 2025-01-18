@@ -2,6 +2,7 @@
 
 var v = require('es-value-fixtures');
 
+/** @type {import('../testHelpers').MethodTest<'max'>} */
 module.exports = function (t, year, max) {
 	t.ok(year >= 2015, 'ES2015+');
 

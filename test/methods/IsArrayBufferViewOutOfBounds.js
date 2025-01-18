@@ -6,6 +6,7 @@ var debug = require('object-inspect');
 var esV = require('../helpers/v');
 var getTypedArrays = require('../helpers/typedArrays');
 
+/** @type {import('../testHelpers').MethodTest<'IsArrayBufferViewOutOfBounds'>} */
 module.exports = function (t, year, IsArrayBufferViewOutOfBounds, extras) {
 	t.ok(year >= 2024, 'ES2024+');
 
@@ -13,6 +14,7 @@ module.exports = function (t, year, IsArrayBufferViewOutOfBounds, extras) {
 
 	forEach(esV.unknowns, function (nonABV) {
 		t['throws'](
+			// @ts-expect-error
 			function () { IsArrayBufferViewOutOfBounds(nonABV); },
 			TypeError,
 			debug(nonABV) + ' is not a Typed Array or DataView'

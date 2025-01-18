@@ -9,11 +9,13 @@ var v = require('es-value-fixtures');
 // in node < 6, RegExp.prototype is an actual regex
 var reProtoIsRegex = isRegex(RegExp.prototype);
 
+/** @type {import('../testHelpers').MethodTest<'RegExpHasFlag'>} */
 module.exports = function (t, year, RegExpHasFlag) {
 	t.ok(year >= 2022, 'ES2022+');
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { RegExpHasFlag(primitive, 'x'); },
 			TypeError,
 			'R must be an Object; ' + debug(primitive) + ' is not one'
@@ -22,6 +24,7 @@ module.exports = function (t, year, RegExpHasFlag) {
 
 	forEach(v.nonStrings, function (nonString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { return RegExpHasFlag({}, nonString); },
 			TypeError,
 			debug(nonString) + ' is not a string'
@@ -35,6 +38,7 @@ module.exports = function (t, year, RegExpHasFlag) {
 	);
 
 	t['throws'](
+		// @ts-expect-error
 		function () { return RegExpHasFlag({}, 'x'); },
 		TypeError,
 		'non-RegExp object throws TypeError'

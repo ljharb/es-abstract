@@ -19,9 +19,9 @@ var ES = {
 
 // https://262.ecma-international.org/6.0/#sec-getiterator
 
-/** @type {<T>(obj: Iterable<T>, method?: (this: Iterable<T>) => Iterator<T>) => Iterator<T>} */
+/** @type {<T>(obj: Partial<Iterable<T>>, method?: (this: Iterable<T>) => Iterator<T>) => Iterator<T>} */
 module.exports = function GetIterator(obj, method) {
-	/** @typedef {import('../types').InferIterableType<typeof obj>} T */
+	/** @typedef {import('../types').InferIterableType<Required<typeof obj>>} T */
 
 	var actualMethod = method;
 	if (arguments.length < 2) {

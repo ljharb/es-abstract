@@ -7,6 +7,7 @@ var safeBigInt = require('safe-bigint');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'StringToBigInt'>} */
 module.exports = function (t, year, StringToBigInt) {
 	t.ok(year >= 2020, 'ES2020+');
 
@@ -20,7 +21,7 @@ module.exports = function (t, year, StringToBigInt) {
 		});
 
 		forEach(v.integerNumbers, function (int) {
-			var bigint = safeBigInt(int);
+			var bigint = /** @type {NonNullable<typeof safeBigInt>} */ (safeBigInt)(int);
 			st.equal(
 				StringToBigInt(String(int)),
 				bigint,
@@ -56,6 +57,7 @@ module.exports = function (t, year, StringToBigInt) {
 
 	forEach(v.nonStrings, function (nonString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { StringToBigInt(nonString); },
 			TypeError,
 			debug(nonString) + ' is not a string'

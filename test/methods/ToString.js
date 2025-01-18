@@ -6,6 +6,7 @@ var v = require('es-value-fixtures');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'ToString'>} */
 module.exports = function (t, year, ToString) {
 	t.ok(year >= 5, 'ES5+');
 

@@ -2,6 +2,7 @@
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'UTF16SurrogatePairToCodePoint'>} */
 module.exports = function (t, year, UTF16SurrogatePairToCodePoint) {
 	t.ok(year >= 2016, 'ES2016+');
 

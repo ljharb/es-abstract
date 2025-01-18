@@ -5,6 +5,7 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'GetViewByteLength'>} */
 module.exports = function (t, year, GetViewByteLength, extras) {
 	t.ok(year >= 2024, 'ES2024+');
 
@@ -13,6 +14,7 @@ module.exports = function (t, year, GetViewByteLength, extras) {
 
 	forEach(esV.unknowns, function (nonDVWBWRecord) {
 		t['throws'](
+			// @ts-expect-error
 			function () { GetViewByteLength(nonDVWBWRecord); },
 			TypeError,
 			debug(nonDVWBWRecord) + ' is not a Data View With Buffer Witness Record'

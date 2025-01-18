@@ -4,6 +4,7 @@ var forEach = require('for-each');
 var debug = require('object-inspect');
 var MAX_VALUE = require('math-intrinsics/constants/maxValue');
 
+/** @type {import('../testHelpers').MethodTest<'MakeDay'>} */
 module.exports = function (t, year, MakeDay) {
 	t.ok(year >= 5, 'ES5+');
 

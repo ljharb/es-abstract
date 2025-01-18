@@ -10,11 +10,13 @@ var hasOwn = require('hasown');
 var getInferredName = require('../../helpers/getInferredName');
 var getNamelessFunction = require('../helpers/getNamelessFunction');
 
+/** @type {import('../testHelpers').MethodTest<'SetFunctionName'>} */
 module.exports = function (t, year, SetFunctionName) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.nonFunctions, function (nonFunction) {
 		t['throws'](
+			// @ts-expect-error
 			function () { SetFunctionName(nonFunction, ''); },
 			TypeError,
 			debug(nonFunction) + ' is not a Function'
@@ -43,6 +45,7 @@ module.exports = function (t, year, SetFunctionName) {
 
 	forEach(v.nonPropertyKeys, function (nonPropertyKey) {
 		t['throws'](
+			// @ts-expect-error
 			function () { SetFunctionName(getNamelessFunction(), nonPropertyKey); },
 			TypeError,
 			debug(nonPropertyKey) + ' is not a Symbol or String'
@@ -50,14 +53,15 @@ module.exports = function (t, year, SetFunctionName) {
 	});
 
 	t.test('symbols', { skip: !v.hasSymbols || hasOwn(getNamelessFunction(), 'name') }, function (st) {
-		var pairs = [
+		var pairs = /** @type {const} */ ([
 			[Symbol(), ''],
 			[Symbol(undefined), ''],
+			// @ts-expect-error
 			[Symbol(null), '[null]'],
 			[Symbol(''), getInferredName ? '[]' : ''],
 			[Symbol.iterator, '[Symbol.iterator]'],
 			[Symbol('foo'), '[foo]']
-		];
+		]);
 		forEach(pairs, function (pair) {
 			var sym = pair[0];
 			var desc = pair[1];

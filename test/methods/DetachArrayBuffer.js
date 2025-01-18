@@ -5,11 +5,13 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'DetachArrayBuffer'>} */
 module.exports = function (t, year, DetachArrayBuffer) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(esV.unknowns, function (nonArrayBuffer) {
 		t['throws'](
+			// @ts-expect-error
 			function () { DetachArrayBuffer(nonArrayBuffer); },
 			TypeError,
 			debug(nonArrayBuffer) + ' is not an ArrayBuffer'
@@ -78,6 +80,7 @@ module.exports = function (t, year, DetachArrayBuffer) {
 
 			forEach(sabs, function (sab) {
 				st['throws'](
+					// @ts-expect-error
 					function () { DetachArrayBuffer(sab); },
 					TypeError,
 					debug(sab) + ' is a SharedArrayBuffer'

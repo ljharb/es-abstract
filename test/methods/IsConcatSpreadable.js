@@ -4,6 +4,7 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'IsConcatSpreadable'>} */
 module.exports = function (t, year, IsConcatSpreadable) {
 	t.ok(year >= 2015, 'ES2015+');
 
@@ -14,6 +15,7 @@ module.exports = function (t, year, IsConcatSpreadable) {
 	var hasSymbolConcatSpreadable = v.hasSymbols && Symbol.isConcatSpreadable;
 	t.test('Symbol.isConcatSpreadable', { skip: !hasSymbolConcatSpreadable }, function (st) {
 		forEach(v.falsies, function (falsy) {
+			/** @type {Record<PropertyKey, unknown>} */
 			var obj = {};
 			obj[Symbol.isConcatSpreadable] = falsy;
 			st.equal(
@@ -24,6 +26,7 @@ module.exports = function (t, year, IsConcatSpreadable) {
 		});
 
 		forEach(v.truthies, function (truthy) {
+			/** @type {Record<PropertyKey, unknown>} */
 			var obj = {};
 			obj[Symbol.isConcatSpreadable] = truthy;
 			st.equal(

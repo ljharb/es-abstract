@@ -6,11 +6,13 @@ var debug = require('object-inspect');
 var functionsHaveNames = require('functions-have-names')();
 var functionsHaveConfigurableNames = require('functions-have-names').functionsHaveConfigurableNames();
 
+/** @type {import('../testHelpers').MethodTest<'DeletePropertyOrThrow'>} */
 module.exports = function (t, year, DeletePropertyOrThrow) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { DeletePropertyOrThrow(primitive, 'key', {}); },
 			TypeError,
 			'O must be an Object'
@@ -19,6 +21,7 @@ module.exports = function (t, year, DeletePropertyOrThrow) {
 
 	forEach(v.nonPropertyKeys, function (nonPropertyKey) {
 		t['throws'](
+			// @ts-expect-error
 			function () { DeletePropertyOrThrow({}, nonPropertyKey, {}); },
 			TypeError,
 			debug(nonPropertyKey) + ' is not a Property Key'
@@ -27,7 +30,7 @@ module.exports = function (t, year, DeletePropertyOrThrow) {
 
 	t.test('defines correctly', function (st) {
 		var obj = { 'the key': 42 };
-		var key = 'the key';
+		var key = /** @type {const} */ ('the key');
 
 		st.equal(DeletePropertyOrThrow(obj, key), true, 'deletes property successfully');
 		st.equal(key in obj, false, 'key is no longer in the object');

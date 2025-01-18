@@ -1,10 +1,12 @@
 'use strict';
 
+/** @type {import('../testHelpers').MethodTest<'PromiseResolve'>} */
 module.exports = function (t, year, PromiseResolve) {
 	t.ok(year >= 2018, 'ES2018+');
 
 	t.test('Promises unsupported', { skip: typeof Promise === 'function' }, function (st) {
 		st['throws'](
+			// @ts-expect-error
 			function () { PromiseResolve(); },
 			SyntaxError,
 			'Promises are not supported'

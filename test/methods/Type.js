@@ -2,9 +2,11 @@
 
 var v = require('es-value-fixtures');
 
+/** @type {import('../testHelpers').MethodTest<'Type'>} */
 module.exports = function (t, year, Type) {
 	t.ok(year >= 5, 'ES5+');
 
+	// @ts-expect-error
 	t.equal(Type(), 'Undefined', 'Type() is Undefined');
 	t.equal(Type(undefined), 'Undefined', 'Type(undefined) is Undefined');
 	t.equal(Type(null), 'Null', 'Type(null) is Null');

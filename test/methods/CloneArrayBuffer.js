@@ -7,11 +7,13 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'CloneArrayBuffer'>} */
 module.exports = function (t, year, CloneArrayBuffer) {
 	t.ok(year >= 2021, 'ES2021+');
 
 	forEach(esV.unknowns, function (nonArrayBuffer) {
 		t['throws'](
+			// @ts-expect-error
 			function () { CloneArrayBuffer(nonArrayBuffer, 0, 0, Object); },
 			TypeError,
 			debug(nonArrayBuffer) + ' is not an ArrayBuffer'
@@ -36,11 +38,13 @@ module.exports = function (t, year, CloneArrayBuffer) {
 		});
 
 		// node < 6 lacks Reflect.construct, so `v.nonConstructorFunctions` can't be detected
-		forEach([].concat(
+		forEach(/** @type {(typeof v.nonFunctions | typeof v.nonConstructorFunctions)[number][]} */ ([].concat(
+			// @ts-expect-error TS sucks with concat
 			v.nonFunctions,
 			typeof Reflect === 'object' ? v.nonConstructorFunctions : []
-		), function (nonConstructor) {
+		)), function (nonConstructor) {
 			st['throws'](
+				// @ts-expect-error
 				function () { CloneArrayBuffer(emptyBuffer, 0, 0, nonConstructor); },
 				TypeError,
 				debug(nonConstructor) + ' is not a constructor'

@@ -10,12 +10,13 @@ var esV = require('../helpers/v');
 var hasSpecies = v.hasSymbols && Symbol.species;
 
 var getArraySubclassWithSpeciesConstructor = function getArraySubclass(speciesConstructor) {
-	var Bar = function Bar() {
+	/** @constructor */
+	function Bar() {
 		var inst = [];
 		Object.setPrototypeOf(inst, Bar.prototype);
 		defineProperty(inst, 'constructor', { value: Bar });
 		return inst;
-	};
+	}
 	Bar.prototype = Object.create(Array.prototype);
 	Object.setPrototypeOf(Bar, Array);
 	defineProperty(Bar, Symbol.species, { value: speciesConstructor });
@@ -23,32 +24,33 @@ var getArraySubclassWithSpeciesConstructor = function getArraySubclass(speciesCo
 	return Bar;
 };
 
+/** @type {import('../testHelpers').MethodTest<'ArraySpeciesCreate'>} */
 module.exports = function (t, year, ArraySpeciesCreate) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	t.test('errors', function (st) {
 		forEach(v.nonNumbers, function (nonNumber) {
 			st['throws'](
-				function () { ArraySpeciesCreate([], nonNumber); },
+				function () { ArraySpeciesCreate(/** @type {unknown[]} */ ([]), nonNumber); },
 				TypeError,
 				debug(nonNumber) + ' is not a number'
 			);
 		});
 
 		st['throws'](
-			function () { ArraySpeciesCreate([], -1); },
+			function () { ArraySpeciesCreate(/** @type {unknown[]} */ ([]), -1); },
 			TypeError,
 			'-1 is not >= 0'
 		);
 		st['throws'](
-			function () { ArraySpeciesCreate([], -Infinity); },
+			function () { ArraySpeciesCreate(/** @type {unknown[]} */ ([]), -Infinity); },
 			TypeError,
 			'-Infinity is not >= 0'
 		);
 
 		forEach(v.nonIntegerNumbers, function (nonInteger) {
 			st['throws'](
-				function () { ArraySpeciesCreate([], nonInteger); },
+				function () { ArraySpeciesCreate(/** @type {unknown[]} */ ([]), nonInteger); },
 				TypeError,
 				debug(nonInteger) + ' is not an integer'
 			);

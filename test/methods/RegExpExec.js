@@ -8,11 +8,13 @@ var assign = require('object.assign');
 var defineProperty = require('../helpers/defineProperty');
 var kludgeMatch = require('../helpers/kludgeMatch');
 
+/** @type {import('../testHelpers').MethodTest<'RegExpExec'>} */
 module.exports = function (t, year, RegExpExec) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { RegExpExec(primitive); },
 			TypeError,
 			'"R" argument must be an object; ' + debug(primitive) + ' is not'
@@ -21,6 +23,7 @@ module.exports = function (t, year, RegExpExec) {
 
 	forEach(v.nonStrings, function (nonString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { RegExpExec({}, nonString); },
 			TypeError,
 			'"S" argument must be a String; ' + debug(nonString) + ' is not'
@@ -30,6 +33,7 @@ module.exports = function (t, year, RegExpExec) {
 	t.test('gets and calls a callable "exec"', function (st) {
 		var str = '123';
 		var o = {
+			/** @param {string} S */
 			exec: function (S) {
 				st.equal(this, o, '"exec" receiver is R');
 				st.equal(S, str, '"exec" argument is S');
@@ -47,6 +51,7 @@ module.exports = function (t, year, RegExpExec) {
 		st.plan(v.nonNullPrimitives.length);
 		forEach(v.nonNullPrimitives, function (nonNullPrimitive) {
 			st['throws'](
+				// @ts-expect-error
 				function () { RegExpExec({ exec: function () { return nonNullPrimitive; } }, str); },
 				TypeError,
 				'"exec" method must return `null` or an Object; ' + debug(nonNullPrimitive) + ' is not'

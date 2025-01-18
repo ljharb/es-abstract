@@ -4,6 +4,7 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'RegExpCreate'>} */
 module.exports = function (t, year, RegExpCreate) {
 	t.ok(year >= 2015, 'ES2015+');
 
@@ -18,5 +19,10 @@ module.exports = function (t, year, RegExpCreate) {
 		}
 	});
 
-	t.deepEqual(RegExpCreate(), new RegExp(), 'undefined pattern and flags yields empty regex');
+	t.deepEqual(
+		RegExpCreate(),
+		// @ts-expect-error
+		new RegExp(),
+		'undefined pattern and flags yields empty regex'
+	);
 };

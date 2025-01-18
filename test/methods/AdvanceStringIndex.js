@@ -6,11 +6,13 @@ var v = require('es-value-fixtures');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'AdvanceStringIndex'>} */
 module.exports = function (t, year, AdvanceStringIndex) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.nonStrings, function (nonString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { AdvanceStringIndex(nonString); },
 			TypeError,
 			'"S" argument must be a String; ' + debug(nonString) + ' is not'
@@ -19,6 +21,7 @@ module.exports = function (t, year, AdvanceStringIndex) {
 
 	forEach(esV.notInts, function (nonInt) {
 		t['throws'](
+			// @ts-expect-error
 			function () { AdvanceStringIndex('abc', nonInt); },
 			TypeError,
 			'"index" argument must be an integer, ' + debug(nonInt) + ' is not.'
@@ -27,6 +30,7 @@ module.exports = function (t, year, AdvanceStringIndex) {
 
 	forEach(v.nonBooleans, function (nonBoolean) {
 		t['throws'](
+			// @ts-expect-error
 			function () { AdvanceStringIndex('abc', 0, nonBoolean); },
 			TypeError,
 			debug(nonBoolean) + ' is not a Boolean'

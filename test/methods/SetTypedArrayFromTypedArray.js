@@ -8,22 +8,26 @@ var v = require('es-value-fixtures');
 var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'SetTypedArrayFromTypedArray'>} */
 module.exports = function (t, year, SetTypedArrayFromTypedArray, extras) {
 	t.ok(year >= 2021, 'ES2021+');
 
 	var DetachArrayBuffer = extras.getAO('DetachArrayBuffer');
 
-	forEach([].concat(
+	forEach(/** @type {unknown[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		esV.unknowns,
 		[[]]
-	), function (nonTA) {
+	)), function (nonTA) {
 		t['throws'](
+			// @ts-expect-error
 			function () { SetTypedArrayFromTypedArray(nonTA, 0, new Uint8Array(0)); },
 			TypeError,
 			'target: ' + debug(nonTA) + ' is not a TypedArray'
 		);
 
 		t['throws'](
+			// @ts-expect-error
 			function () { SetTypedArrayFromTypedArray(new Uint8Array(0), 0, nonTA); },
 			TypeError,
 			'source: ' + debug(nonTA) + ' is not a TypedArray'

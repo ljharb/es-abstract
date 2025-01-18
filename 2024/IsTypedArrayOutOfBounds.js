@@ -37,7 +37,7 @@ module.exports = function IsTypedArrayOutOfBounds(taRecord) {
 	var isFixed = IsFixedLengthArrayBuffer(typedArrayBuffer(O));
 
 	var byteOffsetEnd;
-	var length = isFixed ? typedArrayLength(O) : 'AUTO';
+	var length = isFixed ? typedArrayLength(O) : /** @type {const} */ ('AUTO');
 	// TODO: probably use package for array length
 	// seems to apply when TA is backed by a resizable/growable AB
 	if (length === 'AUTO') { // step 6

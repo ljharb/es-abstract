@@ -14,12 +14,13 @@ var DefinePropertyOrThrow = require('./DefinePropertyOrThrow');
 
 // https://262.ecma-international.org/6.0/#sec-stringcreate
 
-/** @type {(value: string, prototype: null | object) => String} */
+/** @type {(value: string, prototype: null | object) => String & Object} */
 module.exports = function StringCreate(value, prototype) {
 	if (typeof value !== 'string') {
 		throw new $TypeError('Assertion failed: `S` must be a String');
 	}
 
+	/** @type {String & Object} */
 	var S = $Object(value);
 	if (prototype !== $StringPrototype) {
 		if (setProto) {
@@ -30,7 +31,7 @@ module.exports = function StringCreate(value, prototype) {
 	}
 
 	var length = value.length;
-	DefinePropertyOrThrow(S, 'length', {
+	DefinePropertyOrThrow(/** @type {Parameters<typeof DefinePropertyOrThrow>[0]} */ (/** @type {unknown} */ (S)), 'length', {
 		'[[Configurable]]': false,
 		'[[Enumerable]]': false,
 		'[[Value]]': length,

@@ -8,6 +8,7 @@ var safeBigInt = require('safe-bigint');
 var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'TypedArraySetElement'>} */
 module.exports = function (t, year, TypedArraySetElement, extras) {
 	t.ok(year >= 2024, 'ES2024+');
 
@@ -15,6 +16,7 @@ module.exports = function (t, year, TypedArraySetElement, extras) {
 
 	forEach(esV.unknowns, function (nonTA) {
 		t['throws'](
+			// @ts-expect-error
 			function () { TypedArraySetElement(nonTA, 0, 0); },
 			TypeError,
 			debug(nonTA) + ' is not a Typed Array'
@@ -26,12 +28,13 @@ module.exports = function (t, year, TypedArraySetElement, extras) {
 	t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
 		forEach(availableTypedArrays, function (typedArray) {
 			var isBigInt = esV.isBigIntTAType(typedArray);
-			var Z = isBigInt ? safeBigInt : Number;
+			var Z = isBigInt ? /** @type {NonNullable<typeof safeBigInt>} */ (safeBigInt) : Number;
 			var TA = global[typedArray];
 			var ta = new TA(16);
 
 			forEach(v.nonNumbers, function (nonNumber) {
 				st['throws'](
+					// @ts-expect-error
 					function () { TypedArraySetElement(ta, nonNumber, 0); },
 					TypeError,
 					'index: ' + debug(nonNumber) + ' is not a Number'

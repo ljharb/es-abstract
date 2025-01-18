@@ -8,11 +8,13 @@ var whichTypedArray = require('which-typed-array');
 
 var getTypedArrays = require('../helpers/typedArrays');
 
+/** @type {import('../testHelpers').MethodTest<'TypedArrayCreateFromConstructor'>} */
 module.exports = function (t, year, TypedArrayCreateFromConstructor) {
 	t.ok(year >= 2016, 'ES2016+');
 
 	forEach(v.nonFunctions, function (nonFunction) {
 		t['throws'](
+			// @ts-expect-error
 			function () { TypedArrayCreateFromConstructor(nonFunction, []); },
 			TypeError,
 			debug(nonFunction) + ' is not a constructor'
@@ -21,6 +23,7 @@ module.exports = function (t, year, TypedArrayCreateFromConstructor) {
 
 	forEach(v.nonArrays, function (nonArray) {
 		t['throws'](
+			// @ts-expect-error
 			function () { TypedArrayCreateFromConstructor(Array, nonArray); },
 			TypeError,
 			debug(nonArray) + ' is not an Array'
@@ -75,8 +78,8 @@ module.exports = function (t, year, TypedArrayCreateFromConstructor) {
 			st.equal(taBuffer.byteOffset, 8, 'byteOffset is 8');
 			st.equal(
 				typedArrayLength(taBuffer),
-				expectedLengths['$' + TypedArray],
-				'created a ' + TypedArray + ' of length ' + expectedLengths['$' + TypedArray]
+				expectedLengths[/** @type {`$${typeof TypedArray}`} */ ('$' + TypedArray)],
+				'created a ' + TypedArray + ' of length ' + expectedLengths[/** @type {`$${typeof TypedArray}`} */ ('$' + TypedArray)]
 			);
 
 			var taBufferLength = TypedArrayCreateFromConstructor(Constructor, [buffer, 8, 64]);

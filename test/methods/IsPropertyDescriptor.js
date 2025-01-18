@@ -4,6 +4,7 @@ var forEach = require('for-each');
 var debug = require('object-inspect');
 var v = require('es-value-fixtures');
 
+/** @type {import('../testHelpers').MethodTest<'IsPropertyDescriptor'>} */
 module.exports = function (t, year, IsPropertyDescriptor) {
 	t.ok(year < 2018, 'ES 2018+ removed IsPropertyDescriptor');
 

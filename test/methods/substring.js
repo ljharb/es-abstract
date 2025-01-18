@@ -6,11 +6,13 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'substring'>} */
 module.exports = function (t, year, substring) {
 	t.ok(year >= 2021, 'ES2021+');
 
 	forEach(v.nonStrings, function (nonString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { substring(nonString, 0, 0); },
 			TypeError,
 			debug(nonString) + ' is not a String'
@@ -19,18 +21,21 @@ module.exports = function (t, year, substring) {
 
 	forEach(esV.notInts, function (nonIntegerNumber) {
 		t['throws'](
+			// @ts-expect-error
 			function () { substring('', nonIntegerNumber); },
 			TypeError,
 			'inclusiveStart, no end: ' + debug(nonIntegerNumber) + ' is not an integer'
 		);
 
 		t['throws'](
+			// @ts-expect-error
 			function () { substring('', nonIntegerNumber, 0); },
 			TypeError,
 			'inclusiveStart: ' + debug(nonIntegerNumber) + ' is not an integer'
 		);
 
 		t['throws'](
+			// @ts-expect-error
 			function () { substring('', 0, nonIntegerNumber); },
 			TypeError,
 			'exclusiveEnd: ' + debug(nonIntegerNumber) + ' is not an integer'

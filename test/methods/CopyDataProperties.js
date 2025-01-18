@@ -10,12 +10,14 @@ var hasOwn = require('hasown');
 var defineProperty = require('../helpers/defineProperty');
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'CopyDataProperties'>} */
 module.exports = function (t, year, CopyDataProperties) {
 	t.ok(year >= 2018, 'ES2018+');
 
 	t.test('first argument: target', function (st) {
 		forEach(v.primitives, function (primitive) {
 			st['throws'](
+				// @ts-expect-error
 				function () { CopyDataProperties(primitive, {}, []); },
 				TypeError,
 				debug(primitive) + ' is not an Object'
@@ -35,6 +37,7 @@ module.exports = function (t, year, CopyDataProperties) {
 		});
 
 		forEach(v.nonNullPrimitives, function (objectCoercible) {
+			/** @type {Record<PropertyKey, unknown>} */
 			var target = {};
 			var result = CopyDataProperties(target, objectCoercible, []);
 			st.equal(result, target, 'result === target');
@@ -42,7 +45,9 @@ module.exports = function (t, year, CopyDataProperties) {
 		});
 
 		st.test('enumerable accessor property', { skip: !$defineProperty }, function (s2t) {
+			/** @type {Record<PropertyKey, unknown>} */
 			var target = {};
+			/** @type {Record<PropertyKey, unknown>} */
 			var source = {};
 			defineProperty(source, 'a', {
 				enumerable: true,
@@ -60,6 +65,7 @@ module.exports = function (t, year, CopyDataProperties) {
 	t.test('third argument: excludedItems', function (st) {
 		forEach(esV.unknowns, function (nonArray) {
 			st['throws'](
+				// @ts-expect-error
 				function () { CopyDataProperties({}, {}, nonArray); },
 				TypeError,
 				debug(nonArray) + ' is not an Array'
@@ -78,6 +84,7 @@ module.exports = function (t, year, CopyDataProperties) {
 		st.deepEqual(keys(result).sort(), ['a', 'c'].sort(), 'excluded string keys are excluded');
 
 		st.test('excluding symbols', { skip: !v.hasSymbols }, function (s2t) {
+			/** @type {Record<symbol, true>} */
 			var source = {};
 			forEach(v.symbols, function (symbol) {
 				source[symbol] = true;

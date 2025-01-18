@@ -5,11 +5,13 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'WeakRefDeref'>} */
 module.exports = function (t, year, WeakRefDeref) {
 	t.ok(year >= 2021, 'ES2021+');
 
 	forEach(esV.unknowns, function (nonWeakRef) {
 		t['throws'](
+			// @ts-expect-error
 			function () { WeakRefDeref(nonWeakRef); },
 			TypeError,
 			debug(nonWeakRef) + ' is not a WeakRef'

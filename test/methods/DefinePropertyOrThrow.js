@@ -7,11 +7,13 @@ var debug = require('object-inspect');
 var functionsHaveNames = require('functions-have-names')();
 var functionsHaveConfigurableNames = require('functions-have-names').functionsHaveConfigurableNames();
 
+/** @type {import('../testHelpers').MethodTest<'DefinePropertyOrThrow'>} */
 module.exports = function (t, year, DefinePropertyOrThrow) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { DefinePropertyOrThrow(primitive, 'key', {}); },
 			TypeError,
 			'O must be an Object'
@@ -20,6 +22,7 @@ module.exports = function (t, year, DefinePropertyOrThrow) {
 
 	forEach(v.nonPropertyKeys, function (nonPropertyKey) {
 		t['throws'](
+			// @ts-expect-error
 			function () { DefinePropertyOrThrow({}, nonPropertyKey, {}); },
 			TypeError,
 			debug(nonPropertyKey) + ' is not a Property Key'
@@ -27,6 +30,7 @@ module.exports = function (t, year, DefinePropertyOrThrow) {
 	});
 
 	t.test('defines correctly', function (st) {
+		/** @type {Record<string, unknown>} */
 		var obj = {};
 		var key = 'the key';
 		var descriptor = {

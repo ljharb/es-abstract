@@ -14,7 +14,7 @@ var ToString = require('./ToString');
 
 // https://262.ecma-international.org/11.0/#sec-flattenintoarray
 
-/** @type {<T>(target: T[], source: T[], sourceLen: import('../types').arrayLength, start: import('../types').arrayLength, depth: import('../types').arrayLength) => import('../types').arrayLength} */
+/** @type {<T>(target: T[], source: T[], sourceLen: import('../types').arrayLength, start: import('../types').arrayLength, depth: import('../types').arrayLength, mapperFunction?: import('../types').Func, thisArg?: unknown) => import('../types').arrayLength} */
 module.exports = function FlattenIntoArray(target, source, sourceLen, start, depth) {
 	/** @typedef {typeof target[number]} T */
 

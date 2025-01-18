@@ -8,6 +8,7 @@ var v = require('es-value-fixtures');
 var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'ValidateIntegerTypedArray'>} */
 module.exports = function (t, year, actual) {
 	t.ok(year >= 2021, 'ES2021+');
 
@@ -20,17 +21,20 @@ module.exports = function (t, year, actual) {
 
 	forEach(v.nonBooleans, function (nonBoolean) {
 		t['throws'](
+			// @ts-expect-error
 			function () { ValidateIntegerTypedArray(null, nonBoolean); },
 			TypeError,
 			debug(nonBoolean) + ' is not a Boolean'
 		);
 	});
 
-	forEach([].concat(
+	forEach(/** @type {unknown[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		esV.unknowns,
 		[[]]
-	), function (nonTA) {
+	)), function (nonTA) {
 		t['throws'](
+			// @ts-expect-error
 			function () { ValidateIntegerTypedArray(nonTA, false); },
 			TypeError,
 			debug(nonTA) + ' is not a TypedArray'

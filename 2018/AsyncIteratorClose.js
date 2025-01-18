@@ -20,7 +20,7 @@ var $then = callBound('Promise.prototype.then', true);
 
 // https://262.ecma-international.org/9.0/#sec-asynciteratorclose
 
-/** @type {<Type extends import('../types').CompletionRecordType, Value>(iteratorRecord: import('../types').IteratorRecord, completion: CompletionRecord<Type, Value>) => Promise<CompletionRecord<Type, Value>>} */
+/** @type {<Type extends import('../types').CompletionRecordType, Value>(iteratorRecord: import('../types').IteratorRecord<Value>, completion: CompletionRecord<Type, Value>) => Promise<CompletionRecord<Type, Value>>} */
 module.exports = function AsyncIteratorClose(iteratorRecord, completion) {
 	if (!isIteratorRecord(iteratorRecord)) {
 		throw new $TypeError('Assertion failed: `iteratorRecord` must be an Iterator Record'); // step 1
