@@ -8,6 +8,7 @@ var esV = require('../helpers/v');
 
 var testStringToNumber = require('./StringToNumber');
 
+/** @type {import('../testHelpers').MethodTest<'ToNumber'>} */
 module.exports = function (t, year, ToNumber, extras) {
 	t.ok(year >= 5, 'ES5+');
 
@@ -21,11 +22,12 @@ module.exports = function (t, year, ToNumber, extras) {
 	t.test('numbers', function (st) {
 		st.equal(NaN, ToNumber(NaN), 'NaN returns itself');
 
-		forEach([].concat(
+		forEach(/** @type {number[]} */ ([].concat(
+			// @ts-expect-error TS sucks with concat
 			v.zeroes,
 			v.infinities,
 			42
-		), function (num) {
+		)), function (num) {
 			st.equal(num, ToNumber(num), num + ' returns itself');
 		});
 
@@ -38,7 +40,11 @@ module.exports = function (t, year, ToNumber, extras) {
 
 	t.test('objects', function (st) {
 		forEach(v.objects, function (object) {
-			st.equal(ToNumber(object), ToNumber(ToPrimitive(object)), 'object ' + object + ' coerces to same as ToPrimitive of object does');
+			st.equal(
+				ToNumber(object),
+				ToNumber(ToPrimitive(object)),
+				'object ' + object + ' coerces to same as ToPrimitive of object does'
+			);
 		});
 
 		st['throws'](
@@ -98,21 +104,23 @@ module.exports = function (t, year, ToNumber, extras) {
 		st.end();
 	});
 
-	testStringToNumber(t, year, function (x) {
+	testStringToNumber(t, year, /** @param {unknown} x */ function (x) {
 		if (typeof x !== 'string') {
 			throw new TypeError('covering the throw behavior of StringToNumber');
 		}
 		return ToNumber(x);
-	});
+	}, getAO);
 
 	if (year >= 2015) {
 		forEach(v.symbols, function (symbol) {
 			t['throws'](
+				// @ts-expect-error
 				function () { ToNumber(symbol); },
 				TypeError,
 				'Symbols can’t be converted to a Number: ' + debug(symbol)
 			);
 
+			/** @type {Symbol} */
 			var boxed = Object(symbol);
 			t['throws'](
 				function () { ToNumber(boxed); },
@@ -126,11 +134,13 @@ module.exports = function (t, year, ToNumber, extras) {
 		t.test('bigints', { skip: !esV.hasBigInts }, function (st) {
 			forEach(v.bigints, function (bigInt) {
 				st['throws'](
+					// @ts-expect-error
 					function () { ToNumber(bigInt); },
 					TypeError,
 					'ToNumber of ' + debug(bigInt) + ' throws'
 				);
 
+				/** @type {BigInt} */
 				var boxed = Object(bigInt);
 				st['throws'](
 					function () { ToNumber(boxed); },

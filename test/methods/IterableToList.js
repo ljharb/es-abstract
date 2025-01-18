@@ -2,6 +2,7 @@
 
 var v = require('es-value-fixtures');
 
+/** @type {import('../testHelpers').MethodTest<'IterableToList'>} */
 module.exports = function (t, year, IterableToList) {
 	t.ok(year >= 2017, 'ES2017+');
 
@@ -43,7 +44,7 @@ module.exports = function (t, year, IterableToList) {
 
 	if (year >= 2021) {
 		t.deepEqual(
-			IterableToList(['a', 'b', 'c']),
+			/** @type {import('../testHelpers').AOOnlyYears<'IterableToList', 2021 | 2022 | 2023 | 2024>} */ (IterableToList)(['a', 'b', 'c']),
 			['a', 'b', 'c'],
 			'method is optional in ES2021+'
 		);

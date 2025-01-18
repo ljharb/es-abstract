@@ -6,11 +6,13 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'UTF16EncodeCodePoint'>} */
 module.exports = function (t, year, UTF16EncodeCodePoint) {
 	t.ok(year >= 2016, 'ES2016+');
 
 	forEach(v.nonNumbers, function (nonNumber) {
 		t['throws'](
+			// @ts-expect-error
 			function () { UTF16EncodeCodePoint(nonNumber); },
 			TypeError,
 			debug(nonNumber) + ' is not a Number'

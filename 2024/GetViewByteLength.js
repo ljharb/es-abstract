@@ -27,7 +27,7 @@ module.exports = function GetViewByteLength(viewRecord) {
 
 	var isFixed = IsFixedLengthArrayBuffer(dataViewBuffer(view));
 
-	var viewByteLength = isFixed ? dataViewByteLength(view) : 'AUTO'; // view.[[ByteLength]]
+	var viewByteLength = isFixed ? dataViewByteLength(view) : /** @type {const} */ ('AUTO'); // view.[[ByteLength]]
 	if (viewByteLength !== 'AUTO') {
 		return viewByteLength; // step 3
 	}

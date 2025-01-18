@@ -4,6 +4,7 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'ParseHexOctet'>} */
 module.exports = function (t, year, ParseHexOctet, extras) {
 	t.ok(year >= 2023, 'ES2023+');
 
@@ -11,6 +12,7 @@ module.exports = function (t, year, ParseHexOctet, extras) {
 
 	forEach(v.nonStrings, function (nonString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { ParseHexOctet(nonString, 0); },
 			TypeError,
 			debug(nonString) + ' is not a String'

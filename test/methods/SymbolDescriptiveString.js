@@ -6,11 +6,13 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'SymbolDescriptiveString'>} */
 module.exports = function (t, year, SymbolDescriptiveString) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(esV.allButSyms, function (nonSymbol) {
 		t['throws'](
+			// @ts-expect-error
 			function () { SymbolDescriptiveString(nonSymbol); },
 			TypeError,
 			debug(nonSymbol) + ' is not a Symbol'

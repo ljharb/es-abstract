@@ -33,7 +33,7 @@ module.exports = function TypedArrayByteLength(taRecord) {
 
 	var isFixed = IsFixedLengthArrayBuffer(typedArrayByffer(O));
 
-	var byteLength = isFixed ? typedArrayByteLength(O) : 'AUTO';
+	var byteLength = isFixed ? typedArrayByteLength(O) : /** @type {const} */ ('AUTO');
 	if (byteLength !== 'AUTO') {
 		return byteLength; // step 5
 	}

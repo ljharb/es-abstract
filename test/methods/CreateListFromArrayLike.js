@@ -6,11 +6,13 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'CreateListFromArrayLike'>} */
 module.exports = function (t, year, CreateListFromArrayLike) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.primitives, function (nonObject) {
 		t['throws'](
+			// @ts-expect-error
 			function () { CreateListFromArrayLike(nonObject); },
 			TypeError,
 			debug(nonObject) + ' is not an Object'
@@ -18,6 +20,7 @@ module.exports = function (t, year, CreateListFromArrayLike) {
 	});
 	forEach(v.nonArrays, function (nonArray) {
 		t['throws'](
+			// @ts-expect-error
 			function () { CreateListFromArrayLike({}, nonArray); },
 			TypeError,
 			debug(nonArray) + ' is not an Array'
@@ -25,6 +28,7 @@ module.exports = function (t, year, CreateListFromArrayLike) {
 	});
 
 	t['throws'](
+		// @ts-expect-error
 		function () { CreateListFromArrayLike({ length: 3, 0: 'a', 1: 'b', 2: 3 }, ['String']); },
 		TypeError,
 		'an element type not present in passed elementTypes throws'

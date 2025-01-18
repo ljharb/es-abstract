@@ -7,14 +7,16 @@ var safeBigInt = require('safe-bigint');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'ToBigInt'>} */
 module.exports = function (t, year, ToBigInt) {
 	t.ok(year >= 2020, 'ES2020+');
 
-	forEach([].concat(
+	forEach(/** @type {(typeof v.nullPrimitives | typeof v.symbols | typeof v.numbers)[number][]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		v.nullPrimitives,
 		v.symbols,
 		v.numbers
-	), function (nonBigIntCoercible) {
+	)), function (nonBigIntCoercible) {
 		t['throws'](
 			function () { ToBigInt(nonBigIntCoercible); },
 			esV.hasBigInts ? TypeError : SyntaxError,
@@ -64,10 +66,12 @@ module.exports = function (t, year, ToBigInt) {
 		});
 
 		forEach(v.integerNumbers, function (int) {
+			var actual = ToBigInt(String(int));
+			var expected = /** @type {NonNullable<typeof safeBigInt>} */ (safeBigInt)(int);
 			st.equal(
-				ToBigInt(String(int)),
-				safeBigInt(int),
-				debug(String(int)) + ' becomes ' + debug(safeBigInt(int))
+				actual,
+				expected,
+				debug(String(int)) + ' becomes ' + debug(expected)
 			);
 		});
 

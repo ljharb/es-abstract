@@ -4,11 +4,13 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'CreateDataPropertyOrThrow'>} */
 module.exports = function (t, year, CreateDataPropertyOrThrow) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { CreateDataPropertyOrThrow(primitive); },
 			TypeError,
 			debug(primitive) + ' is not an object'
@@ -17,6 +19,7 @@ module.exports = function (t, year, CreateDataPropertyOrThrow) {
 
 	forEach(v.nonPropertyKeys, function (nonPropertyKey) {
 		t['throws'](
+			// @ts-expect-error
 			function () { CreateDataPropertyOrThrow({}, nonPropertyKey); },
 			TypeError,
 			debug(nonPropertyKey) + ' is not a property key'
@@ -25,6 +28,7 @@ module.exports = function (t, year, CreateDataPropertyOrThrow) {
 
 	var sentinel = {};
 	forEach(v.propertyKeys, function (propertyKey) {
+		/** @type {Record<PropertyKey, unknown>} */
 		var obj = {};
 		var status = CreateDataPropertyOrThrow(obj, propertyKey, sentinel);
 		if (year < 2023) {
@@ -39,6 +43,7 @@ module.exports = function (t, year, CreateDataPropertyOrThrow) {
 		);
 
 		if (typeof Object.preventExtensions === 'function') {
+			/** @type {Record<PropertyKey, unknown>} */
 			var notExtensible = {};
 			Object.preventExtensions(notExtensible);
 
@@ -55,6 +60,7 @@ module.exports = function (t, year, CreateDataPropertyOrThrow) {
 	});
 
 	t.test('non-extensible object', { skip: !Object.preventExtensions }, function (st) {
+		/** @type {Record<PropertyKey, unknown>} */
 		var nonExtensible = Object.preventExtensions({});
 
 		st['throws'](

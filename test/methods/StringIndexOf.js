@@ -6,17 +6,20 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'StringIndexOf'>} */
 module.exports = function (t, year, StringIndexOf) {
 	t.ok(year >= 2021, 'ES2021+');
 
 	forEach(v.nonStrings, function (nonString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { StringIndexOf(nonString); },
 			TypeError,
 			'`string` arg: ' + debug(nonString) + ' is not a String'
 		);
 
 		t['throws'](
+			// @ts-expect-error
 			function () { StringIndexOf('', nonString); },
 			TypeError,
 			'`searchValue` arg: ' + debug(nonString) + ' is not a String'

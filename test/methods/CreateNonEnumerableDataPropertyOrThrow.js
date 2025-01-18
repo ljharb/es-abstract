@@ -7,11 +7,13 @@ var functionsHaveNames = require('functions-have-names')();
 var gOPD = require('gopd');
 var v = require('es-value-fixtures');
 
+/** @type {import('../testHelpers').MethodTest<'CreateNonEnumerableDataPropertyOrThrow'>} */
 module.exports = function (t, year, CreateNonEnumerableDataPropertyOrThrow) {
 	t.ok(year >= 2022, 'ES2022+');
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { CreateNonEnumerableDataPropertyOrThrow(primitive, 'key'); },
 			TypeError,
 			'O must be an Object; ' + debug(primitive) + ' is not one'
@@ -20,6 +22,7 @@ module.exports = function (t, year, CreateNonEnumerableDataPropertyOrThrow) {
 
 	forEach(v.nonPropertyKeys, function (nonPropertyKey) {
 		t['throws'](
+			// @ts-expect-error
 			function () { CreateNonEnumerableDataPropertyOrThrow({}, nonPropertyKey); },
 			TypeError,
 			debug(nonPropertyKey) + ' is not a Property Key'
@@ -27,22 +30,25 @@ module.exports = function (t, year, CreateNonEnumerableDataPropertyOrThrow) {
 	});
 
 	t.test('defines correctly', function (st) {
+		/** @type {Record<PropertyKey, unknown>} */
 		var obj = {};
 		var key = 'the key';
 		var value = { foo: 'bar' };
 
 		st.equal(CreateNonEnumerableDataPropertyOrThrow(obj, key, value), true, 'defines property successfully');
 		st.test('property descriptor', { skip: !gOPD }, function (s2t) {
-			s2t.deepEqual(
-				gOPD(obj, key),
-				{
-					configurable: true,
-					enumerable: false,
-					value: value,
-					writable: true
-				},
-				'sets the correct property descriptor'
-			);
+			if (gOPD) { // TS doesn't know about `skip`
+				s2t.deepEqual(
+					gOPD(obj, key),
+					{
+						configurable: true,
+						enumerable: false,
+						value: value,
+						writable: true
+					},
+					'sets the correct property descriptor'
+				);
+			}
 
 			s2t.end();
 		});
@@ -64,7 +70,7 @@ module.exports = function (t, year, CreateNonEnumerableDataPropertyOrThrow) {
 
 	t.test('fails as expected on a function with a nonconfigurable name', { skip: !functionsHaveNames || functionsHaveConfigurableNames }, function (st) {
 		st['throws'](
-			function () { CreateNonEnumerableDataPropertyOrThrow(function () {}, 'name', { value: 'baz' }); },
+			function () { CreateNonEnumerableDataPropertyOrThrow(/** @type {Record<PropertyKey, unknown>} */ (/** @type {unknown} */ (function () {})), 'name', { value: 'baz' }); },
 			TypeError,
 			'nonconfigurable function name can not be defined'
 		);

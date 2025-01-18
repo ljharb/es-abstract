@@ -11,10 +11,12 @@ var isSharedArrayBuffer = require('is-shared-array-buffer');
 var arrayBufferByteLength = require('array-buffer-byte-length');
 
 var callBound = require('call-bound');
+/** @type {undefined | ((thisArg: SharedArrayBuffer) => number)} */
 var $sabByteLength = callBound('SharedArrayBuffer.prototype.byteLength', true);
 
 var isGrowable = false; // TODO: support this
 
+/** @type {(arrayBuffer: ArrayBuffer | SharedArrayBuffer, order: 'SEQ-CST' | 'UNORDERED') => number} */
 module.exports = function ArrayBufferByteLength(arrayBuffer, order) {
 	var isSAB = isSharedArrayBuffer(arrayBuffer);
 	if (!isArrayBuffer(arrayBuffer) && !isSAB) {

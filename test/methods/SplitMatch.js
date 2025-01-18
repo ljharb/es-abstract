@@ -6,16 +6,19 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'SplitMatch'>} */
 module.exports = function (t, year, SplitMatch) {
 	t.ok(year >= 2015 && year <= 2021, 'ES2015 - ES2021');
 
 	forEach(v.nonStrings, function (nonString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { SplitMatch(nonString, 0, ''); },
 			TypeError,
 			'S: ' + debug(nonString) + ' is not a String'
 		);
 		t['throws'](
+			// @ts-expect-error
 			function () { SplitMatch('', 0, nonString); },
 			TypeError,
 			'R: ' + debug(nonString) + ' is not a String'
@@ -24,6 +27,7 @@ module.exports = function (t, year, SplitMatch) {
 
 	forEach(esV.notInts, function (nonInteger) {
 		t['throws'](
+			// @ts-expect-error
 			function () { SplitMatch('', nonInteger, ''); },
 			TypeError,
 			'q: ' + debug(nonInteger) + ' is not an integer'

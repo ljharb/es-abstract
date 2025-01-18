@@ -4,13 +4,15 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'DateString'>} */
 module.exports = function (t, year, DateString) {
 	t.ok(year >= 2018, 'ES2018+');
 
-	forEach([].concat(
+	forEach(/** @type {number[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		v.nonNumbers,
 		NaN
-	), function (nonNumberOrNaN) {
+	)), function (nonNumberOrNaN) {
 		t['throws'](
 			function () { DateString(nonNumberOrNaN); },
 			TypeError,

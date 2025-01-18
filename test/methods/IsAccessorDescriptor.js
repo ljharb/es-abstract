@@ -4,6 +4,7 @@ var forEach = require('for-each');
 var debug = require('object-inspect');
 var v = require('es-value-fixtures');
 
+/** @type {import('../testHelpers').MethodTest<'IsAccessorDescriptor'>} */
 module.exports = function (t, year, IsAccessorDescriptor) {
 	t.ok(year >= 5, 'ES5+');
 
@@ -15,6 +16,7 @@ module.exports = function (t, year, IsAccessorDescriptor) {
 		);
 	});
 
+	// @ts-expect-error
 	t.equal(IsAccessorDescriptor(), false, 'no value is not an Accessor Descriptor');
 	t.equal(IsAccessorDescriptor(undefined), false, 'undefined value is not an Accessor Descriptor');
 

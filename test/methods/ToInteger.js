@@ -4,21 +4,24 @@ var debug = require('object-inspect');
 var forEach = require('for-each');
 var v = require('es-value-fixtures');
 
+/** @type {import('../testHelpers').MethodTest<'ToInteger'>} */
 module.exports = function (t, year, ToInteger) {
 	t.ok(year >= 5 && year <= 2020, 'ES5 - ES2020');
 
-	forEach([].concat(
+	forEach(/** @type {number[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		NaN,
 		year >= 2020 ? [0, -0] : []
-	), function (num) {
+	)), function (num) {
 		t.equal(0, ToInteger(num), debug(num) + ' returns +0');
 	});
 
-	forEach([].concat(
+	forEach(/** @type {number[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		year < 2020 ? v.zeroes : [],
 		Infinity,
 		42
-	), function (num) {
+	)), function (num) {
 		t.equal(num, ToInteger(num), debug(num) + ' returns itself');
 		t.equal(-num, ToInteger(-num), '-' + debug(num) + ' returns itself');
 	});

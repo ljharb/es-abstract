@@ -4,11 +4,13 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'TestIntegrityLevel'>} */
 module.exports = function (t, year, TestIntegrityLevel) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { TestIntegrityLevel(primitive); },
 			TypeError,
 			debug(primitive) + ' is not an Object'
@@ -16,6 +18,7 @@ module.exports = function (t, year, TestIntegrityLevel) {
 	});
 
 	t['throws'](
+		// @ts-expect-error
 		function () { TestIntegrityLevel({ a: 1 }); },
 		/^TypeError: Assertion failed: `level` must be `"sealed"` or `"frozen"`$/,
 		'`level` must be `"sealed"` or `"frozen"`'

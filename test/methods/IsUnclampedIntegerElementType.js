@@ -5,13 +5,13 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'IsUnclampedIntegerElementType'>} */
 module.exports = function (t, year, IsUnclampedIntegerElementType) {
 	t.ok(year >= 2020, 'ES2020+');
 
-	forEach(esV.unclampedIntegerTypes, function (type) {
-		if (year >= 2024) {
-			type = type.toUpperCase(); // eslint-disable-line no-param-reassign
-		}
+	forEach(esV.unclampedIntegerTypes, function (lowerType) {
+		var type = year >= 2024 ? /** @type {Uppercase<typeof lowerType>} */ (lowerType.toUpperCase()) : lowerType;
+
 		t.equal(
 			IsUnclampedIntegerElementType(type),
 			true,
@@ -19,13 +19,13 @@ module.exports = function (t, year, IsUnclampedIntegerElementType) {
 		);
 	});
 
-	forEach([].concat(
+	forEach(/** @type {(typeof esV.clampedTypes | typeof esV.nonUnclampedIntegerTypes)[number][]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		esV.clampedTypes,
 		esV.nonUnclampedIntegerTypes
-	), function (type) {
-		if (year >= 2024) {
-			type = type.toUpperCase(); // eslint-disable-line no-param-reassign
-		}
+	)), function (lowerType) {
+		var type = year >= 2024 ? /** @type {Uppercase<typeof lowerType>} */ (lowerType.toUpperCase()) : lowerType;
+
 		t.equal(
 			IsUnclampedIntegerElementType(type),
 			false,

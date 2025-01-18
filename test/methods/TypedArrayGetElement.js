@@ -4,15 +4,16 @@ var availableTypedArrays = require('available-typed-arrays')();
 var forEach = require('for-each');
 var debug = require('object-inspect');
 var v = require('es-value-fixtures');
-var safeBigInt = require('safe-bigint');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'TypedArrayGetElement'>} */
 module.exports = function (t, year, TypedArrayGetElement) {
 	t.ok(year >= 2024, 'ES2024+');
 
 	forEach(esV.unknowns, function (nonTA) {
 		t['throws'](
+			// @ts-expect-error
 			function () { TypedArrayGetElement(nonTA, 0); },
 			TypeError,
 			debug(nonTA) + ' is not a TypedArray'
@@ -24,6 +25,7 @@ module.exports = function (t, year, TypedArrayGetElement) {
 
 		forEach(v.nonNumbers, function (nonNumber) {
 			st['throws'](
+				// @ts-expect-error
 				function () { TypedArrayGetElement(ta, nonNumber); },
 				TypeError,
 				debug(nonNumber) + ' is not a number'
@@ -31,8 +33,7 @@ module.exports = function (t, year, TypedArrayGetElement) {
 		});
 
 		forEach(availableTypedArrays, function (TypedArray) {
-			var isBigInt = esV.isBigIntTAType(TypedArray);
-			var Z = isBigInt ? safeBigInt : Number;
+			var Z = esV.isBigIntTAType(TypedArray) ? BigInt : Number;
 			var TA = global[TypedArray];
 
 			var arr = new TA([Z(1), Z(2), Z(3)]);

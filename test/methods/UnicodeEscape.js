@@ -6,11 +6,13 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'UnicodeEscape'>} */
 module.exports = function (t, year, UnicodeEscape) {
 	t.ok(year >= 2018, 'ES2018+');
 
 	forEach(v.nonStrings, function (nonString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { UnicodeEscape(nonString); },
 			TypeError,
 			debug(nonString) + ' is not a String'

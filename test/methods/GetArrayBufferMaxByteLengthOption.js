@@ -4,6 +4,7 @@ var forEach = require('for-each');
 var debug = require('object-inspect');
 var v = require('es-value-fixtures');
 
+/** @type {import('../testHelpers').MethodTest<'GetArrayBufferMaxByteLengthOption'>} */
 module.exports = function (t, year, GetArrayBufferMaxByteLengthOption) {
 	t.ok(year >= 2024, 'ES2024+');
 

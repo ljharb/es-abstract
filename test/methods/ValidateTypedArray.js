@@ -6,10 +6,11 @@ var availableTypedArrays = require('available-typed-arrays')();
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'ValidateTypedArray'>} */
 module.exports = function (t, year, actual, extras) {
 	t.ok(year >= 2015, 'ES2015+');
 
-	var order = 'UNORDERED';
+	var order = /** @type {const} */ ('UNORDERED');
 
 	var ValidateTypedArray = year >= 2024 ? actual : function ValidateTypedArray(typedArray) {
 		return actual(typedArray);
@@ -17,11 +18,13 @@ module.exports = function (t, year, actual, extras) {
 
 	var DetachArrayBuffer = extras.getAO('DetachArrayBuffer');
 
-	forEach([].concat(
+	forEach(/** @type {unknown[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		esV.unknowns,
 		[[]]
-	), function (nonTA) {
+	)), function (nonTA) {
 		t['throws'](
+			// @ts-expect-error
 			function () { ValidateTypedArray(nonTA, order); },
 			TypeError,
 			debug(nonTA) + ' is not a TypedArray'

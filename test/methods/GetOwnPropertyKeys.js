@@ -7,11 +7,13 @@ var $defineProperty = require('es-define-property');
 
 var defineProperty = require('../helpers/defineProperty');
 
+/** @type {import('../testHelpers').MethodTest<'GetOwnPropertyKeys'>} */
 module.exports = function (t, year, GetOwnPropertyKeys) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { GetOwnPropertyKeys(primitive, 'String'); },
 			TypeError,
 			'O: ' + debug(primitive) + ' is not an Object'
@@ -19,12 +21,14 @@ module.exports = function (t, year, GetOwnPropertyKeys) {
 	});
 
 	t['throws'](
+		// @ts-expect-error
 		function () { GetOwnPropertyKeys({}, 'not string or symbol'); },
 		TypeError,
 		'Type: must be "String" or "Symbol"'
 	);
 
 	t.test('Symbols', { skip: !v.hasSymbols }, function (st) {
+		/** @type {Record<PropertyKey, unknown>} */
 		var O = { a: 1 };
 		O[Symbol.iterator] = true;
 		var s = Symbol('test');
@@ -40,6 +44,7 @@ module.exports = function (t, year, GetOwnPropertyKeys) {
 	});
 
 	t.test('non-enumerable names', { skip: !$defineProperty }, function (st) {
+		/** @type {Record<PropertyKey, unknown>} */
 		var O = { a: 1 };
 		defineProperty(O, 'b', { enumerable: false, value: 2 });
 		if (v.hasSymbols) {

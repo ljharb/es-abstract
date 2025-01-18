@@ -6,18 +6,21 @@ var v = require('es-value-fixtures');
 
 var defineProperty = require('../helpers/defineProperty');
 
+/** @type {import('../testHelpers').MethodTest<'Call'>} */
 module.exports = function (t, year, Call) {
 	t.ok(year >= 5, 'ES5+');
 
 	var receiver = {};
-	var notFuncs = [].concat(
+	var notFuncs = /** @type {(typeof v.nonFunctions[number] | RegExp)[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		v.nonFunctions,
 		/a/g,
 		new RegExp('a', 'g')
-	);
+	));
 
 	forEach(notFuncs, function (notFunc) {
 		t['throws'](
+			// @ts-expect-error
 			function () { return Call(notFunc, receiver); },
 			TypeError,
 			debug(notFunc) + ' (' + typeof notFunc + ') is not callable'
@@ -33,6 +36,7 @@ module.exports = function (t, year, Call) {
 	});
 
 	Call(
+		/** @type {(this: unknown, a: number, b: number, ...args: unknown[]) => void} */
 		function (a, b) {
 			t.equal(this, receiver, 'context matches expected');
 			t.deepEqual([a, b], [1, 2], 'named args are correct');
@@ -46,6 +50,7 @@ module.exports = function (t, year, Call) {
 	t.test('Call doesn’t use func.apply', function (st) {
 		st.plan(4);
 
+		/** @type {((this: unknown, a: number, b: number, ...args: unknown[]) => void)} */
 		var bad = function (a, b) {
 			st.equal(this, receiver, 'context matches expected');
 			st.deepEqual([a, b], [1, 2], 'named args are correct');
@@ -63,6 +68,7 @@ module.exports = function (t, year, Call) {
 		});
 
 		Call(bad, receiver, [1, 2, 3]);
+
 		st.end();
 	});
 };

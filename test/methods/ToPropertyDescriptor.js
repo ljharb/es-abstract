@@ -4,11 +4,13 @@ var debug = require('object-inspect');
 var forEach = require('for-each');
 var v = require('es-value-fixtures');
 
+/** @type {import('../testHelpers').MethodTest<'ToPropertyDescriptor'>} */
 module.exports = function (t, year, ToPropertyDescriptor) {
 	t.ok(year >= 5, 'ES5+');
 
 	forEach(v.nonUndefinedPrimitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { ToPropertyDescriptor(primitive); },
 			TypeError,
 			debug(primitive) + ' is not an Object'
@@ -46,12 +48,14 @@ module.exports = function (t, year, ToPropertyDescriptor) {
 	);
 
 	t['throws'](
+		// @ts-expect-error
 		function () { ToPropertyDescriptor({ get: 'not callable' }); },
 		TypeError,
 		'"get" must be undefined or callable'
 	);
 
 	t['throws'](
+		// @ts-expect-error
 		function () { ToPropertyDescriptor({ set: 'not callable' }); },
 		TypeError,
 		'"set" must be undefined or callable'
@@ -60,11 +64,13 @@ module.exports = function (t, year, ToPropertyDescriptor) {
 	forEach(v.nonFunctions, function (nonFunction) {
 		if (typeof nonFunction !== 'undefined') {
 			t['throws'](
+				// @ts-expect-error
 				function () { ToPropertyDescriptor({ get: nonFunction }); },
 				TypeError,
 				'`.get` has ' + debug(nonFunction) + ', which is not a Function'
 			);
 			t['throws'](
+				// @ts-expect-error
 				function () { ToPropertyDescriptor({ set: nonFunction }); },
 				TypeError,
 				'`.set` has ' + debug(nonFunction) + ', which is not a Function'
@@ -72,13 +78,15 @@ module.exports = function (t, year, ToPropertyDescriptor) {
 		}
 	});
 
-	forEach(['get', 'set'], function (accessorName) {
-		forEach(['value', 'writable'], function (dataName) {
+	forEach(/** @type {const} */ (['get', 'set']), function (accessorName) {
+		forEach(/** @type {const} */ (['value', 'writable']), function (dataName) {
+			/** @type {Partial<Record<typeof dataName | typeof accessorName, undefined>>} */
 			var o = {};
 			o[accessorName] = undefined;
 			o[dataName] = undefined;
 
 			t['throws'](
+				// @ts-expect-error
 				function () { ToPropertyDescriptor(o); },
 				TypeError,
 				accessorName + ' + ' + dataName + ' is invalid'

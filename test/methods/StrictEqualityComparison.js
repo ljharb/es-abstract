@@ -6,6 +6,7 @@ var v = require('es-value-fixtures');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'Strict Equality Comparison'>} */
 module.exports = function (t, year, StrictEqualityComparison) {
 	t.ok(year >= 5 && year <= 2021, 'ES5 - ES2021');
 
@@ -17,7 +18,7 @@ module.exports = function (t, year, StrictEqualityComparison) {
 	});
 
 	t.test('different types are not ===', function (st) {
-		var pairs = [
+		var pairs = /** @type {const} */ ([
 			[null, undefined],
 			[3, '3'],
 			[true, '3'],
@@ -32,7 +33,7 @@ module.exports = function (t, year, StrictEqualityComparison) {
 			[Number(String(v.coercibleObject)), v.coercibleObject],
 			[Number(v.coercibleObject), v.coercibleObject],
 			[String(Number(v.coercibleObject)), v.coercibleObject]
-		];
+		]);
 		forEach(pairs, function (pair) {
 			var a = pair[0];
 			var b = pair[1];

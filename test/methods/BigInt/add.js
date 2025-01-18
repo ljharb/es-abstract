@@ -6,6 +6,7 @@ var debug = require('object-inspect');
 
 var esV = require('../../helpers/v');
 
+/** @type {import('../../testHelpers').MethodTest<'BigInt::add'>} */
 module.exports = function (t, year, BigIntAdd) {
 	t.ok(year >= 2020, 'ES2020+');
 

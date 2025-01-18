@@ -24,9 +24,11 @@ var $slice = callBound('Array.prototype.slice');
 
 var tableTAO = require('./tables/typed-array-objects');
 
+/** @typedef {import('../types').WithoutPrefix<keyof typeof tableTAO.size, '$'>} TAType */
+
 // https://262.ecma-international.org/15.0/#sec-rawbytestonumeric
 
-/** @type {(type: keyof TypeToSizes, rawBytes: import('../types').ByteValue[], isLittleEndian: boolean) => number | bigint} */
+/** @type {(type: TAType, rawBytes: import('../types').ByteValue[], isLittleEndian: boolean) => number | bigint} */
 module.exports = function RawBytesToNumeric(type, rawBytes, isLittleEndian) {
 	if (!hasOwnProperty(tableTAO.size, '$' + type)) {
 		throw new $TypeError('Assertion failed: `type` must be a TypedArray element type');
@@ -38,7 +40,7 @@ module.exports = function RawBytesToNumeric(type, rawBytes, isLittleEndian) {
 		throw new $TypeError('Assertion failed: `isLittleEndian` must be a Boolean');
 	}
 
-	var elementSize = tableTAO.size['$' + type]; // step 1
+	var elementSize = tableTAO.size[/** @type {`$${typeof type}`} */ ('$' + type)]; // step 1
 
 	if (rawBytes.length !== elementSize) {
 		// this assertion is not in the spec, but it'd be an editorial error if it were ever violated

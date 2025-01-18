@@ -7,11 +7,13 @@ var gOPD = require('gopd');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'ArraySetLength'>} */
 module.exports = function (t, year, ArraySetLength) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(esV.unknowns, function (nonArray) {
 		t['throws'](
+			// @ts-expect-error
 			function () { ArraySetLength(nonArray, { '[[Value]]': 0 }); },
 			TypeError,
 			'A: ' + debug(nonArray) + ' is not an Array'
@@ -20,6 +22,7 @@ module.exports = function (t, year, ArraySetLength) {
 
 	forEach(v.nonUndefinedPrimitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { ArraySetLength([], primitive); },
 			TypeError,
 			'Desc: ' + debug(primitive) + ' is not a Property Descriptor'
@@ -27,6 +30,9 @@ module.exports = function (t, year, ArraySetLength) {
 	});
 
 	t.test('making length nonwritable', { skip: !gOPD }, function (st) {
+		if (!gOPD) { // TS doesn't know what `skip` does
+			return;
+		}
 		var a = [0];
 		st.equal(
 			ArraySetLength(a, { '[[Writable]]': false }),
@@ -62,11 +68,12 @@ module.exports = function (t, year, ArraySetLength) {
 		st.end();
 	});
 
-	forEach([].concat(
+	forEach(/** @type {(-1 | 4294967296 | typeof v.nonIntegerNumbers[number])[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		-1,
 		Math.pow(2, 32),
 		v.nonIntegerNumbers
-	), function (nonLength) {
+	)), function (nonLength) {
 		t['throws'](
 			function () { ArraySetLength([], v.descriptors.value(nonLength)); },
 			RangeError,
@@ -74,6 +81,7 @@ module.exports = function (t, year, ArraySetLength) {
 		);
 	});
 
+	/** @type {unknown[]} */
 	var arr = [];
 	t.equal(
 		ArraySetLength(arr, v.descriptors.value(7)),

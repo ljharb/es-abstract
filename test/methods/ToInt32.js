@@ -3,15 +3,17 @@
 var forEach = require('for-each');
 var v = require('es-value-fixtures');
 
+/** @type {import('../testHelpers').MethodTest<'ToInt32'>} */
 module.exports = function (t, year, ToInt32, extras) {
 	t.ok(year >= 5, 'ES5+');
 
 	t.equal(ToInt32(NaN), 0, 'NaN coerces to +0');
 
-	forEach([].concat(
+	forEach(/** @type {number[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		v.zeroes,
 		v.infinities
-	), function (num) {
+	)), function (num) {
 		t.equal(ToInt32(num), 0, num + ' returns +0');
 		t.equal(ToInt32(-num), 0, '-' + num + ' returns +0');
 	});

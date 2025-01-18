@@ -6,11 +6,13 @@ var debug = require('object-inspect');
 var $setProto = require('set-proto');
 var $getProto = require('get-proto');
 
+/** @type {import('../testHelpers').MethodTest<'StringCreate'>} */
 module.exports = function (t, year, StringCreate) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.nonStrings, function (nonString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { StringCreate(nonString, String.prototype); },
 			TypeError,
 			debug(nonString) + ' is not a String'
@@ -20,8 +22,12 @@ module.exports = function (t, year, StringCreate) {
 	t.deepEqual(StringCreate('foo', String.prototype), Object('foo'), '"foo" with `String.prototype` makes `Object("foo")');
 
 	var proto = {};
-	if ($setProto) {
-		t.equal($getProto(StringCreate('', proto)), proto, '[[Prototype]] is set as expected');
+	if ($getProto && $setProto) {
+		t.equal(
+			$getProto(StringCreate('', proto)),
+			proto,
+			'[[Prototype]] is set as expected'
+		);
 	} else {
 		t['throws'](
 			function () { StringCreate('', proto); },

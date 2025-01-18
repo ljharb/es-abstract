@@ -6,6 +6,7 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'ToPropertyKey'>} */
 module.exports = function (t, year, ToPropertyKey) {
 	t.ok(year >= 2015, 'ES2015+');
 

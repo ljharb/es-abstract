@@ -4,11 +4,13 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'CanonicalNumericIndexString'>} */
 module.exports = function (t, year, CanonicalNumericIndexString) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.nonStrings, function (notString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { return CanonicalNumericIndexString(notString); },
 			TypeError,
 			debug(notString) + ' is not a string'

@@ -4,11 +4,13 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'InternalizeJSONProperty'>} */
 module.exports = function (t, year, InternalizeJSONProperty) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { InternalizeJSONProperty(primitive, '', function () {}); },
 			TypeError,
 			debug(primitive) + ' is not an Object'
@@ -17,6 +19,7 @@ module.exports = function (t, year, InternalizeJSONProperty) {
 
 	forEach(v.nonStrings, function (nonString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { InternalizeJSONProperty({}, nonString, function () {}); },
 			TypeError,
 			debug(nonString) + ' is not a String'
@@ -25,6 +28,7 @@ module.exports = function (t, year, InternalizeJSONProperty) {
 
 	forEach(v.nonFunctions, function (nonFunction) {
 		t['throws'](
+			// @ts-expect-error
 			function () { InternalizeJSONProperty({}, 'a', nonFunction); },
 			TypeError,
 			debug(nonFunction) + ' is not a function'

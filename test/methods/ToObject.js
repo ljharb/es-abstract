@@ -3,10 +3,13 @@
 var forEach = require('for-each');
 var v = require('es-value-fixtures');
 
+/** @type {import('../testHelpers').MethodTest<'ToObject'>} */
 module.exports = function (t, year, ToObject) {
 	t.ok(year >= 5, 'ES5+');
 
+	// @ts-expect-error
 	t['throws'](function () { return ToObject(undefined); }, TypeError, 'undefined throws');
+	// @ts-expect-error
 	t['throws'](function () { return ToObject(null); }, TypeError, 'null throws');
 
 	forEach(v.numbers, function (number) {

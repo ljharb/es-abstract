@@ -4,11 +4,13 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'ToDateString'>} */
 module.exports = function (t, year, ToDateString) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.nonNumbers, function (nonNumber) {
 		t['throws'](
+			// @ts-expect-error
 			function () { ToDateString(nonNumber); },
 			TypeError,
 			debug(nonNumber) + ' is not a Number'

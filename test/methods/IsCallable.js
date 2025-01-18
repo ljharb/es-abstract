@@ -4,6 +4,7 @@ var debug = require('object-inspect');
 var forEach = require('for-each');
 var v = require('es-value-fixtures');
 
+/** @type {import('../testHelpers').MethodTest<'IsCallable'>} */
 module.exports = function (t, year, IsCallable) {
 	t.ok(year >= 5, 'ES5+');
 

@@ -5,6 +5,7 @@ var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 var $getProto = require('get-proto');
 
+/** @type {import('../testHelpers').MethodTest<'OrdinaryGetPrototypeOf'>} */
 module.exports = function (t, year, OrdinaryGetPrototypeOf) {
 	t.ok(year >= 2016, 'ES2016+');
 
@@ -23,6 +24,7 @@ module.exports = function (t, year, OrdinaryGetPrototypeOf) {
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { OrdinaryGetPrototypeOf(primitive); },
 			TypeError,
 			debug(primitive) + ' is not an Object'

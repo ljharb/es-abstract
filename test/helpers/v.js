@@ -59,44 +59,39 @@ var elementSizes = {
 	$Float64Array: 8
 };
 
-/** @type {('Int8' | 'Int16' | 'Int32')[]} */
-var unclampedUnsignedIntegerTypes = [
+var unclampedUnsignedIntegerTypes = /** @type {const} */ ([
 	'Int8',
 	'Int16',
 	'Int32'
-];
-/** @type {('Uint8C')[]} */
-var clampedTypes = [
+]);
+var clampedTypes = /** @type {const} */ ([
 	'Uint8C'
-];
-/** @type {('Uint8' | 'Uint16' | 'Uint32')[]} */
-var unclampedSignedIntegerTypes = [
+]);
+var unclampedSignedIntegerTypes = /** @type {const} */ ([
 	'Uint8',
 	'Uint16',
 	'Uint32'
-];
+]);
 /** @type {(typeof unclampedUnsignedIntegerTypes[number] | typeof unclampedSignedIntegerTypes[number])[]} */
 var unclampedIntegerTypes = [].concat(
 	// @ts-expect-error TS sucks with concat
 	unclampedUnsignedIntegerTypes,
 	unclampedSignedIntegerTypes
 );
-/** @type {('Float32' | 'Float64')[]} */
-var floatTypes = [
+var floatTypes = /** @type {const} */ ([
 	'Float32',
 	'Float64'
-];
+]);
 /** @type {(typeof unclampedIntegerTypes[number] | typeof clampedTypes[number] | typeof floatTypes[number])[]} */
 var integerTypes = [].concat(
 	// @ts-expect-error TS sucks with concat
 	unclampedIntegerTypes,
 	clampedTypes
 );
-/** @type {('BigInt64' | 'BigUint64')[]} */
-var bigIntTypes = [
+var bigIntTypes = /** @type {const} */ ([
 	'BigInt64',
 	'BigUint64'
-];
+]);
 /** @type {(typeof floatTypes[number] | typeof integerTypes[number])[]} */
 var numberTypes = [].concat(
 	// @ts-expect-error TS sucks with concat
@@ -148,7 +143,7 @@ var noThrowOnStrictViolation = (function () {
 	return false;
 }());
 
-/** @type {(type: string) => type is `Big${'Uint' | 'Int'}64${'Array' | ''}`} */
+/** @type {(type: string) => type is `Big${string}`} */
 var isBigIntTAType = function isBigIntTAType(type) {
 	return type.slice(0, 3) === 'Big';
 };

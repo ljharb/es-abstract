@@ -29,10 +29,10 @@ module.exports = function Canonicalize(ch, IgnoreCase, Unicode) {
 
 	if (Unicode) { // step 2
 		if (hasOwn(caseFolding.C, ch)) {
-			return caseFolding.C[ch];
+			return caseFolding.C[/** @type {keyof typeof caseFolding['C']} */ (ch)];
 		}
 		if (hasOwn(caseFolding.S, ch)) {
-			return caseFolding.S[ch];
+			return caseFolding.S[/** @type {keyof typeof caseFolding['S']} */ (ch)];
 		}
 		return ch; // step 2.b
 	}

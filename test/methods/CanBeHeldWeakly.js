@@ -4,6 +4,7 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'CanBeHeldWeakly'>} */
 module.exports = function (t, year, CanBeHeldWeakly) {
 	t.ok(year >= 2023, 'ES2023+');
 

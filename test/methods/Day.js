@@ -2,6 +2,7 @@
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'Day'>} */
 module.exports = function (t, year, Day) {
 	t.ok(year >= 5, 'ES5+');
 

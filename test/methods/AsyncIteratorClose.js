@@ -8,6 +8,7 @@ var makeIteratorRecord = require('../helpers/makeIteratorRecord');
 var reduce = require('../../helpers/reduce');
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'AsyncIteratorClose'>} */
 module.exports = function (t, year, AsyncIteratorClose, extras) {
 	t.ok(year >= 2018, 'ES2018+');
 
@@ -16,6 +17,7 @@ module.exports = function (t, year, AsyncIteratorClose, extras) {
 
 	forEach(esV.unknowns, function (nonIteratorRecord) {
 		t['throws'](
+			// @ts-expect-error
 			function () { AsyncIteratorClose(nonIteratorRecord); },
 			TypeError,
 			debug(nonIteratorRecord) + ' is not an Iterator Record'
@@ -23,12 +25,14 @@ module.exports = function (t, year, AsyncIteratorClose, extras) {
 	});
 
 	var iterator = {
+		/** @type {() => void} */
 		next: function next() {}
 	};
 	var iteratorRecord = makeIteratorRecord(iterator);
 
 	forEach(esV.unknowns, function (nonCompletionRecord) {
 		t['throws'](
+			// @ts-expect-error
 			function () { AsyncIteratorClose(iteratorRecord, nonCompletionRecord); },
 			TypeError,
 			debug(nonCompletionRecord) + ' is not a CompletionRecord'

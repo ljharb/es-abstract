@@ -5,6 +5,7 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'IsDetachedBuffer'>} */
 module.exports = function (t, year, IsDetachedBuffer, extras) {
 	t.ok(year >= 2015, 'ES2015+');
 
@@ -12,6 +13,7 @@ module.exports = function (t, year, IsDetachedBuffer, extras) {
 
 	forEach(esV.unknowns, function (nonArrayBuffer) {
 		t['throws'](
+			// @ts-expect-error
 			function () { IsDetachedBuffer(nonArrayBuffer); },
 			TypeError,
 			debug(nonArrayBuffer) + ' is not an ArrayBuffer'
@@ -65,12 +67,13 @@ module.exports = function (t, year, IsDetachedBuffer, extras) {
 	});
 
 	if (year >= 2017) {
+		var IsDetachedBuffer2017 = /** @type {import('../testHelpers').AOOnlyYears<'IsDetachedBuffer', Exclude<import('../testHelpers').YearsWithAO<'IsDetachedBuffer'>, 2015 | 2016>>} */ (IsDetachedBuffer);
 		t.test('IsDetachedBuffer (Shared Array Buffers)', { skip: typeof SharedArrayBuffer !== 'function' }, function (st) {
 			var sab = new SharedArrayBuffer(1);
-			st.equal(IsDetachedBuffer(sab), false, 'a new SharedArrayBuffer is not detached');
+			st.equal(IsDetachedBuffer2017(sab), false, 'a new SharedArrayBuffer is not detached');
 
 			var zsab = new SharedArrayBuffer(0);
-			st.equal(IsDetachedBuffer(zsab), false, 'a new zero-length SharedArrayBuffer is not detached');
+			st.equal(IsDetachedBuffer2017(zsab), false, 'a new zero-length SharedArrayBuffer is not detached');
 
 			st.end();
 		});

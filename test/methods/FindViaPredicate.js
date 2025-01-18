@@ -4,15 +4,20 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../testHelpers').MethodTest<'FindViaPredicate'>} */
 module.exports = function (t, year, actual) {
 	t.ok(year >= 2023, 'ES2023+');
 
-	var FindViaPredicate = year >= 2024 ? actual : function FindViaPredicate(O, len, direction, predicate, thisArg) {
-		return actual(O, len, direction.toLowerCase(), predicate, thisArg);
-	};
+	/** @type {import('../testHelpers').AOOnlyYears<'FindViaPredicate', 2024>} */
+	var FindViaPredicate = year >= 2024
+		? /** @type {import('../testHelpers').AOOnlyYears<'FindViaPredicate', 2024>} */ (actual)
+		: function FindViaPredicate(O, len, direction, predicate, thisArg) {
+			return /** @type {import('../testHelpers').AOOnlyYears<'FindViaPredicate', Exclude<import('../testHelpers').TestYear, 2024>>} */ (actual)(O, len, /** @type {Lowercase<typeof direction>} */ (direction.toLowerCase()), predicate, thisArg);
+		};
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { FindViaPredicate(primitive, 0, 'ASCENDING', function () {}); },
 			TypeError,
 			debug(primitive) + ' is not an object'
@@ -21,6 +26,7 @@ module.exports = function (t, year, actual) {
 
 	forEach(v.notNonNegativeIntegers, function (notNonNegativeInteger) {
 		t['throws'](
+			// @ts-expect-error
 			function () { FindViaPredicate({}, notNonNegativeInteger, 'ASCENDING', function () {}); },
 			TypeError,
 			debug(notNonNegativeInteger) + ' is not a non-negative integer'
@@ -29,6 +35,7 @@ module.exports = function (t, year, actual) {
 
 	forEach(v.nonFunctions, function (nonFunction) {
 		t['throws'](
+			// @ts-expect-error
 			function () { FindViaPredicate({}, 0, 'ASCENDING', nonFunction); },
 			TypeError,
 			debug(nonFunction) + ' is not a function'
@@ -36,6 +43,7 @@ module.exports = function (t, year, actual) {
 	});
 
 	t['throws'](
+		// @ts-expect-error
 		function () { FindViaPredicate({}, 0, 'invalid', function () {}); },
 		TypeError,
 		'invalid direction'

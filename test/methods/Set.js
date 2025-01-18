@@ -8,11 +8,13 @@ var $defineProperty = require('es-define-property');
 var defineProperty = require('../helpers/defineProperty');
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'Set'>} */
 module.exports = function (t, year, Set) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { Set(primitive, '', null, false); },
 			TypeError,
 			debug(primitive) + ' is not an Object'
@@ -21,6 +23,7 @@ module.exports = function (t, year, Set) {
 
 	forEach(v.nonPropertyKeys, function (nonKey) {
 		t['throws'](
+			// @ts-expect-error
 			function () { Set({}, nonKey, null, false); },
 			TypeError,
 			debug(nonKey) + ' is not a Property Key'
@@ -29,12 +32,14 @@ module.exports = function (t, year, Set) {
 
 	forEach(v.nonBooleans, function (nonBoolean) {
 		t['throws'](
+			// @ts-expect-error
 			function () { Set({}, '', null, nonBoolean); },
 			TypeError,
 			debug(nonBoolean) + ' is not a Boolean'
 		);
 	});
 
+	/** @type {Record<PropertyKey, unknown>} */
 	var o = {};
 	var value = {};
 	Set(o, 'key', value, true);
@@ -73,6 +78,7 @@ module.exports = function (t, year, Set) {
 	t.test('doesn’t call [[Get]] in conforming strict mode environments', { skip: esV.noThrowOnStrictViolation }, function (st) {
 		var getterCalled = false;
 		var setterCalls = 0;
+		/** @type {Record<PropertyKey, unknown>} */
 		var obj = {};
 		defineProperty(obj, 'a', {
 			get: function () {

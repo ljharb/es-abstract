@@ -7,6 +7,7 @@ var v = require('es-value-fixtures');
 
 var esV = require('../helpers/v');
 
+/** @type {import('../testHelpers').MethodTest<'ArrayBufferCopyAndDetach'>} */
 module.exports = function (t, year, ArrayBufferCopyAndDetach, extras) {
 	t.ok(year >= 2024, 'ES2024+');
 
@@ -14,6 +15,7 @@ module.exports = function (t, year, ArrayBufferCopyAndDetach, extras) {
 
 	forEach(esV.unknowns, function (nonAB) {
 		t['throws'](
+			// @ts-expect-error
 			function () { ArrayBufferCopyAndDetach(nonAB, 0, 'FIXED-LENGTH'); },
 			TypeError,
 			debug(nonAB) + ' is not an ArrayBuffer or a SharedArrayBuffer'
@@ -36,6 +38,7 @@ module.exports = function (t, year, ArrayBufferCopyAndDetach, extras) {
 		st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 			forEach(v.nonStrings, function (nonString) {
 				s2t['throws'](
+					// @ts-expect-error
 					function () { ArrayBufferCopyAndDetach(ab, 0, nonString); },
 					TypeError,
 					debug(nonString) + ' is not a valid preserveResizability value'
