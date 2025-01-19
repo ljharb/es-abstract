@@ -15048,6 +15048,52 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 		t.end();
 	});
 
+	test('ArrayBufferByteLength', function (t) {
+		var order = 'UNORDERED';
+
+		forEach([].concat(
+			v.primitives,
+			v.objects
+		), function (nonAB) {
+			t['throws'](
+				function () { ES.ArrayBufferByteLength(nonAB, order); },
+				TypeError,
+				debug(nonAB) + ' is not an ArrayBuffer'
+			);
+		});
+
+		t.test('ArrayBuffers supported', { skip: typeof ArrayBuffer !== 'function' }, function (st) {
+			var ab = new ArrayBuffer(8);
+			st['throws'](
+				function () { ES.ArrayBufferByteLength(ab, 'not a valid order'); },
+				TypeError,
+				'invalid order enum value throws'
+			);
+
+			st.equal(ES.ArrayBufferByteLength(ab, order), 8, 'fixed length ArrayBuffer is fixed length');
+
+			st.end();
+		});
+
+		t.test('SharedArrayBuffers supported', { skip: typeof SharedArrayBuffer !== 'function' }, function (st) {
+			var sab = new SharedArrayBuffer(1);
+			st.equal(ES.ArrayBufferByteLength(sab, order), 1, 'fixed length SharedArrayBuffer is fixed length');
+
+			st.test('growable SABs', { skip: !('grow' in SharedArrayBuffer.prototype) }, function (s2t) {
+				var gsab = new SharedArrayBuffer(0, { maxByteLength: 64 });
+				s2t.equal(ES.ArrayBufferByteLength(gsab, order), 0, 'growable SharedArrayBuffer has initial length');
+
+				gsab.grow(8);
+
+				s2t.equal(ES.ArrayBufferByteLength(gsab, order), 8, 'growable SharedArrayBuffer has initial length');
+
+				s2t.end();
+			});
+
+			st.end();
+		});
+	});
+
 	test('ArrayBufferCopyAndDetach', function (t) {
 		forEach([].concat(
 			v.primitives,
