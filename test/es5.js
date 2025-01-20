@@ -1,14 +1,9 @@
 'use strict';
 
-var ES = require('../').ES5;
-var boundES = require('./helpers/createBoundESNamespace')(ES);
-
-var ops = require('../operations/es5');
-
 var expectedMissing = [
 	'SplitMatch'
 ];
 
-require('./tests').es5(boundES, ops, expectedMissing);
+var testYear = require('./helpers/testYear');
 
-require('./helpers/runManifestTest')(require('tape'), ES, 5);
+testYear(5, expectedMissing);

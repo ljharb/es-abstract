@@ -1,10 +1,5 @@
 'use strict';
 
-var ES = require('../').ES2015;
-var boundES = require('./helpers/createBoundESNamespace')(ES);
-
-var ops = require('../operations/2015');
-
 var expectedMissing = [
 	'AddRestrictedFunctionProperties',
 	'AllocateArrayBuffer',
@@ -121,6 +116,6 @@ var expectedMissing = [
 	'UTC' // depends on LocalTZA, DaylightSavingTA
 ];
 
-require('./tests').es2015(boundES, ops, expectedMissing);
+var testYear = require('./helpers/testYear');
 
-require('./helpers/runManifestTest')(require('tape'), ES, 2015);
+testYear(2015, expectedMissing);
