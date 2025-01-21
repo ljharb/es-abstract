@@ -17803,13 +17803,13 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 						'non-fixed length, return floor((byteLength - byteOffset) / elementSize)',
 						{ skip: !('resizable' in ArrayBuffer.prototype) },
 						function (tsat) {
-							var rab = new ArrayBuffer(17, { maxByteLength: 64 });
+							var rab = new ArrayBuffer(24, { maxByteLength: 64 });
 							var arr = new TA(rab, 8);
 							record = ES.MakeTypedArrayWithBufferWitnessRecord(arr, 'UNORDERED');
 
 							tsat.equal(
 								ES.TypedArrayLength(record),
-								Math.floor((17 - 8) / elementSize),
+								Math.floor((24 - 8) / elementSize),
 								type + ' + resizable AB: has expected length'
 							);
 
@@ -17821,7 +17821,7 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 						'non-fixed length, detached throws',
 						{ skip: !('resizable' in ArrayBuffer.prototype) || !esV.canDetach },
 						function (tsat) {
-							var rab = new ArrayBuffer(17, { maxByteLength: 64 });
+							var rab = new ArrayBuffer(24, { maxByteLength: 64 });
 							var arr = new TA(rab, 8);
 							record = ES.MakeTypedArrayWithBufferWitnessRecord(arr, 'UNORDERED');
 
