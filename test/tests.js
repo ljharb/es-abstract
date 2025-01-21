@@ -18007,9 +18007,52 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 
 					// TODO: actual TA byteLength auto, but not fixed length? (may not be possible)
 
-					tat.test('non-fixed length, return floor((byteLength - byteOffset) / elementSize)', { todo: 'blocked on native resizable ABs/growable SABs' });
+					var elementSize = elementSizes['$' + type];
 
-					tat.test('non-fixed length, detached throws', { todo: 'blocked on native resizable ABs/growable SABs' });
+					tat.test(
+						'non-fixed length, return floor((byteLength - byteOffset) / elementSize)',
+						{ skip: !('resizable' in ArrayBuffer.prototype) },
+						function (tsat) {
+							var rab = new ArrayBuffer(17, { maxByteLength: 64 });
+							var arr = new TA(rab, 8);
+							record = ES.MakeTypedArrayWithBufferWitnessRecord(arr, 'UNORDERED');
+
+							tsat.equal(
+								ES.TypedArrayLength(record),
+								Math.floor((17 - 8) / elementSize),
+								type + ' + resizable AB: has expected length'
+							);
+
+							tsat.end();
+						}
+					);
+
+					tat.test(
+						'non-fixed length, detached throws',
+						{ skip: !('resizable' in ArrayBuffer.prototype) || !canDetach },
+						function (tsat) {
+							var rab = new ArrayBuffer(17, { maxByteLength: 64 });
+							var arr = new TA(rab, 8);
+							record = ES.MakeTypedArrayWithBufferWitnessRecord(arr, 'UNORDERED');
+
+							ES.DetachArrayBuffer(rab);
+
+							tsat['throws'](
+								function () { ES.TypedArrayLength(record); },
+								TypeError,
+								'detached RAB with a non-detached TAWBR throws'
+							);
+
+							record = ES.MakeTypedArrayWithBufferWitnessRecord(arr, 'UNORDERED');
+							tsat['throws'](
+								function () { ES.TypedArrayLength(record); },
+								TypeError,
+								'detached RAB with a detached TAWBR throws'
+							);
+
+							tsat.end();
+						}
+					);
 				});
 			});
 
