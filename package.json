@@ -34,7 +34,7 @@
 		"prepublishOnly": "safe-publish-latest && npm run spackle",
 		"pretest": "npm run lint",
 		"test": "npm run tests-only && npm run test:ses",
-		"test:ses": "node test/ses-compat",
+		"test:ses": "node --stack-size=5120 test/ses-compat",
 		"posttest": "npx npm@'>= 10.2' audit --production",
 		"tests-only": "nyc node --stack-size=5120 test",
 		"lint": "eslint .",
