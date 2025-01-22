@@ -14407,6 +14407,14 @@ var es2023 = function ES2023(ES, ops, expectedMissing, skips) {
 	});
 
 	test('IteratorToList', function (t) {
+		forEach(esV.unknowns, function (nonIteratorRecord) {
+			t['throws'](
+				function () { ES.IteratorToList(nonIteratorRecord); },
+				TypeError,
+				debug(nonIteratorRecord) + ' is not an Iterator Record'
+			);
+		});
+
 		var customIterator = function () {
 			var i = -1;
 			return {
@@ -16819,14 +16827,11 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('MakeDataViewWithBufferWitnessRecord', function (t) {
-		forEach([].concat(
-			v.nonObjects,
-			v.objects
-		), function (nonObject) {
+		forEach(esV.unknowns, function (nonDV) {
 			t['throws'](
-				function () { ES.MakeDataViewWithBufferWitnessRecord(nonObject, 'UNORDERED'); },
+				function () { ES.MakeDataViewWithBufferWitnessRecord(nonDV, 'UNORDERED'); },
 				TypeError,
-				debug(nonObject) + ' is not a DataView'
+				debug(nonDV) + ' is not a DataView'
 			);
 		});
 
@@ -16883,11 +16888,11 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 	});
 
 	test('MakeTypedArrayWithBufferWitnessRecord', function (t) {
-		forEach(v.primitives, function (nonObject) {
+		forEach(esV.unknowns, function (nonTA) {
 			t['throws'](
-				function () { ES.MakeTypedArrayWithBufferWitnessRecord(nonObject, 'UNORDERED'); },
+				function () { ES.MakeTypedArrayWithBufferWitnessRecord(nonTA, 'UNORDERED'); },
 				TypeError,
-				debug(nonObject) + ' is not a TypedArray'
+				debug(nonTA) + ' is not a TypedArray'
 			);
 		});
 
