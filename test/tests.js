@@ -16468,25 +16468,74 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 			);
 		});
 
-		t.test('detached buffer', { skip: !esV.canDetach }, function (st) {
-			var ab = new ArrayBuffer(8);
+		t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
+			forEach(availableTypedArrays, function (TypedArray) {
+				st.test('detached buffer', { skip: !esV.canDetach }, function (s2t) {
+					var ab = new ArrayBuffer(8);
 
-			var ta = new Uint8Array(ab);
+					var ta = new Uint8Array(ab);
 
-			var preDetachedRecord = ES.MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
+					var preDetachedRecord = ES.MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
 
-			st.equal(ES.IsTypedArrayOutOfBounds(preDetachedRecord), false);
+					s2t.equal(ES.IsTypedArrayOutOfBounds(preDetachedRecord), false);
 
-			ES.DetachArrayBuffer(ab);
+					ES.DetachArrayBuffer(ab);
 
-			var postDetachedRecord = ES.MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
+					var postDetachedRecord = ES.MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
 
-			st['throws'](
-				function () { ES.IsTypedArrayOutOfBounds(preDetachedRecord); },
-				TypeError
-			);
+					s2t['throws'](
+						function () { ES.IsTypedArrayOutOfBounds(preDetachedRecord); },
+						TypeError
+					);
 
-			st.equal(ES.IsTypedArrayOutOfBounds(postDetachedRecord), true);
+					s2t.equal(ES.IsTypedArrayOutOfBounds(postDetachedRecord), true);
+
+					s2t.end();
+				});
+
+				st.test('Typed Array: ' + TypedArray, function (tat) {
+					var TA = global[TypedArray];
+
+					tat.test('non-fixed length, return length * elementSize', { skip: !('resizable' in ArrayBuffer.prototype) }, function (tast) {
+						var ab = new ArrayBuffer(8, { maxByteLength: 64 });
+						var rta = new TA(ab);
+
+						tast.equal(
+							ES.IsTypedArrayOutOfBounds(ES.MakeTypedArrayWithBufferWitnessRecord(rta, 'UNORDERED')),
+							false,
+							'resizable ArrayBuffer’s Typed Array (' + TypedArray + ') is not out of bounds'
+						);
+
+						tast.end();
+					});
+
+					tat.test('non-fixed length, detached returns zero', { skip: !esV.canDetach }, function (tast) {
+						var ab = new ArrayBuffer(8, { maxByteLength: 64 });
+						var rta = new TA(ab);
+
+						ES.DetachArrayBuffer(ab);
+
+						tast.equal(
+							ES.IsTypedArrayOutOfBounds(ES.MakeTypedArrayWithBufferWitnessRecord(rta, 'UNORDERED')),
+							true,
+							'resizable ArrayBuffer’s detached Typed Array (' + TypedArray + ') is out of bounds'
+						);
+
+						tast.end();
+					});
+
+					// TODO true for byteOffsetStart > bufferByteLength || byteOffsetEnd > bufferByteLength
+					// not sure how to produce these TAs
+
+					for (var i = 0; i < 8; i += 1) {
+						tat.equal(
+							ES.IsTypedArrayOutOfBounds(ES.MakeTypedArrayWithBufferWitnessRecord(new TA(new ArrayBuffer(640), i * 8), 'UNORDERED')),
+							false,
+							'byteOffset ' + (i * 8) + ' is not out of bounds'
+						);
+					}
+				});
+			});
 
 			st.end();
 		});
