@@ -27,10 +27,10 @@ module.exports = function ObjectCreate(proto, internalSlotsList) {
 	}
 
 	var O;
-	if ($ObjectCreate) {
-		O = $ObjectCreate(proto);
-	} else if (hasProto) {
+	if (hasProto) {
 		O = { __proto__: proto };
+	} else if ($ObjectCreate) {
+		O = $ObjectCreate(proto);
 	} else {
 		if (proto === null) {
 			throw new $SyntaxError('native Object.create support is required to create null objects');

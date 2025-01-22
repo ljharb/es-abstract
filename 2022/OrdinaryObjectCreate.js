@@ -33,10 +33,10 @@ module.exports = function OrdinaryObjectCreate(proto) {
 	// return O; // step 5
 
 	var O;
-	if ($ObjectCreate) {
-		O = $ObjectCreate(proto);
-	} else if (hasProto) {
+	if (hasProto) {
 		O = { __proto__: proto };
+	} else if ($ObjectCreate) {
+		O = $ObjectCreate(proto);
 	} else {
 		if (proto === null) {
 			throw new $SyntaxError('native Object.create support is required to create null objects');
