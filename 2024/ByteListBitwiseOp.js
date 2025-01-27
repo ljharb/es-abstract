@@ -4,14 +4,20 @@ var $TypeError = require('es-errors/type');
 
 var IsArray = require('./IsArray');
 
+var Enum = require('../helpers/enum');
 var isByteValue = require('../helpers/isByteValue');
+
+var amp = Enum.define('&');
+var pipe = Enum.define('|');
+var caret = Enum.define('^');
+
+var ops = [amp, pipe, caret];
 
 // https://262.ecma-international.org/12.0/#sec-bytelistbitwiseop
 
 module.exports = function ByteListBitwiseOp(op, xBytes, yBytes) {
-	if (op !== '&' && op !== '^' && op !== '|') {
-		throw new $TypeError('Assertion failed: `op` must be `&`, `^`, or `|`');
-	}
+	var opEnum = Enum.validate('op', ops, op);
+
 	if (!IsArray(xBytes) || !IsArray(yBytes) || xBytes.length !== yBytes.length) {
 		throw new $TypeError('Assertion failed: `xBytes` and `yBytes` must be same-length sequences of byte values (an integer 0-255, inclusive)');
 	}
@@ -25,9 +31,9 @@ module.exports = function ByteListBitwiseOp(op, xBytes, yBytes) {
 			throw new $TypeError('Assertion failed: `xBytes` and `yBytes` must be same-length sequences of byte values (an integer 0-255, inclusive)');
 		}
 		var resultByte;
-		if (op === '&') {
+		if (opEnum === amp) {
 			resultByte = xByte & yByte;
-		} else if (op === '^') {
+		} else if (opEnum === caret) {
 			resultByte = xByte ^ yByte;
 		} else {
 			resultByte = xByte | yByte;

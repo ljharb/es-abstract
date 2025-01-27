@@ -24,6 +24,8 @@ var safeConcat = require('safe-array-concat');
 
 var tableTAO = require('./tables/typed-array-objects');
 
+var Enum = require('../helpers/enum');
+
 var isUnsignedElementType = function isUnsignedElementType(type) { return $charAt(type, 0) === 'U'; };
 
 // https://262.ecma-international.org/6.0/#sec-getvaluefrombuffer
@@ -37,9 +39,7 @@ module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type) {
 		throw new $TypeError('Assertion failed: `byteIndex` must be an integer');
 	}
 
-	if (typeof type !== 'string') {
-		throw new $TypeError('Assertion failed: `type` must be a string');
-	}
+	var typeEnum = Enum.validate('type', tableTAO.types, type);
 
 	if (arguments.length > 3 && typeof arguments[3] !== 'boolean') {
 		throw new $TypeError('Assertion failed: `isLittleEndian` must be a boolean, if present');
@@ -57,10 +57,7 @@ module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type) {
 
 	// 4. Let block be arrayBuffer’s [[ArrayBufferData]] internal slot.
 
-	var elementSize = tableTAO.size['$' + type]; // step 5
-	if (!elementSize) {
-		throw new $TypeError('Assertion failed: `type` must be one of "Int8", "Uint8", "Uint8C", "Int16", "Uint16", "Int32", "Uint32", "Float32", or "Float64"');
-	}
+	var elementSize = tableTAO.size['$' + typeEnum.name]; // step 5
 
 	// 6. Let rawValue be a List of elementSize containing, in order, the elementSize sequence of bytes starting with block[byteIndex].
 	var rawValue = $slice(new $Uint8Array(arrayBuffer, byteIndex), 0, elementSize); // step 6
@@ -74,13 +71,13 @@ module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type) {
 
 	var bytes = $slice(safeConcat([0, 0, 0, 0, 0, 0, 0, 0], rawValue), -elementSize);
 
-	if (type === 'Float32') { // step 3
+	if (typeEnum === Enum('Float32')) { // step 3
 		return bytesAsFloat32(bytes);
 	}
 
-	if (type === 'Float64') { // step 4
+	if (typeEnum === Enum('Float64')) { // step 4
 		return bytesAsFloat64(bytes);
 	}
 
-	return bytesAsInteger(bytes, elementSize, isUnsignedElementType(type), false);
+	return bytesAsInteger(bytes, elementSize, isUnsignedElementType(typeEnum.name), false);
 };

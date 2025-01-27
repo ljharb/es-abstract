@@ -6,10 +6,12 @@ var availableTypedArrays = require('available-typed-arrays')();
 
 var esV = require('../helpers/v');
 
+var Enum = require('../../helpers/enum');
+
 module.exports = function (t, year, actual, extras) {
 	t.ok(year >= 2015, 'ES2015+');
 
-	var order = 'UNORDERED';
+	var order = Enum('UNORDERED');
 
 	var ValidateTypedArray = year >= 2024 ? actual : function ValidateTypedArray(typedArray) {
 		return actual(typedArray);

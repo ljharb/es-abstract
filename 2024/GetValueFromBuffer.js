@@ -20,6 +20,11 @@ var safeConcat = require('safe-array-concat');
 var tableTAO = require('./tables/typed-array-objects');
 
 var defaultEndianness = require('../helpers/defaultEndianness');
+var Enum = require('../helpers/enum');
+
+var seqCST = Enum.define('SEQ-CST');
+var unordered = Enum.define('UNORDERED');
+var orders = [seqCST, unordered];
 
 // https://262.ecma-international.org/15.0/#sec-getvaluefrombuffer
 
@@ -33,17 +38,13 @@ module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type, isTyp
 		throw new $TypeError('Assertion failed: `byteIndex` must be an integer');
 	}
 
-	if (typeof type !== 'string' || typeof tableTAO.size['$' + type] !== 'number') {
-		throw new $TypeError('Assertion failed: `type` must be a Typed Array element type');
-	}
+	var typeEnum = Enum.validate('type', tableTAO.types, type);
 
 	if (typeof isTypedArray !== 'boolean') {
 		throw new $TypeError('Assertion failed: `isTypedArray` must be a boolean');
 	}
 
-	if (order !== 'SEQ-CST' && order !== 'UNORDERED') {
-		throw new $TypeError('Assertion failed: `order` must be either `SEQ-CST` or `UNORDERED`');
-	}
+	Enum.validate('order', orders, order);
 
 	if (arguments.length > 5 && typeof arguments[5] !== 'boolean') {
 		throw new $TypeError('Assertion failed: `isLittleEndian` must be a boolean, if present');
@@ -61,10 +62,7 @@ module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type, isTyp
 
 	// 4. Let block be arrayBuffer.[[ArrayBufferData]].
 
-	var elementSize = tableTAO.size['$' + type]; // step 5
-	if (!elementSize) {
-		throw new $TypeError('Assertion failed: `type` must be one of "INT8", "UINT8", "UINT8C", "INT16", "UINT16", "INT32", "UINT32", "BIGINT64", "BIGUINT64", "FLOAT32", or "FLOAT64"');
-	}
+	var elementSize = tableTAO.size['$' + typeEnum.name]; // step 5
 
 	var rawValue;
 	if (isSAB) { // step 6
@@ -91,5 +89,5 @@ module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type, isTyp
 		? $slice(safeConcat([0, 0, 0, 0, 0, 0, 0, 0], rawValue), -elementSize)
 		: $slice(safeConcat(rawValue, [0, 0, 0, 0, 0, 0, 0, 0]), 0, elementSize);
 
-	return RawBytesToNumeric(type, bytes, isLittleEndian);
+	return RawBytesToNumeric(typeEnum, bytes, isLittleEndian);
 };

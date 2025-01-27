@@ -36,12 +36,16 @@ var ToIndex = require('./ToIndex');
 var isArrayBuffer = require('is-array-buffer');
 var isSharedArrayBuffer = require('is-shared-array-buffer');
 
+var Enum = require('../helpers/enum');
+
+var preserve = Enum.define('PRESERVE-RESIZABILITY');
+var fixedLength = Enum.define('FIXED-LENGTH');
+var preserves = [preserve, fixedLength];
+
 // https://262.ecma-international.org/15.0/#sec-arraybuffercopyanddetach
 
 module.exports = function ArrayBufferCopyAndDetach(arrayBuffer, newLength, preserveResizability) {
-	if (preserveResizability !== 'PRESERVE-RESIZABILITY' && preserveResizability !== 'FIXED-LENGTH') {
-		throw new $TypeError('`preserveResizability` must be ~PRESERVE-RESIZABILITY~ or ~FIXED-LENGTH~');
-	}
+	var preserveEnum = Enum.validate('preserveResizability', preserves, preserveResizability);
 
 	if (!isArrayBuffer(arrayBuffer) || isSharedArrayBuffer(arrayBuffer)) {
 		throw new $TypeError('`arrayBuffer` must be a non-shared ArrayBuffer'); // steps 1 - 2
@@ -62,7 +66,7 @@ module.exports = function ArrayBufferCopyAndDetach(arrayBuffer, newLength, prese
 	}
 
 	var newMaxByteLength;
-	if (preserveResizability === 'PRESERVE-RESIZABILITY' && !IsFixedLengthArrayBuffer(arrayBuffer)) { // step 6
+	if (preserveEnum === preserve && !IsFixedLengthArrayBuffer(arrayBuffer)) { // step 6
 		newMaxByteLength = $maxByteLength(arrayBuffer); // step 6.a
 	} else { // step 7
 		newMaxByteLength = 'EMPTY'; // step 7.a

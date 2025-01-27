@@ -4,14 +4,19 @@ var forEach = require('for-each');
 var debug = require('object-inspect');
 var v = require('es-value-fixtures');
 
+var Enum = require('../../helpers/enum');
+
 module.exports = function (t, year, GroupBy) {
 	t.ok(year >= 2024, 'ES2024+');
 
 	t['throws'](function () { GroupBy([], function () {}, 'unknown'); }, 'keyCoercion is not ~PROPERTY~ or ~ZERO~');
 
+	var property = Enum('PROPERTY');
+	var zero = Enum('ZERO');
+
 	forEach(v.nullPrimitives, function (nullish) {
 		t['throws'](
-			function () { GroupBy(nullish, function () {}, 'PROPERTY'); },
+			function () { GroupBy(nullish, function () {}, property); },
 			TypeError,
 			debug(nullish) + ' is not an Object'
 		);
@@ -19,7 +24,7 @@ module.exports = function (t, year, GroupBy) {
 
 	forEach(v.nonFunctions, function (nonFunction) {
 		t['throws'](
-			function () { GroupBy([], nonFunction, 'PROPERTY'); },
+			function () { GroupBy([], nonFunction, property); },
 			TypeError,
 			debug(nonFunction) + ' is not a Function'
 		);
@@ -27,14 +32,14 @@ module.exports = function (t, year, GroupBy) {
 
 	forEach(v.nonStrings, function (nonIterable) {
 		t['throws'](
-			function () { GroupBy(nonIterable, function () {}, 'PROPERTY'); },
+			function () { GroupBy(nonIterable, function () {}, property); },
 			TypeError,
 			debug(nonIterable) + ' is not iterable'
 		);
 	});
 
 	var tenEx = t.captureFn(function (x) { return x * 10; });
-	var result = GroupBy([-0, 0, 1, 2], tenEx, 'PROPERTY');
+	var result = GroupBy([-0, 0, 1, 2], tenEx, property);
 	t.deepEqual(
 		result,
 		[
@@ -54,7 +59,7 @@ module.exports = function (t, year, GroupBy) {
 	// TODO: maybe add a test for "larger than max safe int"?
 
 	var negate = t.captureFn(function (x) { return -x; });
-	var resultZero = GroupBy([-0, 0, 1, 2], negate, 'ZERO');
+	var resultZero = GroupBy([-0, 0, 1, 2], negate, zero);
 	t.deepEqual(
 		resultZero,
 		[

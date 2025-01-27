@@ -11,6 +11,8 @@ var whichTypedArray = require('which-typed-array');
 
 var tableTAO = require('./tables/typed-array-objects');
 
+var Enum = require('../helpers/enum');
+
 // https://262.ecma-international.org/12.0/#sec-integerindexedelementget
 
 module.exports = function IntegerIndexedElementGet(O, index) {
@@ -35,5 +37,5 @@ module.exports = function IntegerIndexedElementGet(O, index) {
 
 	var indexedPosition = (index * elementSize) + offset; // step 6
 
-	return GetValueFromBuffer(typedArrayBuffer(O), indexedPosition, elementType, true, 'Unordered'); // step 11
+	return GetValueFromBuffer(typedArrayBuffer(O), indexedPosition, elementType, true, Enum('Unordered')); // step 11
 };

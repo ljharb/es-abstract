@@ -8,12 +8,16 @@ var MakeTypedArrayWithBufferWitnessRecord = require('./MakeTypedArrayWithBufferW
 
 var isTypedArray = require('is-typed-array');
 
+var Enum = require('../helpers/enum');
+
+var seqCST = Enum.define('SEQ-CST');
+var unordered = Enum.define('UNORDERED');
+var orders = [seqCST, unordered];
+
 // https://262.ecma-international.org/15.0/#sec-validatetypedarray
 
 module.exports = function ValidateTypedArray(O, order) {
-	if (order !== 'SEQ-CST' && order !== 'UNORDERED') {
-		throw new $TypeError('Assertion failed: `order` must be ~SEQ-CST~ or ~UNORDERED~');
-	}
+	Enum.validate('order', orders, order);
 
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: `O` must be an Object'); // step 1

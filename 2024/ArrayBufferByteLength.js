@@ -2,8 +2,6 @@
 
 var $TypeError = require('es-errors/type');
 
-// https://262.ecma-international.org/15.0/#sec-arraybufferbytelength
-
 var IsDetachedBuffer = require('./IsDetachedBuffer');
 
 var isArrayBuffer = require('is-array-buffer');
@@ -15,14 +13,20 @@ var $sabByteLength = callBound('SharedArrayBuffer.prototype.byteLength', true);
 
 var isGrowable = false; // TODO: support this
 
+var Enum = require('../helpers/enum');
+
+var seqCST = Enum.define('SEQ-CST');
+var unordered = Enum.define('UNORDERED');
+var orders = [seqCST, unordered];
+
+// https://262.ecma-international.org/15.0/#sec-arraybufferbytelength
+
 module.exports = function ArrayBufferByteLength(arrayBuffer, order) {
 	var isSAB = isSharedArrayBuffer(arrayBuffer);
 	if (!isArrayBuffer(arrayBuffer) && !isSAB) {
 		throw new $TypeError('Assertion failed: `arrayBuffer` must be an ArrayBuffer or a SharedArrayBuffer');
 	}
-	if (order !== 'SEQ-CST' && order !== 'UNORDERED') {
-		throw new $TypeError('Assertion failed: `order` must be ~SEQ-CST~ or ~UNORDERED~');
-	}
+	Enum.validate('order', orders, order);
 
 	// 1. If IsSharedArrayBuffer(arrayBuffer) is true and arrayBuffer has an [[ArrayBufferByteLengthData]] internal slot, then
 	// TODO: see if IsFixedLengthArrayBuffer can be used here in the spec instead

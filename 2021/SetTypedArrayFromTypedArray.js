@@ -23,6 +23,8 @@ var SetValueInBuffer = require('./SetValueInBuffer');
 
 var tableTAO = require('./tables/typed-array-objects');
 
+var Enum = require('../helpers/enum');
+
 // https://262.ecma-international.org/12.0/#sec-settypedarrayfromtypedarray
 
 module.exports = function SetTypedArrayFromTypedArray(target, targetOffset, source) {
@@ -111,14 +113,16 @@ module.exports = function SetTypedArrayFromTypedArray(target, targetOffset, sour
 
 	var limit = targetByteIndex + (targetElementSize * srcLength); // step 24
 
+	var unordered = Enum('Unordered');
+
 	var value;
 	if (srcType === targetType) { // step 25
 		// a. NOTE: If srcType and targetType are the same, the transfer must be performed in a manner that preserves the bit-level encoding of the source data.
 
 		while (targetByteIndex < limit) { // step 25.b
-			value = GetValueFromBuffer(srcBuffer, srcByteIndex, 'Uint8', true, 'Unordered'); // step 25.b.i
+			value = GetValueFromBuffer(srcBuffer, srcByteIndex, 'Uint8', true, unordered); // step 25.b.i
 
-			SetValueInBuffer(targetBuffer, targetByteIndex, 'Uint8', value, true, 'Unordered'); // step 25.b.ii
+			SetValueInBuffer(targetBuffer, targetByteIndex, 'Uint8', value, true, unordered); // step 25.b.ii
 
 			srcByteIndex += 1; // step 25.b.iii
 
@@ -126,9 +130,9 @@ module.exports = function SetTypedArrayFromTypedArray(target, targetOffset, sour
 		}
 	} else { // step 26
 		while (targetByteIndex < limit) { // step 26.a
-			value = GetValueFromBuffer(srcBuffer, srcByteIndex, srcType, true, 'Unordered'); // step 26.a.i
+			value = GetValueFromBuffer(srcBuffer, srcByteIndex, srcType, true, unordered); // step 26.a.i
 
-			SetValueInBuffer(targetBuffer, targetByteIndex, targetType, value, true, 'Unordered'); // step 26.a.ii
+			SetValueInBuffer(targetBuffer, targetByteIndex, targetType, value, true, unordered); // step 26.a.ii
 
 			srcByteIndex += srcElementSize; // step 26.a.iii
 

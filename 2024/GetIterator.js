@@ -5,7 +5,6 @@ var GetIntrinsic = require('get-intrinsic');
 var $TypeError = require('es-errors/type');
 var $asyncIterator = GetIntrinsic('%Symbol.asyncIterator%', true);
 
-var inspect = require('object-inspect');
 var hasSymbols = require('has-symbols')();
 
 var AdvanceStringIndex = require('./AdvanceStringIndex');
@@ -18,17 +17,21 @@ var ES = {
 	GetMethod: GetMethod
 };
 
+var Enum = require('../helpers/enum');
+
+var sync = Enum.define('SYNC');
+var async = Enum.define('ASYNC');
+var kinds = [sync, async];
+
 var getIteratorMethod = require('../helpers/getIteratorMethod');
 
 // https://262.ecma-international.org/14.0/#sec-getiterator
 
 module.exports = function GetIterator(obj, kind) {
-	if (kind !== 'SYNC' && kind !== 'ASYNC') {
-		throw new $TypeError("Assertion failed: `kind` must be one of 'sync' or 'async', got " + inspect(kind));
-	}
+	var kindEnum = Enum.validate('kind', kinds, kind);
 
 	var method;
-	if (kind === 'ASYNC') { // step 1
+	if (kindEnum === async) { // step 1
 		if (hasSymbols && $asyncIterator) {
 			method = GetMethod(obj, $asyncIterator); // step 1.a
 		}
@@ -36,7 +39,7 @@ module.exports = function GetIterator(obj, kind) {
 	if (typeof method === 'undefined') { // step 1.b
 		// var syncMethod = GetMethod(obj, $iterator); // step 1.b.i
 		var syncMethod = getIteratorMethod(ES, obj);
-		if (kind === 'ASYNC') {
+		if (kindEnum === async) {
 			if (typeof syncMethod === 'undefined') {
 				throw new $TypeError('iterator method is `undefined`'); // step 1.b.ii
 			}

@@ -13,6 +13,8 @@ var whichTypedArray = require('which-typed-array');
 
 var tableTAO = require('./tables/typed-array-objects');
 
+var Enum = require('../helpers/enum');
+
 // https://262.ecma-international.org/12.0/#sec-integerindexedelementset
 
 module.exports = function IntegerIndexedElementSet(O, index, value) {
@@ -37,7 +39,7 @@ module.exports = function IntegerIndexedElementSet(O, index, value) {
 
 		var indexedPosition = (index * elementSize) + offset; // step 4.d
 
-		SetValueInBuffer(typedArrayBuffer(O), indexedPosition, elementType, numValue, true, 'Unordered'); // step 4.e
+		SetValueInBuffer(typedArrayBuffer(O), indexedPosition, elementType, numValue, true, Enum('Unordered')); // step 4.e
 	}
 
 	// 5. Return NormalCompletion(undefined)

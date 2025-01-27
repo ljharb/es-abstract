@@ -13,12 +13,17 @@ var NumericToRawBytes = require('./NumericToRawBytes');
 
 var isArrayBuffer = require('is-array-buffer');
 var isSharedArrayBuffer = require('is-shared-array-buffer');
-var hasOwn = require('hasown');
 
 var tableTAO = require('./tables/typed-array-objects');
 
 var defaultEndianness = require('../helpers/defaultEndianness');
+var Enum = require('../helpers/enum');
 var forEach = require('../helpers/forEach');
+
+var init = Enum.define('Init');
+var seqCST = Enum.define('SeqCst');
+var unordered = Enum.define('Unordered');
+var orders = [init, seqCST, unordered];
 
 // https://262.ecma-international.org/12.0/#sec-setvalueinbuffer
 
@@ -34,9 +39,7 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value, 
 		throw new $TypeError('Assertion failed: `byteIndex` must be a non-negative integer');
 	}
 
-	if (typeof type !== 'string' || !hasOwn(tableTAO.size, '$' + type)) {
-		throw new $TypeError('Assertion failed: `type` must be a Typed Array Element Type');
-	}
+	var typeEnum = Enum.validate('type', tableTAO.types, type);
 
 	if (typeof value !== 'number' && typeof value !== 'bigint') {
 		throw new $TypeError('Assertion failed: `value` must be a Number or a BigInt');
@@ -45,9 +48,7 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value, 
 	if (typeof isTypedArray !== 'boolean') {
 		throw new $TypeError('Assertion failed: `isTypedArray` must be a boolean');
 	}
-	if (order !== 'SeqCst' && order !== 'Unordered' && order !== 'Init') {
-		throw new $TypeError('Assertion failed: `order` must be `"SeqCst"`, `"Unordered"`, or `"Init"`');
-	}
+	Enum.validate('order', orders, order);
 
 	if (arguments.length > 6 && typeof arguments[6] !== 'boolean') {
 		throw new $TypeError('Assertion failed: `isLittleEndian` must be a boolean, if present');
@@ -59,18 +60,18 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value, 
 
 	// 2. Assert: There are sufficient bytes in arrayBuffer starting at byteIndex to represent a value of type.
 
-	if (IsBigIntElementType(type) ? typeof value !== 'bigint' : typeof value !== 'number') { // step 3
+	if (IsBigIntElementType(typeEnum) ? typeof value !== 'bigint' : typeof value !== 'number') { // step 3
 		throw new $TypeError('Assertion failed: `value` must be a BigInt if type is BigInt64 or BigUint64, otherwise a Number');
 	}
 
 	// 4. Let block be arrayBuffer’s [[ArrayBufferData]] internal slot.
 
-	var elementSize = tableTAO.size['$' + type]; // step 5
+	var elementSize = tableTAO.size['$' + typeEnum.name]; // step 5
 
 	// 6. If isLittleEndian is not present, set isLittleEndian to either true or false. The choice is implementation dependent and should be the alternative that is most efficient for the implementation. An implementation must use the same value each time this step is executed and the same value must be used for the corresponding step in the GetValueFromBuffer abstract operation.
 	var isLittleEndian = arguments.length > 6 ? arguments[6] : defaultEndianness === 'little'; // step 6
 
-	var rawBytes = NumericToRawBytes(type, value, isLittleEndian); // step 7
+	var rawBytes = NumericToRawBytes(typeEnum, value, isLittleEndian); // step 7
 
 	if (isSAB) { // step 8
 		/*

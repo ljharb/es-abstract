@@ -11,6 +11,8 @@ var isTypedArray = require('is-typed-array');
 var typedArrayBuffer = require('typed-array-buffer');
 var typedArrayByteOffset = require('typed-array-byte-offset');
 
+var Enum = require('../helpers/enum');
+
 // https://262.ecma-international.org/13.0/#sec-integerindexedelementget
 
 module.exports = function IntegerIndexedElementGet(O, index) {
@@ -34,5 +36,5 @@ module.exports = function IntegerIndexedElementGet(O, index) {
 
 	var elementType = TypedArrayElementType(O); // step 5
 
-	return GetValueFromBuffer(typedArrayBuffer(O), indexedPosition, elementType, true, 'Unordered'); // step 11
+	return GetValueFromBuffer(typedArrayBuffer(O), indexedPosition, elementType, true, Enum('Unordered')); // step 11
 };

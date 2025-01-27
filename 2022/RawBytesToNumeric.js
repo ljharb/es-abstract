@@ -8,7 +8,6 @@ var $SyntaxError = require('es-errors/syntax');
 var $TypeError = require('es-errors/type');
 var $BigInt = GetIntrinsic('%BigInt%', true);
 
-var hasOwnProperty = require('./HasOwnProperty');
 var IsArray = require('./IsArray');
 var IsBigIntElementType = require('./IsBigIntElementType');
 var IsUnsignedElementType = require('./IsUnsignedElementType');
@@ -16,6 +15,7 @@ var IsUnsignedElementType = require('./IsUnsignedElementType');
 var bytesAsFloat32 = require('../helpers/bytesAsFloat32');
 var bytesAsFloat64 = require('../helpers/bytesAsFloat64');
 var bytesAsInteger = require('../helpers/bytesAsInteger');
+var Enum = require('../helpers/enum');
 var every = require('../helpers/every');
 var isByteValue = require('../helpers/isByteValue');
 
@@ -27,9 +27,8 @@ var tableTAO = require('./tables/typed-array-objects');
 // https://262.ecma-international.org/11.0/#sec-rawbytestonumeric
 
 module.exports = function RawBytesToNumeric(type, rawBytes, isLittleEndian) {
-	if (typeof type !== 'string' || !hasOwnProperty(tableTAO.size, '$' + type)) {
-		throw new $TypeError('Assertion failed: `type` must be a TypedArray element type');
-	}
+	var typeEnum = Enum.validate('type', tableTAO.types, type);
+
 	if (!IsArray(rawBytes) || !every(rawBytes, isByteValue)) {
 		throw new $TypeError('Assertion failed: `rawBytes` must be an Array of bytes');
 	}
@@ -37,14 +36,14 @@ module.exports = function RawBytesToNumeric(type, rawBytes, isLittleEndian) {
 		throw new $TypeError('Assertion failed: `isLittleEndian` must be a Boolean');
 	}
 
-	var elementSize = tableTAO.size['$' + type]; // step 1
+	var elementSize = tableTAO.size['$' + typeEnum.name]; // step 1
 
 	if (rawBytes.length !== elementSize) {
 		// this assertion is not in the spec, but it'd be an editorial error if it were ever violated
-		throw new $RangeError('Assertion failed: `rawBytes` must have a length of ' + elementSize + ' for type ' + type);
+		throw new $RangeError('Assertion failed: `rawBytes` must have a length of ' + elementSize + ' for type ' + typeEnum);
 	}
 
-	var isBigInt = IsBigIntElementType(type);
+	var isBigInt = IsBigIntElementType(typeEnum);
 	if (isBigInt && !$BigInt) {
 		throw new $SyntaxError('this environment does not support BigInts');
 	}
@@ -55,13 +54,13 @@ module.exports = function RawBytesToNumeric(type, rawBytes, isLittleEndian) {
 		$reverse(rawBytes); // step 2
 	}
 
-	if (type === 'Float32') { // step 3
+	if (typeEnum === Enum('Float32')) { // step 3
 		return bytesAsFloat32(rawBytes);
 	}
 
-	if (type === 'Float64') { // step 4
+	if (typeEnum === Enum('Float64')) { // step 4
 		return bytesAsFloat64(rawBytes);
 	}
 
-	return bytesAsInteger(rawBytes, elementSize, IsUnsignedElementType(type), isBigInt);
+	return bytesAsInteger(rawBytes, elementSize, IsUnsignedElementType(typeEnum), isBigInt);
 };

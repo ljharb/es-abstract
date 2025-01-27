@@ -22,6 +22,8 @@ var ToString = require('./ToString');
 var TypedArrayElementSize = require('./TypedArrayElementSize');
 var TypedArrayElementType = require('./TypedArrayElementType');
 
+var Enum = require('../helpers/enum');
+
 // https://262.ecma-international.org/13.0/#sec-settypedarrayfromarraylike
 
 module.exports = function SetTypedArrayFromArrayLike(target, targetOffset, source) {
@@ -85,7 +87,7 @@ module.exports = function SetTypedArrayFromArrayLike(target, targetOffset, sourc
 			throw new $TypeError('target’s buffer is detached'); // step 14.e
 		}
 
-		SetValueInBuffer(targetBuffer, targetByteIndex, targetType, value, true, 'Unordered'); // step 14.f
+		SetValueInBuffer(targetBuffer, targetByteIndex, targetType, value, true, Enum('Unordered')); // step 14.f
 
 		k += 1; // step 14.g
 

@@ -8,6 +8,7 @@ var safeBigInt = require('safe-bigint');
 
 var bufferTestCases = require('../bufferTestCases.json');
 
+var Enum = require('../../helpers/enum');
 var clearBuffer = require('../helpers/clearBuffer');
 var unserialize = require('../helpers/unserializeNumeric');
 var esV = require('../helpers/v');
@@ -15,7 +16,9 @@ var esV = require('../helpers/v');
 module.exports = function (t, year, actual, extras) {
 	t.ok(year >= 2015, 'ES2015+');
 
-	var order = year >= 2024 ? 'UNORDERED' : 'Unordered';
+	var order = Enum(year >= 2024 ? 'UNORDERED' : 'Unordered');
+	var int8 = Enum(year >= 2024 ? 'INT8' : 'Int8');
+	var bigUint64 = Enum(year >= 2024 ? 'BIGUINT64' : 'BigUint64');
 
 	var SetValueInBuffer = year >= 2017
 		? actual
@@ -31,7 +34,7 @@ module.exports = function (t, year, actual, extras) {
 	forEach([true, false], function (bool) {
 		forEach(esV.unknowns, function (nonAB) {
 			t['throws'](
-				function () { SetValueInBuffer(nonAB, 0, year >= 2024 ? 'INT8' : 'Int8', 0, bool, order); },
+				function () { SetValueInBuffer(nonAB, 0, int8, 0, bool, order); },
 				TypeError,
 				debug(nonAB) + ' is not an ArrayBuffer (isTypedArray ' + bool + ')'
 			);
@@ -42,20 +45,20 @@ module.exports = function (t, year, actual, extras) {
 		if (year >= 2020) {
 			st.test('BigInts', { skip: esV.hasBigInts }, function (s2t) {
 				s2t['throws'](
-					function () { SetValueInBuffer(new ArrayBuffer(8), 0, year >= 2024 ? 'INT8' : 'Int8', BigInt(0), true, order); },
+					function () { SetValueInBuffer(new ArrayBuffer(8), 0, int8, BigInt(0), true, order); },
 					TypeError,
 					debug(BigInt(0)) + ' is not a number, but the given type requires one'
 				);
 
 				s2t['throws'](
-					function () { SetValueInBuffer(new ArrayBuffer(8), 0, year >= 2024 ? 'BIGUINT64' : 'BigUint64', 0, true, order); },
+					function () { SetValueInBuffer(new ArrayBuffer(8), 0, bigUint64, 0, true, order); },
 					TypeError,
 					debug(0) + ' is not a bigint, but the given type requires one'
 				);
 
 				forEach(v.bigints, function (bigint) {
 					var buffer = new ArrayBuffer(8);
-					SetValueInBuffer(buffer, 0, year >= 2024 ? 'BIGUINT64' : 'BigUint64', bigint, true, order);
+					SetValueInBuffer(buffer, 0, bigUint64, bigint, true, order);
 					st.equal(
 						new BigUint64Array(buffer)[0],
 						bigint,
@@ -70,7 +73,7 @@ module.exports = function (t, year, actual, extras) {
 		forEach([true, false], function (bool) {
 			forEach(v.notNonNegativeIntegers, function (nonNonNegativeInteger) {
 				st['throws'](
-					function () { SetValueInBuffer(new ArrayBuffer(8), nonNonNegativeInteger, year >= 2024 ? 'INT8' : 'Int8', 0, bool, order); },
+					function () { SetValueInBuffer(new ArrayBuffer(8), nonNonNegativeInteger, int8, 0, bool, order); },
 					TypeError,
 					debug(nonNonNegativeInteger) + ' is not a valid byte index (isTypedArray ' + bool + ')'
 				);
@@ -89,13 +92,13 @@ module.exports = function (t, year, actual, extras) {
 
 		forEach(v.nonBooleans, function (nonBoolean) {
 			st['throws'](
-				function () { SetValueInBuffer(new ArrayBuffer(8), 0, year >= 2024 ? 'INT8' : 'Int8', 0, nonBoolean, false, order); },
+				function () { SetValueInBuffer(new ArrayBuffer(8), 0, int8, 0, nonBoolean, false, order); },
 				TypeError,
 				'isTypedArray: ' + debug(nonBoolean) + ' is not a valid Boolean value'
 			);
 
 			st['throws'](
-				function () { SetValueInBuffer(new ArrayBuffer(8), 0, year >= 2024 ? 'INT8' : 'Int8', 0, true, order, nonBoolean); },
+				function () { SetValueInBuffer(new ArrayBuffer(8), 0, int8, 0, true, order, nonBoolean); },
 				TypeError,
 				'isLittleEndian: ' + debug(nonBoolean) + ' is not a valid Boolean value'
 			);
@@ -104,7 +107,7 @@ module.exports = function (t, year, actual, extras) {
 		forEach([true, false], function (bool) {
 			forEach(v.nonNumbers, function (nonNumber) {
 				st['throws'](
-					function () { SetValueInBuffer(new ArrayBuffer(8), 0, year >= 2024 ? 'INT8' : 'Int8', nonNumber, bool, order); },
+					function () { SetValueInBuffer(new ArrayBuffer(8), 0, int8, nonNumber, bool, order); },
 					TypeError,
 					debug(nonNumber) + ' is not a valid Number or BigInt value (isTypedArray ' + bool + ')'
 				);
@@ -112,7 +115,7 @@ module.exports = function (t, year, actual, extras) {
 
 			if (year >= 2017) {
 				st['throws'](
-					function () { SetValueInBuffer(new ArrayBuffer(8), 0, year >= 2024 ? 'INT8' : 'Int8', 0, bool, 'invalid order'); },
+					function () { SetValueInBuffer(new ArrayBuffer(8), 0, int8, 0, bool, 'invalid order'); },
 					TypeError,
 					'invalid order (isTypedArray ' + bool + ')'
 				);
@@ -125,7 +128,7 @@ module.exports = function (t, year, actual, extras) {
 
 			forEach([true, false], function (bool) {
 				s2t['throws'](
-					function () { SetValueInBuffer(buffer, 0, year >= 2024 ? 'INT8' : 'Int8', 0, bool, order); },
+					function () { SetValueInBuffer(buffer, 0, int8, 0, bool, order); },
 					TypeError,
 					'detached buffers throw (isTypedArray ' + bool + ')'
 				);
@@ -148,7 +151,7 @@ module.exports = function (t, year, actual, extras) {
 
 				if (isBigInt) {
 					st['throws'](
-						function () { SetValueInBuffer(buffer, 0, year >= 2024 ? type.toUpperCase() : type, 0, false, order, true); },
+						function () { SetValueInBuffer(buffer, 0, Enum(year >= 2024 ? type.toUpperCase() : type), 0, false, order, true); },
 						TypeError,
 						'bigint type throws with a Number value'
 					);
@@ -162,7 +165,7 @@ module.exports = function (t, year, actual, extras) {
 
 				/*
 				st.equal(
-					SetValueInBuffer(testCase.buffer, 0, type, true, 'Unordered'),
+					SetValueInBuffer(testCase.buffer, 0, type, true, order),
 					defaultEndianness === testCase.endian ? testCase[type].little.value] : testCase[type].big.value,
 					'buffer holding ' + debug(testCase.value) + ' (' + testCase.endian + ' endian) with type ' + type + ', default endian, yields expected value'
 				);
@@ -172,7 +175,7 @@ module.exports = function (t, year, actual, extras) {
 				clearBuffer(buffer);
 
 				st.equal(
-					SetValueInBuffer(buffer, 0, year >= 2024 ? type.toUpperCase() : type, valToSet, false, order, true),
+					SetValueInBuffer(buffer, 0, Enum(year >= 2024 ? type.toUpperCase() : type), valToSet, false, order, true),
 					void undefined,
 					'returns undefined'
 				);
@@ -186,7 +189,7 @@ module.exports = function (t, year, actual, extras) {
 					clearBuffer(buffer);
 
 					st.equal(
-						SetValueInBuffer(buffer, 0, year >= 2024 ? type.toUpperCase() : type, valToSet, false, order, false),
+						SetValueInBuffer(buffer, 0, Enum(year >= 2024 ? type.toUpperCase() : type), valToSet, false, order, false),
 						void undefined,
 						'returns undefined'
 					);
@@ -205,7 +208,7 @@ module.exports = function (t, year, actual, extras) {
 	if (year >= 2022) {
 		t.test('SharedArrayBuffers supported', { skip: typeof SharedArrayBuffer !== 'function' }, function (st) {
 			st['throws'](
-				function () { SetValueInBuffer(new SharedArrayBuffer(0), 0, year >= 2024 ? 'INT8' : 'Int8', 0, true, order); },
+				function () { SetValueInBuffer(new SharedArrayBuffer(0), 0, int8, 0, true, order); },
 				SyntaxError,
 				'SAB not yet supported'
 			);

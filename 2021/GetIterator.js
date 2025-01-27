@@ -7,7 +7,6 @@ var $SyntaxError = require('es-errors/syntax');
 var isObject = require('es-object-atoms/isObject');
 var $asyncIterator = GetIntrinsic('%Symbol.asyncIterator%', true);
 
-var inspect = require('object-inspect');
 var hasSymbols = require('has-symbols')();
 
 var getIteratorMethod = require('../helpers/getIteratorMethod');
@@ -20,20 +19,20 @@ var ES = {
 	GetMethod: GetMethod
 };
 
+var Enum = require('../helpers/enum');
+
+var sync = Enum.define('sync');
+var async = Enum.define('async');
+var hints = [sync, async];
+
 // https://262.ecma-international.org/9.0/#sec-getiterator
 
 module.exports = function GetIterator(obj, hint, method) {
-	var actualHint = hint;
-	if (arguments.length < 2) {
-		actualHint = 'sync';
-	}
-	if (actualHint !== 'sync' && actualHint !== 'async') {
-		throw new $TypeError("Assertion failed: `hint` must be one of 'sync' or 'async', got " + inspect(hint));
-	}
+	var actualHint = Enum.validate('hint', hints, arguments.length < 2 ? sync : hint);
 
 	var actualMethod = method;
 	if (arguments.length < 3) {
-		if (actualHint === 'async') {
+		if (actualHint === async) {
 			if (hasSymbols && $asyncIterator) {
 				actualMethod = GetMethod(obj, $asyncIterator);
 			}

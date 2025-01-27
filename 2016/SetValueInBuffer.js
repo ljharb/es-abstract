@@ -17,7 +17,6 @@ var ToUint8 = require('./ToUint8');
 var ToUint8Clamp = require('./ToUint8Clamp');
 
 var isArrayBuffer = require('is-array-buffer');
-var hasOwn = require('hasown');
 
 var tableTAO = require('./tables/typed-array-objects');
 
@@ -33,6 +32,7 @@ var TypeToAO = {
 };
 
 var defaultEndianness = require('../helpers/defaultEndianness');
+var Enum = require('../helpers/enum');
 var forEach = require('../helpers/forEach');
 var integerToNBytes = require('../helpers/integerToNBytes');
 var valueToFloat32Bytes = require('../helpers/valueToFloat32Bytes');
@@ -49,9 +49,7 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value) 
 		throw new $TypeError('Assertion failed: `byteIndex` must be an integer');
 	}
 
-	if (typeof type !== 'string' || !hasOwn(tableTAO.size, '$' + type)) {
-		throw new $TypeError('Assertion failed: `type` must be a Typed Array Element Type');
-	}
+	var typeEnum = Enum.validate('type', tableTAO.types, type);
 
 	if (typeof value !== 'number') {
 		throw new $TypeError('Assertion failed: `value` must be a number');
@@ -77,23 +75,20 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value) 
 
 	// 6. Assert: block is not undefined.
 
-	var elementSize = tableTAO.size['$' + type]; // step 7
-	if (!elementSize) {
-		throw new $TypeError('Assertion failed: `type` must be one of "Int8", "Uint8", "Uint8C", "Int16", "Uint16", "Int32", "Uint32", "Float32", or "Float64"');
-	}
+	var elementSize = tableTAO.size['$' + typeEnum.name]; // step 7
 
 	// 8. If isLittleEndian is not present, set isLittleEndian to either true or false. The choice is implementation dependent and should be the alternative that is most efficient for the implementation. An implementation must use the same value each time this step is executed and the same value must be used for the corresponding step in the GetValueFromBuffer abstract operation.
 	var isLittleEndian = arguments.length > 4 ? arguments[4] : defaultEndianness === 'little'; // step 8
 
 	var rawBytes;
-	if (type === 'Float32') { // step 1
+	if (typeEnum === Enum('Float32')) { // step 1
 		rawBytes = valueToFloat32Bytes(value, isLittleEndian);
-	} else if (type === 'Float64') { // step 2
+	} else if (typeEnum === Enum('Float64')) { // step 2
 		rawBytes = valueToFloat64Bytes(value, isLittleEndian);
 	} else {
 		var n = elementSize; // step 3.a
 
-		var convOp = TypeToAO['$' + type]; // step 3.b
+		var convOp = TypeToAO['$' + typeEnum.name]; // step 3.b
 
 		var intValue = convOp(value); // step 3.c
 

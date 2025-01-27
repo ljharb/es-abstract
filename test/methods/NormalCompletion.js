@@ -2,6 +2,8 @@
 
 var SLOT = require('internal-slot');
 
+var Enum = require('../../helpers/enum');
+
 module.exports = function (t, year, NormalCompletion, extras) {
 	t.ok(year >= 2015, 'ES2015+');
 
@@ -12,7 +14,7 @@ module.exports = function (t, year, NormalCompletion, extras) {
 
 	t.ok(completion instanceof CompletionRecord, 'produces an instance of CompletionRecord');
 
-	t.equal(SLOT.get(completion, year < 2016 ? '[[type]]' : '[[Type]]'), 'normal', 'completion type is "normal"');
+	t.equal(SLOT.get(completion, year < 2016 ? '[[type]]' : '[[Type]]'), Enum('normal'), 'completion type is "normal"');
 	t.equal(completion.type(), 'normal', 'completion type is "normal" (via property)');
 
 	t.equal(SLOT.get(completion, year < 2016 ? '[[value]]' : '[[Value]]'), sentinel, 'completion value is the argument provided');

@@ -8,12 +8,16 @@ var forEach = require('for-each');
 var safeBigInt = require('safe-bigint');
 var v = require('es-value-fixtures');
 
+var Enum = require('../helpers/Enum');
+
 var bufferTestCases = require('../bufferTestCases.json');
 var esV = require('../helpers/v');
 var unserialize = require('../helpers/unserializeNumeric');
 
 module.exports = function (t, year, NumericToRawBytes) {
 	t.ok(year >= 2017, 'ES2017+');
+
+	var int8 = Enum(year >= 2024 ? 'INT8' : 'Int8');
 
 	forEach(esV.nonTATypes, function (nonTAType) {
 		t['throws'](
@@ -25,7 +29,7 @@ module.exports = function (t, year, NumericToRawBytes) {
 
 	forEach(v.nonNumbers, function (nonNumber) {
 		t['throws'](
-			function () { NumericToRawBytes(year >= 2024 ? 'INT8' : 'Int8', nonNumber, false); },
+			function () { NumericToRawBytes(int8, nonNumber, false); },
 			TypeError,
 			debug(nonNumber) + ' is not a Number'
 		);
@@ -33,7 +37,7 @@ module.exports = function (t, year, NumericToRawBytes) {
 
 	forEach(v.nonBooleans, function (nonBoolean) {
 		t['throws'](
-			function () { NumericToRawBytes(year >= 2024 ? 'INT8' : 'Int8', 0, nonBoolean); },
+			function () { NumericToRawBytes(int8, 0, nonBoolean); },
 			TypeError,
 			debug(nonBoolean) + ' is not a Boolean'
 		);
@@ -57,21 +61,21 @@ module.exports = function (t, year, NumericToRawBytes) {
 				st.test(type, function (s2t) {
 					/*
 					s2t.equal(
-						GetValueFromBuffer(testCase.buffer, 0, type, true, 'Unordered'),
+						GetValueFromBuffer(testCase.buffer, 0, Enum(type), true, 'Unordered'),
 						defaultEndianness === testCase.endian ? testCase[type].little.value : testCase[type].big.value,
 						'buffer holding ' + debug(testCase.value) + ' (' + testCase.endian + ' endian) with type ' + type + ', default endian, yields expected value'
 					);
 					*/
 
 					s2t.deepEqual(
-						NumericToRawBytes(year >= 2024 ? type.toUpperCase() : type, valToSet, true),
+						NumericToRawBytes(Enum(year >= 2024 ? type.toUpperCase() : type), valToSet, true),
 						result[type === 'Float64' ? 'setAsLittle' : 'setAsTruncatedLittle'].bytes,
 						debug(value) + ' with type ' + type + ', little endian, yields expected value'
 					);
 
 					if (hasBigEndian) {
 						s2t.deepEqual(
-							NumericToRawBytes(year >= 2024 ? type.toUpperCase() : type, valToSet, false),
+							NumericToRawBytes(Enum(year >= 2024 ? type.toUpperCase() : type), valToSet, false),
 							result[type === 'Float64' ? 'setAsBig' : 'setAsTruncatedBig'].bytes,
 							debug(value) + ' with type ' + type + ', big endian, yields expected value'
 						);

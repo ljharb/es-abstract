@@ -1,7 +1,10 @@
 'use strict';
 
+var Enum = require('../helpers/enum');
+
 // https://262.ecma-international.org/11.0/#sec-isbigintelementtype
 
 module.exports = function IsBigIntElementType(type) {
-	return type === 'BigUint64' || type === 'BigInt64';
+	var typeEnum = Enum(type);
+	return typeEnum === Enum('BigUint64') || typeEnum === Enum('BigInt64');
 };

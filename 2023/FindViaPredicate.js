@@ -10,6 +10,12 @@ var ToBoolean = require('./ToBoolean');
 var IsCallable = require('./IsCallable');
 var ToString = require('./ToString');
 
+var Enum = require('../helpers/enum');
+
+var ascending = Enum.define('ascending');
+var descending = Enum.define('descending');
+var directions = [ascending, descending];
+
 // https://262.ecma-international.org/14.0/#sec-findviapredicate
 
 module.exports = function FindViaPredicate(O, len, direction, predicate, thisArg) {
@@ -19,17 +25,17 @@ module.exports = function FindViaPredicate(O, len, direction, predicate, thisArg
 	if (!isInteger(len) || len < 0) {
 		throw new $TypeError('Assertion failed: len must be a non-negative integer');
 	}
-	if (direction !== 'ascending' && direction !== 'descending') {
-		throw new $TypeError('Assertion failed: direction must be "ascending" or "descending"');
-	}
+	var dirEnum = Enum.validate('direction', directions, direction);
 
 	if (!IsCallable(predicate)) {
 		throw new $TypeError('predicate must be callable'); // step 1
 	}
 
+	var isAscending = dirEnum === ascending;
+
 	for ( // steps 2-4
-		var k = direction === 'ascending' ? 0 : len - 1;
-		direction === 'ascending' ? k < len : k >= 0;
+		var k = isAscending ? 0 : len - 1;
+		isAscending ? k < len : k >= 0;
 		k += 1
 	) {
 		var Pk = ToString(k); // step 4.a

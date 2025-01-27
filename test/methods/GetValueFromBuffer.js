@@ -5,6 +5,8 @@ var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
 var bufferTestCases = require('../bufferTestCases.json');
+
+var Enum = require('../../helpers/enum');
 var clearBuffer = require('../helpers/clearBuffer');
 var unserialize = require('../helpers/unserializeNumeric');
 var esV = require('../helpers/v');
@@ -21,11 +23,12 @@ module.exports = function (t, year, actual, extras) {
 		return actual(arrayBuffer, byteIndex, type);
 	};
 
-	var order = year >= 2024 ? 'UNORDERED' : 'Unordered';
+	var order = Enum(year >= 2024 ? 'UNORDERED' : 'Unordered');
+	var int8 = Enum(year >= 2024 ? 'INT8' : 'Int8');
 
 	forEach(esV.unknowns, function (nonAB) {
 		t['throws'](
-			function () { GetValueFromBuffer(nonAB, 0, year >= 2024 ? 'INT8' : 'Int8', true, order, true); },
+			function () { GetValueFromBuffer(nonAB, 0, int8, true, order, true); },
 			TypeError,
 			debug(nonAB) + ' is not an ArrayBuffer'
 		);
@@ -34,7 +37,7 @@ module.exports = function (t, year, actual, extras) {
 	t.test('ArrayBuffers supported', { skip: typeof ArrayBuffer !== 'function' }, function (st) {
 		forEach(v.notNonNegativeIntegers, function (nonNonNegativeInteger) {
 			st['throws'](
-				function () { GetValueFromBuffer(new ArrayBuffer(8), nonNonNegativeInteger, year >= 2024 ? 'INT8' : 'Int8', true, order); },
+				function () { GetValueFromBuffer(new ArrayBuffer(8), nonNonNegativeInteger, int8, true, order); },
 				TypeError,
 				debug(nonNonNegativeInteger) + ' is not a valid byte index'
 			);
@@ -50,14 +53,14 @@ module.exports = function (t, year, actual, extras) {
 
 		forEach(v.nonBooleans, function (nonBoolean) {
 			st['throws'](
-				function () { GetValueFromBuffer(new ArrayBuffer(8), 0, year >= 2024 ? 'INT8' : 'Int8', nonBoolean, true, order); },
+				function () { GetValueFromBuffer(new ArrayBuffer(8), 0, int8, nonBoolean, true, order); },
 				TypeError,
 				debug(nonBoolean) + ' is not a valid Boolean value'
 			);
 
 			if (year >= 2017) {
 				st['throws'](
-					function () { GetValueFromBuffer(new ArrayBuffer(8), 0, year >= 2024 ? 'INT8' : 'Int8', false, 'Unordered', nonBoolean, true, order); },
+					function () { GetValueFromBuffer(new ArrayBuffer(8), 0, int8, false, order, nonBoolean, true, order); },
 					TypeError,
 					'isLittleEndian: ' + debug(nonBoolean) + ' is not a valid Boolean value'
 				);
@@ -69,7 +72,7 @@ module.exports = function (t, year, actual, extras) {
 			s2t.equal(DetachArrayBuffer(buffer), null, 'detaching returns null');
 
 			s2t['throws'](
-				function () { GetValueFromBuffer(buffer, 0, year >= 2024 ? 'INT8' : 'Int8', true, order); },
+				function () { GetValueFromBuffer(buffer, 0, int8, true, order); },
 				TypeError,
 				'detached buffers throw'
 			);
@@ -102,14 +105,14 @@ module.exports = function (t, year, actual, extras) {
 					view['set' + method](0, littleVal, true);
 
 					s2t.equal(
-						GetValueFromBuffer(view.buffer, 0, type, true, order, true),
+						GetValueFromBuffer(view.buffer, 0, Enum(type), true, order, true),
 						littleVal,
 						'buffer with type ' + type + ', little -> little, yields expected value'
 					);
 
 					if (hasBigEndian) {
 						s2t.equal(
-							GetValueFromBuffer(view.buffer, 0, type, true, order, false),
+							GetValueFromBuffer(view.buffer, 0, Enum(type), true, order, false),
 							view['get' + method](0, false),
 							'buffer with type ' + type + ', little -> big, yields expected value'
 						);
@@ -119,13 +122,13 @@ module.exports = function (t, year, actual, extras) {
 						view['set' + method](0, bigVal, false);
 
 						s2t.equal(
-							GetValueFromBuffer(view.buffer, 0, type, true, order, false),
+							GetValueFromBuffer(view.buffer, 0, Enum(type), true, order, false),
 							bigVal,
 							'buffer with type ' + type + ', big -> big, yields expected value'
 						);
 
 						s2t.equal(
-							GetValueFromBuffer(view.buffer, 0, type, true, order, true),
+							GetValueFromBuffer(view.buffer, 0, Enum(type), true, order, true),
 							view['get' + method](0, true),
 							'buffer with type ' + type + ', big -> little, yields expected value'
 						);

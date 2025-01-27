@@ -1,5 +1,7 @@
 'use strict';
 
+var Enum = require('../../helpers/enum');
+
 // https://262.ecma-international.org/10.0/#table-49
 
 module.exports = {
@@ -27,5 +29,16 @@ module.exports = {
 		$Uint32: 4,
 		$Float32: 4,
 		$Float64: 8
-	}
+	},
+	types: [
+		Enum.define('Int8'),
+		Enum.define('Uint8'),
+		Enum.define('Uint8C'),
+		Enum.define('Int16'),
+		Enum.define('Uint16'),
+		Enum.define('Int32'),
+		Enum.define('Uint32'),
+		Enum.define('Float32'),
+		Enum.define('Float64')
+	]
 };

@@ -6,23 +6,26 @@ var debug = require('object-inspect');
 var hasOwn = require('hasown');
 var $defineProperty = require('es-define-property');
 
+var Enum = require('../../helpers/enum');
 var defineProperty = require('../helpers/defineProperty');
 
 module.exports = function (t, year, actual) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	var EnumerableOwnProperties = year >= 2017 ? actual : function EnumerableOwnNames(obj, kind) {
-		if (kind !== 'key') {
+		if (Enum(kind) !== Enum('key')) {
 			throw new EvalError('test error: this wrapper should only be invoked with kind `key`');
 		}
 		return actual(obj);
 	};
 
 	forEach(v.primitives, function (nonObject) {
-		t['throws'](
-			function () { EnumerableOwnProperties(nonObject, 'key'); },
-			debug(nonObject) + ' is not an Object'
-		);
+		forEach(['key', Enum('key')], function (kind) {
+			t['throws'](
+				function () { EnumerableOwnProperties(nonObject, kind); },
+				debug(nonObject) + ' is not an Object'
+			);
+		});
 	});
 
 	if (year >= 2017) {
@@ -59,24 +62,30 @@ module.exports = function (t, year, actual) {
 	// eslint-disable-next-line no-useless-call
 	t.equal(Object.prototype.propertyIsEnumerable.call(Object.prototype, 'toString'), false, 'has non-enumerable "toString"');
 
-	t.deepEqual(
-		EnumerableOwnProperties(obj, 'key'),
-		['own'],
-		'returns enumerable own ' + (year < 2017 ? 'names' : 'keys')
-	);
+	forEach(['key', Enum('key')], function (kind) {
+		t.deepEqual(
+			EnumerableOwnProperties(obj, kind),
+			['own'],
+			'returns enumerable own ' + (year < 2017 ? 'names' : 'keys')
+		);
+	});
 
 	if (year >= 2017) {
-		t.deepEqual(
-			EnumerableOwnProperties(obj, 'value'),
-			[obj.own],
-			'returns enumerable own values'
-		);
+		forEach(['value', Enum('value')], function (kind) {
+			t.deepEqual(
+				EnumerableOwnProperties(obj, kind),
+				[obj.own],
+				'returns enumerable own values'
+			);
+		});
 
-		t.deepEqual(
-			EnumerableOwnProperties(obj, 'key+value'),
-			[['own', obj.own]],
-			'returns enumerable own entries'
-		);
+		forEach(['key+value', Enum('key+value')], function (kind) {
+			t.deepEqual(
+				EnumerableOwnProperties(obj, kind),
+				[['own', obj.own]],
+				'returns enumerable own entries'
+			);
+		});
 
 		t.test('getters changing properties of unvisited entries', { skip: !$defineProperty }, function (st) {
 			var o = { a: 1, b: 2, c: 3, d: 4 };
@@ -90,13 +99,13 @@ module.exports = function (t, year, actual) {
 			defineProperty(o, 'c', { enumerable: false });
 
 			st.deepEqual(
-				EnumerableOwnProperties(o, 'key'),
+				EnumerableOwnProperties(o, Enum('key')),
 				['a', 'b', 'd'],
 				'`key` kind returns all initially enumerable own keys'
 			);
 
 			st.deepEqual(
-				EnumerableOwnProperties(o, 'key+value'),
+				EnumerableOwnProperties(o, Enum('key+value')),
 				[['a', 1], ['d', 4]],
 				'key+value returns only own enumerable entries that remain enumerable at the time they are visited'
 			);

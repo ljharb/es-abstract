@@ -8,15 +8,19 @@ var IsDetachedBuffer = require('./IsDetachedBuffer');
 var isTypedArray = require('is-typed-array');
 var typedArrayBuffer = require('typed-array-buffer');
 
+var Enum = require('../helpers/enum');
+
+var seqCST = Enum.define('SEQ-CST');
+var unordered = Enum.define('UNORDERED');
+var orders = [seqCST, unordered];
+
 // https://262.ecma-international.org/15.0/#sec-maketypedarraywithbufferwitnessrecord
 
 module.exports = function MakeTypedArrayWithBufferWitnessRecord(obj, order) {
 	if (!isTypedArray(obj)) {
 		throw new $TypeError('Assertion failed: `obj` must be a Typed Array');
 	}
-	if (order !== 'SEQ-CST' && order !== 'UNORDERED') {
-		throw new $TypeError('Assertion failed: `order` must be ~SEQ-CST~ or ~UNORDERED~');
-	}
+	Enum.validate('order', orders, order);
 
 	var buffer = typedArrayBuffer(obj); // step 1
 

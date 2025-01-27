@@ -1,11 +1,14 @@
 'use strict';
 
+var Enum = require('../helpers/enum');
+
 // https://262.ecma-international.org/15.0/#sec-isunsignedelementtype
 
 module.exports = function IsUnsignedElementType(type) {
-	return type === 'UINT8'
-		|| type === 'UINT8C'
-		|| type === 'UINT16'
-		|| type === 'UINT32'
-		|| type === 'BIGUINT64';
+	var typeEnum = Enum(type);
+	return typeEnum === Enum('UINT8')
+		|| typeEnum === Enum('UINT8C')
+		|| typeEnum === Enum('UINT16')
+		|| typeEnum === Enum('UINT32')
+		|| typeEnum === Enum('BIGUINT64');
 };

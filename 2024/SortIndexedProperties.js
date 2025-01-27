@@ -13,6 +13,12 @@ var isAbstractClosure = require('../helpers/isAbstractClosure');
 
 var $sort = callBound('Array.prototype.sort');
 
+var Enum = require('../helpers/enum');
+
+var skipHoles = Enum.define('skip-holes');
+var readThroughHoles = Enum.define('read-through-holes');
+var holesEnums = [skipHoles, readThroughHoles];
+
 // https://262.ecma-international.org/14.0/#sec-sortindexedproperties
 
 module.exports = function SortIndexedProperties(obj, len, SortCompare, holes) {
@@ -25,9 +31,7 @@ module.exports = function SortIndexedProperties(obj, len, SortCompare, holes) {
 	if (!isAbstractClosure(SortCompare) || SortCompare.length !== 2) {
 		throw new $TypeError('Assertion failed: `SortCompare` must be an abstract closure taking 2 arguments');
 	}
-	if (holes !== 'skip-holes' && holes !== 'read-through-holes') {
-		throw new $TypeError('Assertion failed: `holes` must be either ~skip-holes~ or ~read-through-holes~');
-	}
+	var holeEnum = Enum.validate('holes', holesEnums, holes);
 
 	var items = []; // step 1
 
@@ -35,7 +39,7 @@ module.exports = function SortIndexedProperties(obj, len, SortCompare, holes) {
 
 	while (k < len) { // step 3
 		var Pk = ToString(k);
-		var kRead = holes === 'skip-holes' ? HasProperty(obj, Pk) : true; // step 3.b - 3.c
+		var kRead = holeEnum === skipHoles ? HasProperty(obj, Pk) : true; // step 3.b - 3.c
 		if (kRead) { // step 3.d
 			var kValue = Get(obj, Pk);
 			items[items.length] = kValue;

@@ -2,7 +2,6 @@
 
 var $TypeError = require('es-errors/type');
 
-var hasOwnProperty = require('./HasOwnProperty');
 var ToBigInt64 = require('./ToBigInt64');
 var ToBigUint64 = require('./ToBigUint64');
 var ToInt16 = require('./ToInt16');
@@ -18,6 +17,8 @@ var valueToFloat64Bytes = require('../helpers/valueToFloat64Bytes');
 var integerToNBytes = require('../helpers/integerToNBytes');
 
 var tableTAO = require('./tables/typed-array-objects');
+
+var Enum = require('../helpers/enum');
 
 // https://262.ecma-international.org/11.0/#table-the-typedarray-constructors
 var TypeToAO = {
@@ -36,9 +37,8 @@ var TypeToAO = {
 // https://262.ecma-international.org/11.0/#sec-numerictorawbytes
 
 module.exports = function NumericToRawBytes(type, value, isLittleEndian) {
-	if (typeof type !== 'string' || !hasOwnProperty(tableTAO.size, '$' + type)) {
-		throw new $TypeError('Assertion failed: `type` must be a TypedArray element type');
-	}
+	var typeEnum = Enum.validate('type', tableTAO.types, type);
+
 	if (typeof value !== 'number' && typeof value !== 'bigint') {
 		throw new $TypeError('Assertion failed: `value` must be a Number or a BigInt');
 	}
@@ -46,15 +46,15 @@ module.exports = function NumericToRawBytes(type, value, isLittleEndian) {
 		throw new $TypeError('Assertion failed: `isLittleEndian` must be a Boolean');
 	}
 
-	if (type === 'Float32') { // step 1
+	if (typeEnum === Enum('Float32')) { // step 1
 		return valueToFloat32Bytes(value, isLittleEndian);
-	} else if (type === 'Float64') { // step 2
+	} else if (typeEnum === Enum('Float64')) { // step 2
 		return valueToFloat64Bytes(value, isLittleEndian);
 	} // step 3
 
-	var n = tableTAO.size['$' + type]; // step 3.a
+	var n = tableTAO.size['$' + typeEnum.name]; // step 3.a
 
-	var convOp = TypeToAO['$' + type]; // step 3.b
+	var convOp = TypeToAO['$' + typeEnum.name]; // step 3.b
 
 	var intValue = convOp(value); // step 3.c
 

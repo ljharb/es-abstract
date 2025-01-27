@@ -1,5 +1,7 @@
 'use strict';
 
+var Enum = require('../../helpers/enum');
+
 // https://262.ecma-international.org/15.0/#table-the-typedarray-constructors
 
 module.exports = {
@@ -31,5 +33,18 @@ module.exports = {
 		$BIGUINT64: 8,
 		$FLOAT32: 4,
 		$FLOAT64: 8
-	}
+	},
+	types: [
+		Enum.define('INT8'),
+		Enum.define('UINT8'),
+		Enum.define('UINT8C'),
+		Enum.define('INT16'),
+		Enum.define('UINT16'),
+		Enum.define('INT32'),
+		Enum.define('UINT32'),
+		Enum.define('BIGINT64'),
+		Enum.define('BIGUINT64'),
+		Enum.define('FLOAT32'),
+		Enum.define('FLOAT64')
+	]
 };

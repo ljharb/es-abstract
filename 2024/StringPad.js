@@ -6,6 +6,12 @@ var isInteger = require('math-intrinsics/isInteger');
 
 var $strSlice = callBound('String.prototype.slice');
 
+var Enum = require('../helpers/enum');
+
+var start = Enum.define('start', ['START']);
+var end = Enum.define('end', ['END']);
+var placements = [start, end, 'START', 'END'];
+
 // https://262.ecma-international.org/15.0/#sec-stringpad
 
 module.exports = function StringPad(S, maxLength, fillString, placement) {
@@ -18,9 +24,7 @@ module.exports = function StringPad(S, maxLength, fillString, placement) {
 	if (typeof fillString !== 'string') {
 		throw new $TypeError('Assertion failed: `fillString` must be a String');
 	}
-	if (placement !== 'start' && placement !== 'end' && placement !== 'START' && placement !== 'END') {
-		throw new $TypeError('Assertion failed: `placement` must be ~START~ or ~END~');
-	}
+	var placementEnum = Enum.validate('placement', placements, placement);
 
 	var stringLength = S.length; // step 1
 
@@ -37,7 +41,9 @@ module.exports = function StringPad(S, maxLength, fillString, placement) {
 	}
 	truncatedStringFiller = $strSlice(truncatedStringFiller, 0, fillLen);
 
-	if (placement === 'start' || placement === 'START') { return truncatedStringFiller + S; } // step 6
+	if (placementEnum === start) {
+		return truncatedStringFiller + S; // step 6
+	}
 
 	return S + truncatedStringFiller; // step 7
 };

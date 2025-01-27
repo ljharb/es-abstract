@@ -13,6 +13,8 @@ var typedArrayBuffer = require('typed-array-buffer');
 var typedArrayByteOffset = require('typed-array-byte-offset');
 var whichTypedArray = require('which-typed-array');
 
+var Enum = require('../helpers/enum');
+
 // http://www.ecma-international.org/ecma-262/15.0/#sec-typedarraysetelement
 
 module.exports = function TypedArraySetElement(O, index, value) {
@@ -37,6 +39,6 @@ module.exports = function TypedArraySetElement(O, index, value) {
 
 		var elementType = TypedArrayElementType(O); // step 3.d
 
-		SetValueInBuffer(typedArrayBuffer(O), byteIndexInBuffer, elementType, numValue, true, 'UNORDERED'); // step 3.e
+		SetValueInBuffer(typedArrayBuffer(O), byteIndexInBuffer, elementType, numValue, true, Enum('UNORDERED')); // step 3.e
 	}
 };

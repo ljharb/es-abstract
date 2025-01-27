@@ -13,20 +13,27 @@ var $TypeError = require('es-errors/type');
 // var negOne = $BigInt && $BigInt(-1);
 // var two = $BigInt && $BigInt(2);
 
+var Enum = require('../helpers/enum');
+
+var amp = Enum.define('&');
+var pipe = Enum.define('|');
+var caret = Enum.define('^');
+
+var ops = [amp, pipe, caret];
+
 // https://262.ecma-international.org/11.0/#sec-bigintbitwiseop
 
 module.exports = function BigIntBitwiseOp(op, x, y) {
-	if (op !== '&' && op !== '|' && op !== '^') {
-		throw new $TypeError('Assertion failed: `op` must be `&`, `|`, or `^`');
-	}
+	var opEnum = Enum.validate('op', ops, op);
+
 	if (typeof x !== 'bigint' || typeof y !== 'bigint') {
 		throw new $TypeError('`x` and `y` must be BigInts');
 	}
 
-	if (op === '&') {
+	if (opEnum === amp) {
 		return x & y;
 	}
-	if (op === '|') {
+	if (opEnum === pipe) {
 		return x | y;
 	}
 	return x ^ y;

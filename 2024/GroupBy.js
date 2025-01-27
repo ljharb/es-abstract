@@ -15,12 +15,16 @@ var RequireObjectCoercible = require('./RequireObjectCoercible');
 var ThrowCompletion = require('./ThrowCompletion');
 var ToPropertyKey = require('./ToPropertyKey');
 
+var Enum = require('../helpers/enum');
+
+var property = Enum.define('PROPERTY');
+var zero = Enum.define('ZERO');
+var keyCoercions = [property, zero];
+
 // https://262.ecma-international.org/15.0/#sec-groupby
 
 module.exports = function GroupBy(items, callbackfn, keyCoercion) {
-	if (keyCoercion !== 'PROPERTY' && keyCoercion !== 'ZERO') {
-		throw new $TypeError('Assertion failed: `keyCoercion` must be `"PROPERTY"` or `"ZERO"`');
-	}
+	var keyCoercionEnum = Enum.validate('keyCoercion', keyCoercions, keyCoercion);
 
 	RequireObjectCoercible(items); // step 1
 
@@ -56,7 +60,7 @@ module.exports = function GroupBy(items, callbackfn, keyCoercion) {
 			return void undefined;
 		}
 
-		if (keyCoercion === 'PROPERTY') { // step 6.g
+		if (keyCoercionEnum === property) { // step 6.g
 			try {
 				key = ToPropertyKey(key); // step 6.g.i
 			} catch (e) {
@@ -64,9 +68,8 @@ module.exports = function GroupBy(items, callbackfn, keyCoercion) {
 				return void undefined;
 			}
 		} else { // step 6.h
-			if (keyCoercion !== 'ZERO') {
-				throw new $TypeError('keyCoercion must be ~PROPERTY~ or ~ZERO~'); // step 6.h.i
-			}
+			Enum.validate('keyCoercion', keyCoercions, keyCoercion); // step 6.h.i
+
 			if (isNegativeZero(key)) {
 				key = +0; // step 6.h.ii
 			}

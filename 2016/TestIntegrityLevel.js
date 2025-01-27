@@ -11,15 +11,20 @@ var IsDataDescriptor = require('./IsDataDescriptor');
 var IsExtensible = require('./IsExtensible');
 var ToPropertyDescriptor = require('./ToPropertyDescriptor');
 
+var Enum = require('../helpers/enum');
+
+var sealed = Enum.define('sealed');
+var frozen = Enum.define('frozen');
+var levels = [sealed, frozen];
+
 // https://262.ecma-international.org/6.0/#sec-testintegritylevel
 
 module.exports = function TestIntegrityLevel(O, level) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
 	}
-	if (level !== 'sealed' && level !== 'frozen') {
-		throw new $TypeError('Assertion failed: `level` must be `"sealed"` or `"frozen"`');
-	}
+	var levelEnum = Enum.validate('level', levels, level);
+
 	var status = IsExtensible(O);
 	if (status || !$gOPD) {
 		return false;
@@ -31,7 +36,7 @@ module.exports = function TestIntegrityLevel(O, level) {
 			if (currentDesc.configurable) {
 				return false;
 			}
-			if (level === 'frozen' && IsDataDescriptor(ToPropertyDescriptor(currentDesc)) && currentDesc.writable) {
+			if (levelEnum === frozen && IsDataDescriptor(ToPropertyDescriptor(currentDesc)) && currentDesc.writable) {
 				return false;
 			}
 		}

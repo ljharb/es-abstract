@@ -21,6 +21,11 @@ var safeConcat = require('safe-array-concat');
 var tableTAO = require('./tables/typed-array-objects');
 
 var defaultEndianness = require('../helpers/defaultEndianness');
+var Enum = require('../helpers/enum');
+
+var seqCST = Enum.define('SeqCst');
+var unordered = Enum.define('Unordered');
+var orders = [seqCST, unordered];
 
 // https://262.ecma-international.org/8.0/#sec-getvaluefrombuffer
 
@@ -34,17 +39,13 @@ module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type, isTyp
 		throw new $TypeError('Assertion failed: `byteIndex` must be an integer');
 	}
 
-	if (typeof type !== 'string') {
-		throw new $TypeError('Assertion failed: `type` must be a string');
-	}
+	var typeEnum = Enum.validate('type', tableTAO.types, type);
 
 	if (typeof isTypedArray !== 'boolean') {
 		throw new $TypeError('Assertion failed: `isTypedArray` must be a boolean');
 	}
 
-	if (typeof order !== 'string') {
-		throw new $TypeError('Assertion failed: `order` must be a string');
-	}
+	Enum.validate('order', orders, order);
 
 	if (arguments.length > 5 && typeof arguments[5] !== 'boolean') {
 		throw new $TypeError('Assertion failed: `isLittleEndian` must be a boolean, if present');
@@ -62,10 +63,7 @@ module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type, isTyp
 
 	// 4. Let block be arrayBuffer.[[ArrayBufferData]].
 
-	var elementSize = tableTAO.size['$' + type]; // step 5
-	if (!elementSize) {
-		throw new $TypeError('Assertion failed: `type` must be one of "Int8", "Uint8", "Uint8C", "Int16", "Uint16", "Int32", "Uint32", "Float32", or "Float64"');
-	}
+	var elementSize = tableTAO.size['$' + typeEnum.name]; // step 5
 
 	var rawValue;
 	if (isSAB) { // step 6
@@ -92,5 +90,5 @@ module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type, isTyp
 		? $slice(safeConcat([0, 0, 0, 0, 0, 0, 0, 0], rawValue), -elementSize)
 		: $slice(safeConcat(rawValue, [0, 0, 0, 0, 0, 0, 0, 0]), 0, elementSize);
 
-	return RawBytesToNumber(type, bytes, isLittleEndian);
+	return RawBytesToNumber(typeEnum, bytes, isLittleEndian);
 };

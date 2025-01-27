@@ -1,17 +1,19 @@
 'use strict';
 
-var $TypeError = require('es-errors/type');
-
 var StringPad = require('./StringPad');
 var ToLength = require('./ToLength');
 var ToString = require('./ToString');
 
+var Enum = require('../helpers/enum');
+
+var start = Enum.define('start', ['START']);
+var end = Enum.define('end', ['END']);
+var placements = [start, end, 'START', 'END'];
+
 // https://262.ecma-international.org/15.0/#sec-stringpaddingbuiltinsimpl
 
 module.exports = function StringPaddingBuiltinsImpl(O, maxLength, fillString, placement) {
-	if (placement !== 'start' && placement !== 'end' && placement !== 'START' && placement !== 'END') {
-		throw new $TypeError('Assertion failed: `placement` must be ~START~ or ~END~');
-	}
+	var placementEnum = Enum.validate('placement', placements, placement);
 
 	var S = ToString(O); // step 1
 
@@ -23,5 +25,5 @@ module.exports = function StringPaddingBuiltinsImpl(O, maxLength, fillString, pl
 
 	var filler = typeof fillString === 'undefined' ? ' ' : ToString(fillString); // steps 5-6
 
-	return StringPad(S, intMaxLength, filler, placement); // step 7
+	return StringPad(S, intMaxLength, filler, placementEnum); // step 7
 };
