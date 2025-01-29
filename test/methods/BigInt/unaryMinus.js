@@ -6,11 +6,13 @@ var debug = require('object-inspect');
 
 var esV = require('../../helpers/v');
 
+/** @type {import('../../testHelpers').MethodTest<'BigInt::unaryMinus'>} */
 module.exports = function (t, year, BigIntUnaryMinus) {
 	t.ok(year >= 2020, 'ES2020+');
 
 	forEach(v.nonBigInts, function (nonBigInt) {
 		t['throws'](
+			// @ts-expect-error
 			function () { BigIntUnaryMinus(nonBigInt); },
 			TypeError,
 			debug(nonBigInt) + ' is not a BigInt'

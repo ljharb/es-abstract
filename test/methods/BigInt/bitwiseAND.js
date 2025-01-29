@@ -21,11 +21,13 @@ module.exports = function (t, year, BigIntBitwiseAND) {
 	t.test('BigInt supported', { skip: !esV.hasBigInts }, function (st) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			st['throws'](
+				// @ts-expect-error
 				function () { BigIntBitwiseAND(nonBigInt, BigInt(0)); },
 				TypeError,
 				'x: ' + debug(nonBigInt) + ' is not a BigInt'
 			);
 			st['throws'](
+				// @ts-expect-error
 				function () { BigIntBitwiseAND(BigInt(0), nonBigInt); },
 				TypeError,
 				'y: ' + debug(nonBigInt) + ' is not a BigInt'

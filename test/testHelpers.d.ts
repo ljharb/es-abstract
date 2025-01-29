@@ -17,58 +17,45 @@ export type EditionTests<T extends ES> = (
 
 import years from '../operations/years';
 
-type TestYear = 5 | typeof years[number];
+export type TestYear = 5 | typeof years[number];
 
 type ExpandUnion<T> = T extends infer U ? U : never;
 
-type SplitAOName<AOName extends string> =
+export type SplitAOName<AOName extends string> =
   AOName extends `${infer Outer}::${infer Inner}`
     ? [Outer, Inner]
     : [AOName];
 
-// type YearsWithAO<AOName extends string, Years extends TestYear = TestYear> = ExpandUnion<
-// 	Exclude<
-// 		{
-// 			[Y in Years]: AOName extends keyof ESByYear[Y] ? Y : never
-// 		}[Years],
-// 		never
-// 	>
-// >;
-
 type YearsWithAO<
   AOName extends string,
-  Years extends TestYear = TestYear
+  Subset extends TestYear = TestYear
 > = ExpandUnion<
   Exclude<
     {
-      [Y in Years]:
+      [Y in Subset]:
         SplitAOName<AOName> extends [infer Outer, infer Inner]
-          ? Outer extends keyof ESByYear[Y]
-            ? Inner extends keyof ESByYear[Y][Outer]
-              ? Y
+          ? // handle "Outer::Inner" case
+            Outer extends keyof ESByYear[Y]
+              ? Inner extends keyof ESByYear[Y][Outer]
+                ? Y
+                : never
               : never
-            : never
-          : // no `::`
+          : // handle top-level "AOName" case
             AOName extends keyof ESByYear[Y]
               ? Y
-              : never;
-    }[Years],
+              : never
+    }[Subset],
     never
   >
 >;
 
 type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never;
 
-// type DistributeAO<AOName extends string> = YearsWithAO<AOName> extends infer Y
-// 	? Y extends TestYear
-// 		? AOName extends keyof ESByYear[Y]
-// 			? NonNullable<Extract<ESByYear[Y][AOName], Function>>
-// 			: never
-// 		: never
-// 	: never;
-
-type DistributeAO<AOName extends string> =
-  YearsWithAO<AOName> extends infer Y
+type DistributeAO<
+  AOName extends string,
+  Subset extends TestYear = TestYear
+> =
+  YearsWithAO<AOName, Subset> extends infer Y
     ? Y extends TestYear
       ? SplitAOName<AOName> extends [infer Outer, infer Inner]
         ? Outer extends keyof ESByYear[Y]
@@ -76,9 +63,10 @@ type DistributeAO<AOName extends string> =
             ? NonNullable<Extract<ESByYear[Y][Outer][Inner], Function>>
             : never
           : never
-        : AOName extends keyof ESByYear[Y]
-          ? NonNullable<Extract<ESByYear[Y][AOName], Function>>
-          : never
+        : // No "::"; top-level key
+          AOName extends keyof ESByYear[Y]
+            ? NonNullable<Extract<ESByYear[Y][AOName], Function>>
+            : never
       : never
     : never;
 
@@ -90,21 +78,47 @@ export type AOOnlyYears<AOName extends string, Years extends TestYear> = YearsWi
 		: never
 	: never;
 
-type AOUnion<AOName extends string> = DistributeAO<AOName>;
+// type AOUnion<AOName extends string> = DistributeAO<AOName>;
 
-export type MethodTest<AOName extends string> = (
+type AOUnion<
+  AOName extends string,
+  Subset extends TestYear = TestYear
+> = ExpandUnion<DistributeAO<AOName, Subset>>;
+
+export type MethodTest<AOName extends string, Subset extends TestYear = TestYear> = (
 	t: tape.Test,
-	year: ExpandUnion<YearsWithAO<AOName>>,
-	AO: AOUnion<AOName>,
-	getAO: <OtherAOName extends string>(aoName: OtherAOName) => ExpandUnion<AOUnion<OtherAOName>>
+	// year: ExpandUnion<YearsWithAO<AOName>>,
+	year: ExpandUnion<YearsWithAO<AOName, Subset>>,
+	AO: AOUnion<AOName, Subset>,
+	getAO: <OtherAOName extends string>(aoName: OtherAOName) => ExpandUnion<AOUnion<OtherAOName, Subset>>
 ) => void;
-/*
+
 type KeysOfUnion<T> = T extends T ? keyof T: never;
 
-export type MethodTest<F extends KeysOfUnion<ESbyYear[TestYear]>> = <Y extends TestYear>(
-	t: tape.Test,
-	year: Y,
-	method: ESbyYear[Y][F],
-	getAO?: <M extends keyof ESbyYear[Y]>(methodName: M) => ESbyYear[Y][M],
-) => void;
-*/
+export type AOForYears<
+  AOName extends string,
+  Y extends TestYear
+> = AOUnion<AOName, Extract<YearsWithAO<AOName>, Y>>;
+
+type NestedFunctionKeys<Outer extends string, Obj> = {
+  [K in keyof Obj]:
+    NonNullable<Obj[K]> extends (...args: any) => any
+      ? // E.g. "Number::toString"
+        `${Outer}::${Extract<K, string>}`
+      : never;
+}[keyof Obj];
+
+type AllAONamesForYear<Y extends TestYear> = {
+  [K in keyof ESByYear[Y]]:
+    // If it's a function, the AO name is K
+    NonNullable<ESByYear[Y][K]> extends (...args: any) => any
+      ? Extract<K, string>
+    // If it's an object, gather the nested function keys
+    : NonNullable<ESByYear[Y][K]> extends object
+      ? NestedFunctionKeys<Extract<K, string>, NonNullable<ESByYear[Y][K]>>
+    : never;
+}[keyof ESByYear[Y]];
+
+export type AllAONames = ExpandUnion<{
+  [Y in TestYear]: AllAONamesForYear<Y>;
+}[TestYear]>;

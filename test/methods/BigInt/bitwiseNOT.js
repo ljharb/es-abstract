@@ -6,6 +6,7 @@ var debug = require('object-inspect');
 
 var esV = require('../../helpers/v');
 
+/** @type {import('../../testHelpers').MethodTest<'BigInt::bitwiseNOT'>} */
 module.exports = function (t, year, BigIntBitwiseNOT) {
 	t.ok(year >= 2020, 'ES2020+');
 

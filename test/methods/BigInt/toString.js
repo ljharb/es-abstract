@@ -6,15 +6,18 @@ var debug = require('object-inspect');
 
 var esV = require('../../helpers/v');
 
+/** @type {import('../../testHelpers').MethodTest<'BigInt::toString'>} */
 module.exports = function (t, year, actual) {
 	t.ok(year >= 2020, 'ES2020+');
 
+	/** @type {import('../../testHelpers').AOForYears<'BigInt::toString', 2023 | 2024>} */
 	var BigIntToString = year >= 2023 ? actual : function toString(x) {
-		return actual(x);
+		return /** @type {import('../../testHelpers').AOForYears<'BigInt::toString', Exclude<import('../../testHelpers').TestYear, 2023 | 2024>>} */ (actual)(x);
 	};
 
 	forEach(v.nonBigInts, function (nonBigInt) {
 		t['throws'](
+			// @ts-expect-error
 			function () { BigIntToString(nonBigInt, nonBigInt); },
 			TypeError,
 			debug(nonBigInt) + ' is not a BigInt'
@@ -27,20 +30,22 @@ module.exports = function (t, year, actual) {
 		});
 
 		if (year >= 2023) {
-			forEach([].concat(
+			forEach(/** @type {(typeof v.nonIntegerNumbers[number] | number)[]} */ ([].concat(
+				// @ts-expect-error TS sucks with concat
 				v.nonIntegerNumbers,
 				0,
 				1,
 				37
-			), function (nonIntegerNumber) {
+			)), function (nonIntegerNumber) {
 				st['throws'](
+					// @ts-expect-error
 					function () { BigIntToString(BigInt(0), nonIntegerNumber); },
 					TypeError,
 					debug(nonIntegerNumber) + ' is not an integer [2, 36]'
 				);
 			});
 
-			forEach([
+			forEach(/** @type {const} */ ([
 				[37, 2, '100101'],
 				[37, 3, '1101'],
 				[37, 4, '211'],
@@ -76,7 +81,7 @@ module.exports = function (t, year, actual) {
 				[37, 34, '13'],
 				[37, 35, '12'],
 				[37, 36, '11']
-			], function (testCase) {
+			]), function (testCase) {
 				var num = BigInt(testCase[0]);
 				st.equal(
 					BigIntToString(num, testCase[1]),

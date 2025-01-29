@@ -125,6 +125,7 @@
 		"@types/function.prototype.name": "^1.1.4",
 		"@types/functions-have-names": "^1.2.2",
 		"@types/get-intrinsic": "^1.2.3",
+		"@types/glob": "^8.1.0",
 		"@types/globalthis": "^1.0.4",
 		"@types/has-property-descriptors": "^1.0.3",
 		"@types/is-callable": "^1.1.2",

@@ -6,6 +6,7 @@ var debug = require('object-inspect');
 
 var esV = require('../../helpers/v');
 
+/** @type {import('../../testHelpers').MethodTest<'BigInt::remainder'>} */
 module.exports = function (t, year, BigIntRemainder) {
 	t.ok(year >= 2020, 'ES2020+');
 
@@ -20,11 +21,13 @@ module.exports = function (t, year, BigIntRemainder) {
 	t.test('BigInt supported', { skip: !esV.hasBigInts }, function (st) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			st['throws'](
+				// @ts-expect-error
 				function () { BigIntRemainder(nonBigInt, BigInt(0)); },
 				TypeError,
 				'x: ' + debug(nonBigInt) + ' is not a BigInt'
 			);
 			st['throws'](
+				// @ts-expect-error
 				function () { BigIntRemainder(BigInt(0), nonBigInt); },
 				TypeError,
 				'y: ' + debug(nonBigInt) + ' is not a BigInt'

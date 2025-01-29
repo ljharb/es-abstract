@@ -6,6 +6,7 @@ var debug = require('object-inspect');
 
 var esV = require('../../helpers/v');
 
+/** @type {import('../../testHelpers').MethodTest<'BigInt::leftShift'>} */
 module.exports = function (t, year, BigIntLeftShift) {
 	t.ok(year >= 2020, 'ES2020+');
 
@@ -20,21 +21,24 @@ module.exports = function (t, year, BigIntLeftShift) {
 	t.test('BigInt supported', { skip: !esV.hasBigInts }, function (st) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			st['throws'](
+				// @ts-expect-error
 				function () { BigIntLeftShift(nonBigInt, BigInt(0)); },
 				TypeError,
 				'x: ' + debug(nonBigInt) + ' is not a BigInt'
 			);
 			st['throws'](
+				// @ts-expect-error
 				function () { BigIntLeftShift(BigInt(0), nonBigInt); },
 				TypeError,
 				'y: ' + debug(nonBigInt) + ' is not a BigInt'
 			);
 		});
 
-		forEach([].concat(
+		forEach(/** @type {number[]} */ ([].concat(
+			// @ts-expect-error TS sucks with concat
 			0,
 			v.int32s
-		), function (int32) {
+		)), function (int32) {
 			var bigInt32 = BigInt(int32);
 			forEach([1, 3, 5, 31, 32, 33], function (bits) {
 				var bitsN = BigInt(bits);

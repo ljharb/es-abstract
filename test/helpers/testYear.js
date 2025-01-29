@@ -6,21 +6,23 @@ var test = require('tape');
 
 var runManifestTest = require('./runManifestTest');
 var diffOps = require('../diffOps');
+/** @type {import('./aoAliases.json')} */
 var aoAliases = require('./aoAliases.json');
 
 var getAOs = require('./getAOs');
 
 var index = require('../../');
 
-/** @type {(year: import('../testHelpers').TestYear, expectedMissing: string[]) => void} */
+/** @type {<Y extends import('../testHelpers').TestYear>(year: Y, expectedMissing: import('../testHelpers').AllAONames[]) => void} */
 module.exports = function testYear(year, expectedMissing) {
 	var methods = getAOs(year);
 
 	var ES = index[/** @type {`ES${year}`} */ ('ES' + year)];
 
-	/** @type {<M extends keyof ES>(method: M) => typeof ES[M] | null} */
+	/** @type {<M extends import('../testHelpers').AllAONamesForYear<typeof year>>(method: M) => import('../testHelpers').AOForYears<M, typeof year> | null} */
 	var getAO = function getAO(method) {
-		var parts = method.split('::');
+		/** @typedef {typeof method} M */
+		var parts = /** @type {import('../testHelpers').SplitAOName<M>} */ (method.split('::'));
 		var obj = ES;
 		while (parts.length > 1) {
 			obj = ES[parts[0]];
@@ -58,6 +60,7 @@ module.exports = function testYear(year, expectedMissing) {
 
 		t.test('Abstract Operations', function (st) {
 			forEach(methods, function (method) {
+				/** @type {import('../testHelpers').MethodTest<import('../testHelpers').AllAONames> | undefined} */
 				var testMethod;
 				try {
 					testMethod = require('../' + path.join('./methods/', method.replace('::', '/'))); // eslint-disable-line global-require
@@ -66,6 +69,7 @@ module.exports = function testYear(year, expectedMissing) {
 					try {
 						testMethod = require('../' + path.join('./methods/', alias.replace('::', '/'))); // eslint-disable-line global-require
 					} catch (eA) {
+						/** @type {Record<string, unknown>} */
 						var data = { '*': true };
 						data[method] = e;
 						data[alias] = eA;
@@ -78,7 +82,7 @@ module.exports = function testYear(year, expectedMissing) {
 					var ao = getAO(method);
 					s2t.equal(typeof ao, 'function', method + ' exists');
 
-					testMethod(
+					/** @type {NonNullable<typeof testMethod>} */ (testMethod)(
 						s2t,
 						year,
 						ao,
