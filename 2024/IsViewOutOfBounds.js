@@ -36,7 +36,7 @@ module.exports = function IsViewOutOfBounds(viewRecord) {
 
 	var isFixed = IsFixedLengthArrayBuffer(dataViewBuffer(view));
 
-	var viewByteLength = isFixed ? dataViewByteLength(view) : 'AUTO'; // view.[[ByteLength]]
+	var viewByteLength = isFixed ? dataViewByteLength(view) : /** @type {const} */ ('AUTO'); // view.[[ByteLength]]
 	var byteOffsetEnd = viewByteLength === 'AUTO' ? bufferByteLength : byteOffsetStart + viewByteLength; // steps 6 - 7
 
 	if (byteOffsetStart > bufferByteLength || byteOffsetEnd > bufferByteLength) {

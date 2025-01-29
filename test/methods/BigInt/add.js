@@ -13,11 +13,13 @@ module.exports = function (t, year, BigIntAdd) {
 	t.test('BigInt supported', function (st) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			st['throws'](
+				// @ts-expect-error
 				function () { BigIntAdd(nonBigInt, 0); },
 				TypeError,
 				'x: ' + debug(nonBigInt) + ' is not a BigInt'
 			);
 			st['throws'](
+				// @ts-expect-error
 				function () { BigIntAdd(0, nonBigInt); },
 				TypeError,
 				'y: ' + debug(nonBigInt) + ' is not a BigInt'
@@ -39,6 +41,7 @@ module.exports = function (t, year, BigIntAdd) {
 
 	t.test('BigInt not supported', { skip: esV.hasBigInts }, function (st) {
 		st['throws'](
+			// @ts-expect-error
 			function () { BigIntAdd('0'); },
 			SyntaxError,
 			'throws a SyntaxError when BigInt is not available'
