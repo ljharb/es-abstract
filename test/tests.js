@@ -16629,6 +16629,51 @@ var es2024 = function ES2024(ES, ops, expectedMissing, skips) {
 					'byteOffset ' + i + ' is not out of bounds'
 				);
 			}
+
+			st.test(
+				'non-fixed length, return floor((byteLength - byteOffset) / elementSize)',
+				{ skip: !('resizable' in ArrayBuffer.prototype) },
+				function (tsat) {
+					var rab = new ArrayBuffer(24, { maxByteLength: 64 });
+					var dv = new DataView(rab);
+					var record = ES.MakeDataViewWithBufferWitnessRecord(dv, 'UNORDERED');
+
+					tsat.equal(
+						ES.IsViewOutOfBounds(record),
+						false,
+						'DataView + resizable AB: has expected length'
+					);
+
+					tsat.end();
+				}
+			);
+
+			st.test(
+				'non-fixed length, detached throws',
+				{ skip: !('resizable' in ArrayBuffer.prototype) || !esV.canDetach },
+				function (tsat) {
+					var rab = new ArrayBuffer(24, { maxByteLength: 64 });
+					var dv = new DataView(rab);
+					var record = ES.MakeDataViewWithBufferWitnessRecord(dv, 'UNORDERED');
+
+					ES.DetachArrayBuffer(rab);
+
+					tsat['throws'](
+						function () { ES.IsViewOutOfBounds(record); },
+						TypeError,
+						'detached RAB with a non-detached DVWBR throws'
+					);
+
+					record = ES.MakeDataViewWithBufferWitnessRecord(dv, 'UNORDERED');
+					tsat.equal(
+						ES.IsViewOutOfBounds(record),
+						true,
+						'detached RAB with a detached DVWBR is out of bounds'
+					);
+
+					tsat.end();
+				}
+			);
 		});
 
 		t.end();
