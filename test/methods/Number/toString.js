@@ -4,15 +4,19 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+/** @type {import('../../testHelpers').MethodTest<'Number::toString' | 'NumberToString'>} */
 module.exports = function (t, year, actual) {
 	t.ok(year >= 2018, 'ES2018+');
 
-	var NumberToString = year >= 2023 ? actual : function toString(x) {
-		return actual(x);
-	};
+	var NumberToString = year >= 2023
+		? /** @type {import('../../testHelpers').AOForYears<'Number::toString', 2023 | 2024>} */ (actual)
+		: /** @param {number} x */ function toString(x) {
+			return /** @type {import('../../testHelpers').AOForYears<'Number::toString', Exclude<import('../../testHelpers').TestYear, 2023 | 2024>>} */ (actual)(x);
+		};
 
 	forEach(v.nonNumbers, function (nonNumber) {
 		t['throws'](
+			// @ts-expect-error
 			function () { NumberToString(nonNumber, 10); },
 			TypeError,
 			debug(nonNumber) + ' is not a Number'
@@ -24,13 +28,15 @@ module.exports = function (t, year, actual) {
 	});
 
 	if (year >= 2023) {
-		forEach([].concat(
+		forEach(/** @type {(typeof v.nonIntegerNumbers[number] | number)[]} */ ([].concat(
+			// @ts-expect-error TS sucks with concat
 			v.nonIntegerNumbers,
 			0,
 			1,
 			37
-		), function (nonIntegerNumber) {
+		)), function (nonIntegerNumber) {
 			t['throws'](
+				// @ts-expect-error
 				function () { NumberToString(0, nonIntegerNumber); },
 				TypeError,
 				debug(nonIntegerNumber) + ' is not an integer [2, 36]'
@@ -41,7 +47,7 @@ module.exports = function (t, year, actual) {
 			t.equal(NumberToString(number, 10), String(number), debug(number) + ' stringifies to ' + number);
 		});
 
-		forEach([
+		forEach(/** @type {const} */ ([
 			[37, 2, '100101'],
 			[37, 3, '1101'],
 			[37, 4, '211'],
@@ -77,7 +83,7 @@ module.exports = function (t, year, actual) {
 			[37, 34, '13'],
 			[37, 35, '12'],
 			[37, 36, '11']
-		], function (testCase) {
+		]), function (testCase) {
 			t.equal(
 				NumberToString(testCase[0], testCase[1]),
 				testCase[2],

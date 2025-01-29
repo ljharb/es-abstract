@@ -5,16 +5,16 @@ var forEach = require('for-each');
 var indexOf = require('array.prototype.indexof');
 var hasOwn = require('hasown');
 
-/** @type {(actual: Record<string, Record<string, Function>>, expected: Record<string, unknown>, expectedMissing: string[], expectedExtra: string[]) => { missing: string[], extra: string[], extraMissing: string[] }} */
+/** @type {(actual: import('../types').ES, expected: import('../types').ES, expectedMissing: import('./testHelpers').AllAONames[], expectedExtra: import('./testHelpers').AllAONames[]) => { missing: import('./testHelpers').AllAONames[], extra: import('./testHelpers').AllAONames[], extraMissing: import('./testHelpers').AllAONames[] }} */
 module.exports = function diffOperations(actual, expected, expectedMissing, expectedExtra) {
-	var actualKeys = keys(actual);
-	var expectedKeys = keys(expected);
+	var actualKeys = /** @type {import('./testHelpers').AllAONames[]} */ (keys(actual));
+	var expectedKeys = /** @type {import('./testHelpers').AllAONames[]} */ (keys(expected));
 
-	/** @type {string[]} */
+	/** @type {import('./testHelpers').AllAONames[]} */
 	var extra = [];
-	/** @type {string[]} */
+	/** @type {import('./testHelpers').AllAONames[]} */
 	var missing = [];
-	/** @type {string[]} */
+	/** @type {import('./testHelpers').AllAONames[]} */
 	var extraMissing = [];
 
 	forEach(actualKeys, function (op) {
@@ -25,10 +25,10 @@ module.exports = function diffOperations(actual, expected, expectedMissing, expe
 					var fullNestedOp = op + '::' + nestedOp;
 					if (!(fullNestedOp in expected)) {
 						if (indexOf(expectedExtra, fullNestedOp) === -1) {
-							extra.push(fullNestedOp);
+							extra.push(/** @type {import('./testHelpers').AllAONames} */ (fullNestedOp));
 						}
 					} else if (indexOf(expectedMissing, fullNestedOp) !== -1) {
-						extra.push(fullNestedOp);
+						extra.push(/** @type {import('./testHelpers').AllAONames} */ (fullNestedOp));
 					}
 				});
 			} else {
@@ -46,7 +46,7 @@ module.exports = function diffOperations(actual, expected, expectedMissing, expe
 	};
 	forEach(expectedKeys, function (op) {
 		if (op.indexOf('::') > -1) {
-			var parts = op.split('::');
+			var parts = /** @type {import('./testHelpers').SplitAOName<typeof op>} */ (op.split('::'));
 			var secondPart = parts[1];
 			var value = actual[parts[0]];
 			if (value && typeof value === 'object' && typeof value[secondPart] === 'function') {

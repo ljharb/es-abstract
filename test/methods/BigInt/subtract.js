@@ -6,17 +6,20 @@ var debug = require('object-inspect');
 
 var esV = require('../../helpers/v');
 
+/** @type {import('../../testHelpers').MethodTest<'BigInt::subtract'>} */
 module.exports = function (t, year, BigIntSubtract) {
 	t.ok(year >= 2020, 'ES2020+');
 
 	t.test('BigInt supported', { skip: !esV.hasBigInts }, function (st) {
 		forEach(v.nonBigInts, function (nonBigInt) {
 			st['throws'](
+				// @ts-expect-error
 				function () { BigIntSubtract(nonBigInt, BigInt(0)); },
 				TypeError,
 				'x: ' + debug(nonBigInt) + ' is not a BigInt'
 			);
 			st['throws'](
+				// @ts-expect-error
 				function () { BigIntSubtract(BigInt(0), nonBigInt); },
 				TypeError,
 				'y: ' + debug(nonBigInt) + ' is not a BigInt'
@@ -36,6 +39,7 @@ module.exports = function (t, year, BigIntSubtract) {
 
 	t.test('BigInt not supported', { skip: esV.hasBigInts }, function (st) {
 		st['throws'](
+			// @ts-expect-error
 			function () { BigIntSubtract('0'); },
 			SyntaxError,
 			'throws a SyntaxError when BigInt is not available'

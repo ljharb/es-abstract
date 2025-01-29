@@ -4,7 +4,7 @@ var v = require('es-value-fixtures');
 
 var testIterator = require('./testIterator');
 
-/** @type {(CreateRegExpStringIterator: (regex: RegExp, str: string, global: boolean, unicode: boolean) => Iterator<RegExpMatchArray>, t: import('tape').Test, regex: RegExp, str: string, global: boolean, unicode: boolean, expected: RegExpMatchArray[]) => void} */
+/** @type {(CreateRegExpStringIterator: (regex: RegExp, str: string, global: boolean, unicode: boolean) => IterableIterator<RegExpMatchArray>, t: import('tape').Test, regex: RegExp, str: string, global: boolean, unicode: boolean, expected: RegExpMatchArray[]) => void} */
 module.exports = function testRegExpStringIterator(CreateRegExpStringIterator, t, regex, str, global, unicode, expected) {
 	var iterator = CreateRegExpStringIterator(regex, str, global, unicode);
 	t.equal(typeof iterator, 'object', 'iterator is an object');
