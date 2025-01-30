@@ -9,22 +9,38 @@ var hasNamedCaptures = require('has-named-captures')();
 module.exports = function (t, year, actual) {
 	t.ok(year >= 2015, 'ES2015+');
 
+	/** @type {import('../testHelpers').AOOnlyYears<'GetSubstitution', 2018 | 2019 | 2020 | 2021 | 2022 | 2023 | 2024>} */
 	var GetSubstitution = function (matched, str, position, captures, namedCaptures, replacement) {
 		if (year < 2018) {
 			// ES2018 spliced in `namedCaptures` :-(
-			return actual(matched, str, position, captures, replacement);
+			return /** @type {import('../testHelpers').AOOnlyYears<'GetSubstitution', 5 | 2015 | 2016 | 2017>} */ (actual)(
+				matched,
+				str,
+				position,
+				captures,
+				replacement
+			);
 		}
-		return actual(matched, str, position, captures, namedCaptures, replacement);
+		return /** @type {import('../testHelpers').AOOnlyYears<'GetSubstitution', Exclude<import('../testHelpers').TestYear, 5 | 2015 | 2016 | 2017>>} */ (actual)(
+			matched,
+			str,
+			position,
+			captures,
+			namedCaptures,
+			replacement
+		);
 	};
 
 	forEach(v.nonStrings, function (nonString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { GetSubstitution(nonString, '', 0, [], undefined, ''); },
 			TypeError,
 			'`matched`: ' + debug(nonString) + ' is not a String'
 		);
 
 		t['throws'](
+			// @ts-expect-error
 			function () { GetSubstitution('', nonString, 0, [], undefined, ''); },
 			TypeError,
 			'`str`: ' + debug(nonString) + ' is not a String'
@@ -38,6 +54,7 @@ module.exports = function (t, year, actual) {
 
 		if (typeof nonString !== 'undefined') {
 			t['throws'](
+				// @ts-expect-error
 				function () { GetSubstitution('', '', 0, [nonString], undefined, ''); },
 				TypeError,
 				'`captures`: ' + debug([nonString]) + ' is not an Array of strings' + (year < 2018 ? ' or `undefined`' : '')
@@ -55,6 +72,7 @@ module.exports = function (t, year, actual) {
 
 	forEach(v.nonArrays, function (nonArray) {
 		t['throws'](
+			// @ts-expect-error
 			function () { GetSubstitution('', '', 0, nonArray, undefined, ''); },
 			TypeError,
 			'`captures`: ' + debug(nonArray) + ' is not an Array'
@@ -248,6 +266,7 @@ module.exports = function (t, year, actual) {
 	if (year >= 2024) {
 		forEach(v.nonUndefinedPrimitives, function (nonUndefinedPrimitive) {
 			t['throws'](
+				// @ts-expect-error
 				function () { GetSubstitution('', '', 0, [], nonUndefinedPrimitive, ''); },
 				TypeError,
 				'`namedCaptures`: must be `undefined` or an Object'

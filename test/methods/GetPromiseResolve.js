@@ -8,22 +8,28 @@ var debug = require('object-inspect');
 module.exports = function (t, year, GetPromiseResolve) {
 	t.ok(year >= 2021, 'ES2021+');
 
-	forEach([].concat(
+	forEach(/** @type {unknown[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		v.nonFunctions,
 		v.nonConstructorFunctions
-	), function (nonConstructor) {
+	)), function (nonConstructor) {
 		t['throws'](
+			// @ts-expect-error
 			function () { GetPromiseResolve(nonConstructor); },
 			TypeError,
 			debug(nonConstructor) + ' is not a constructor'
 		);
 	});
 
+	/** @constructor */
+	function C() {}
+
 	forEach(v.nonFunctions, function (nonCallable) {
-		var C = function C() {};
+		// @ts-expect-error
 		C.resolve = nonCallable;
 
 		t['throws'](
+			// @ts-expect-error
 			function () { GetPromiseResolve(C); },
 			TypeError,
 			'`resolve` method: ' + debug(nonCallable) + ' is not callable'
@@ -36,7 +42,6 @@ module.exports = function (t, year, GetPromiseResolve) {
 		st.end();
 	});
 
-	var C = function () {};
 	var resolve = function () {};
 	C.resolve = resolve;
 	t.equal(GetPromiseResolve(C), resolve, 'returns a callable `resolve` property');

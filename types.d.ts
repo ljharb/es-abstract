@@ -125,7 +125,7 @@ export type CompletionRecordType = 'normal' | 'break' | 'continue' | 'return' | 
 
 export type MatchRecord = { '[[StartIndex]]': nonNegativeInteger; '[[EndIndex]]': nonNegativeInteger };
 
-export type IteratorRecord<T> = { '[[Iterator]]': Iterator<T>; '[[NextMethod]]': (value?: unknown) => IteratorResult<T, typeof value>, '[[Done]]': boolean };
+export type IteratorRecord<T> = { '[[Iterator]]': Iterator<T>; '[[NextMethod]]': (...[value]: [] | [unknown]) => IteratorResult<T, typeof value>, '[[Done]]': boolean };
 export type IteratorRecord2023<T> = Omit<IteratorRecord<T>, '[[NextMethod]]'> & { '[[NextMethod]]': (value?: unknown) => IteratorResult<T, typeof value> };
 export type AsyncIteratorRecord<T> = { '[[Iterator]]': AsyncIterator<T>; '[[NextMethod]]': () => Promise<IteratorResult<T>>, '[[Done]]': boolean };
 
@@ -285,7 +285,7 @@ declare function get<T extends object, K extends GettableAttributes<T> & Propert
 
 export type Get = typeof get;
 
-declare function getV<T extends {}, K extends GettableAttributes<T> & PropertyKey>(O: T, P: K): ProtoResolved<T>[K];
+declare function getV<T extends Record<K, unknown>, K extends GettableAttributes<T> & PropertyKey>(O: T, P: K): ProtoResolved<T>[K];
 
 export type GetV = typeof getV;
 
@@ -331,7 +331,7 @@ declare function enumerableOwnPropertyNames<V, O extends Record<string, V>>(O: O
 export type EnumerableOwnPropertyNames = typeof enumerableOwnPropertyNames;
 
 declare function ordinaryDefineOwnProperty<U, T extends PropertyKey>(O: Record<T, U>, P: T, Desc: Partial<Descriptor<U>>): boolean;
-declare function ordinaryDefineOwnProperty<U, T extends PropertyKey>(O: U[], P: number, Desc: Partial<Descriptor<U>>): boolean;
+declare function ordinaryDefineOwnProperty<U, T extends PropertyKey>(O: U[], P: T & number, Desc: Partial<Descriptor<U>>): boolean;
 declare function ordinaryDefineOwnProperty<U, T extends PropertyKey>(O: Record<T, U> | U[], P: T, Desc: Partial<Descriptor<U>>): boolean;
 
 export type OrdinaryDefineOwnProperty = typeof ordinaryDefineOwnProperty;
@@ -384,3 +384,9 @@ declare function abs(x: number): number;
 declare function abs(x: bigint): bigint;
 
 export type Abs = typeof abs;
+
+declare function getOwnPropertyKeys<O extends object>(O: O, Type: 'Symbol'): (keyof O & symbol)[];
+declare function getOwnPropertyKeys<O extends object>(O: O, Type: 'String'): (keyof O & string)[];
+declare function getOwnPropertyKeys<O extends object>(O: O, Type: 'Symbol' | 'String'): symbol[] | string[];
+
+export type GetOwnPropertyKeys = typeof getOwnPropertyKeys;

@@ -36,17 +36,17 @@ module.exports = function (t, year, InternalizeJSONProperty) {
 	});
 
 	t.deepEqual(
-		InternalizeJSONProperty({ a: { b: { c: 1 } } }, 'a', function (name, val) { return val; }),
+		InternalizeJSONProperty({ a: { b: { c: 1 } } }, 'a', /** @type {<T>(_name: any, val: T) => T} */ function (_name, val) { return val; }),
 		{ b: { c: 1 } }
 	);
 
 	t.deepEqual(
-		InternalizeJSONProperty({ a: [{ b: { c: 1 } }, { d: 2 }] }, 'a', function (name, val) { return val; }),
+		InternalizeJSONProperty({ a: [{ b: { c: 1 } }, { d: 2 }] }, 'a', /** @type {<T>(_name: any, val: T) => T} */ function (_name, val) { return val; }),
 		[{ b: { c: 1 } }, { d: 2 }]
 	);
 
 	// eslint-disable-next-line consistent-return
-	var noD = function (name, val) { if (name !== 'd') { return val; } };
+	var noD = /** @type {<T>(name: PropertyKey, val: T) => T | void} */ function (name, val) { if (name !== 'd') { return val; } };
 
 	t.deepEqual(
 		InternalizeJSONProperty({ a: [{ b: { c: 1 } }, { d: 2, e: 3 }] }, 'a', noD),
@@ -55,7 +55,7 @@ module.exports = function (t, year, InternalizeJSONProperty) {
 	);
 
 	// eslint-disable-next-line consistent-return
-	var noZero = function (name, val) { if (name !== '0') { return val; } };
+	var noZero = /** @type {<T>(name: PropertyKey, val: T) => T | void} */ function (name, val) { if (name !== '0') { return val; } };
 	t.deepEqual(
 		InternalizeJSONProperty({ a: [{ b: { c: 1 } }, { d: 2, e: 3 }] }, 'a', noZero),
 		[, { d: 2, e: 3 }], // eslint-disable-line no-sparse-arrays
@@ -75,7 +75,7 @@ module.exports = function (t, year, InternalizeJSONProperty) {
 	);
 
 	t.deepEqual(
-		InternalizeJSONProperty({ a: 1, b: 2 }, 'a', function (name, val) { return val; }),
+		InternalizeJSONProperty({ a: 1, b: 2 }, 'a', /** @type {<T>(_name: any, val: T) => T} */ function (_name, val) { return val; }),
 		1
 	);
 

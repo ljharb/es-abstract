@@ -35,7 +35,7 @@ module.exports = function GetIterator(obj, hint, method) {
 		throw new $TypeError("Assertion failed: `hint` must be one of 'sync' or 'async', got " + inspect(hint));
 	}
 
-	/** @type {(this: T) => Iterator<T> | undefined} */
+	/** @type {undefined | ((this: Iterable<T>) => Iterator<T>)} */
 	var actualMethod = method;
 	if (arguments.length < 3) {
 		if (actualHint === 'async') {

@@ -61,12 +61,16 @@ module.exports = function (t, year, MakeMatchIndicesIndexPairArray) {
 		'no groups'
 	);
 
-	t.test('has groups', { skip: !Object.create && !$setProto }, function (st) {
+	t.test('has groups', { skip: !Object.create || !$setProto }, function (st) {
+		if (!Object.create || !$setProto) {
+			st.fail();
+			return;
+		}
 		var result = MakeMatchIndicesIndexPairArray(
 			'abc',
 			[undefined, { '[[StartIndex]]': 0, '[[EndIndex]]': 1 }, { '[[StartIndex]]': 1, '[[EndIndex]]': 3 }],
 			['G1', 'G2'],
-			true
+			/** @type {const} */ (true)
 		);
 
 		st.equal('toString' in {}, true, 'normal objects have toString');

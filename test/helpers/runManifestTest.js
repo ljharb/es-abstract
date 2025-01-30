@@ -19,8 +19,8 @@ module.exports = function runManifestTest(test, ES, edition) {
 			function (file) { return file[0] !== '.' && file !== 'tables'; }
 		);
 		forEach(files, function (file) {
-			var name = path.basename(file, path.extname(file));
-			var actualName = aoMap[name] in ES ? aoMap[/** @type {keyof typeof aoMap} */ (name)] : name;
+			var name = /** @type {string} */ (path.basename(file, path.extname(file)));
+			var actualName = aoMap[/** @type {keyof typeof aoMap} */ (name)] in ES ? aoMap[/** @type {keyof typeof aoMap} */ (name)] : name;
 			var actual = ES[actualName];
 			var expected = require(path.join(__dirname, '../../' + edition + '/', file)); // eslint-disable-line global-require
 			t.equal(actual, expected, 'ES["' + actualName + '"] === ' + file);

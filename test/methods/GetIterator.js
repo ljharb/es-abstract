@@ -13,9 +13,9 @@ module.exports = function (t, year, actual) {
 	t.ok(year >= 2015, 'ES2015+');
 
 	var arr = [1, 2];
-	/** @type {<T>(result: Iterator<T> | import('../../types').IteratorRecord<T>) => Iterator<T>} */
+	/** @type {<T>(result: Iterator<T> | import('../../types').IteratorRecord2023<T> | import('../../types').IteratorRecord<T>) => Iterator<T>} */
 	var unwrap = function (result) {
-		return year >= 2023 ? result['[[Iterator]]'] : result;
+		return year >= 2023 ? /** @type {Exclude<typeof result, Iterator<any>>} */ (result)['[[Iterator]]'] : result;
 	};
 	var GetIterator = year >= 2020 ? actual : function GetIterator(obj, hint, method) {
 		if (arguments.length > 2) {

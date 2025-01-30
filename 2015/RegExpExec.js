@@ -10,7 +10,7 @@ var IsCallable = require('./IsCallable');
 
 // https://262.ecma-international.org/6.0/#sec-regexpexec
 
-/** @type {(R: RegExp & { exec?: unknown }, S: string) => ReturnType<typeof RegExp.prototype.exec>} */
+/** @type {(R: (RegExp | object) & { exec?(this: typeof R, str: typeof S): null | RegExpExecArray }, S: string) => ReturnType<typeof RegExp.prototype.exec>} */
 module.exports = function RegExpExec(R, S) {
 	if (!isObject(R)) {
 		throw new $TypeError('Assertion failed: `R` must be an Object');

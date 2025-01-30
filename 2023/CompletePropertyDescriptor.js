@@ -47,5 +47,6 @@ module.exports = function CompletePropertyDescriptor(Desc) {
 		Desc['[[Configurable]]'] = false;
 	}
 
+	// @ts-expect-error FIXME the type should be correct here
 	return Desc;
 };

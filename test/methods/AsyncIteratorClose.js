@@ -24,9 +24,10 @@ module.exports = function (t, year, AsyncIteratorClose, extras) {
 		);
 	});
 
+	/** @type {Iterator<undefined>} */
 	var iterator = {
-		/** @type {() => void} */
-		next: function next() {}
+		/** @type {() => IteratorResult<undefined>} */
+		next: function next() { return { value: undefined, done: false }; }
 	};
 	var iteratorRecord = makeIteratorRecord(iterator);
 

@@ -91,6 +91,10 @@ module.exports = function (t, year, DefineMethodProperty) {
 
 	// test defining a non-enumerable property when descriptors are supported
 	t.test('defining a non-enumerable method', { skip: !defineProperty || !gOPD }, function (st) {
+		if (!defineProperty || !gOPD) {
+			st.fail();
+			return;
+		}
 		/** @type {Record<string, unknown>} */
 		var obj = {};
 		var key = 'the key';

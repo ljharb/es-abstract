@@ -13,6 +13,7 @@ module.exports = function (t, year, IteratorToList) {
 
 	forEach(esV.unknowns, function (nonIteratorRecord) {
 		t['throws'](
+			// @ts-expect-error
 			function () { IteratorToList(nonIteratorRecord); },
 			TypeError,
 			debug(nonIteratorRecord) + ' is not an Iterator Record'
@@ -52,6 +53,7 @@ module.exports = function (t, year, IteratorToList) {
 	});
 
 	t['throws'](
+		// @ts-expect-error
 		function () { IteratorToList(makeIteratorRecord({})); },
 		TypeError,
 		'non-function iterator method'

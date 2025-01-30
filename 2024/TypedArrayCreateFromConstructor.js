@@ -13,7 +13,7 @@ var availableTypedArrays = require('available-typed-arrays')();
 
 // https://262.ecma-international.org/15.0/#typedarraycreatefromconstructor
 
-/** @type {(constructor: import('../types').Constructor<import('../types').TypedArray, import('../types').TypedArrayConstructor>, argumentList: [number] | unknown[]) => import('../types').TypedArray} */
+/** @type {(constructor: import('../types').TypedArrayConstructor, argumentList: [number] | unknown[]) => import('../types').TypedArray} */
 module.exports = function TypedArrayCreateFromConstructor(constructor, argumentList) {
 	if (!IsConstructor(constructor)) {
 		throw new $TypeError('Assertion failed: `constructor` must be a constructor');

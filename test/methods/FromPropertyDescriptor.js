@@ -33,12 +33,12 @@ module.exports = function (t, year, FromPropertyDescriptor) {
 	if (year < 2015) {
 		t.deepEqual(fromAccessor, {
 			get: accessor['[[Get]]'],
-			set: accessor['[[Set]]'],
+			set: '[[Set]]' in accessor ? accessor['[[Set]]'] : undefined,
 			enumerable: !!accessor['[[Enumerable]]'],
 			configurable: !!accessor['[[Configurable]]']
 		});
 		t.deepEqual(fromMutator, {
-			get: mutator['[[Get]]'],
+			get: '[[Get]]' in mutator ? mutator['[[Get]]'] : undefined,
 			set: mutator['[[Set]]'],
 			enumerable: !!mutator['[[Enumerable]]'],
 			configurable: !!mutator['[[Configurable]]']
@@ -46,8 +46,8 @@ module.exports = function (t, year, FromPropertyDescriptor) {
 		t.deepEqual(fromData, {
 			value: data['[[Value]]'],
 			writable: data['[[Writable]]'],
-			enumerable: !!data['[[Enumerable]]'],
-			configurable: !!data['[[Configurable]]']
+			enumerable: '[[Enumerable]]' in data && !!data['[[Enumerable]]'],
+			configurable: '[[Configurable]]' in data && !!data['[[Configurable]]']
 		});
 
 		t['throws'](
@@ -79,6 +79,7 @@ module.exports = function (t, year, FromPropertyDescriptor) {
 		var both = v.bothDescriptor();
 		t['throws'](
 			function () {
+				// @ts-expect-error
 				FromPropertyDescriptor({ get: both['[[Get]]'], value: both['[[Value]]'] });
 			},
 			TypeError,

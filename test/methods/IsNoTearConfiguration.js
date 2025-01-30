@@ -6,8 +6,17 @@ var debug = require('object-inspect');
 var esV = require('../helpers/v');
 
 /** @type {import('../testHelpers').MethodTest<'IsNoTearConfiguration'>} */
-module.exports = function (t, year, IsNoTearConfiguration) {
+module.exports = function (t, year, actual) {
 	t.ok(year >= 2020, 'ES2020+');
+
+	var IsNoTearConfiguration = year >= 2024
+		? /** @type {import('../testHelpers').AOOnlyYears<'IsNoTearConfiguration', 2024>} */ (actual)
+		: /** @type {import('../testHelpers').AOOnlyYears<'IsNoTearConfiguration', 2024>} */ function (type, order) {
+			return /** @type {import('../testHelpers').AOOnlyYears<'IsNoTearConfiguration', Exclude<import('../testHelpers').TestYear, 2024>>} */ (actual)(
+				type,
+				/** @type {'Init' | 'Unordered'} */ (order.toUpperCase())
+			);
+		};
 
 	forEach(esV.unclampedIntegerTypes, function (lowerType) {
 		var type = year >= 2024 ? /** @type {Uppercase<typeof lowerType>} */ (lowerType.toUpperCase()) : lowerType;
@@ -24,13 +33,13 @@ module.exports = function (t, year, IsNoTearConfiguration) {
 		var type = year >= 2024 ? /** @type {Uppercase<typeof lowerType>} */ (lowerType.toUpperCase()) : lowerType;
 
 		t.equal(
-			IsNoTearConfiguration(type, year >= 2024 ? 'INIT' : 'Init'),
+			IsNoTearConfiguration(type, 'INIT'),
 			false,
 			debug(type) + ' with ' + debug('Init') + ' is not a no-tear configuration'
 		);
 
 		t.equal(
-			IsNoTearConfiguration(type, year >= 2024 ? 'UNORDERED' : 'Unordered'),
+			IsNoTearConfiguration(type, 'UNORDERED'),
 			false,
 			debug(type) + ' with ' + debug('Unordered') + ' is not a no-tear configuration'
 		);

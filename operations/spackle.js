@@ -9,20 +9,25 @@ const { ESLint } = require('eslint');
 const deltas = require('./deltas');
 const years = require('./years');
 
-/** @type {Record<import('../types').integer, Map<string, string>>} */
+/** @typedef {import('../test/testHelpers').AllAONames} AOName */
+/** @typedef {import('../test/testHelpers').SplitAOName<AOName>[0]} BaseAOName */
+
+/** @type {{ [k in import('../test/testHelpers').TestYear]?: Map<AOName | BaseAOName, string> }} */
 const allOps = {};
-/** @type {(uear: import('../types').integer, op: string, opPath: string) => void} */
+/** @type {(year: import('../test/testHelpers').TestYear, op: AOName, opPath: string) => void} */
 function addOpToYear(year, op, opPath) {
 	allOps[year] ||= new Map();
 	if (op === opPath) {
 		allOps[year].set(op, `${year}/${opPath}`);
 	} else {
-		const baseOp = op.replace(/::.*$/, '');
+		// eslint-disable-next-line no-extra-parens
+		const baseOp = /** @type {BaseAOName} */ (op.replace(/::.*$/, ''));
 		allOps[year].set(baseOp, `${year}/${baseOp}`);
 	}
 }
 
-const writtenOps = [5].concat(years).flatMap((year, i, arr) => {
+// eslint-disable-next-line no-extra-parens
+const writtenOps = /** @type {import('../test/testHelpers').TestYear[]} */ ([5].concat(years)).flatMap((year, i, arr) => {
 	const ops = fs.readdirSync(path.join(process.cwd(), String(year)));
 	return ops.flatMap((opFile) => {
 		const maybeDirPath = path.join(process.cwd(), String(year), opFile);
@@ -35,7 +40,8 @@ const writtenOps = [5].concat(years).flatMap((year, i, arr) => {
 		}
 		return opFile;
 	}).flatMap((opFile) => {
-		const op = path.basename(opFile, path.extname(opFile));
+		// eslint-disable-next-line no-extra-parens
+		const op = /** @type {AOName} */ (path.basename(opFile, path.extname(opFile)));
 		const opPath = op.replace('::', '/');
 		const isEntryPoint = !opPath.startsWith('tables/');
 		const thisFile = path.join(process.cwd(), String(year), `${opPath}.js`);
@@ -80,6 +86,7 @@ module.exports = require('${thisSpecifier}');
 	});
 });
 
+/** @type {import('../test/helpers/aoMap.json')} */
 const exceptions = require('../test/helpers/aoMap.json');
 
 const willBeQuotedOp = (/^'[^' ]+ [^']+'/);
@@ -97,7 +104,7 @@ function compareOps(a, b) {
 }
 
 /** @type {Promise<string>[]} */
-const writtenManifestsP = years.map(/** @type {(year: import('../types').integer) => Promise<string>} */ async (year) => {
+const writtenManifestsP = years.map(/** @type {(year: import('../test/testHelpers').TestYear) => Promise<string>} */ async (year) => {
 	const edition = year - 2009;
 	const contents = `'use strict';
 

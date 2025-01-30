@@ -25,15 +25,16 @@ module.exports = function (t, year, StringPad) {
 	}
 
 	if (year >= 2024) {
-		t.equal(StringPad('a', 3, '', 'START'), 'a');
-		t.equal(StringPad('a', 3, '', 'END'), 'a');
-		t.equal(StringPad('a', 3, ' ', 'START'), '  a');
-		t.equal(StringPad('a', 3, ' ', 'END'), 'a  ');
-		t.equal(StringPad('a', 3, '0', 'START'), '00a');
-		t.equal(StringPad('a', 3, '0', 'END'), 'a00');
-		t.equal(StringPad('a', 3, '012', 'START'), '01a');
-		t.equal(StringPad('a', 3, '012', 'END'), 'a01');
-		t.equal(StringPad('a', 7, '012', 'START'), '012012a');
-		t.equal(StringPad('a', 7, '012', 'END'), 'a012012');
+		var StringPad2024 = /** @type {import('../testHelpers').AOOnlyYears<'StringPad', 2024>} */ (StringPad);
+		t.equal(StringPad2024('a', 3, '', 'START'), 'a');
+		t.equal(StringPad2024('a', 3, '', 'END'), 'a');
+		t.equal(StringPad2024('a', 3, ' ', 'START'), '  a');
+		t.equal(StringPad2024('a', 3, ' ', 'END'), 'a  ');
+		t.equal(StringPad2024('a', 3, '0', 'START'), '00a');
+		t.equal(StringPad2024('a', 3, '0', 'END'), 'a00');
+		t.equal(StringPad2024('a', 3, '012', 'START'), '01a');
+		t.equal(StringPad2024('a', 3, '012', 'END'), 'a01');
+		t.equal(StringPad2024('a', 7, '012', 'START'), '012012a');
+		t.equal(StringPad2024('a', 7, '012', 'END'), 'a012012');
 	}
 };

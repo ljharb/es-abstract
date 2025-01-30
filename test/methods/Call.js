@@ -29,6 +29,7 @@ module.exports = function (t, year, Call) {
 
 	forEach(v.nonArrays, function (nonArray) {
 		t['throws'](
+			// @ts-expect-error
 			function () { Call(Function.prototype, null, nonArray); },
 			TypeError,
 			debug(nonArray) + ' is not an array'

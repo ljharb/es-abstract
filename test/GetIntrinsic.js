@@ -126,7 +126,6 @@ test('dotted paths', function (t) {
 			'%ObjProto_toString%',
 			'ObjProto_toString'
 		], function (name) {
-			// @ts-expect-error TS is dumb
 			DefinePropertyOrThrow(Object.prototype, 'toString', {
 				'[[Value]]': function toString() {
 					// @ts-expect-error TS is dumb
@@ -136,7 +135,6 @@ test('dotted paths', function (t) {
 			st.equal(GetIntrinsic(name), original, name + ' yields original Object.prototype.toString');
 		});
 
-		// @ts-expect-error TS is dumb
 		DefinePropertyOrThrow(Object.prototype, 'toString', { '[[Value]]': original });
 		st.end();
 	});
