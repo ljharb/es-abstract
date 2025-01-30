@@ -29,7 +29,7 @@ module.exports = function InternalizeJSONProperty(holder, name, reviver) {
 		throw new $TypeError('Assertion failed: `reviver` is not a Function');
 	}
 
-	var val = Get(holder, name); // step 1
+	var val = Get(holder, /** @type {Exclude<keyof import('../types').ProtoResolved<typeof holder>, "__proto__"> & string} */ (name)); // step 1
 
 	if (isObject(val)) { // step 2
 		if (IsArray(val)) { // step 2.a, 2.b
@@ -41,7 +41,7 @@ module.exports = function InternalizeJSONProperty(holder, name, reviver) {
 				var newElement = InternalizeJSONProperty(val, ToString(I), reviver); // step 2.b.iv.1
 
 				if (typeof newElement === 'undefined') { // step 2.b.iii.2
-					delete val[ToString(I)]; // step 2.b.iii.2.a
+					delete val[+ToString(I)]; // step 2.b.iii.2.a
 				} else { // step 2.b.iii.3
 					CreateDataProperty(val, ToString(I), newElement); // step 2.b.iii.3.a
 				}

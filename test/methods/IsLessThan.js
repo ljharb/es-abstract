@@ -20,6 +20,7 @@ module.exports = function (t, year, IsLessThan) {
 
 	forEach(v.nonBooleans, function (nonBoolean) {
 		t['throws'](
+			// @ts-expect-error
 			function () { IsLessThan(3, 4, nonBoolean); },
 			TypeError,
 			debug(nonBoolean) + ' is not a Boolean'

@@ -20,7 +20,7 @@ module.exports = function (t, year, IsRegExp) {
 	});
 
 	t.test('Symbol.match', { skip: !v.hasSymbols || !Symbol.match }, function (st) {
-		/** @type {Record<PropertyKey, unknown>>} */
+		/** @type {Record<PropertyKey, unknown>} */
 		var obj = {};
 		obj[Symbol.match] = true;
 		st.equal(true, IsRegExp(obj), 'object with truthy Symbol.match is regex');

@@ -36,6 +36,7 @@ module.exports = function (t, year, InstallErrorCause) {
 		'cause' in obj,
 		'installs `undefined` when `cause` is present and `undefined`'
 	);
+	// @ts-expect-error FIXME: TS should treat dot and bracket access identically
 	t.equal(obj.cause, undefined, 'obj.cause is `undefined`');
 
 	/** @type {Record<PropertyKey, unknown>} */
@@ -45,5 +46,6 @@ module.exports = function (t, year, InstallErrorCause) {
 		'cause' in obj2,
 		'installs when `cause` is present'
 	);
+	// @ts-expect-error FIXME: TS should treat dot and bracket access identically
 	t.equal(obj2.cause, obj, 'obj2.cause is as expected');
 };

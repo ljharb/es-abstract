@@ -10,8 +10,26 @@ var esV = require('../helpers/v');
 var unserialize = require('../helpers/unserializeNumeric');
 
 /** @type {import('../testHelpers').MethodTest<'RawBytesToNumeric' | 'RawBytesToNumber'>} */
-module.exports = function (t, year, RawBytesToNumeric) {
+module.exports = function (t, year, actual, extras) {
 	t.ok(year >= 2017, 'ES2017+');
+
+	var RawBytesToNumeric = year >= 2024
+		? /** @type {import('../testHelpers').AOOnlyYears<'RawBytesToNumeric' | 'RawBytesToNumber', 2024>} */ (actual)
+		: year >= 2020
+			? /** @type {import('../testHelpers').AOOnlyYears<'RawBytesToNumeric' | 'RawBytesToNumber', 2024>} */ function RawBytesToNumeric(type, rawBytes, littleEndian) {
+				return /** @type {import('../testHelpers').AOOnlyYears<'RawBytesToNumeric' | 'RawBytesToNumber', 2020 | 2021 | 2022 | 2023>} */ (actual)(
+					/** @type {import('../../types').TypedArrayTypeByName<import('../../types').TypedArrayName>} */ (type.toUpperCase()),
+					rawBytes,
+					littleEndian
+				);
+			}
+			: /** @type {import('../testHelpers').AOOnlyYears<'RawBytesToNumeric' | 'RawBytesToNumber', 2024>} */ function RawBytesToNumeric(type, rawBytes, littleEndian) {
+				return /** @type {import('../testHelpers').AOOnlyYears<'RawBytesToNumeric' | 'RawBytesToNumber', Exclude<import('../testHelpers').TestYear, 2020 | 2021 | 2022 | 2023 | 2024>>} */ (actual)(
+					/** @type {import('../../types').TypedArrayTypeByName<Exclude<import('../../types').TypedArrayName, 'BigInt64Array' | 'BigUint64Array'>>} */ (type.toUpperCase()),
+					rawBytes,
+					littleEndian
+				);
+			};
 
 	forEach(esV.nonTATypes, function (nonTAType) {
 		t['throws'](
@@ -25,7 +43,7 @@ module.exports = function (t, year, RawBytesToNumeric) {
 	forEach(esV.unknowns, function (nonArray) {
 		t['throws'](
 			// @ts-expect-error
-			function () { RawBytesToNumeric(year >= 2024 ? 'INT8' : 'Int8', nonArray, false); },
+			function () { RawBytesToNumeric('INT8', nonArray, false); },
 			TypeError,
 			debug(nonArray) + ' is not an Array'
 		);
@@ -33,7 +51,7 @@ module.exports = function (t, year, RawBytesToNumeric) {
 	forEach([-1, 1.5, 256], function (nonByte) {
 		t['throws'](
 			// @ts-expect-error
-			function () { RawBytesToNumeric(year >= 2024 ? 'INT8' : 'Int8', [nonByte], false); },
+			function () { RawBytesToNumeric('INT8', [nonByte], false); },
 			TypeError,
 			debug(nonByte) + ' is not a valid "byte"'
 		);
@@ -42,7 +60,7 @@ module.exports = function (t, year, RawBytesToNumeric) {
 	forEach(v.nonBooleans, function (nonBoolean) {
 		t['throws'](
 			// @ts-expect-error
-			function () { RawBytesToNumeric(year >= 2024 ? 'INT8' : 'Int8', [0], nonBoolean); },
+			function () { RawBytesToNumeric('INT8', [0], nonBoolean); },
 			TypeError,
 			debug(nonBoolean) + ' is not a Boolean'
 		);
@@ -56,7 +74,7 @@ module.exports = function (t, year, RawBytesToNumeric) {
 				var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 
 				var littleLittle = unserialize(result.setAsLittle.asLittle);
-				var actualType = year >= 2024 ? /** @type {Uppercase<typeof type>} */ (type.toUpperCase()) : type;
+				var actualType = /** @type {Uppercase<typeof type>} */ (type.toUpperCase());
 				try {
 					st.equal(
 						RawBytesToNumeric(actualType, result.setAsLittle.bytes, true),
@@ -85,123 +103,123 @@ module.exports = function (t, year, RawBytesToNumeric) {
 
 	t.test('incorrect byte counts', function (st) {
 		st['throws'](
-			function () { RawBytesToNumeric(year >= 2024 ? 'FLOAT32' : 'Float32', [0, 0, 0], false); },
+			function () { RawBytesToNumeric('FLOAT32', [0, 0, 0], false); },
 			RangeError,
 			'Float32 with less than 4 bytes throws a RangeError'
 		);
 		st['throws'](
-			function () { RawBytesToNumeric(year >= 2024 ? 'FLOAT32' : 'Float32', [0, 0, 0, 0, 0], false); },
+			function () { RawBytesToNumeric('FLOAT32', [0, 0, 0, 0, 0], false); },
 			RangeError,
 			'Float32 with more than 4 bytes throws a RangeError'
 		);
 
 		st['throws'](
-			function () { RawBytesToNumeric(year >= 2024 ? 'FLOAT64' : 'Float64', [0, 0, 0, 0, 0, 0, 0], false); },
+			function () { RawBytesToNumeric('FLOAT64', [0, 0, 0, 0, 0, 0, 0], false); },
 			RangeError,
 			'Float64 with less than 8 bytes throws a RangeError'
 		);
 		st['throws'](
-			function () { RawBytesToNumeric(year >= 2024 ? 'FLOAT64' : 'Float64', [0, 0, 0, 0, 0, 0, 0, 0, 0], false); },
+			function () { RawBytesToNumeric('FLOAT64', [0, 0, 0, 0, 0, 0, 0, 0, 0], false); },
 			RangeError,
 			'Float64 with more than 8 bytes throws a RangeError'
 		);
 
 		st['throws'](
-			function () { RawBytesToNumeric(year >= 2024 ? 'INT8' : 'Int8', [], false); },
+			function () { RawBytesToNumeric('INT8', [], false); },
 			RangeError,
 			'Int8 with less than 1 byte throws a RangeError'
 		);
 		st['throws'](
-			function () { RawBytesToNumeric(year >= 2024 ? 'INT8' : 'Int8', [0, 0], false); },
+			function () { RawBytesToNumeric('INT8', [0, 0], false); },
 			RangeError,
 			'Int8 with more than 1 byte throws a RangeError'
 		);
 
 		st['throws'](
-			function () { RawBytesToNumeric(year >= 2024 ? 'UINT8' : 'Uint8', [], false); },
+			function () { RawBytesToNumeric('UINT8', [], false); },
 			RangeError,
 			'Uint8 with less than 1 byte throws a RangeError'
 		);
 		st['throws'](
-			function () { RawBytesToNumeric(year >= 2024 ? 'UINT8' : 'Uint8', [0, 0], false); },
+			function () { RawBytesToNumeric('UINT8', [0, 0], false); },
 			RangeError,
 			'Uint8 with more than 1 byte throws a RangeError'
 		);
 
 		st['throws'](
-			function () { RawBytesToNumeric(year >= 2024 ? 'UINT8C' : 'Uint8C', [], false); },
+			function () { RawBytesToNumeric('UINT8C', [], false); },
 			RangeError,
 			'Uint8C with less than 1 byte throws a RangeError'
 		);
 		st['throws'](
-			function () { RawBytesToNumeric(year >= 2024 ? 'UINT8C' : 'Uint8C', [0, 0], false); },
+			function () { RawBytesToNumeric('UINT8C', [0, 0], false); },
 			RangeError,
 			'Uint8C with more than 1 byte throws a RangeError'
 		);
 
 		st['throws'](
-			function () { RawBytesToNumeric(year >= 2024 ? 'INT16' : 'Int16', [0], false); },
+			function () { RawBytesToNumeric('INT16', [0], false); },
 			RangeError,
 			'Int16 with less than 2 bytes throws a RangeError'
 		);
 		st['throws'](
-			function () { RawBytesToNumeric(year >= 2024 ? 'INT16' : 'Int16', [0, 0, 0], false); },
+			function () { RawBytesToNumeric('INT16', [0, 0, 0], false); },
 			RangeError,
 			'Int16 with more than 2 bytes throws a RangeError'
 		);
 
 		st['throws'](
-			function () { RawBytesToNumeric(year >= 2024 ? 'UINT16' : 'Uint16', [0], false); },
+			function () { RawBytesToNumeric('UINT16', [0], false); },
 			RangeError,
 			'Uint16 with less than 2 bytes throws a RangeError'
 		);
 		st['throws'](
-			function () { RawBytesToNumeric(year >= 2024 ? 'UINT16' : 'Uint16', [0, 0, 0], false); },
+			function () { RawBytesToNumeric('UINT16', [0, 0, 0], false); },
 			RangeError,
 			'Uint16 with more than 2 bytes throws a RangeError'
 		);
 
 		st['throws'](
-			function () { RawBytesToNumeric(year >= 2024 ? 'UINT16' : 'Uint16', [0, 0, 0], false); },
+			function () { RawBytesToNumeric('UINT16', [0, 0, 0], false); },
 			RangeError,
 			'Uint16 with less than 4 bytes throws a RangeError'
 		);
 		st['throws'](
-			function () { RawBytesToNumeric(year >= 2024 ? 'UINT16' : 'Uint16', [0, 0, 0, 0, 0], false); },
+			function () { RawBytesToNumeric('UINT16', [0, 0, 0, 0, 0], false); },
 			RangeError,
 			'Uint16 with more than 4 bytes throws a RangeError'
 		);
 
 		st['throws'](
-			function () { RawBytesToNumeric(year >= 2024 ? 'UINT32' : 'Uint32', [0, 0, 0], false); },
+			function () { RawBytesToNumeric('UINT32', [0, 0, 0], false); },
 			RangeError,
 			'Uint32 with less than 4 bytes throws a RangeError'
 		);
 		st['throws'](
-			function () { RawBytesToNumeric(year >= 2024 ? 'UINT32' : 'Uint32', [0, 0, 0, 0, 0], false); },
+			function () { RawBytesToNumeric('UINT32', [0, 0, 0, 0, 0], false); },
 			RangeError,
 			'Uint32 with more than 4 bytes throws a RangeError'
 		);
 
 		if (year >= 2020) {
 			st['throws'](
-				function () { RawBytesToNumeric(year >= 2024 ? 'BIGINT64' : 'BigInt64', [0, 0, 0, 0, 0, 0, 0], false); },
+				function () { RawBytesToNumeric('BIGINT64', [0, 0, 0, 0, 0, 0, 0], false); },
 				RangeError,
 				'BigInt64 with less than 8 bytes throws a RangeError'
 			);
 			st['throws'](
-				function () { RawBytesToNumeric(year >= 2024 ? 'BIGINT64' : 'BigInt64', [0, 0, 0, 0, 0, 0, 0, 0, 0], false); },
+				function () { RawBytesToNumeric('BIGINT64', [0, 0, 0, 0, 0, 0, 0, 0, 0], false); },
 				RangeError,
 				'BigInt64 with more than 8 bytes throws a RangeError'
 			);
 
 			st['throws'](
-				function () { RawBytesToNumeric(year >= 2024 ? 'BIGUINT64' : 'BigUint64', [0, 0, 0, 0, 0, 0, 0], false); },
+				function () { RawBytesToNumeric('BIGUINT64', [0, 0, 0, 0, 0, 0, 0], false); },
 				RangeError,
 				'BigUint64 with less than 8 bytes throws a RangeError'
 			);
 			st['throws'](
-				function () { RawBytesToNumeric(year >= 2024 ? 'BIGUINT64' : 'BigUint64', [0, 0, 0, 0, 0, 0, 0, 0, 0], false); },
+				function () { RawBytesToNumeric('BIGUINT64', [0, 0, 0, 0, 0, 0, 0, 0, 0], false); },
 				RangeError,
 				'BigUint64 with more than 8 bytes throws a RangeError'
 			);
@@ -210,21 +228,21 @@ module.exports = function (t, year, RawBytesToNumeric) {
 		st.end();
 	});
 
-	if (year >= 2020) {
-		var RawBytesToNumeric2020 = /** @type {import('../testHelpers').AOOnlyYears<'RawBytesToNumeric', 2020 | 2021 | 2022 | 2023 | 2024>} */ (RawBytesToNumeric);
+	// eslint-disable-next-line no-shadow
+	extras.testSubset('RawBytesToNumeric', year, RawBytesToNumeric, /** @type {const} */ ([2020, 2021, 2022, 2023, 2024]), function (RawBytesToNumeric) {
 		t.test('bigint types, no bigints', { skip: esV.hasBigInts }, function (st) {
 			st['throws'](
-				function () { RawBytesToNumeric2020(year >= 2024 ? 'BIGINT64' : 'BigInt64', [0, 0, 0, 0, 0, 0, 0, 0], false); },
+				function () { RawBytesToNumeric('BIGINT64', [0, 0, 0, 0, 0, 0, 0, 0], false); },
 				SyntaxError,
 				'BigInt64 throws a SyntaxError when BigInt is not available'
 			);
 			st['throws'](
-				function () { RawBytesToNumeric2020(year >= 2024 ? 'BIGUINT64' : 'BigUint64', [0, 0, 0, 0, 0, 0, 0, 0], false); },
+				function () { RawBytesToNumeric('BIGUINT64', [0, 0, 0, 0, 0, 0, 0, 0], false); },
 				SyntaxError,
 				'BigUint64 throws a SyntaxError when BigInt is not available'
 			);
 
 			st.end();
 		});
-	}
+	});
 };

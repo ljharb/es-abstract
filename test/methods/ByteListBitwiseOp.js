@@ -47,9 +47,10 @@ module.exports = function (t, year, ByteListBitwiseOp) {
 	});
 
 	for (var i = 0; i <= 255; i += 1) {
-		var j = i === 0 ? 1 : i - 1;
-		t.deepEqual(ByteListBitwiseOp('&', [i], [j]), [i & j], i + ' & ' + j);
-		t.deepEqual(ByteListBitwiseOp('^', [i], [j]), [i ^ j], i + ' ^ ' + j);
-		t.deepEqual(ByteListBitwiseOp('|', [i], [j]), [i | j], i + ' | ' + j);
+		var j = /** @type {import('../../types').ByteValue} */ (i === 0 ? 1 : i - 1);
+		/* eslint array-bracket-spacing: 0 */ // eslint has a bug with this rule's autofix
+		t.deepEqual(ByteListBitwiseOp('&', [/** @type {import('../../types').ByteValue} */ (i)], [j]), [i & j], i + ' & ' + j);
+		t.deepEqual(ByteListBitwiseOp('^', [/** @type {import('../../types').ByteValue} */ (i)], [j]), [i ^ j], i + ' ^ ' + j);
+		t.deepEqual(ByteListBitwiseOp('|', [/** @type {import('../../types').ByteValue} */ (i)], [j]), [i | j], i + ' | ' + j);
 	}
 };

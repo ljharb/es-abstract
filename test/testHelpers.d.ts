@@ -78,19 +78,31 @@ export type AOOnlyYears<AOName extends string, Years extends TestYear> = YearsWi
 		: never
 	: never;
 
-// type AOUnion<AOName extends string> = DistributeAO<AOName>;
-
 type AOUnion<
   AOName extends string,
   Subset extends TestYear = TestYear
 > = ExpandUnion<DistributeAO<AOName, Subset>>;
 
+
+export type SubsetCallback<
+	AOName extends string,
+	Subset extends TestYear,
+> = (ao: AOUnion<AOName, Subset>) => void;
+
 export type MethodTest<AOName extends string, Subset extends TestYear = TestYear> = (
 	t: tape.Test,
-	// year: ExpandUnion<YearsWithAO<AOName>>,
 	year: ExpandUnion<YearsWithAO<AOName, Subset>>,
 	AO: AOUnion<AOName, Subset>,
-	getAO: <OtherAOName extends string>(aoName: OtherAOName) => ExpandUnion<AOUnion<OtherAOName, Subset>>
+	extras: {
+		getAO: <OtherAOName extends string>(aoName: OtherAOName) => ExpandUnion<AOUnion<OtherAOName, Subset>>,
+		testSubset: <LocalAOName extends string, LocalYearSubset extends TestYear>(
+			aoName: LocalAOName,
+			year: TestYear,
+			ao: AOUnion<AOName, Subset>,
+			subset: readonly LocalYearSubset[],
+			callback: (ao: ExpandUnion<AOUnion<LocalAOName, LocalYearSubset>>) => void,
+		) => void,
+	},
 ) => void;
 
 type KeysOfUnion<T> = T extends T ? keyof T: never;

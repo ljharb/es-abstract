@@ -1,6 +1,6 @@
 'use strict';
 
-var expectedMissing = [
+var expectedMissing = /** @type {const} */ ([
 	'AddRestrictedFunctionProperties',
 	'AddWaiter',
 	'agent-order',
@@ -207,7 +207,7 @@ var expectedMissing = [
 	'PrivateSet',
 	'ResolvePrivateIdentifier',
 	'RoundMVResult'
-];
+]);
 
 var testYear = require('./helpers/testYear');
 

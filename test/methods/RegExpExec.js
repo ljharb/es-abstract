@@ -77,7 +77,7 @@ module.exports = function (t, year, RegExpExec) {
 	t.test('actual regex that should match against a string, with shadowed "exec"', function (st) {
 		var S = 'aabc';
 		var R = /a/g;
-		defineProperty(R, 'exec', { configurable: true, enumerable: true, value: undefined, writable: true });
+		defineProperty(/** @type {Record<PropertyKey, unknown>} */ (/** @type {unknown} */ (R)), 'exec', { configurable: true, enumerable: true, value: undefined, writable: true });
 
 		var match1 = RegExpExec(R, S);
 		var expected1 = assign(['a'], kludgeMatch(R, { index: 0, input: S }));

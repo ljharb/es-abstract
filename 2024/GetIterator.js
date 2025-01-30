@@ -22,21 +22,23 @@ var getIteratorMethod = require('../helpers/getIteratorMethod');
 
 // https://262.ecma-international.org/14.0/#sec-getiterator
 
-/** @type {<T>(obj: object, kind: 'SYNC' | 'ASYNC') => import('../types').IteratorRecord<T> | import('../types').AsyncIteratorRecord<T>} */
+/** @type {<T>(obj: Iterable<T>, kind: 'SYNC' | 'ASYNC') => import('../types').IteratorRecord<T> | import('../types').AsyncIteratorRecord<T>} */
 module.exports = function GetIterator(obj, kind) {
 	if (kind !== 'SYNC' && kind !== 'ASYNC') {
 		throw new $TypeError("Assertion failed: `kind` must be one of 'sync' or 'async', got " + inspect(kind));
 	}
 
+	/** @typedef {import('../types').InferIterableType<typeof obj>} T */
+
 	var method;
 	if (kind === 'ASYNC') { // step 1
 		if (hasSymbols && $asyncIterator) {
-			method = GetMethod(obj, $asyncIterator); // step 1.a
+			method = GetMethod(/** @type {Parameters<typeof GetMethod>[0]} */ (/** @type {unknown} */ (obj)), $asyncIterator); // step 1.a
 		}
 	}
 	if (typeof method === 'undefined') { // step 1.b
 		// var syncMethod = GetMethod(obj, $iterator); // step 1.b.i
-		var syncMethod = getIteratorMethod(ES, obj);
+		var syncMethod = /** @type {() => IterableIterator<T>} */ (getIteratorMethod(ES, obj));
 		if (kind === 'ASYNC') {
 			if (typeof syncMethod === 'undefined') {
 				throw new $TypeError('iterator method is `undefined`'); // step 1.b.ii
