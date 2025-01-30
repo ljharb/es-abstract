@@ -39,5 +39,5 @@ module.exports = function ArrayBufferByteLength(arrayBuffer, order) {
 		throw new $TypeError('Assertion failed: `arrayBuffer` must not be detached'); // step 2
 	}
 
-	return isSAB ? $sabByteLength(arrayBuffer) : arrayBufferByteLength(arrayBuffer);
+	return isSAB ? /** @type {NonNullable<typeof $sabByteLength>} */ ($sabByteLength)(/** @type {SharedArrayBuffer} */ (arrayBuffer)) : arrayBufferByteLength(arrayBuffer);
 };

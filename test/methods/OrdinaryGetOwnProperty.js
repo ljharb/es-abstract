@@ -80,6 +80,7 @@ module.exports = function (t, year, OrdinaryGetOwnProperty, extras) {
 	}
 
 	t.test('ES5+', { skip: !$defineProperty }, function (st) {
+		/** @type {Record<PropertyKey, unknown>} */
 		var O = {};
 		defineProperty(O, 'foo', {
 			configurable: false,

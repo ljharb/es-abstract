@@ -1,8 +1,8 @@
 'use strict';
 
-var expectedMissing = [
+var expectedMissing = /** @type {const} */ ([
 	'SplitMatch'
-];
+]);
 
 var testYear = require('./helpers/testYear');
 

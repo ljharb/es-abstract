@@ -12,9 +12,15 @@ module.exports = function (t, year, actual, extras) {
 
 	var order = /** @type {const} */ ('UNORDERED');
 
-	var ValidateTypedArray = year >= 2024 ? actual : function ValidateTypedArray(typedArray) {
-		return actual(typedArray);
-	};
+	var ValidateTypedArray = year >= 2024
+		? /** @type {import('../testHelpers').AOOnlyYears<'ValidateTypedArray', 2024>} */ (actual)
+		: /** @type {import('../testHelpers').AOOnlyYears<'ValidateTypedArray', 2024>} */ function ValidateTypedArray(typedArray) {
+			/** @type {import('../testHelpers').AOOnlyYears<'ValidateTypedArray', Exclude<import('../testHelpers').TestYear, 2024>>} */ (actual)(typedArray);
+			return {
+				'[[Object]]': typedArray,
+				'[[CachedBufferByteLength]]': typedArray.buffer.byteLength
+			};
+		};
 
 	var DetachArrayBuffer = extras.getAO('DetachArrayBuffer');
 

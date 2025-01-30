@@ -36,9 +36,9 @@ module.exports = function OrdinaryDefineOwnProperty(O, P, Desc) {
 		}
 		var creatingNormalDataProperty = !(P in O)
 			&& '[[Writable]]' in Desc
-			&& Desc['[[Writable]]']
-			&& Desc['[[Enumerable]]']
-			&& Desc['[[Configurable]]']
+			&& !!Desc['[[Writable]]']
+			&& !!Desc['[[Enumerable]]']
+			&& !!Desc['[[Configurable]]']
 			&& '[[Value]]' in Desc;
 		var settingExistingDataProperty = (P in O)
 			&& (!('[[Configurable]]' in Desc) || Desc['[[Configurable]]'])

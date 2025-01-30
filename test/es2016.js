@@ -1,6 +1,6 @@
 'use strict';
 
-var expectedMissing = [
+var expectedMissing = /** @type {const} */ ([
 	'AddRestrictedFunctionProperties',
 	'AllocateArrayBuffer',
 	'AllocateTypedArray',
@@ -130,7 +130,7 @@ var expectedMissing = [
 	'TriggerPromiseReactions',
 	'UpdateEmpty', // completion records
 	'UTC' // depends on LocalTZA, DaylightSavingTA
-];
+]);
 
 var testYear = require('./helpers/testYear');
 

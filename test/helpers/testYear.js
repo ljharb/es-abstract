@@ -13,7 +13,7 @@ var getAOs = require('./getAOs');
 
 var index = require('../../');
 
-/** @type {<Y extends import('../testHelpers').TestYear>(year: Y, expectedMissing: import('../testHelpers').AllAONames[]) => void} */
+/** @type {<Y extends import('../testHelpers').TestYear>(year: Y, expectedMissing: readonly string[]) => void} */
 module.exports = function testYear(year, expectedMissing) {
 	var methods = getAOs(year);
 
@@ -41,6 +41,7 @@ module.exports = function testYear(year, expectedMissing) {
 		return null;
 	};
 
+	/** @type {{ 5: import('../../operations/es5'); 2015: import('../../operations/2015'); 2016: import('../../operations/2016'); 2017: import('../../operations/2017'); 2018: import('../../operations/2018'); 2019: import('../../operations/2019'); 2020: import('../../operations/2020'); 2021: import('../../operations/2021'); 2022: import('../../operations/2022'); 2023: import('../../operations/2023'); 2024: import('../../operations/2024') }[typeof year]} */
 	var ops = require('../../operations/' + (year === 5 ? 'es5' : year)); // eslint-disable-line global-require
 
 	test('ES ' + year, function (t) {
@@ -65,7 +66,7 @@ module.exports = function testYear(year, expectedMissing) {
 				try {
 					testMethod = require('../' + path.join('./methods/', method.replace('::', '/'))); // eslint-disable-line global-require
 				} catch (e) {
-					var alias = aoAliases[method] || '';
+					var alias = aoAliases[method];
 					try {
 						testMethod = require('../' + path.join('./methods/', alias.replace('::', '/'))); // eslint-disable-line global-require
 					} catch (eA) {
@@ -78,6 +79,15 @@ module.exports = function testYear(year, expectedMissing) {
 					}
 				}
 
+				/** @type {Parameters<NonNullable<typeof testMethod>>[3]['testSubset']} */
+				function testSubset(aoName, subsetYear, ao, subset, callback) {
+					var narrowedYear = /** @type {typeof subset[number]} */ (subsetYear);
+					if (subset.indexOf(narrowedYear) >= 0) {
+						// eslint-disable-next-line callback-return
+						callback(/** @type {import('../testHelpers').AOUnion<typeof aoName, typeof subset[number]>} */ (ao));
+					}
+				}
+
 				st.test(method, { todo: !testMethod }, testMethod && function (s2t) {
 					var ao = getAO(method);
 					s2t.equal(typeof ao, 'function', method + ' exists');
@@ -87,7 +97,8 @@ module.exports = function testYear(year, expectedMissing) {
 						year,
 						ao,
 						{
-							getAO: getAO
+							getAO: getAO,
+							testSubset: testSubset
 						}
 					);
 

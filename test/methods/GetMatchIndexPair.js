@@ -20,6 +20,7 @@ module.exports = function (t, year, GetMatchIndexPair) {
 	});
 
 	forEach(/** @type {unknown[]} */ ([].concat(
+		// @ts-expect-error TS sucks with concat
 		esV.unknowns,
 		{ '[[StartIndex]]': -1 },
 		{ '[[StartIndex]]': 1.2, '[[EndIndex]]': 0 },

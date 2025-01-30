@@ -84,6 +84,10 @@ module.exports = function (t, year, SetTypedArrayFromArrayLike, extras) {
 		});
 
 		st.test('getters are supported, and can detach', { skip: !$defineProperty || !esV.canDetach }, function (s2t) {
+			if (!$defineProperty) {
+				s2t.fail();
+				return;
+			}
 			var ta = new Uint8Array([1, 2, 3]);
 			var obj = { length: 1 };
 			$defineProperty(obj, '0', { get: function () { DetachArrayBuffer(ta.buffer); return 10; } });

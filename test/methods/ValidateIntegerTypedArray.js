@@ -12,12 +12,19 @@ var esV = require('../helpers/v');
 module.exports = function (t, year, actual) {
 	t.ok(year >= 2021, 'ES2021+');
 
-	var ValidateIntegerTypedArray = year >= 2024 ? actual : function ValidateIntegerTypedArray(typedArray, waitable) {
-		if (arguments.length > 1) {
-			return actual(typedArray, waitable);
-		}
-		return actual(typedArray);
-	};
+	var ValidateIntegerTypedArray = year >= 2024
+		? /** @type {import('../testHelpers').AOOnlyYears<'ValidateIntegerTypedArray', 2024>} */ (actual)
+		: /** @type {import('../testHelpers').AOOnlyYears<'ValidateIntegerTypedArray', 2024>} */ function ValidateIntegerTypedArray(typedArray, waitable) {
+			if (arguments.length > 1) {
+				/** @type {import('../testHelpers').AOOnlyYears<'ValidateIntegerTypedArray', Exclude<import('../testHelpers').TestYear, 2024>>} */ (actual)(typedArray, waitable);
+			} else {
+				/** @type {import('../testHelpers').AOOnlyYears<'ValidateIntegerTypedArray', Exclude<import('../testHelpers').TestYear, 2024>>} */ (actual)(typedArray);
+			}
+			return {
+				'[[Object]]': typedArray,
+				'[[CachedBufferByteLength]]': typedArray.buffer.byteLength
+			};
+		};
 
 	forEach(v.nonBooleans, function (nonBoolean) {
 		t['throws'](
@@ -41,8 +48,9 @@ module.exports = function (t, year, actual) {
 		);
 	});
 
+	/** @param {import('../../types').TypedArrayWithBufferWitnessRecord | import('../../types').TypedArray} tawbr */
 	var unwrap = function unwrap(tawbr) {
-		return year >= 2024 ? typedArrayBuffer(tawbr['[[Object]]']) : tawbr;
+		return year >= 2024 ? typedArrayBuffer(/** @type {import('../../types').TypedArrayWithBufferWitnessRecord} */ (tawbr)['[[Object]]']) : tawbr;
 	};
 
 	var availableTypedArrays = getTypedArrays(year);
@@ -76,7 +84,7 @@ module.exports = function (t, year, actual) {
 				);
 				if (year < 2024) {
 					st.equal(
-						unwrap(ValidateIntegerTypedArray(ta)),
+						unwrap(ValidateIntegerTypedArray(ta, false)),
 						ta.buffer,
 						'returns the buffer of a waitable integer TypedArray'
 					);

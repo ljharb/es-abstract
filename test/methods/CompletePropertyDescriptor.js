@@ -33,7 +33,7 @@ module.exports = function (t, year, CompletePropertyDescriptor) {
 	t.deepEqual(
 		CompletePropertyDescriptor(data),
 		{
-			'[[Configurable]]': !!data['[[Configurable]]'],
+			'[[Configurable]]': '[[Configurable]]' in data && !!data['[[Configurable]]'],
 			'[[Enumerable]]': false,
 			'[[Value]]': data['[[Value]]'],
 			'[[Writable]]': !!data['[[Writable]]']

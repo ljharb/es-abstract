@@ -4,8 +4,11 @@ var $TypeError = require('es-errors/type');
 
 var callBound = require('call-bound');
 
+/** @type {(str: string, index: number) => number} */
 var $charCodeAt = callBound('String.prototype.charCodeAt');
+/** @type {(num: number, radix: number) => string} */
 var $numberToString = callBound('Number.prototype.toString');
+/** @type {<T extends string>(str: T) => Lowercase<T>} */
 var $toLowerCase = callBound('String.prototype.toLowerCase');
 
 var StringPad = require('./StringPad');
@@ -22,6 +25,5 @@ module.exports = function UnicodeEscape(C) {
 		throw new $TypeError('`Assertion failed: numeric value of `C` must be <= 0xFFFF');
 	}
 
-	// eslint-disable-next-line no-extra-parens
 	return /** @type {import('../types').UnicodeEscapeChar} */ ('\\u' + StringPad($toLowerCase($numberToString(n, 16)), 4, '0', 'start'));
 };

@@ -9,7 +9,7 @@ var IsCallable = require('./IsCallable');
 
 // https://262.ecma-international.org/15.0/#sec-getiteratorfrommethod
 
-/** @type {<O, T>(obj: O, method: (this: O) => Iterator<T>) => import('../types').IteratorRecord<T>} */
+/** @type {<O, T>(obj: O, method: (this: O) => Iterator<T, unknown, unknown>) => import('../types').IteratorRecord<T>} */
 module.exports = function GetIteratorFromMethod(obj, method) {
 	if (!IsCallable(method)) {
 		throw new $TypeError('method must be a function');

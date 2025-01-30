@@ -15,12 +15,35 @@ module.exports = function (t, year, actual, extras) {
 
 	var DetachArrayBuffer = extras.getAO('DetachArrayBuffer');
 
-	var GetValueFromBuffer = year >= 2017 ? actual : function GetValueFromBuffer(arrayBuffer, byteIndex, type) {
-		if (arguments.length > 5) {
-			return actual(arrayBuffer, byteIndex, type, arguments[5]);
+	/** @typedef {Exclude<import('../testHelpers').TestYear, 5 | 2015 | 2016>} gte2017 */
+
+	var GetValueFromBuffer = year >= 2024
+		? /** @type {import('../testHelpers').AOOnlyYears<'GetValueFromBuffer', 2023>} */ function GetValueFromBuffer(arrayBuffer, byteIndex, type, isTypedArray, order) {
+			return /** @type {import('../testHelpers').AOOnlyYears<'GetValueFromBuffer', 2024>} */ (actual)(
+				arrayBuffer,
+				byteIndex,
+				/** @type {Uppercase<import('../../types').TypedArrayTypeByName<import('../../types').TypedArrayName>>} */ (type.toUpperCase()),
+				isTypedArray,
+				/** @type {'SEQ-CST' | 'UNORDERED'} */ (order.toUpperCase().replace('SEQCST', 'SEQ-CST'))
+			);
 		}
-		return actual(arrayBuffer, byteIndex, type);
-	};
+		: year >= 2017
+			? /** @type {import('../testHelpers').AOOnlyYears<'GetValueFromBuffer', Exclude<gte2017, 2024>>} */ (actual)
+			: /** @type {import('../testHelpers').AOOnlyYears<'GetValueFromBuffer', Exclude<gte2017, 2024>>} */ function GetValueFromBuffer(arrayBuffer, byteIndex, type, isTypedArray, order) {
+				if (arguments.length > 5) {
+					return /** @type {import('../testHelpers').AOOnlyYears<'GetValueFromBuffer', Exclude<import('../testHelpers').TestYear, gte2017>>} */ (actual)(
+						arrayBuffer,
+						byteIndex,
+						type,
+						arguments[5]
+					);
+				}
+				return /** @type {import('../testHelpers').AOOnlyYears<'GetValueFromBuffer', Exclude<import('../testHelpers').TestYear, gte2017>>} */ (actual)(
+					arrayBuffer,
+					byteIndex,
+					type
+				);
+			};
 
 	var order = year >= 2024 ? 'UNORDERED' : 'Unordered';
 
@@ -95,40 +118,38 @@ module.exports = function (t, year, actual, extras) {
 					);
 					*/
 
-					if (year >= 2024) {
-						type = /** @type {Uppercase<typeof type>} */ (type.toUpperCase()); // eslint-disable-line no-param-reassign
-					}
+					var actualType = year >= 2024 ? /** @type {Uppercase<typeof type>} */ (type.toUpperCase()) : type;
 
 					clearBuffer(view.buffer);
 					var littleVal = unserialize(result.setAsLittle.asLittle);
-					view['set' + method](0, littleVal, true);
+					view[/** @type {`set${typeof method}`} */ ('set' + method)](0, littleVal, true);
 
 					s2t.equal(
-						GetValueFromBuffer(view.buffer, 0, type, true, order, true),
+						GetValueFromBuffer(view.buffer, 0, actualType, true, order, true),
 						littleVal,
 						'buffer with type ' + type + ', little -> little, yields expected value'
 					);
 
 					if (hasBigEndian) {
 						s2t.equal(
-							GetValueFromBuffer(view.buffer, 0, type, true, order, false),
-							view['get' + method](0, false),
+							GetValueFromBuffer(view.buffer, 0, actualType, true, order, false),
+							view[/** @type {`get${typeof method}`} */ ('get' + method)](0, false),
 							'buffer with type ' + type + ', little -> big, yields expected value'
 						);
 
 						clearBuffer(view.buffer);
 						var bigVal = unserialize(result.setAsBig.asBig);
-						view['set' + method](0, bigVal, false);
+						view[/** @type {`set${typeof method}`} */ ('set' + method)](0, bigVal, false);
 
 						s2t.equal(
-							GetValueFromBuffer(view.buffer, 0, type, true, order, false),
+							GetValueFromBuffer(view.buffer, 0, actualType, true, order, false),
 							bigVal,
 							'buffer with type ' + type + ', big -> big, yields expected value'
 						);
 
 						s2t.equal(
-							GetValueFromBuffer(view.buffer, 0, type, true, order, true),
-							view['get' + method](0, true),
+							GetValueFromBuffer(view.buffer, 0, actualType, true, order, true),
+							view[/** @type {`get${typeof method}`} */ ('get' + method)](0, true),
 							'buffer with type ' + type + ', big -> little, yields expected value'
 						);
 					}

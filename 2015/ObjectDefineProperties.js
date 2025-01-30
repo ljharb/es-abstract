@@ -11,7 +11,7 @@ var OwnPropertyKeys = require('own-keys');
 
 // https://262.ecma-international.org/6.0/#sec-objectdefineproperties
 
-/** @type {<V>(O: Record<PropertyKey, V>, Properties: object) => Record<PropertyKey, V>} */
+/** @type {<V, O extends Record<PropertyKey, V> = {}>(O: O, Properties: Record<import('../types').PropertyKey, PropertyDescriptor>) => O} */
 module.exports = function ObjectDefineProperties(O, Properties) {
 	/** @typedef {typeof O[keyof typeof O]} V */
 

@@ -8,7 +8,7 @@ var isObject = require('es-object-atoms/isObject');
 var hasOwn = require('hasown');
 var callBound = require('call-bound');
 
-/** @type {(thisArg: ThisParameterType<typeof Object.prototype.propertyIsEnumerable>, ...args: Parameters<typeof Object.prototype.propertyIsEnumerable> => ReturnType<typeof Object.prototype.propertyIsEnumerable>)} */
+/** @type {(thisArg: ThisParameterType<typeof Object.prototype.propertyIsEnumerable>, ...args: Parameters<typeof Object.prototype.propertyIsEnumerable>) => ReturnType<typeof Object.prototype.propertyIsEnumerable>} */
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 
 var IsArray = require('./IsArray');
@@ -41,5 +41,5 @@ module.exports = function OrdinaryGetOwnProperty(O, P) {
 		};
 	}
 
-	return ToPropertyDescriptor(/** @type {PropertyDescriptor} */ ($gOPD(O, P)));
+	return /** @type {import('../types').DataDescriptor<typeof O[typeof P]>} */ (ToPropertyDescriptor(/** @type {NonNullable<ReturnType<typeof $gOPD>>} */ ($gOPD(O, P))));
 };

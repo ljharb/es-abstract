@@ -114,7 +114,7 @@ module.exports = function (t, year, ValidateAndApplyPropertyDescriptor, extras) 
 			);
 			/** @type {Record<PropertyKey, unknown>} */
 			var expected = {};
-			expected[propertyKey] = generic['[[Value]]'];
+			expected[propertyKey] = '[[Value]]' in generic && generic['[[Value]]'];
 			s2t.deepEqual(O, expected, 'generic descriptor has been defined as an own data property');
 			s2t.end();
 		});
@@ -126,6 +126,7 @@ module.exports = function (t, year, ValidateAndApplyPropertyDescriptor, extras) 
 				data = v.descriptors.configurable(v.descriptors.writable(data));
 			}
 
+			/** @type {Record<PropertyKey, unknown>} */
 			var O = {};
 			s2t.equal(
 				ValidateAndApplyPropertyDescriptor(undefined, propertyKey, true, data),
@@ -152,12 +153,13 @@ module.exports = function (t, year, ValidateAndApplyPropertyDescriptor, extras) 
 
 		st.test('accessor descriptor', { skip: !$defineProperty }, function (s2t) {
 			var count = 0;
-			var accessor = v.accessorDescriptor();
+			var accessor = v.accessorDescriptor(count);
 			accessor['[[Get]]'] = function () {
 				count += 1;
 				return count;
 			};
 
+			/** @type {Record<PropertyKey, number>} */
 			var O = {};
 			ValidateAndApplyPropertyDescriptor(undefined, propertyKey, true, accessor);
 			s2t.equal(
@@ -281,6 +283,7 @@ module.exports = function (t, year, ValidateAndApplyPropertyDescriptor, extras) 
 			false,
 			'false if Desc and current are both accessors with a !== Get function'
 		);
+		/** @returns {undefined} */
 		var fakeGetter = function () {};
 		st.equal(
 			ValidateAndApplyPropertyDescriptor(
@@ -323,6 +326,10 @@ module.exports = function (t, year, ValidateAndApplyPropertyDescriptor, extras) 
 	});
 
 	t.test('Desc and current: one is a data descriptor, one is not', { skip: !defineProperty || !gOPD }, function (st) {
+		if (!defineProperty || !gOPD) {
+			st.fail();
+			return;
+		}
 		// note: Desc must be configurable if current is nonconfigurable, to hit this branch
 		st.equal(
 			ValidateAndApplyPropertyDescriptor(
@@ -367,9 +374,10 @@ module.exports = function (t, year, ValidateAndApplyPropertyDescriptor, extras) 
 			'operation is successful: current is data, Desc is accessor'
 		);
 		var shouldBeAccessor = gOPD(startsWithData, 'property key');
-		st.equal(typeof shouldBeAccessor.get, 'function', 'has a getter');
+		st.equal(shouldBeAccessor && typeof shouldBeAccessor.get, 'function', 'has a getter');
 
 		var key = 'property key';
+		/** @type {Record<PropertyKey, unknown>} */
 		var startsWithAccessor = {};
 		defineProperty(startsWithAccessor, key, {
 			configurable: true,

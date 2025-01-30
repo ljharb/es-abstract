@@ -20,7 +20,7 @@ module.exports = function (t, year, IterableToList) {
 	};
 
 	t.deepEqual(
-		IterableToList({}, customIterator),
+		IterableToList(/** @type {Iterable<unknown>} */ ({}), customIterator),
 		[0, 1, 2, 3, 4],
 		'iterator method is called and values collected'
 	);
@@ -37,7 +37,8 @@ module.exports = function (t, year, IterableToList) {
 	});
 
 	t['throws'](
-		function () { IterableToList({}, void 0); },
+		// @ts-expect-error
+		function () { IterableToList(/** @type {Iterable<unknown>} */ ({}), void 0); },
 		TypeError,
 		'non-function iterator method'
 	);

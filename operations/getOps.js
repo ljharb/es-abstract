@@ -77,8 +77,11 @@ async function getOps(year) {
 				return null;
 			}
 			if (op.parent().attr('id') === 'sec-reference-specification-type') {
+				// @ts-expect-error a runtime error when groups is not found is fine
 				({ groups: { aoid } } = op.find('h1').text().match(/\s(?<aoid>[a-zA-Z][a-z][a-zA-Z]+)\s/m) || {});
+				// @ts-expect-error a runtime error when id is undefined is fine
 			} else if ((/^sec-numeric-types-(?:number|bigint)-/).test(op.attr('id'))) {
+				// @ts-expect-error a runtime error when groups is not found is fine
 				({ groups: { aoid } } = op.find('h1').text().match(/\s?(?<aoid>[a-zA-Z][a-z][a-zA-Z]+(?:::[a-zA-Z][a-z][a-zA-Z]+)+)\s/m) || {});
 			} else {
 				const match = op.text().match(/When the (?<aoid>[a-zA-Z][a-z][a-zA-Z]+) abstract operation is called/m)
@@ -87,6 +90,7 @@ async function getOps(year) {
 				if (String(op.attr('type') || '').endsWith('abstract operation')) {
 					aoid = op.find('h1').text().trim().split('\n')[0].replace(/Static Semantics: |\(.*$/g, '').trim();
 				} else if (match) {
+					// @ts-expect-error a runtime error when groups is not found is fine
 					({ groups: { aoid } } = match);
 				}
 			}

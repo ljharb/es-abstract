@@ -1,6 +1,6 @@
 'use strict';
 
-var expectedMissing = [
+var expectedMissing = /** @type {const} */ ([
 	'AddRestrictedFunctionProperties',
 	'AddWaiter',
 	'agent-order',
@@ -184,7 +184,7 @@ var expectedMissing = [
 	'UTC', // depends on LocalTZA
 	'ValidateSharedIntegerTypedArray',
 	'ValueOfReadEvent'
-];
+]);
 
 var testYear = require('./helpers/testYear');
 

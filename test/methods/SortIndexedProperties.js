@@ -9,8 +9,8 @@ module.exports = function (t, year, actual) {
 	t.ok(year >= 2022, 'ES2022+');
 
 	/** @type {import('../testHelpers').AOOnlyYears<'SortIndexedProperties', 2023 | 2024>} */
-	var SortIndexedProperties = year >= 2023 ? actual : function SortIndexedProperties(obj, len, SortCompare, _holes) {
-		return /** @type {import('../testHelpers').AOOnlyYears<'SortIndexedProperties', 5 | 2015 | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022>} */ (actual)(obj, len, SortCompare);
+	var SortIndexedProperties = year >= 2023 ? /** @type {import('../testHelpers').AOOnlyYears<'SortIndexedProperties', 2023 | 2024>} */ (actual) : function SortIndexedProperties(obj, len, SortCompare, _holes) {
+		return /** @type {import('../testHelpers').AOOnlyYears<'SortIndexedProperties', Exclude<import('../testHelpers').TestYear, 2023 | 2024>>} */ (actual)(obj, len, SortCompare);
 	};
 
 	/* eslint no-unused-vars: 0 */
@@ -40,8 +40,10 @@ module.exports = function (t, year, actual) {
 			// @ts-expect-error TS sucks with concat
 			v.nonFunctions,
 			function () {},
-			function f(a, b) { return 0; },
-			function (a) { return 0; },
+			/** @param {unknown} _a @param {unknown} _b */
+			function f(_a, _b) { return 0; },
+			/** @param {unknown} _a */
+			function (_a) { return 0; },
 			v.arrowFunctions.length > 0 ? [
 				/* eslint no-new-func: 1 */
 				Function('return () => {}')(),

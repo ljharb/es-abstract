@@ -36,5 +36,5 @@ module.exports = function TypedArraySpeciesCreate(exemplar, argumentList) {
 	// @ts-expect-error TODO, not sure why this errors
 	var constructor = SpeciesConstructor(exemplar, defaultConstructor); // step 3
 
-	return TypedArrayCreateFromConstructor(/** @type {Parameters<typeof TypedArrayCreateFromConstructor>[0]} */ (constructor), argumentList); // step 4
+	return TypedArrayCreateFromConstructor(/** @type {import('../types').TypedArrayConstructor} */ (/** @type {unknown} */ (constructor)), argumentList); // step 4
 };

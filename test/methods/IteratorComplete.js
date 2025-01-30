@@ -18,10 +18,12 @@ module.exports = function (t, year, IteratorComplete) {
 	});
 
 	forEach(v.truthies, function (truthy) {
+		// @ts-expect-error
 		t.equal(IteratorComplete({ done: truthy }), true, '{ done: ' + debug(truthy) + ' } is true');
 	});
 
 	forEach(v.falsies, function (falsy) {
+		// @ts-expect-error
 		t.equal(IteratorComplete({ done: falsy }), false, '{ done: ' + debug(falsy) + ' } is false');
 	});
 };

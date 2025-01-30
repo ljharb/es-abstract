@@ -34,6 +34,7 @@ module.exports = function (t, year, TypedArrayCreateFromConstructor) {
 
 	t.test('no Typed Array support', { skip: availableTypedArrays.length > 0 }, function (st) {
 		st['throws'](
+			// @ts-expect-error
 			function () { TypedArrayCreateFromConstructor(Array, []); },
 			SyntaxError,
 			'no Typed Array support'

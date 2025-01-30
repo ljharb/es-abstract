@@ -118,7 +118,7 @@
 		"@types/call-bind": "^1.0.5",
 		"@types/cheerio": "^0.22.35",
 		"@types/define-properties": "^1.1.5",
-		"@types/diff": "^5.2.3",
+		"@types/diff": "^7.0.1",
 		"@types/eslint": "~8.4 || ~8.5 || ~8.6 || ~8.7 || ~8.8",
 		"@types/for-each": "^0.3.3",
 		"@types/function-bind": "^1.1.10",

@@ -24,7 +24,7 @@ module.exports = function integerToNBytes(intValue, n, isLittleEndian) {
 	/** @type {import('../types').ByteValue[]} */
 	var rawBytes = [];
 	for (var i = 0; i < n; i++) {
-		rawBytes[isLittleEndian ? i : n - 1 - i] = /** @type {import('../types').ByteValue} */ (+(intValue & /** @type {typeof intValue} */ (Z(0xFF))));
+		rawBytes[isLittleEndian ? i : n - 1 - i] = /** @type {import('../types').ByteValue} */ (Number(intValue) & 0xFF);
 		// @ts-expect-error TS can't figure out that Z produces the same type as intValue
 		intValue >>= Z(8); // eslint-disable-line no-param-reassign
 	}

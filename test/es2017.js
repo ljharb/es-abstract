@@ -1,6 +1,6 @@
 'use strict';
 
-var expectedMissing = [
+var expectedMissing = /** @type {const} */ ([
 	'AddWaiter',
 	'agent-order',
 	'AgentCanSuspend',
@@ -169,7 +169,7 @@ var expectedMissing = [
 	'WakeWaiter',
 	'AddRestrictedFunctionProperties',
 	'synchronizes-with'
-];
+]);
 
 var testYear = require('./helpers/testYear');
 

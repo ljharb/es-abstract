@@ -50,11 +50,13 @@ module.exports = function (t, year, TypedArraySpeciesCreate) {
 		});
 
 		var nonArrayTA = new global[/** @type {Exclude<typeof availableTypedArrays, []>} */ (availableTypedArrays)[0]]();
-		forEach([].concat(
+		forEach(/** @type {(typeof v.primitives | typeof v.nonArrays)[number][]} */ ([].concat(
+			// @ts-expect-error TS sucks with concat
 			v.primitives,
 			v.nonArrays
-		), function (nonArray) {
+		)), function (nonArray) {
 			st['throws'](
+				// @ts-expect-error
 				function () { TypedArraySpeciesCreate(nonArrayTA, nonArray); },
 				TypeError,
 				debug(nonArray) + ' is not an Array'
@@ -75,12 +77,12 @@ module.exports = function (t, year, TypedArraySpeciesCreate) {
 
 		st.test('with Symbol.species', { skip: !hasSpecies }, function (s2t) {
 			forEach(availableTypedArrays, function (TypedArray) {
-				var Constructor = global[TypedArray];
+				var TA = global[TypedArray];
 
 				/** @constructor */
 				function Bar() {}
 				Bar[Symbol.species] = null;
-				var taBar = new Constructor();
+				var taBar = new TA();
 				defineProperty(taBar, 'constructor', { value: Bar });
 
 				s2t.equal(
@@ -92,7 +94,7 @@ module.exports = function (t, year, TypedArraySpeciesCreate) {
 				/** @constructor */
 				function Baz() {}
 				Baz[Symbol.species] = Bar;
-				var taBaz = new Constructor();
+				var taBaz = new TA();
 				defineProperty(taBaz, 'constructor', { value: Baz });
 				s2t['throws'](
 					function () { TypedArraySpeciesCreate(taBaz, []); },

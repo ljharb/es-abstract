@@ -104,12 +104,17 @@ module.exports = function (t, year, ToNumber, extras) {
 		st.end();
 	});
 
-	testStringToNumber(t, year, /** @param {unknown} x */ function (x) {
-		if (typeof x !== 'string') {
-			throw new TypeError('covering the throw behavior of StringToNumber');
-		}
-		return ToNumber(x);
-	}, getAO);
+	testStringToNumber(
+		t,
+		year,
+		/** @param {unknown} x */ function (x) {
+			if (typeof x !== 'string') {
+				throw new TypeError('covering the throw behavior of StringToNumber');
+			}
+			return ToNumber(x);
+		},
+		extras
+	);
 
 	if (year >= 2015) {
 		forEach(v.symbols, function (symbol) {

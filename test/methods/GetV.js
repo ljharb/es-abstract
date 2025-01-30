@@ -16,7 +16,8 @@ module.exports = function (t, year, GetV) {
 
 	var obj = { a: function () {} };
 	t.equal(GetV(obj, 'a'), obj.a, 'returns property if it exists');
-	t.equal(GetV(obj, 'b'), undefined, 'returns undefiend if property does not exist');
+	// @ts-expect-error
+	t.equal(GetV(obj, 'b'), undefined, 'returns undefined if property does not exist');
 
 	t.test('getter observability of the receiver', { skip: !$defineProperty || !Object.isExtensible(Number.prototype) }, function (st) {
 		/** @type {unknown[]} */

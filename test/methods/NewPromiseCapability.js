@@ -26,7 +26,7 @@ module.exports = function (t, year, NewPromiseCapability) {
 	/** @type {string[]} */
 	var calls = [];
 
-	/** @constructor @type {<T>(this: PromiseLike<T>, ...args[]: ConstructorParameters<PromiseConstructor>) => PromiseLike<T>} */
+	/** @constructor @template T @this {PromiseLike<T>} @param {ConstructorParameters<PromiseConstructor>[0]} executor */
 	function C(executor) {
 		calls.push('constructor');
 		t.equal(arguments.length, 1, 'is passed one argument');
@@ -50,7 +50,7 @@ module.exports = function (t, year, NewPromiseCapability) {
 
 	t.deepEqual(calls, ['constructor']);
 
-	record['[[Resolve]]']();
+	record['[[Resolve]]'](null);
 
 	t.deepEqual(calls, ['constructor', 'resolve']);
 

@@ -2,16 +2,17 @@
 
 var makeIteratorRecord = require('./makeIteratorRecord');
 
-/** @type {(CreateAsyncFromSyncIterator<T>(syncIteratorRecord: import('../../types').IteratorRecord<T>): import('../../types').AsyncIteratorRecord<T>, end: number, throwMethod?: (...args: any[]) => never, returnMethod?: () => T) => import('../../types').AsyncIteratorRecord<T>} */
+/** @type {<T>(CreateAsyncFromSyncIterator: import('../testHelpers').AOUnion<'CreateAsyncFromSyncIterator'>, end: number, throwMethod?: (...args: any[]) => never, returnMethod?: (...args: unknown[]) => T) => import('../../types').AsyncIteratorRecord<T>} */
 module.exports = function makeAsyncFromSyncIterator(CreateAsyncFromSyncIterator, end, throwMethod, returnMethod) {
 	var i = 0;
+	/** @type {Iterator<number>} */
 	var iterator = {
 		next: function next() {
 			try {
-				return {
+				return /** @type {IteratorResult<number>} */ ({
 					done: i > end,
 					value: i
-				};
+				});
 			} finally {
 				i += 1;
 			}

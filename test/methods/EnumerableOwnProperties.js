@@ -12,15 +12,21 @@ var defineProperty = require('../helpers/defineProperty');
 module.exports = function (t, year, actual) {
 	t.ok(year >= 2015, 'ES2015+');
 
-	var EnumerableOwnProperties = year >= 2017 ? actual : function EnumerableOwnNames(obj, kind) {
-		if (kind !== 'key') {
-			throw new EvalError('test error: this wrapper should only be invoked with kind `key`');
-		}
-		return /** @type {import('../../es2016').EnumerableOwnNames} */ (actual)(obj);
-	};
+	/** @typedef {Exclude<import('../testHelpers').TestYear, 5 | 2015 | 2016>} gte2017 */
+
+	/** @type {import('../testHelpers').AOOnlyYears<'EnumerableOwnProperties' | 'EnumerableOwnNames', gte2017>} */
+	var EnumerableOwnProperties = year >= 2017
+		? /** @type {import('../testHelpers').AOOnlyYears<'EnumerableOwnProperties' | 'EnumerableOwnNames', gte2017>} */ (actual)
+		: /** @type {import('../testHelpers').AOOnlyYears<'EnumerableOwnProperties' | 'EnumerableOwnNames', gte2017>} */function EnumerableOwnNames(obj, kind) {
+			if (kind !== 'key') {
+				throw new EvalError('test error: this wrapper should only be invoked with kind `key`');
+			}
+			return /** @type {import('../testHelpers').AOOnlyYears<'EnumerableOwnProperties' | 'EnumerableOwnNames', Exclude<import('../testHelpers').TestYear, gte2017>} */ (actual)(obj);
+		};
 
 	forEach(v.primitives, function (nonObject) {
 		t['throws'](
+			// @ts-expect-error
 			function () { EnumerableOwnProperties(nonObject, 'key'); },
 			debug(nonObject) + ' is not an Object'
 		);
@@ -28,15 +34,17 @@ module.exports = function (t, year, actual) {
 
 	if (year >= 2017) {
 		t['throws'](
+			// @ts-expect-error
 			function () { EnumerableOwnProperties({}, 'not key, value, or key+value'); },
 			TypeError,
 			'invalid "kind" throws'
 		);
 	}
 
-	var Child = function Child() {
+	/** @constructor */
+	function Child() {
 		this.own = {};
-	};
+	}
 	Child.prototype = {
 		inherited: {}
 	};

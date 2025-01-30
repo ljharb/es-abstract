@@ -7,6 +7,7 @@ var inspect = require('object-inspect');
 
 var isFullyPopulatedPropertyDescriptor = require('../../helpers/isFullyPopulatedPropertyDescriptor');
 
+/** @type {Pick<import('../../types').ES, 'IsAccessorDescriptor' | 'IsDataDescriptor'>} */
 var ES = {
 	IsAccessorDescriptor: require('../../2022/IsAccessorDescriptor'), // eslint-disable-line global-require
 	IsDataDescriptor: require('../../2022/IsDataDescriptor') // eslint-disable-line global-require

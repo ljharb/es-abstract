@@ -28,7 +28,7 @@ var MAX_ARRAY_LENGTH = require('math-intrinsics/constants/maxArrayLength');
 
 // https://262.ecma-international.org/13.0/#sec-getmatchindexpair
 
-/** @type {(S: string, indices: (import('../types').MatchRecord | undefined)[], groupNames: (string | undefined)[], hasGroups: boolean) => RegExpMatchArray} */
+/** @type {(S: string, indices: (import('../types').MatchRecord | undefined)[], groupNames: (string | undefined)[], hasGroups: boolean) => hasGroups extends true ? import('tape').WithRequired<RegExpMatchArray, 'groups'> : RegExpMatchArray} */
 module.exports = function MakeMatchIndicesIndexPairArray(S, indices, groupNames, hasGroups) {
 	if (typeof S !== 'string') {
 		throw new $TypeError('Assertion failed: `S` must be a String');

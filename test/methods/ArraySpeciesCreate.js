@@ -9,9 +9,11 @@ var defineProperty = require('../helpers/defineProperty');
 var esV = require('../helpers/v');
 var hasSpecies = v.hasSymbols && Symbol.species;
 
+/** @param {import('../../types').Constructor<unknown, import('../../types').BasicConstructor>} speciesConstructor */
 var getArraySubclassWithSpeciesConstructor = function getArraySubclass(speciesConstructor) {
 	/** @constructor */
 	function Bar() {
+		/** @type {unknown[]} */
 		var inst = [];
 		Object.setPrototypeOf(inst, Bar.prototype);
 		defineProperty(inst, 'constructor', { value: Bar });

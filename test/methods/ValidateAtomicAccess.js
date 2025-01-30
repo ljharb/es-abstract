@@ -16,10 +16,14 @@ module.exports = function (t, year, actual) {
 		return { '[[Object]]': ta, '[[CachedBufferByteLength]]': typedArrayByteLength(ta) };
 	};
 
-	/** @type {import('../testHelpers').AOOnlyYears<'ValidateAtomicAccess', 2024>} */
-	var ValidateAtomicAccess = year >= 2024 ? /** @type {import('../testHelpers').AOOnlyYears<'ValidateAtomicAccess', 2024>} */ (actual) : function ValidateAtomicAccess(taRecord, requestIndex) {
-		return actual(taRecord['[[Object]]'], requestIndex);
-	};
+	var ValidateAtomicAccess = year >= 2024
+		? /** @type {import('../testHelpers').AOOnlyYears<'ValidateAtomicAccess', 2024>} */ (actual)
+		: /** @type {import('../testHelpers').AOOnlyYears<'ValidateAtomicAccess', 2024>} */ function ValidateAtomicAccess(taRecord, requestIndex) {
+			return /** @type {import('../testHelpers').AOOnlyYears<'ValidateAtomicAccess', Exclude<import('../testHelpers').TestYear, 2024>>} */(actual)(
+				taRecord['[[Object]]'],
+				requestIndex
+			);
+		};
 
 	forEach(/** @type {unknown[]} */ ([].concat(
 		// @ts-expect-error TS sucks with concat
