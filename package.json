@@ -87,7 +87,7 @@
 		"is-shared-array-buffer": "^1.0.4",
 		"is-string": "^1.1.1",
 		"is-typed-array": "^1.1.15",
-		"is-weakref": "^1.1.0",
+		"is-weakref": "^1.1.1",
 		"math-intrinsics": "^1.1.0",
 		"object-inspect": "^1.13.3",
 		"object-keys": "^1.1.1",
