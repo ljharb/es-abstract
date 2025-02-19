@@ -129,7 +129,7 @@
 		"glob": "=10.3.7",
 		"has-bigints": "^1.1.0",
 		"has-named-captures": "^1.0.0",
-		"has-strict-mode": "^1.0.1",
+		"has-strict-mode": "^1.1.0",
 		"in-publish": "^2.0.1",
 		"is-core-module": "^2.16.1",
 		"jackspeak": "=2.1.1",
