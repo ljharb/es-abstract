@@ -4,14 +4,12 @@ var getIteratorMethod = require('../helpers/getIteratorMethod');
 var AdvanceStringIndex = require('./AdvanceStringIndex');
 var GetIterator = require('./GetIterator');
 var GetMethod = require('./GetMethod');
-var IsArray = require('./IsArray');
 var IteratorStep = require('./IteratorStep');
 var IteratorValue = require('./IteratorValue');
 var ToObject = require('./ToObject');
 var ES = {
 	AdvanceStringIndex: AdvanceStringIndex,
-	GetMethod: GetMethod,
-	IsArray: IsArray
+	GetMethod: GetMethod
 };
 
 // https://262.ecma-international.org/7.0/#sec-iterabletoarraylike
