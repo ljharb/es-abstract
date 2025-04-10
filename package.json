@@ -60,7 +60,7 @@
 		"arraybuffer.prototype.slice": "^1.0.4",
 		"available-typed-arrays": "^1.0.7",
 		"call-bind": "^1.0.8",
-		"call-bound": "^1.0.3",
+		"call-bound": "^1.0.4",
 		"data-view-buffer": "^1.0.2",
 		"data-view-byte-length": "^1.0.2",
 		"data-view-byte-offset": "^1.0.1",
@@ -106,7 +106,7 @@
 		"typed-array-byte-offset": "^1.0.4",
 		"typed-array-length": "^1.0.7",
 		"unbox-primitive": "^1.1.0",
-		"which-typed-array": "^1.1.18"
+		"which-typed-array": "^1.1.19"
 	},
 	"devDependencies": {
 		"@ljharb/eslint-config": "^21.1.1",
