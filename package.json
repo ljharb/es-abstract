@@ -142,7 +142,7 @@
 		"object.fromentries": "^2.0.8",
 		"safe-bigint": "^1.1.1",
 		"safe-publish-latest": "^2.0.0",
-		"ses": "^1.9.1",
+		"ses": "^1.12.0",
 		"tape": "^5.9.0"
 	},
 	"testling": {
