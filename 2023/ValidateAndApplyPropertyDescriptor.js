@@ -13,7 +13,6 @@ var IsDataDescriptor = require('./IsDataDescriptor');
 var IsGenericDescriptor = require('./IsGenericDescriptor');
 var isPropertyKey = require('../helpers/isPropertyKey');
 var SameValue = require('./SameValue');
-var Type = require('./Type');
 
 // https://262.ecma-international.org/13.0/#sec-validateandapplypropertydescriptor
 
@@ -21,7 +20,6 @@ var Type = require('./Type');
 
 // eslint-disable-next-line max-lines-per-function, max-statements
 module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, Desc, current) {
-	var oType = Type(O);
 	if (typeof O !== 'undefined' && !isObject(O)) {
 		throw new $TypeError('Assertion failed: O must be undefined or an Object');
 	}
@@ -42,7 +40,7 @@ module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, D
 		if (!extensible) {
 			return false; // step 2.a
 		}
-		if (oType === 'Undefined') {
+		if (typeof O === 'undefined') {
 			return true; // step 2.b
 		}
 		if (IsAccessorDescriptor(Desc)) { // step 2.c
@@ -119,7 +117,7 @@ module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, D
 	}
 
 	// 6. If O is not undefined, then
-	if (oType !== 'Undefined') {
+	if (typeof O !== 'undefined') {
 		var configurable;
 		var enumerable;
 		if (IsDataDescriptor(current) && IsAccessorDescriptor(Desc)) { // step 6.a
