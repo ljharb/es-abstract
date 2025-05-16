@@ -9,9 +9,9 @@ var $charAt = callBound('String.prototype.charAt');
 var $stringToString = callBound('String.prototype.toString');
 
 var CanonicalNumericIndexString = require('./CanonicalNumericIndexString');
-var IsIntegralNumber = require('./IsIntegralNumber');
 
 var isPropertyKey = require('../helpers/isPropertyKey');
+var isInteger = require('math-intrinsics/isInteger');
 
 // https://262.ecma-international.org/12.0/#sec-stringgetownproperty
 
@@ -33,7 +33,7 @@ module.exports = function StringGetOwnProperty(S, P) {
 	}
 	var index = CanonicalNumericIndexString(P);
 	var len = str.length;
-	if (typeof index === 'undefined' || !IsIntegralNumber(index) || isNegativeZero(index) || index < 0 || len <= index) {
+	if (typeof index === 'undefined' || !isInteger(index) || isNegativeZero(index) || index < 0 || len <= index) {
 		return void undefined;
 	}
 	var resultStr = $charAt(S, index);
