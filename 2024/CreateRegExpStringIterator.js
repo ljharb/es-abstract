@@ -93,7 +93,7 @@ if (hasSymbols) {
 	}
 }
 
-// https://262.ecma-international.org/16.0/#sec-createregexpstringiterator
+// https://262.ecma-international.org/15.0/#sec-createregexpstringiterator
 
 module.exports = function CreateRegExpStringIterator(R, S, global, fullUnicode) {
 	// assert R.global === global && R.unicode === fullUnicode?
