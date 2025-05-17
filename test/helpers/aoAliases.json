@@ -1,0 +1,44 @@
+{
+	"AbstractEqualityComparison": "Abstract Equality Comparison",
+	"AbstractRelationalComparison": "Abstract Relational Comparison",
+	"StrictEqualityComparison": "Strict Equality Comparison",
+
+	"//": "CheckObjectCoercible -> RequireObjectCoercible in ES6",
+	"CheckObjectCoercible": "RequireObjectCoercible",
+
+	"//": "EnumerableOwnNames -> EnumerableOwnProperties in ES2017, -> EnumerableOwnPropertyNames in ES2018, -> EnumerableOwnProperties in ES2023",
+	"EnumerableOwnNames": "EnumerableOwnProperties",
+	"EnumerableOwnPropertyNames": "EnumerableOwnProperties",
+
+	"//": "IsInteger -> IsIntegralNumber in ES2021",
+	"IsInteger": "IsIntegralNumber",
+
+	"//": "NumberToRawBytes -> NumericToRawBytes in ES2020",
+	"NumberToRawBytes": "NumericToRawBytes",
+
+	"//": "NumberToString -> Number::toString in ES2020",
+	"NumberToString": "Number::toString",
+
+	"//": "Ordinary prefix added in ES2020",
+	"ObjectCreate": "OrdinaryObjectCreate",
+
+	"//": "RawBytesToNumber -> RawBytesToNumeric in ES2020",
+	"RawBytesToNumber": "RawBytesToNumeric",
+
+	"//": "thisFoo -> ThisFoo in ES2024",
+	"thisBigIntValue": "ThisBigIntValue",
+	"thisBooleanValue": "ThisBooleanValue",
+	"thisNumberValue": "ThisNumberValue",
+	"thisStringValue": "ThisStringValue",
+	"thisSymbolValue": "ThisSymbolValue",
+
+	"//": "TypedArrayCreate -> TypedArrayCreateFromConstructor in ES2024",
+	"TypedArrayCreate": "TypedArrayCreateFromConstructor",
+
+	"//": "UTF16Encoding -> UTF16EncodeCodePoint in ES2021",
+	"UTF16Encoding": "UTF16EncodeCodePoint",
+
+	"//": "UTF16Decode -> UTF16DecodeSurrogatePair in ES2020, -> UTF16SurrogatePairToCodePoint in ES2021",
+	"UTF16Decode": "UTF16SurrogatePairToCodePoint",
+	"UTF16DecodeSurrogatePair": "UTF16SurrogatePairToCodePoint"
+}
