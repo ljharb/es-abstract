@@ -1,12 +1,12 @@
 'use strict';
 
-var availableTypedArrays = require('available-typed-arrays')();
 var debug = require('object-inspect');
 var forEach = require('for-each');
 var safeBigInt = require('safe-bigint');
 var v = require('es-value-fixtures');
 var $defineProperty = require('es-define-property');
 
+var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
 module.exports = function (t, year, SetTypedArrayFromArrayLike, extras) {
@@ -25,6 +25,7 @@ module.exports = function (t, year, SetTypedArrayFromArrayLike, extras) {
 		);
 	});
 
+	var availableTypedArrays = getTypedArrays(year);
 	t.test('Typed Array Support', { skip: availableTypedArrays.length === 0 }, function (st) {
 		forEach(v.notNonNegativeIntegers, function (notNonNegativeInteger) {
 			if (notNonNegativeInteger !== Infinity) {

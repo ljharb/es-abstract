@@ -1,11 +1,11 @@
 'use strict';
 
-var availableTypedArrays = require('available-typed-arrays')();
 var debug = require('object-inspect');
 var forEach = require('for-each');
 var safeBigInt = require('safe-bigint');
 var v = require('es-value-fixtures');
 
+var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
 module.exports = function (t, year, SetTypedArrayFromTypedArray, extras) {
@@ -65,7 +65,7 @@ module.exports = function (t, year, SetTypedArrayFromTypedArray, extras) {
 		st.end();
 	});
 
-	forEach(availableTypedArrays, function (name) {
+	forEach(getTypedArrays(year), function (name) {
 		var isBigInt = esV.isBigIntTAType(name);
 		var Z = isBigInt ? safeBigInt : Number;
 		var TA = global[name];

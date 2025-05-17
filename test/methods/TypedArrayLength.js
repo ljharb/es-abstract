@@ -1,9 +1,9 @@
 'use strict';
 
-var availableTypedArrays = require('available-typed-arrays')();
 var forEach = require('for-each');
 var debug = require('object-inspect');
 
+var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
 module.exports = function (t, year, TypedArrayLength, extras) {
@@ -22,6 +22,8 @@ module.exports = function (t, year, TypedArrayLength, extras) {
 			debug(nonTAWBWR) + ' is not a Typed Array With Buffer Witness Record'
 		);
 	});
+
+	var availableTypedArrays = getTypedArrays(year);
 
 	t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
 		forEach(availableTypedArrays, function (type) {

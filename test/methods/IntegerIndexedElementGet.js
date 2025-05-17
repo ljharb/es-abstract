@@ -3,10 +3,10 @@
 var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
-var availableTypedArrays = require('available-typed-arrays')();
 var safeBigInt = require('safe-bigint');
 
 var esV = require('../helpers/v');
+var getTypedArrays = require('../helpers/typedArrays');
 
 module.exports = function (t, year, IntegerIndexedElementGet, extras) {
 	t.ok(year >= 2015, 'ES2015+');
@@ -27,17 +27,21 @@ module.exports = function (t, year, IntegerIndexedElementGet, extras) {
 		);
 	});
 
+	var availableTypedArrays = getTypedArrays(year);
+
 	t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
 		forEach(availableTypedArrays, function (typedArray) {
-			var isBigInt = esV.isBigIntTAType(typedArray);
-			if (!isBigInt || extras.getAO('ToBigInt')) {
-				var Z = isBigInt ? safeBigInt : Number;
-				var TA = global[typedArray];
+			if (typedArray !== 'Float16Array' || year >= 2024) {
+				var isBigInt = esV.isBigIntTAType(typedArray);
+				if (!isBigInt || extras.getAO('ToBigInt')) {
+					var Z = isBigInt ? safeBigInt : Number;
+					var TA = global[typedArray];
 
-				var arr = new TA([Z(1), Z(2), Z(3)]);
-				st.equal(IntegerIndexedElementGet(arr, 0), Z(1), 'returns index 0');
-				st.equal(IntegerIndexedElementGet(arr, 1), Z(2), 'returns index 1');
-				st.equal(IntegerIndexedElementGet(arr, 2), Z(3), 'returns index 2');
+					var arr = new TA([Z(1), Z(2), Z(3)]);
+					st.equal(IntegerIndexedElementGet(arr, 0), Z(1), 'returns index 0');
+					st.equal(IntegerIndexedElementGet(arr, 1), Z(2), 'returns index 1');
+					st.equal(IntegerIndexedElementGet(arr, 2), Z(3), 'returns index 2');
+				}
 			}
 		});
 

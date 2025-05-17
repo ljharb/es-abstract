@@ -1,11 +1,11 @@
 'use strict';
 
-var availableTypedArrays = require('available-typed-arrays')();
 var debug = require('object-inspect');
 var forEach = require('for-each');
 var typedArrayBuffer = require('typed-array-buffer');
 var v = require('es-value-fixtures');
 
+var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
 module.exports = function (t, year, actual) {
@@ -40,6 +40,8 @@ module.exports = function (t, year, actual) {
 	var unwrap = function unwrap(tawbr) {
 		return year >= 2024 ? typedArrayBuffer(tawbr['[[Object]]']) : tawbr;
 	};
+
+	var availableTypedArrays = getTypedArrays(year);
 
 	t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
 		forEach(availableTypedArrays, function (TypedArray) {

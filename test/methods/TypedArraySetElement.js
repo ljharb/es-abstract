@@ -1,11 +1,11 @@
 'use strict';
 
-var availableTypedArrays = require('available-typed-arrays')();
 var forEach = require('for-each');
 var debug = require('object-inspect');
 var v = require('es-value-fixtures');
 var safeBigInt = require('safe-bigint');
 
+var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
 module.exports = function (t, year, TypedArraySetElement, extras) {
@@ -20,6 +20,8 @@ module.exports = function (t, year, TypedArraySetElement, extras) {
 			debug(nonTA) + ' is not a Typed Array'
 		);
 	});
+
+	var availableTypedArrays = getTypedArrays(year);
 
 	t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
 		forEach(availableTypedArrays, function (typedArray) {

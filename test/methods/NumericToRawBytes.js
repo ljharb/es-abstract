@@ -2,7 +2,6 @@
 
 var arrayFrom = require('array.from');
 var assign = require('object.assign');
-var availableTypedArrays = require('available-typed-arrays')();
 var debug = require('object-inspect');
 var forEach = require('for-each');
 var safeBigInt = require('safe-bigint');
@@ -10,6 +9,7 @@ var v = require('es-value-fixtures');
 
 var bufferTestCases = require('../bufferTestCases.json');
 var esV = require('../helpers/v');
+var getTypedArrays = require('../helpers/typedArrays');
 var unserialize = require('../helpers/unserializeNumeric');
 
 module.exports = function (t, year, NumericToRawBytes) {
@@ -86,6 +86,8 @@ module.exports = function (t, year, NumericToRawBytes) {
 	});
 
 	if (year >= 2020) {
+		var availableTypedArrays = getTypedArrays(year);
+
 		t.test('BigInt64', function (st) {
 			st.test('bigints available', { skip: !esV.hasBigInts }, function (s2t) {
 				forEach([

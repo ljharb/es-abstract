@@ -1,6 +1,5 @@
 'use strict';
 
-var availableTypedArrays = require('available-typed-arrays')();
 var debug = require('object-inspect');
 var forEach = require('for-each');
 var typedArrayLength = require('typed-array-length');
@@ -9,11 +8,14 @@ var whichTypedArray = require('which-typed-array');
 
 var defineProperty = require('../helpers/defineProperty');
 var esV = require('../helpers/v');
+var getTypedArrays = require('../helpers/typedArrays');
 
 var hasSpecies = v.hasSymbols && Symbol.species;
 
 module.exports = function (t, year, TypedArraySpeciesCreate) {
 	t.ok(year >= 2016, 'ES2016+');
+
+	var availableTypedArrays = getTypedArrays(year);
 
 	t.test('no Typed Array support', { skip: availableTypedArrays.length > 0 }, function (st) {
 		forEach(esV.unknowns, function (nonTA) {
