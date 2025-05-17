@@ -1,11 +1,12 @@
 'use strict';
 
-var availableTypedArrays = require('available-typed-arrays')();
 var debug = require('object-inspect');
 var forEach = require('for-each');
 var typedArrayLength = require('typed-array-length');
 var v = require('es-value-fixtures');
 var whichTypedArray = require('which-typed-array');
+
+var getTypedArrays = require('../helpers/typedArrays');
 
 module.exports = function (t, year, TypedArrayCreateFromConstructor) {
 	t.ok(year >= 2016, 'ES2016+');
@@ -25,6 +26,8 @@ module.exports = function (t, year, TypedArrayCreateFromConstructor) {
 			debug(nonArray) + ' is not an Array'
 		);
 	});
+
+	var availableTypedArrays = getTypedArrays(year);
 
 	t.test('no Typed Array support', { skip: availableTypedArrays.length > 0 }, function (st) {
 		st['throws'](
@@ -46,10 +49,11 @@ module.exports = function (t, year, TypedArrayCreateFromConstructor) {
 			$Uint16Array: 316,
 			$Int32Array: 158,
 			$Uint32Array: 158,
+			$Float16Array: 316,
 			$Float32Array: 158,
+			$Float64Array: 79,
 			$BigInt64Array: 79,
-			$BigUint64Array: 79,
-			$Float64Array: 79
+			$BigUint64Array: 79
 		};
 		forEach(availableTypedArrays, function (TypedArray) {
 			var Constructor = global[TypedArray];

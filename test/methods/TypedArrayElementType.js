@@ -1,9 +1,9 @@
 'use strict';
 
-var availableTypedArrays = require('available-typed-arrays')();
 var forEach = require('for-each');
 var debug = require('object-inspect');
 
+var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
 module.exports = function (t, year, TypedArrayElementType) {
@@ -17,7 +17,7 @@ module.exports = function (t, year, TypedArrayElementType) {
 		);
 	});
 
-	forEach(availableTypedArrays, function (TA) {
+	forEach(getTypedArrays(year), function (TA) {
 		t.test(TA, function (st) {
 			var ta = new global[TA](0);
 			var expected = TA.replace(/(?:lamped)?Array$/, '');

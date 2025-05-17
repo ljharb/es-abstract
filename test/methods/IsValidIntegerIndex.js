@@ -3,8 +3,8 @@
 var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
-var availableTypedArrays = require('available-typed-arrays')();
 
+var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
 module.exports = function (t, year, IsValidIntegerIndex) {
@@ -21,6 +21,7 @@ module.exports = function (t, year, IsValidIntegerIndex) {
 		);
 	});
 
+	var availableTypedArrays = getTypedArrays(year);
 	t.test('Typed Array support', { skip: availableTypedArrays.length === 0 }, function (st) {
 		forEach(availableTypedArrays, function (typedArray) {
 			st.test(typedArray, function (s2t) {

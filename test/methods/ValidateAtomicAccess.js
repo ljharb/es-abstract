@@ -1,10 +1,10 @@
 'use strict';
 
 var forEach = require('for-each');
-var availableTypedArrays = require('available-typed-arrays')();
 var debug = require('object-inspect');
 var typedArrayByteLength = require('typed-array-byte-length');
 
+var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
 module.exports = function (t, year, actual) {
@@ -28,6 +28,8 @@ module.exports = function (t, year, actual) {
 			debug(nonTA) + ' is not a TypedArray'
 		);
 	});
+
+	var availableTypedArrays = getTypedArrays(year);
 
 	t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
 		forEach(availableTypedArrays, function (TypedArray) {
