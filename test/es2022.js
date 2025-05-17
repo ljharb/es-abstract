@@ -1,10 +1,5 @@
 'use strict';
 
-var ES = require('../').ES2022;
-
-var boundES = require('./helpers/createBoundESNamespace')(ES);
-var ops = require('../operations/2022');
-
 var expectedMissing = [
 	'AddRestrictedFunctionProperties',
 	'AddWaiter',
@@ -214,6 +209,6 @@ var expectedMissing = [
 	'RoundMVResult'
 ];
 
-require('./tests').es2022(boundES, ops, expectedMissing);
+var testYear = require('./helpers/testYear');
 
-require('./helpers/runManifestTest')(require('tape'), ES, 2022);
+testYear(2022, expectedMissing);

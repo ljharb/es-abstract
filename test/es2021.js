@@ -1,10 +1,5 @@
 'use strict';
 
-var ES = require('../').ES2021;
-var boundES = require('./helpers/createBoundESNamespace')(ES);
-
-var ops = require('../operations/2021');
-
 var expectedMissing = [
 	'AddRestrictedFunctionProperties',
 	'AddWaiter',
@@ -195,6 +190,6 @@ var expectedMissing = [
 	'Yield' // macro
 ];
 
-require('./tests').es2021(boundES, ops, expectedMissing);
+var testYear = require('./helpers/testYear');
 
-require('./helpers/runManifestTest')(require('tape'), ES, 2021);
+testYear(2021, expectedMissing);

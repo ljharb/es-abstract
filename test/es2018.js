@@ -1,10 +1,5 @@
 'use strict';
 
-var ES = require('../').ES2018;
-var boundES = require('./helpers/createBoundESNamespace')(ES);
-
-var ops = require('../operations/2018');
-
 var expectedMissing = [
 	'AddRestrictedFunctionProperties',
 	'AddWaiter',
@@ -190,6 +185,6 @@ var expectedMissing = [
 	'WakeWaiter'
 ];
 
-require('./tests').es2018(boundES, ops, expectedMissing);
+var testYear = require('./helpers/testYear');
 
-require('./helpers/runManifestTest')(require('tape'), ES, 2018);
+testYear(2018, expectedMissing);
