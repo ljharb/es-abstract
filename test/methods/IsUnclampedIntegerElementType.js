@@ -8,7 +8,7 @@ var esV = require('../helpers/v');
 module.exports = function (t, year, IsUnclampedIntegerElementType) {
 	t.ok(year >= 2020, 'ES2020+');
 
-	forEach(esV.unclampedIntegerTypes, function (type) {
+	forEach(esV.getUnclampedIntegerTypes(year), function (type) {
 		if (year >= 2024) {
 			type = type.toUpperCase(); // eslint-disable-line no-param-reassign
 		}
@@ -20,8 +20,8 @@ module.exports = function (t, year, IsUnclampedIntegerElementType) {
 	});
 
 	forEach([].concat(
-		esV.clampedTypes,
-		esV.nonUnclampedIntegerTypes
+		esV.getClampedTypes(year),
+		esV.getNonUnclampedIntegerTypes(year)
 	), function (type) {
 		if (year >= 2024) {
 			type = type.toUpperCase(); // eslint-disable-line no-param-reassign

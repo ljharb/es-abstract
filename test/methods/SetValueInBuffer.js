@@ -135,7 +135,7 @@ module.exports = function (t, year, actual, extras) {
 		});
 
 		forEach(bufferTestCases, function (testCase) {
-			forEach(year >= 2020 ? esV.allTypes : esV.numberTypes, function (type) {
+			forEach(esV.getTATypes(year), function (type) {
 				var isBigInt = esV.isBigIntTAType(type);
 				var Z = isBigInt ? safeBigInt : Number;
 				var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian

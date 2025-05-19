@@ -8,7 +8,7 @@ var esV = require('../helpers/v');
 module.exports = function (t, year, IsUnsignedElementType) {
 	t.ok(year >= 2020, 'ES2020+');
 
-	forEach(esV.unsignedElementTypes, function (type) {
+	forEach(esV.getUnsignedElementTypes(year), function (type) {
 		if (year >= 2024) {
 			type = type.toUpperCase(); // eslint-disable-line no-param-reassign
 		}
@@ -19,7 +19,7 @@ module.exports = function (t, year, IsUnsignedElementType) {
 		);
 	});
 
-	forEach(esV.signedElementTypes, function (type) {
+	forEach(esV.getSignedElementTypes(year), function (type) {
 		if (year >= 2024) {
 			type = type.toUpperCase(); // eslint-disable-line no-param-reassign
 		}

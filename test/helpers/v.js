@@ -52,56 +52,81 @@ var elementSizes = {
 	$Float64Array: 8
 };
 
-var unclampedUnsignedIntegerTypes = [
-	'Int8',
-	'Int16',
-	'Int32'
-];
-var clampedTypes = [
-	'Uint8C'
-];
-var unclampedSignedIntegerTypes = [
-	'Uint8',
-	'Uint16',
-	'Uint32'
-];
-var unclampedIntegerTypes = [].concat(
-	unclampedUnsignedIntegerTypes,
-	unclampedSignedIntegerTypes
-);
-var floatTypes = [
-	'Float32',
-	'Float64'
-];
-var integerTypes = [].concat(
-	unclampedIntegerTypes,
-	clampedTypes
-);
-var bigIntTypes = [
-	'BigInt64',
-	'BigUint64'
-];
-var numberTypes = [].concat(
-	floatTypes,
-	integerTypes
-);
-var nonUnclampedIntegerTypes = [].concat(
-	floatTypes,
-	bigIntTypes
-);
-var unsignedElementTypes = [].concat(
-	unclampedSignedIntegerTypes,
-	hasBigInts ? 'BigUint64' : []
-);
-var signedElementTypes = [].concat(
-	unclampedUnsignedIntegerTypes,
-	floatTypes,
-	hasBigInts ? 'BigInt64' : []
-);
-var allTypes = [].concat(
-	numberTypes,
-	hasBigInts ? bigIntTypes : []
-);
+var getUnclampedUnsignedIntegerTypes = function () {
+	return [
+		'Int8',
+		'Int16',
+		'Int32'
+	];
+};
+var getClampedTypes = function () {
+	return [
+		'Uint8C'
+	];
+};
+var getUnclampedSignedIntegerTypes = function () {
+	return [
+		'Uint8',
+		'Uint16',
+		'Uint32'
+	];
+};
+var getUnclampedIntegerTypes = function (year) {
+	return [].concat(
+		getUnclampedUnsignedIntegerTypes(year),
+		getUnclampedSignedIntegerTypes(year)
+	);
+};
+var getFloatTypes = function (year) {
+	return [].concat(
+		year >= 2025 ? 'Float16' : [],
+		'Float32',
+		'Float64'
+	);
+};
+var getIntegerTypes = function (year) {
+	return [].concat(
+		getUnclampedIntegerTypes(year),
+		getClampedTypes(year)
+	);
+};
+var getBigIntTypes = function (year) {
+	return year >= 2020 ? [
+		'BigInt64',
+		'BigUint64'
+	] : [];
+};
+var getNumberTypes = function (year) {
+	return [].concat(
+		getFloatTypes(year),
+		getIntegerTypes(year)
+	);
+};
+var getNonUnclampedIntegerTypes = function (year) {
+	return [].concat(
+		getFloatTypes(year),
+		getBigIntTypes(year)
+	);
+};
+var getUnsignedElementTypes = function (year) {
+	return [].concat(
+		getUnclampedSignedIntegerTypes(year),
+		year >= 2020 && hasBigInts ? 'BigUint64' : []
+	);
+};
+var getSignedElementTypes = function (year) {
+	return [].concat(
+		getUnclampedUnsignedIntegerTypes(year),
+		getFloatTypes(year),
+		year >= 2020 && hasBigInts ? 'BigInt64' : []
+	);
+};
+var getTATypes = function (year) {
+	return [].concat(
+		getNumberTypes(year),
+		year >= 2020 && hasBigInts ? getBigIntTypes(year) : []
+	);
+};
 var nonTATypes = [].concat(
 	v.nonStrings,
 	'',
@@ -144,18 +169,18 @@ module.exports = {
 	nonFiniteNumbers: nonFiniteNumbers,
 	notInts: notInts,
 	elementSizes: elementSizes,
-	unclampedUnsignedIntegerTypes: unclampedUnsignedIntegerTypes,
-	clampedTypes: clampedTypes,
-	unclampedSignedIntegerTypes: unclampedSignedIntegerTypes,
-	unclampedIntegerTypes: unclampedIntegerTypes,
-	floatTypes: floatTypes,
-	integerTypes: integerTypes,
-	bigIntTypes: bigIntTypes,
-	numberTypes: numberTypes,
-	nonUnclampedIntegerTypes: nonUnclampedIntegerTypes,
-	unsignedElementTypes: unsignedElementTypes,
-	signedElementTypes: signedElementTypes,
-	allTypes: allTypes,
+	getUnclampedUnsignedIntegerTypes: getUnclampedUnsignedIntegerTypes,
+	getClampedTypes: getClampedTypes,
+	getUnclampedSignedIntegerTypes: getUnclampedSignedIntegerTypes,
+	getUnclampedIntegerTypes: getUnclampedIntegerTypes,
+	getFloatTypes: getFloatTypes,
+	getIntegerTypes: getIntegerTypes,
+	getBigIntTypes: getBigIntTypes,
+	getNumberTypes: getNumberTypes,
+	getNonUnclampedIntegerTypes: getNonUnclampedIntegerTypes,
+	getUnsignedElementTypes: getUnsignedElementTypes,
+	getSignedElementTypes: getSignedElementTypes,
+	getTATypes: getTATypes,
 	nonTATypes: nonTATypes,
 	canDistinguishSparseFromUndefined: canDistinguishSparseFromUndefined,
 	noThrowOnStrictViolation: noThrowOnStrictViolation,

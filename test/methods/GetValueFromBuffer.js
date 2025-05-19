@@ -79,7 +79,7 @@ module.exports = function (t, year, actual, extras) {
 
 		forEach(bufferTestCases, function (testCase, name) {
 			st.test(name + ': ' + debug(testCase.value), function (s2t) {
-				forEach(esV.numberTypes, function (type) {
+				forEach(esV.getNumberTypes(year), function (type) {
 					var view = new DataView(new ArrayBuffer(esV.elementSizes.$Float64Array));
 					var method = type === 'Uint8C' ? 'Uint8' : type;
 					// var value = unserialize(testCase.value);

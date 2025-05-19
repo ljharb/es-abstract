@@ -35,7 +35,7 @@ module.exports = function (t, year, IntegerIndexedElementSet, extras) {
 
 	t.test('actual typed arrays', { skip: availableTypedArrays.length === 0 }, function (st) {
 		if (year < 2020 && esV.hasBigInts) {
-			forEach(esV.bigIntTypes, function (bigIntType) {
+			forEach(esV.getBigIntTypes(2020), function (bigIntType) {
 				var TA = global[bigIntType + 'Array'];
 				var ta = new TA(0);
 				st['throws'](

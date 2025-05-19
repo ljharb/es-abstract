@@ -8,7 +8,7 @@ var esV = require('../helpers/v');
 module.exports = function (t, year, IsBigIntElementType) {
 	t.ok(year >= 2020, 'ES2020+');
 
-	forEach(esV.bigIntTypes, function (type) {
+	forEach(esV.getBigIntTypes(year), function (type) {
 		if (year >= 2024) {
 			type = type.toUpperCase(); // eslint-disable-line no-param-reassign
 		}
@@ -19,7 +19,7 @@ module.exports = function (t, year, IsBigIntElementType) {
 		);
 	});
 
-	forEach(esV.numberTypes, function (type) {
+	forEach(esV.getNumberTypes(year), function (type) {
 		if (year >= 2024) {
 			type = type.toUpperCase(); // eslint-disable-line no-param-reassign
 		}

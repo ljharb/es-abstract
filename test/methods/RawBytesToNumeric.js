@@ -46,7 +46,7 @@ module.exports = function (t, year, RawBytesToNumeric) {
 	forEach(bufferTestCases, function (testCase, name) {
 		var value = unserialize(testCase.value);
 		t.test(name + ': ' + value, function (st) {
-			forEach(year >= 2020 ? esV.allTypes : esV.numberTypes, function (type) {
+			forEach(esV.getTATypes(year), function (type) {
 				var result = testCase[type === 'Uint8C' ? 'Uint8Clamped' : type];
 				var hasBigEndian = type !== 'Int8' && type !== 'Uint8' && type !== 'Uint8C'; // the 8-bit types are special, they don't have big-endian
 
