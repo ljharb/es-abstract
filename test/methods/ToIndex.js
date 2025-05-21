@@ -1,7 +1,7 @@
 'use strict';
 
 var v = require('es-value-fixtures');
-var MAX_SAFE_INTEGER = require('es-abstract/helpers/maxSafeInteger');
+var MAX_SAFE_INTEGER = require('math-intrinsics/constants/maxSafeInteger');
 
 module.exports = function (t, year, ToIndex) {
 	t.ok(year >= 2017, 'ES2017+');
