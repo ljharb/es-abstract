@@ -44,7 +44,8 @@ module.exports = function (t, year, IsLooselyEqual) {
 			[BigInt(0), Infinity],
 			[Infinity, BigInt(0)],
 			[BigInt(0), 'Infinity'],
-			['Infinity', BigInt(0)]
+			['Infinity', BigInt(0)],
+			[{ valueOf: function () { return BigInt(0); } }, BigInt(0)]
 		] : []);
 		forEach(pairs, function (pair) {
 			var a = pair[0];

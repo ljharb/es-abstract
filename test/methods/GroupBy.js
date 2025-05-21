@@ -71,7 +71,52 @@ module.exports = function (t, year, GroupBy) {
 		{ args: [2, 3], receiver: undefined, returned: -2 }
 	]);
 
-	// TODO: add a test for the callback throwing, that the iterator is closed
+	t['throws'](
+		function () { GroupBy([1, 2, 3], function (x) { throw new EvalError(x); }, 'PROPERTY'); },
+		EvalError,
+		'callback throws -> throw'
+	);
 
-	// TODO: add a test for the callback return coercion throwing, that the iterator is closed
+	t.test('has Symbol.iterator', { skip: !v.hasSymbols }, function (st) {
+		var iter = [1, 2, 3][Symbol.iterator]();
+		iter['return'] = st.captureFn(function () {});
+
+		st['throws'](
+			function () { GroupBy(iter, function (x) { if (x === 2) { throw new EvalError(x); } return x; }, 'PROPERTY'); },
+			EvalError,
+			'callback throws -> throw'
+		);
+
+		st.deepEqual(
+			iter['return'].calls,
+			[
+				{ args: [], receiver: iter, returned: undefined }
+			],
+			'iterator was closed'
+		);
+
+		var iterC = [{ toString: function () { throw new EvalError(); } }][Symbol.iterator]();
+		iterC['return'] = t.captureFn(function () {});
+		st['throws'](
+			function () { GroupBy(iterC, function (x) { return x; }, 'PROPERTY'); },
+			EvalError,
+			'key coercion throws -> throw'
+		);
+		st.deepEqual(
+			iterC['return'].calls,
+			[
+				{ args: [], receiver: iterC, returned: undefined }
+			],
+			'iterator was closed'
+		);
+
+		st.end();
+	});
+
+	var iterable = [{ toString: function () { throw new EvalError(); } }];
+	t['throws'](
+		function () { GroupBy(iterable, function (x) { return x; }, 'PROPERTY'); },
+		EvalError,
+		'key coercion throws -> throw'
+	);
 };

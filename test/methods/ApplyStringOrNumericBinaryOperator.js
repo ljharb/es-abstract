@@ -6,7 +6,7 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
-module.exports = function (t, year, ApplyStringOrNumericBinaryOperator) {
+module.exports = function (t, year, ApplyStringOrNumericBinaryOperator, extras) {
 	t.ok(year >= 2021, 'ES2021+');
 
 	forEach([].concat(
@@ -139,6 +139,74 @@ module.exports = function (t, year, ApplyStringOrNumericBinaryOperator) {
 				function () { ApplyStringOrNumericBinaryOperator(bigint, '+', Number(bigint)); },
 				TypeError,
 				'BigInt and Number can not be added'
+			);
+		});
+
+		var BigIntExponentiate = extras.getAO('BigInt::exponentiate');
+
+		forEach(v.bigints, function (bigint) {
+			st.equal(
+				ApplyStringOrNumericBinaryOperator(bigint, '+', bigint),
+				bigint + bigint,
+				debug(bigint) + ' + itself is ' + debug(bigint + bigint)
+			);
+			st.equal(
+				ApplyStringOrNumericBinaryOperator(bigint, '-', bigint),
+				bigint - bigint,
+				debug(bigint) + ' - itself is ' + debug(bigint + bigint)
+			);
+			st.equal(
+				ApplyStringOrNumericBinaryOperator(bigint, '*', bigint),
+				bigint * bigint,
+				debug(bigint) + ' * itself is ' + debug(bigint + bigint)
+			);
+			var result = BigIntExponentiate(bigint, bigint);
+			st.equal(
+				ApplyStringOrNumericBinaryOperator(bigint, '**', bigint),
+				result,
+				debug(bigint) + ' ** itself is ' + debug(result)
+			);
+			if (bigint !== BigInt(0)) {
+				st.equal(
+					ApplyStringOrNumericBinaryOperator(bigint, '/', bigint),
+					bigint / bigint,
+					debug(bigint) + ' / itself is ' + debug(bigint / bigint)
+				);
+				st.equal(
+					ApplyStringOrNumericBinaryOperator(bigint, '%', bigint),
+					bigint % bigint,
+					debug(bigint) + ' % itself is ' + debug(bigint % bigint)
+				);
+			}
+			st.equal(
+				ApplyStringOrNumericBinaryOperator(bigint, '<<', bigint),
+				bigint << bigint,
+				debug(bigint) + ' << itself is ' + debug(bigint << bigint)
+			);
+			st.equal(
+				ApplyStringOrNumericBinaryOperator(bigint, '>>', bigint),
+				bigint >> bigint,
+				debug(bigint) + ' >> itself is ' + debug(bigint >> bigint)
+			);
+			st['throws'](
+				function () { ApplyStringOrNumericBinaryOperator(bigint, '>>>', bigint); },
+				TypeError,
+				'BigInt does not have unsigned right shift'
+			);
+			st.equal(
+				ApplyStringOrNumericBinaryOperator(bigint, '&', bigint),
+				bigint & bigint,
+				debug(bigint) + ' & itself is ' + debug(bigint & bigint)
+			);
+			st.equal(
+				ApplyStringOrNumericBinaryOperator(bigint, '^', bigint),
+				bigint ^ bigint,
+				debug(bigint) + ' ^ itself is ' + debug(bigint ^ bigint)
+			);
+			st.equal(
+				ApplyStringOrNumericBinaryOperator(bigint, '|', bigint),
+				bigint | bigint,
+				debug(bigint) + ' | itself is ' + debug(bigint | bigint)
 			);
 		});
 

@@ -7,8 +7,10 @@ var debug = require('object-inspect');
 
 var esV = require('../helpers/v');
 
-module.exports = function (t, year, CloneArrayBuffer) {
+module.exports = function (t, year, CloneArrayBuffer, extras) {
 	t.ok(year >= 2021, 'ES2021+');
+
+	var DetachArrayBuffer = extras.getAO('DetachArrayBuffer');
 
 	forEach(esV.unknowns, function (nonArrayBuffer) {
 		t['throws'](
@@ -61,6 +63,19 @@ module.exports = function (t, year, CloneArrayBuffer) {
 			new Uint8Array([2, 3, 4, 5]),
 			'cloned buffer follows the source byte offset and length'
 		);
+
+		st.test('can detach', { skip: !esV.canDetach }, function (s2t) {
+			var buffer = new ArrayBuffer(8);
+			s2t.equal(DetachArrayBuffer(buffer), null, 'detaching returns null');
+
+			s2t['throws'](
+				function () { CloneArrayBuffer(buffer, 0, 0, ArrayBuffer); },
+				TypeError,
+				'detached buffers throw'
+			);
+
+			s2t.end();
+		});
 
 		st.end();
 	});
