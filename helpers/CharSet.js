@@ -7,6 +7,7 @@ var callBound = require('call-bound');
 var hasOwn = require('hasown');
 
 var caseFolding = require('./caseFolding.json');
+var IsArray = require('./IsArray');
 var isLeadingSurrogate = require('./isLeadingSurrogate');
 var isTrailingSurrogate = require('./isTrailingSurrogate');
 
@@ -72,8 +73,40 @@ function yieldCodePoints(emit) {
 	}
 }
 
+function charsToMap(chars) {
+	if (!IsArray(chars)) {
+		throw new $TypeError('Assertion failed: `chars` must be an array');
+	}
+
+	var map = { __proto__: null };
+	for (var i = 0; i < chars.length; i += 1) {
+		var char = chars[i];
+		if (typeof char !== 'string' || (char.length !== 1 && char.length !== 2)) {
+			throw new $TypeError('Assertion failed: `chars` must be an array of strings of length 1');
+		}
+		map[char] = true;
+	}
+	return map;
+}
+
 module.exports = {
 	CharSet: CharSet,
+	from: function from(chars) {
+		var map = charsToMap(chars);
+		return new CharSet(
+			function test(CharSetElement) {
+				return hasOwn(map, CharSetElement);
+			},
+			function yieldChar(emit) {
+				// eslint-disable-next-line no-restricted-syntax
+				for (var k in map) {
+					if (hasOwn(map, k)) {
+						emit(k);
+					}
+				}
+			}
+		);
+	},
 	getCodeUnits: function () {
 		return new CharSet(testCodeUnits, yieldCodeUnits);
 	},

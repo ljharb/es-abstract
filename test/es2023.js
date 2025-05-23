@@ -22,7 +22,7 @@ var expectedMissing = [
 	'BoundFunctionCreate',
 	'CaseClauseIsSelected',
 	'CharacterRangeOrUnion',
-	'CharacterSetMatcher',
+	'CharacterSetMatcher', // requires State, Continuation
 	'CleanupFinalizationRegistry',
 	'Completion',
 	'ComposeWriteEventBytes',
@@ -165,7 +165,7 @@ var expectedMissing = [
 	'RejectPromise',
 	'RemoveWaiter',
 	'RemoveWaiters',
-	'RepeatMatcher',
+	'RepeatMatcher', // requires Matcher, State, Continuation
 	'RequireInternalSlot',
 	'ResolveBinding',
 	'ResolveThisBinding',

@@ -8,7 +8,7 @@ var expectedMissing = [
 	'BlockDeclarationInstantiation',
 	'BoundFunctionCreate',
 	'CharacterRangeOrUnion',
-	'CharacterSetMatcher',
+	'CharacterSetMatcher', // requires State, Continuation
 	'CloneArrayBuffer',
 	'Completion',
 	'Construct',
@@ -112,7 +112,7 @@ var expectedMissing = [
 	'RegExpBuiltinExec',
 	'RegExpInitialize', // initializes allocated regex's internal slots
 	'RejectPromise',
-	'RepeatMatcher',
+	'RepeatMatcher', // requires Matcher, State, Continuation
 	'ResolveBinding',
 	'ResolveThisBinding',
 	'ReturnIfAbrupt',

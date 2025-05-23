@@ -5,7 +5,7 @@ var expectedMissing = [
 	'AllocateArrayBuffer',
 	'AllocateTypedArray',
 	'BoundFunctionCreate',
-	'CharacterSetMatcher',
+	'CharacterSetMatcher', // requires State, Continuation
 	'CloneArrayBuffer',
 	'Completion',
 	'Construct',
@@ -99,7 +99,7 @@ var expectedMissing = [
 	'RegExpBuiltinExec',
 	'RegExpInitialize', // initializes allocated regex's internal slots
 	'RejectPromise',
-	'RepeatMatcher',
+	'RepeatMatcher', // requires Matcher, State, Continuation
 	'ResolveBinding',
 	'ResolveThisBinding',
 	'SerializeJSONArray',
