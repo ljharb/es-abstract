@@ -86,15 +86,50 @@ module.exports = function (t, year, GeneratorResumeAbrupt, extras) {
 		'generator with return completion -> done iter result'
 	);
 
+	// test re-entrant return() throws TypeError
+	var reentrantGenerator = {};
+	SLOT.set(reentrantGenerator, '[[GeneratorState]]', 'SUSPENDED-YIELD');
+	SLOT.set(reentrantGenerator, '[[GeneratorBrand]]', brand);
+	SLOT.set(reentrantGenerator, '[[GeneratorContext]]', null);
+
+	var enterCount = 0;
+	var reentrantCloseIfAbrupt = function () {
+		enterCount += 1;
+		if (enterCount > 1) {
+			// guard against infinite recursion in case the fix is not applied
+			throw new RangeError('re-entrant call was not prevented');
+		}
+		// re-entrant call while generator is executing
+		GeneratorResumeAbrupt(reentrantGenerator, ReturnCompletion(undefined), brand);
+		return { sentinel: true };
+	};
+	SLOT.set(reentrantGenerator, '[[CloseIfAbrupt]]', reentrantCloseIfAbrupt);
+
+	t.equal(enterCount, 0, 'closeIfAbrupt not called yet');
+
+	t['throws'](
+		function () { GeneratorResumeAbrupt(reentrantGenerator, ReturnCompletion(42), brand); },
+		TypeError,
+		'throws TypeError when return() is called re-entrantly during [[CloseIfAbrupt]]'
+	);
+
+	t.equal(enterCount, 1, 'closeIfAbrupt was entered exactly once before throwing');
+
 	SLOT.set(generator, '[[GeneratorState]]', 'SUSPENDED-START');
+	t['throws'](
+		function () { GeneratorResumeAbrupt(generator, completion, brand); },
+		42,
+		'SUSPENDED-START with throw completion transitions to COMPLETED then throws'
+	);
+	t.equal(SLOT.get(generator, '[[GeneratorState]]'), 'COMPLETED', 'state is completed');
+	t.equal(SLOT.get(generator, '[[GeneratorContext]]'), null, 'context is unset');
+
 	t.deepEqual(
-		GeneratorResumeAbrupt(generator, completion, brand),
+		GeneratorResumeAbrupt(generator, ReturnCompletion(42), brand),
 		{
 			value: 42,
 			done: true
 		},
-		'completed state -> done iter result'
+		'COMPLETED state with return completion -> done iter result'
 	);
-	t.equal(SLOT.get(generator, '[[GeneratorState]]'), 'COMPLETED', 'state is completed');
-	t.equal(SLOT.get(generator, '[[GeneratorContext]]'), null, 'context is unset');
 };
