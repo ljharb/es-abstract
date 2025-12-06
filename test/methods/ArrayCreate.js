@@ -23,9 +23,9 @@ module.exports = function (t, year, ArrayCreate) {
 
 	t.deepEqual(ArrayCreate(-0), [], 'length of -0 creates an empty array');
 	t.deepEqual(ArrayCreate(0), [], 'length of +0 creates an empty array');
-	// eslint-disable-next-line no-sparse-arrays, comma-spacing
+	// eslint-disable-next-line no-sparse-arrays
 	t.deepEqual(ArrayCreate(1), [,], 'length of 1 creates a sparse array of length 1');
-	// eslint-disable-next-line no-sparse-arrays, comma-spacing
+	// eslint-disable-next-line no-sparse-arrays
 	t.deepEqual(ArrayCreate(2), [,,], 'length of 2 creates a sparse array of length 2');
 
 	t.test('proto argument', { skip: !$setProto }, function (st) {

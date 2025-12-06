@@ -34,7 +34,6 @@ module.exports = function GroupBy(items, callbackfn, keyCoercion) {
 
 	var k = 0; // step 5
 
-	// eslint-disable-next-line no-constant-condition
 	while (true) { // step 6
 		if (k >= MAX_SAFE_INTEGER) { // step 6.a
 			var error = ThrowCompletion(new $TypeError('k must be less than 2 ** 53 - 1')); // step 6.a.i

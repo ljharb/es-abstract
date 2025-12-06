@@ -42,7 +42,7 @@ if (IteratorPrototype) {
 }
 
 var RegExpStringIteratorNext = function next() {
-	var O = this; // eslint-disable-line no-invalid-this
+	var O = this;
 	if (!isObject(O)) {
 		throw new $TypeError('receiver must be an object');
 	}

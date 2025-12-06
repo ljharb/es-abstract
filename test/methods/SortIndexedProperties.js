@@ -58,7 +58,6 @@ module.exports = function (t, year, actual) {
 	forEach([].concat(
 		function (a, b) { return 0; },
 		v.arrowFunctions.length > 0 ? [
-			/* eslint no-new-func: 1 */
 			Function('return (a, b) => 0')()
 		] : []
 	), function (ac) {
