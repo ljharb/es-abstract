@@ -112,7 +112,7 @@
 		"which-typed-array": "^1.1.19"
 	},
 	"devDependencies": {
-		"@ljharb/eslint-config": "^22.1.0",
+		"@ljharb/eslint-config": "^22.1.2",
 		"@unicode/unicode-15.0.0": "^1.6.16",
 		"array.from": "^1.1.6",
 		"array.prototype.filter": "^1.0.4",
@@ -125,7 +125,7 @@
 		"diff": "^7.0.0",
 		"eclint": "^2.8.1",
 		"es-value-fixtures": "^1.7.1",
-		"eslint": "^9.39.1",
+		"eslint": "^9.39.2",
 		"for-each": "^0.3.5",
 		"function-bind": "^1.1.2",
 		"functions-have-names": "^1.2.3",
