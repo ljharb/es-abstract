@@ -1,3 +1,8 @@
+1.24.1 / 2025-12-12
+=================
+ - [Fix] `ES2025`+: `GeneratorResumeAbrupt`: properly handle return completions
+ - [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `@unicode/unicode-15.0.0`, `make-generator-function`, `npmignore`, `ses`
+
 1.24.0 / 2025-05-28
 =================
  - [New] add `ES2025` (#159)
