@@ -50,7 +50,7 @@ module.exports = function GroupBy(items, callbackfn, keyCoercion) {
 
 		var key;
 		try {
-			key = Call(callbackfn, undefined, [value, k]); // step 6.e
+			key = Call(callbackfn, void undefined, [value, k]); // step 6.e
 		} catch (e) {
 			IfAbruptCloseIterator(ThrowCompletion(e), iteratorRecord); // step 6.f
 		}

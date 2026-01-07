@@ -57,7 +57,7 @@ var RegExpStringIteratorNext = function next() {
 		throw new $TypeError('"this" value must be a RegExpStringIterator instance');
 	}
 	if (SLOT.get(O, '[[Done]]')) {
-		return CreateIterResultObject(undefined, true);
+		return CreateIterResultObject(void undefined, true);
 	}
 	var R = SLOT.get(O, '[[IteratingRegExp]]');
 	var S = SLOT.get(O, '[[IteratedString]]');
@@ -66,7 +66,7 @@ var RegExpStringIteratorNext = function next() {
 	var match = RegExpExec(R, S);
 	if (match === null) {
 		SLOT.set(O, '[[Done]]', true);
-		return CreateIterResultObject(undefined, true);
+		return CreateIterResultObject(void undefined, true);
 	}
 	if (global) {
 		var matchStr = ToString(Get(match, '0'));
