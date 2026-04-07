@@ -1,3 +1,12 @@
+1.24.2 / 2026-04-07
+=================
+ - [Fix] `IfAbruptCloseIterator`: handle all abrupt completions, not just throw
+ - [Robustness] use `+x` instead of `Number(x)`
+ - [Robustness] use `isFinite`/`parseInt` intrinsics, and isNaN helper
+ - [Robustness] ensure `undefined` is `undefined`
+ - [patch] add a TODO to remove an unused helper
+ - [Dev Deps] update `@ljharb/eslint-config`, `npmignore`
+
 1.24.1 / 2025-12-12
 =================
  - [Fix] `ES2025`+: `GeneratorResumeAbrupt`: properly handle return completions
