@@ -10,10 +10,12 @@ module.exports = function (t, year, IfAbruptCloseIterator, extras) {
 	var sentinel = { sentinel: true };
 
 	var NormalCompletion = extras.getAO('NormalCompletion');
+	var ReturnCompletion = extras.getAO('ReturnCompletion');
 	var ThrowCompletion = extras.getAO('ThrowCompletion');
 
 	var normalCompletion = NormalCompletion(sentinel);
 	var throwCompletion = ThrowCompletion(sentinel);
+	var returnCompletion = ReturnCompletion(sentinel);
 
 	var iteratorRecord = {
 		'[[Iterator]]': { iterator: true },
@@ -34,6 +36,12 @@ module.exports = function (t, year, IfAbruptCloseIterator, extras) {
 			debug(unknown) + ' is not an Iterator Record'
 		);
 
+		t['throws'](
+			function () { IfAbruptCloseIterator(returnCompletion, unknown); },
+			TypeError,
+			debug(unknown) + ' is not an Iterator Record'
+		);
+
 		t.equal(
 			IfAbruptCloseIterator(normalCompletion, unknown),
 			sentinel,
@@ -46,4 +54,27 @@ module.exports = function (t, year, IfAbruptCloseIterator, extras) {
 		sentinel,
 		'normal completion, returns argument'
 	);
+
+	t.test('return completion closes iterator', function (st) {
+		var returnCalls = 0;
+		var closableIteratorRecord = {
+			'[[Iterator]]': {
+				next: function () { return { done: true }; },
+				'return': function () {
+					returnCalls += 1;
+					return { done: true };
+				}
+			},
+			'[[NextMethod]]': function () { return { done: true }; },
+			'[[Done]]': false
+		};
+
+		var rc = ReturnCompletion(42);
+		returnCalls = 0;
+		var result = IfAbruptCloseIterator(rc, closableIteratorRecord);
+		st.equal(result, 42, 'return completion calls IteratorClose and returns the value');
+		st.equal(returnCalls, 1, 'return method was called');
+
+		st.end();
+	});
 };
