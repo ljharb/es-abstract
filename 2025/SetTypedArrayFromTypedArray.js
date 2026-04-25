@@ -19,7 +19,7 @@ var TypedArrayLength = require('./TypedArrayLength');
 var typedArrayBuffer = require('typed-array-buffer');
 var typedArrayByteOffset = require('typed-array-byte-offset');
 var whichTypedArray = require('which-typed-array');
-var GetIntrinsic = require('call-bound');
+var GetIntrinsic = require('get-intrinsic');
 var isInteger = require('math-intrinsics/isInteger');
 
 var $ArrayBuffer = GetIntrinsic('%ArrayBuffer%', true);
