@@ -19,7 +19,6 @@ var isSameType = require('../helpers/isSameType');
 
 // https://262.ecma-international.org/11.0/#sec-abstract-relational-comparison
 
-// eslint-disable-next-line max-statements, max-lines-per-function
 module.exports = function AbstractRelationalComparison(x, y, LeftFirst) {
 	if (typeof LeftFirst !== 'boolean') {
 		throw new $TypeError('Assertion failed: LeftFirst argument must be a Boolean');

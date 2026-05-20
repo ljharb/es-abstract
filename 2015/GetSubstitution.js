@@ -23,7 +23,6 @@ var isStringOrUndefined = require('../helpers/isStringOrUndefined');
 
 // https://262.ecma-international.org/6.0/#sec-getsubstitution
 
-// eslint-disable-next-line max-statements, max-lines-per-function
 module.exports = function GetSubstitution(matched, str, position, captures, replacement) {
 	if (typeof matched !== 'string') {
 		throw new $TypeError('Assertion failed: `matched` must be a String');

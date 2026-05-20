@@ -23,7 +23,7 @@ var startsWithDollarTwoDigit = regexTester(/^\$[0-9][0-9]/);
 
 // http://www.ecma-international.org/ecma-262/14.0/#sec-getsubstitution
 
-// eslint-disable-next-line max-statements, max-params, max-lines-per-function
+// eslint-disable-next-line max-params
 module.exports = function GetSubstitution(matched, str, position, captures, namedCaptures, replacementTemplate) {
 	if (typeof matched !== 'string') {
 		throw new $TypeError('Assertion failed: `matched` must be a String');

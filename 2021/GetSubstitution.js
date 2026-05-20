@@ -25,7 +25,7 @@ var isStringOrUndefined = require('../helpers/isStringOrUndefined');
 
 // http://www.ecma-international.org/ecma-262/12.0/#sec-getsubstitution
 
-// eslint-disable-next-line max-statements, max-params, max-lines-per-function
+// eslint-disable-next-line max-params
 module.exports = function GetSubstitution(matched, str, position, captures, namedCaptures, replacement) {
 	if (typeof matched !== 'string') {
 		throw new $TypeError('Assertion failed: `matched` must be a String');

@@ -18,7 +18,6 @@ var NumberLessThan = require('./Number/lessThan');
 
 // https://262.ecma-international.org/14.0/#sec-islessthan
 
-// eslint-disable-next-line max-statements, max-lines-per-function
 module.exports = function IsLessThan(x, y, LeftFirst) {
 	if (typeof LeftFirst !== 'boolean') {
 		throw new $TypeError('Assertion failed: LeftFirst argument must be a Boolean');

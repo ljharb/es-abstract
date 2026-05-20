@@ -17,7 +17,6 @@ var ToUint32 = require('./ToUint32');
 
 // https://262.ecma-international.org/6.0/#sec-arraysetlength
 
-// eslint-disable-next-line max-statements, max-lines-per-function
 module.exports = function ArraySetLength(A, Desc) {
 	if (!IsArray(A)) {
 		throw new $TypeError('Assertion failed: A must be an Array');

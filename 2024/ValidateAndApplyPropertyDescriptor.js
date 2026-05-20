@@ -18,7 +18,6 @@ var SameValue = require('./SameValue');
 
 // see https://github.com/tc39/ecma262/pull/2468 for ES2022 changes
 
-// eslint-disable-next-line max-lines-per-function, max-statements
 module.exports = function ValidateAndApplyPropertyDescriptor(O, P, extensible, Desc, current) {
 	if (typeof O !== 'undefined' && !isObject(O)) {
 		throw new $TypeError('Assertion failed: O must be undefined or an Object');

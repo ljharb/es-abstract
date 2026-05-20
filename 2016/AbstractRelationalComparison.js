@@ -14,7 +14,6 @@ var ToPrimitive = require('./ToPrimitive');
 
 // https://262.ecma-international.org/5.1/#sec-11.8.5
 
-// eslint-disable-next-line max-statements
 module.exports = function AbstractRelationalComparison(x, y, LeftFirst) {
 	if (typeof LeftFirst !== 'boolean') {
 		throw new $TypeError('Assertion failed: LeftFirst argument must be a Boolean');
