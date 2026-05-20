@@ -44,4 +44,18 @@ module.exports = function (t, year, IsTypedArrayOutOfBounds, extras) {
 
 		st.end();
 	});
+
+	t.test('out-of-bounds returns true', function (st) {
+		var ta = new Uint8Array(8); // offset 0, length 8
+		var shrunkRecord = {
+			'[[Object]]': ta,
+			'[[CachedBufferByteLength]]': 4 // less than TA's actual byteOffsetEnd
+		};
+		st.equal(
+			IsTypedArrayOutOfBounds(shrunkRecord),
+			true,
+			'TA byteOffsetEnd > cached bufferByteLength is out-of-bounds'
+		);
+		st.end();
+	});
 };

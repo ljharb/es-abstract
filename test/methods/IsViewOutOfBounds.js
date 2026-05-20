@@ -43,8 +43,33 @@ module.exports = function (t, year, IsViewOutOfBounds, extras) {
 			s2t.end();
 		});
 
-		// TODO true for byteOffsetStart > bufferByteLength || byteOffsetEnd > bufferByteLength
-		// not sure how to produce these DataViews
+		st.test('malformed record: ~DETACHED~ length with non-detached buffer throws', function (s2t) {
+			var dv = new DataView(new ArrayBuffer(8));
+			var badRecord = {
+				'[[Object]]': dv,
+				'[[CachedBufferByteLength]]': year >= 2026 ? '~DETACHED~' : 'DETACHED'
+			};
+			s2t['throws'](
+				function () { IsViewOutOfBounds(badRecord); },
+				TypeError,
+				'~DETACHED~ length with non-detached buffer throws'
+			);
+			s2t.end();
+		});
+
+		st.test('out-of-bounds returns true', function (s2t) {
+			var dv = new DataView(new ArrayBuffer(8)); // byteOffset 0, byteLength 8
+			var shrunkRecord = {
+				'[[Object]]': dv,
+				'[[CachedBufferByteLength]]': 4 // less than DV's actual byteOffsetEnd
+			};
+			s2t.equal(
+				IsViewOutOfBounds(shrunkRecord),
+				true,
+				'DV byteOffsetEnd > cached bufferByteLength is out-of-bounds'
+			);
+			s2t.end();
+		});
 
 		for (var i = 0; i < 8; i += 1) {
 			st.equal(
