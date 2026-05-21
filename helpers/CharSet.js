@@ -26,10 +26,10 @@ function CharSet(test, yieldCh) {
 	this.test = test;
 	this.yield = yieldCh;
 }
-CharSet.prototype.count = function () {
-	var count = 0;
-	this.yield(function () { count += 1; });
-	return count;
+CharSet.prototype.count = function count() {
+	var x = 0;
+	this.yield(function () { x += 1; });
+	return x;
 };
 
 function testCodeUnits(CharSetElement) {
@@ -107,13 +107,13 @@ module.exports = {
 			}
 		);
 	},
-	getCodeUnits: function () {
+	getCodeUnits: function getCodeUnits() {
 		return new CharSet(testCodeUnits, yieldCodeUnits);
 	},
-	getCodePoints: function () {
+	getCodePoints: function getCodePoints() {
 		return new CharSet(testCodePoints, yieldCodePoints);
 	},
-	getNonSimpleCaseFoldingCodePoints: function () {
+	getNonSimpleCaseFoldingCodePoints: function getNonSimpleCaseFoldingCodePoints() {
 		return new CharSet(
 			function test(CharSetElement) {
 				return testCodePoints(CharSetElement) && !hasOwn(caseFolding.S, CharSetElement);
