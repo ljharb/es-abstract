@@ -6,10 +6,17 @@
 		"coverage",
 		"operations",
 		"test",
+		"helpers/assertRecord.js",
 		"helpers/callBind.js",
 		"helpers/callBound.js",
 		"helpers/getOwnPropertyDescriptor.js",
+		"helpers/getProto.js",
 		"helpers/getSymbolDescription.js",
-		"helpers/regexTester.js"
+		"helpers/isFinite.js",
+		"helpers/isNegativeZero.js",
+		"helpers/maxValue.js",
+		"helpers/regexTester.js",
+		"helpers/setProto.js",
+		"helpers/sign.js"
 	]
 }
