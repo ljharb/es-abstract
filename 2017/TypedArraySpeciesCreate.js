@@ -6,10 +6,10 @@ var $TypeError = require('es-errors/type');
 var whichTypedArray = require('which-typed-array');
 var availableTypedArrays = require('available-typed-arrays')();
 
-var IsArray = require('./IsArray');
 var SpeciesConstructor = require('./SpeciesConstructor');
 var TypedArrayCreate = require('./TypedArrayCreate');
 
+var IsArray = require('../helpers/IsArray');
 var getConstructor = require('../helpers/typedArrayConstructors');
 
 // https://262.ecma-international.org/7.0/#typedarray-species-create

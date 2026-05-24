@@ -3,9 +3,9 @@
 var $TypeError = require('es-errors/type');
 
 var CanonicalizeKeyedCollectionKey = require('./CanonicalizeKeyedCollectionKey');
-var IsArray = require('./IsArray');
 var SameValue = require('./SameValue');
 
+var IsArray = require('../helpers/IsArray');
 var some = require('../helpers/some');
 
 // https://262.ecma-international.org/16.0/#sec-setdatahas

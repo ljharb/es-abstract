@@ -7,9 +7,10 @@ var callBound = require('call-bound');
 var hasOwn = require('hasown');
 
 var caseFolding = require('./caseFolding.json');
-var IsArray = require('./IsArray');
 var isLeadingSurrogate = require('./isLeadingSurrogate');
 var isTrailingSurrogate = require('./isTrailingSurrogate');
+
+var IsArray = require('../helpers/IsArray');
 
 var $charCodeAt = callBound('%String.prototype.charCodeAt%');
 var $fromCharCode = GetIntrinsic('%String.fromCharCode%');

@@ -10,12 +10,12 @@ var $reverse = callBound('Array.prototype.reverse');
 var $slice = callBound('Array.prototype.slice');
 
 var hasOwnProperty = require('./HasOwnProperty');
-var IsArray = require('./IsArray');
 
 var bytesAsFloat32 = require('../helpers/bytesAsFloat32');
 var bytesAsFloat64 = require('../helpers/bytesAsFloat64');
 var bytesAsInteger = require('../helpers/bytesAsInteger');
 var every = require('../helpers/every');
+var IsArray = require('../helpers/IsArray');
 var isByteValue = require('../helpers/isByteValue');
 
 var tableTAO = require('./tables/typed-array-objects');

@@ -7,8 +7,7 @@ var $TypeError = require('es-errors/type');
 var $SyntaxError = require('es-errors/syntax');
 var isObject = require('es-object-atoms/isObject');
 
-var IsArray = require('./IsArray');
-
+var IsArray = require('../helpers/IsArray');
 var forEach = require('../helpers/forEach');
 
 var SLOT = require('internal-slot');

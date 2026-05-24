@@ -3,8 +3,9 @@
 var $TypeError = require('es-errors/type');
 
 var Call = require('./Call');
-var IsArray = require('./IsArray');
 var GetV = require('./GetV');
+
+var IsArray = require('../helpers/IsArray');
 var isPropertyKey = require('../helpers/isPropertyKey');
 
 // https://262.ecma-international.org/6.0/#sec-invoke

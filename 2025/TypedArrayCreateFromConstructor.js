@@ -3,11 +3,12 @@
 var $SyntaxError = require('es-errors/syntax');
 var $TypeError = require('es-errors/type');
 
-var IsArray = require('./IsArray');
 var IsConstructor = require('./IsConstructor');
 var IsTypedArrayOutOfBounds = require('./IsTypedArrayOutOfBounds');
 var TypedArrayLength = require('./TypedArrayLength');
 var ValidateTypedArray = require('./ValidateTypedArray');
+
+var IsArray = require('../helpers/IsArray');
 
 var availableTypedArrays = require('available-typed-arrays')();
 

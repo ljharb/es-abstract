@@ -6,9 +6,9 @@ var $TypeError = require('es-errors/type');
 var whichTypedArray = require('which-typed-array');
 var availableTypedArrays = require('available-typed-arrays')();
 
-var IsArray = require('./IsArray');
 var TypedArrayCreateFromConstructor = require('./TypedArrayCreateFromConstructor');
 
+var IsArray = require('../helpers/IsArray');
 var getConstructor = require('../helpers/typedArrayConstructors');
 
 // https://262.ecma-international.org/15.0/#sec-typedarray-create-same-type

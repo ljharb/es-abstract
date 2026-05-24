@@ -5,11 +5,11 @@ var $TypeError = require('es-errors/type');
 var ArrayCreate = require('./ArrayCreate');
 var CreateDataPropertyOrThrow = require('./CreateDataPropertyOrThrow');
 var GetMatchIndexPair = require('./GetMatchIndexPair');
-var IsArray = require('./IsArray');
 var OrdinaryObjectCreate = require('./OrdinaryObjectCreate');
 var ToString = require('./ToString');
 
 var every = require('../helpers/every');
+var IsArray = require('../helpers/IsArray');
 var isMatchRecord = require('../helpers/records/match-record');
 
 var isStringOrUndefined = function isStringOrUndefined(s) {

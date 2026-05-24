@@ -3,12 +3,13 @@
 var $SyntaxError = require('es-errors/syntax');
 var $TypeError = require('es-errors/type');
 
-var IsArray = require('./IsArray');
 var IsConstructor = require('./IsConstructor');
 var ValidateTypedArray = require('./ValidateTypedArray');
 
 var availableTypedArrays = require('available-typed-arrays')();
 var typedArrayLength = require('typed-array-length');
+
+var IsArray = require('../helpers/IsArray');
 
 // https://262.ecma-international.org/7.0/#typedarray-create
 

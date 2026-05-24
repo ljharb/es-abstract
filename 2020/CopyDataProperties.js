@@ -5,19 +5,19 @@ var isObject = require('es-object-atoms/isObject');
 var callBound = require('call-bound');
 var OwnPropertyKeys = require('own-keys');
 
-var every = require('../helpers/every');
-var forEach = require('../helpers/forEach');
-
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 
 var CreateDataPropertyOrThrow = require('./CreateDataPropertyOrThrow');
 var Get = require('./Get');
-var IsArray = require('./IsArray');
 var IsInteger = require('./IsInteger');
 var isPropertyKey = require('../helpers/isPropertyKey');
 var SameValue = require('./SameValue');
 var ToNumber = require('./ToNumber');
 var ToObject = require('./ToObject');
+
+var every = require('../helpers/every');
+var forEach = require('../helpers/forEach');
+var IsArray = require('../helpers/IsArray');
 
 // https://262.ecma-international.org/11.0/#sec-copydataproperties
 

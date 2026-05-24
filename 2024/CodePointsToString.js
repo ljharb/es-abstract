@@ -3,9 +3,9 @@
 var $TypeError = require('es-errors/type');
 
 var UTF16EncodeCodePoint = require('./UTF16EncodeCodePoint');
-var IsArray = require('./IsArray');
 
 var forEach = require('../helpers/forEach');
+var IsArray = require('../helpers/IsArray');
 var isCodePoint = require('../helpers/isCodePoint');
 
 // https://262.ecma-international.org/12.0/#sec-codepointstostring

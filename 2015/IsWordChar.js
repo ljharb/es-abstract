@@ -2,9 +2,9 @@
 
 var $TypeError = require('es-errors/type');
 
-var IsArray = require('./IsArray');
 var IsInteger = require('./IsInteger');
 
+var IsArray = require('../helpers/IsArray');
 var every = require('../helpers/every');
 var regexTester = require('safe-regex-test');
 

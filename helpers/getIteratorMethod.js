@@ -9,7 +9,7 @@ var $iterator = GetIntrinsic('%Symbol.iterator%', true);
 var $stringSlice = callBound('String.prototype.slice');
 var $String = GetIntrinsic('%String%');
 
-var IsArray = require('./IsArray');
+var IsArray = require('../helpers/IsArray');
 
 module.exports = function getIteratorMethod(ES, iterable) {
 	var usingIterator;

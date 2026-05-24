@@ -4,7 +4,6 @@ var $TypeError = require('es-errors/type');
 
 var callBound = require('call-bound');
 var regexTester = require('safe-regex-test');
-var every = require('../helpers/every');
 
 var $charAt = callBound('String.prototype.charAt');
 var $strSlice = callBound('String.prototype.slice');
@@ -17,10 +16,11 @@ var inspect = require('object-inspect');
 var isInteger = require('math-intrinsics/isInteger');
 
 var Get = require('./Get');
-var IsArray = require('./IsArray');
 var ToObject = require('./ToObject');
 var ToString = require('./ToString');
 
+var every = require('../helpers/every');
+var IsArray = require('../helpers/IsArray');
 var isStringOrUndefined = require('../helpers/isStringOrUndefined');
 
 // http://262.ecma-international.org/9.0/#sec-getsubstitution

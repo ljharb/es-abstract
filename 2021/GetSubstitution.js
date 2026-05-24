@@ -16,11 +16,11 @@ var isDigit = regexTester(/^[0-9]$/);
 var inspect = require('object-inspect');
 
 var Get = require('./Get');
-var IsArray = require('./IsArray');
 var ToObject = require('./ToObject');
 var ToString = require('./ToString');
 
 var every = require('../helpers/every');
+var IsArray = require('../helpers/IsArray');
 var isStringOrUndefined = require('../helpers/isStringOrUndefined');
 
 // http://www.ecma-international.org/ecma-262/12.0/#sec-getsubstitution

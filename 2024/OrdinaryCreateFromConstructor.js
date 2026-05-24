@@ -4,8 +4,9 @@ var GetIntrinsic = require('get-intrinsic');
 var $TypeError = require('es-errors/type');
 
 var GetPrototypeFromConstructor = require('./GetPrototypeFromConstructor');
-var IsArray = require('./IsArray');
 var OrdinaryObjectCreate = require('./OrdinaryObjectCreate');
+
+var IsArray = require('../helpers/IsArray');
 
 // https://262.ecma-international.org/6.0/#sec-ordinarycreatefromconstructor
 

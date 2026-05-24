@@ -5,7 +5,7 @@ var callBound = require('call-bound');
 
 var $TypeError = require('es-errors/type');
 
-var IsArray = require('./IsArray');
+var IsArray = require('../helpers/IsArray');
 
 var $apply = GetIntrinsic('%Reflect.apply%', true) || callBound('Function.prototype.apply');
 

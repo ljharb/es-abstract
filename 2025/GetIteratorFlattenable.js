@@ -7,9 +7,9 @@ var AdvanceStringIndex = require('./AdvanceStringIndex');
 var Call = require('./Call');
 var GetIteratorDirect = require('./GetIteratorDirect');
 var GetMethod = require('./GetMethod');
-var IsArray = require('./IsArray');
 
 var getIteratorMethod = require('../helpers/getIteratorMethod');
+var IsArray = require('../helpers/IsArray');
 
 // https://262.ecma-international.org/16.0/#sec-getiteratorflattenable
 

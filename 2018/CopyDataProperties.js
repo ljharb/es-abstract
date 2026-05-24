@@ -7,12 +7,12 @@ var OwnPropertyKeys = require('own-keys');
 
 var every = require('../helpers/every');
 var forEach = require('../helpers/forEach');
+var IsArray = require('../helpers/IsArray');
 
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 
 var CreateDataProperty = require('./CreateDataProperty');
 var Get = require('./Get');
-var IsArray = require('./IsArray');
 var IsInteger = require('./IsInteger');
 var isPropertyKey = require('../helpers/isPropertyKey');
 var SameValue = require('./SameValue');

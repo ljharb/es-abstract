@@ -7,13 +7,14 @@ var assign = require('object.assign');
 
 var isPropertyDescriptor = require('../helpers/records/property-descriptor');
 
-var IsArray = require('./IsArray');
 var IsDataDescriptor = require('./IsDataDescriptor');
 var OrdinaryDefineOwnProperty = require('./OrdinaryDefineOwnProperty');
 var OrdinaryGetOwnProperty = require('./OrdinaryGetOwnProperty');
 var ToNumber = require('./ToNumber');
 var ToString = require('./ToString');
 var ToUint32 = require('./ToUint32');
+
+var IsArray = require('../helpers/IsArray');
 
 // https://262.ecma-international.org/6.0/#sec-arraysetlength
 

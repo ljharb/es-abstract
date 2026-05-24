@@ -7,7 +7,6 @@ var isObject = require('es-object-atoms/isObject');
 var regexTester = require('safe-regex-test');
 
 var Get = require('./Get');
-var IsArray = require('./IsArray');
 var min = require('./min');
 var StringIndexOf = require('./StringIndexOf');
 var StringToNumber = require('./StringToNumber');
@@ -15,6 +14,7 @@ var substring = require('./substring');
 var ToString = require('./ToString');
 
 var every = require('../helpers/every');
+var IsArray = require('../helpers/IsArray');
 var isPrefixOf = require('../helpers/isPrefixOf');
 var isStringOrUndefined = require('../helpers/isStringOrUndefined');
 

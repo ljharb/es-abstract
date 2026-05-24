@@ -2,8 +2,7 @@
 
 var $TypeError = require('es-errors/type');
 
-var IsArray = require('./IsArray');
-
+var IsArray = require('../helpers/IsArray');
 var isByteValue = require('../helpers/isByteValue');
 
 // https://262.ecma-international.org/12.0/#sec-bytelistequal

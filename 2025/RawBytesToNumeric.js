@@ -9,7 +9,6 @@ var $TypeError = require('es-errors/type');
 var $BigInt = GetIntrinsic('%BigInt%', true);
 
 var hasOwnProperty = require('./HasOwnProperty');
-var IsArray = require('./IsArray');
 var IsBigIntElementType = require('./IsBigIntElementType');
 var IsUnsignedElementType = require('./IsUnsignedElementType');
 
@@ -18,6 +17,7 @@ var bytesAsFloat32 = require('../helpers/bytesAsFloat32');
 var bytesAsFloat64 = require('../helpers/bytesAsFloat64');
 var bytesAsInteger = require('../helpers/bytesAsInteger');
 var every = require('../helpers/every');
+var IsArray = require('../helpers/IsArray');
 var isByteValue = require('../helpers/isByteValue');
 
 var $reverse = callBound('Array.prototype.reverse');

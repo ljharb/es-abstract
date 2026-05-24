@@ -8,10 +8,11 @@ var callBound = require('call-bound');
 
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 
-var IsArray = require('./IsArray');
-var isPropertyKey = require('../helpers/isPropertyKey');
 var IsRegExp = require('./IsRegExp');
 var ToPropertyDescriptor = require('./ToPropertyDescriptor');
+
+var IsArray = require('../helpers/IsArray');
+var isPropertyKey = require('../helpers/isPropertyKey');
 
 // https://262.ecma-international.org/6.0/#sec-ordinarygetownproperty
 

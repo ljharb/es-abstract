@@ -9,8 +9,9 @@ var isObject = require('es-object-atoms/isObject');
 
 var ArrayCreate = require('./ArrayCreate');
 var Get = require('./Get');
-var IsArray = require('./IsArray');
 var IsConstructor = require('./IsConstructor');
+
+var IsArray = require('../helpers/IsArray');
 
 // https://262.ecma-international.org/12.0/#sec-arrayspeciescreate
 

@@ -7,11 +7,11 @@ var Call = require('./Call');
 var CreateDataProperty = require('./CreateDataProperty');
 var EnumerableOwnPropertyNames = require('./EnumerableOwnPropertyNames');
 var Get = require('./Get');
-var IsArray = require('./IsArray');
 var ToLength = require('./ToLength');
 var ToString = require('./ToString');
 
 var forEach = require('../helpers/forEach');
+var IsArray = require('../helpers/IsArray');
 
 // https://262.ecma-international.org/9.0/#sec-internalizejsonproperty
 

@@ -5,10 +5,11 @@ var GetIntrinsic = require('get-intrinsic');
 var $isConcatSpreadable = GetIntrinsic('%Symbol.isConcatSpreadable%', true);
 
 var Get = require('./Get');
-var IsArray = require('./IsArray');
 var ToBoolean = require('./ToBoolean');
 
 var isObject = require('es-object-atoms/isObject');
+
+var IsArray = require('../helpers/IsArray');
 
 // https://262.ecma-international.org/6.0/#sec-isconcatspreadable
 

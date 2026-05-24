@@ -3,11 +3,11 @@
 var $TypeError = require('es-errors/type');
 
 var GeneratorStart = require('./GeneratorStart');
-var IsArray = require('./IsArray');
 var IsCallable = require('./IsCallable');
 var OrdinaryObjectCreate = require('./OrdinaryObjectCreate');
 
 var every = require('../helpers/every');
+var IsArray = require('../helpers/IsArray');
 
 var SLOT = require('internal-slot');
 var safeConcat = require('safe-array-concat');

@@ -6,11 +6,11 @@ var callBound = require('call-bound');
 
 var $indexOf = callBound('String.prototype.indexOf');
 
-var IsArray = require('./IsArray');
 var IsInteger = require('./IsInteger');
 var WordCharacters = require('./WordCharacters');
 
 var every = require('../helpers/every');
+var IsArray = require('../helpers/IsArray');
 
 var isChar = function isChar(c) {
 	return typeof c === 'string';

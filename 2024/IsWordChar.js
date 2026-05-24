@@ -6,10 +6,10 @@ var isInteger = require('math-intrinsics/isInteger');
 
 var $indexOf = callBound('String.prototype.indexOf');
 
-var IsArray = require('./IsArray');
 var WordCharacters = require('./WordCharacters');
 
 var every = require('../helpers/every');
+var IsArray = require('../helpers/IsArray');
 var isRegExpRecord = require('../helpers/records/regexp-record');
 
 var isChar = function isChar(c) {

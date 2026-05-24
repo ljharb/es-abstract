@@ -17,8 +17,7 @@ var isDigit = regexTester(/^[0-9]$/);
 var $charAt = callBound('String.prototype.charAt');
 var $strSlice = callBound('String.prototype.slice');
 
-var IsArray = require('./IsArray');
-
+var IsArray = require('../helpers/IsArray');
 var isStringOrUndefined = require('../helpers/isStringOrUndefined');
 
 // https://262.ecma-international.org/6.0/#sec-getsubstitution

@@ -8,9 +8,10 @@ var Call = require('./Call');
 var CreateDataPropertyOrThrow = require('./CreateDataPropertyOrThrow');
 var Get = require('./Get');
 var HasProperty = require('./HasProperty');
-var IsArray = require('./IsArray');
 var LengthOfArrayLike = require('./LengthOfArrayLike');
 var ToString = require('./ToString');
+
+var IsArray = require('../helpers/IsArray');
 
 // https://262.ecma-international.org/11.0/#sec-flattenintoarray
 
