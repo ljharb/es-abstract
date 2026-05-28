@@ -55,7 +55,7 @@ export default [
 		},
 	},
 	{
-		files: ['operations/*'],
+		files: ['operations/*', 'index.js'],
 		rules: {
 			'max-lines': 'off',
 		},
