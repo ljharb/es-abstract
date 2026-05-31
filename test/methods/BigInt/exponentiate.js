@@ -41,12 +41,27 @@ module.exports = function (t, year, BigIntExponentiate) {
 			if (bigint !== BigInt(0)) {
 				st.equal(BigIntExponentiate(bigint, BigInt(0)), BigInt(1), debug(bigint) + ' ** 0n is 1n');
 
-				var square = bigint;
+				var square = BigInt(1);
 				for (var i = 0; i < Number(bigint); i += 1) {
-					square += bigint;
+					square *= bigint;
 				}
 				st.equal(BigIntExponentiate(bigint, bigint), square, debug(bigint) + ' ** ' + debug(bigint) + ' is equal to ' + debug(square));
 			}
+		});
+
+		forEach([
+			[BigInt(2), BigInt(10), BigInt(1024)],
+			[BigInt(3), BigInt(3), BigInt(27)],
+			[BigInt(2), BigInt(1), BigInt(2)],
+			[BigInt(1), BigInt(5), BigInt(1)],
+			[BigInt(0), BigInt(5), BigInt(0)],
+			[BigInt(2), BigInt(40), BigInt(1099511627776)]
+		], function (testCase) {
+			var base = testCase[0];
+			var exponent = testCase[1];
+			var expected = testCase[2];
+			// before the fix this returned `base + (exponent * exponent)`, e.g. `2n ** 10n` was `102n` not `1024n`
+			st.equal(BigIntExponentiate(base, exponent), expected, debug(base) + ' ** ' + debug(exponent) + ' is ' + debug(expected));
 		});
 
 		st.end();

@@ -19,11 +19,11 @@ module.exports = function BigIntExponentiate(base, exponent) {
 		return $BigInt(1);
 	}
 
-	var square = base;
+	var result = $BigInt(1);
 	var remaining = exponent;
 	while (remaining > $BigInt(0)) {
-		square += exponent;
+		result *= base;
 		--remaining; // eslint-disable-line no-plusplus
 	}
-	return square;
+	return result;
 };
