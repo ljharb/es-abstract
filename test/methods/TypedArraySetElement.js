@@ -61,4 +61,18 @@ module.exports = function (t, year, TypedArraySetElement, extras) {
 
 		st.end();
 	});
+
+	t.test('BigInt typed arrays coerce via ToBigInt', { skip: !esV.hasBigInts }, function (st) {
+		// `safeBigInt` is only invoked under the `hasBigInts` guard, so it is callable here
+		forEach(['BigInt64Array', 'BigUint64Array'], function (name) {
+			var TA = global[name];
+			var ta = new TA(2);
+			st.doesNotThrow(
+				function () { TypedArraySetElement(ta, 0, safeBigInt(42)); },
+				name + ': setting a BigInt value does not throw'
+			);
+			st.equal(ta[0], safeBigInt(42), name + ': value is set');
+		});
+		st.end();
+	});
 };
