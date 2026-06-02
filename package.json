@@ -112,7 +112,7 @@
 		"which-typed-array": "^1.1.19"
 	},
 	"devDependencies": {
-		"@ljharb/eslint-config": "^22.2.2",
+		"@ljharb/eslint-config": "^22.2.3",
 		"@unicode/unicode-15.0.0": "^1.6.16",
 		"array.from": "^1.1.6",
 		"array.prototype.filter": "^1.0.4",
@@ -135,7 +135,7 @@
 		"has-strict-mode": "^1.1.0",
 		"in-publish": "^2.0.1",
 		"is-bigint": "^1.1.0",
-		"is-core-module": "^2.16.1",
+		"is-core-module": "^2.16.2",
 		"jackspeak": "=2.1.1",
 		"jiti": "^0.0.0",
 		"make-async-function": "^1.0.0",
@@ -147,8 +147,8 @@
 		"object.fromentries": "^2.0.8",
 		"safe-bigint": "^1.1.1",
 		"safe-publish-latest": "^2.0.0",
-		"ses": "^1.15.0",
-		"tape": "^5.9.0"
+		"ses": "^2.2.0",
+		"tape": "^5.10.1"
 	},
 	"testling": {
 		"files": "test/index.js",
