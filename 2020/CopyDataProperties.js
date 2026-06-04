@@ -34,15 +34,16 @@ module.exports = function CopyDataProperties(target, source, excludedItems) {
 		return target;
 	}
 
-	var from = ToObject(source);
+	var from = ToObject(source); // step 4
 
-	var sourceKeys = OwnPropertyKeys(from);
-	forEach(sourceKeys, function (nextKey) {
-		var excluded = false;
+	var keys = OwnPropertyKeys(from); // step 5
 
-		forEach(excludedItems, function (e) {
-			if (SameValue(e, nextKey) === true) {
-				excluded = true;
+	forEach(keys, function (nextKey) { // step 6
+		var excluded = false; // step 6.a
+
+		forEach(excludedItems, function (e) { // step 6.b
+			if (SameValue(e, nextKey) === true) { // step 6.b.i
+				excluded = true; // step 6.b.i.1
 			}
 		});
 
@@ -52,11 +53,11 @@ module.exports = function CopyDataProperties(target, source, excludedItems) {
 			&& nextKey >= 0
 			&& IsInteger(ToNumber(nextKey))
 		);
-		if (excluded === false && enumerable) {
+		if (excluded === false && enumerable) { // step 6.c, kinda
 			var propValue = Get(from, nextKey);
-			CreateDataPropertyOrThrow(target, nextKey, propValue);
+			CreateDataPropertyOrThrow(target, nextKey, propValue); // step 6.c.ii.2
 		}
 	});
 
-	return target;
+	return target; // step 7
 };
