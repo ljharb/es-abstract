@@ -5,8 +5,13 @@ var debug = require('object-inspect');
 var v = require('es-value-fixtures');
 var isObject = require('es-object-atoms/isObject');
 
+var specEnum = require('../../helpers/specEnum');
+
 module.exports = function (t, year, GetIteratorFlattenable) {
 	t.ok(year >= 2025, 'ES2025+');
+
+	var rejectPrimitives = specEnum(year, 'reject-primitives');
+	var iterateStringPrimitives = specEnum(year, 'iterate-string-primitives');
 
 	t['throws'](
 		function () { GetIteratorFlattenable({}, 'bad enum value'); },
@@ -16,7 +21,7 @@ module.exports = function (t, year, GetIteratorFlattenable) {
 
 	forEach(v.nonObjects, function (primitive) {
 		t['throws'](
-			function () { GetIteratorFlattenable(primitive, 'REJECT-PRIMITIVES'); },
+			function () { GetIteratorFlattenable(primitive, rejectPrimitives); },
 			TypeError,
 			'REJECT-PRIMITIVES: ' + debug(primitive) + ' is not an object'
 		);
@@ -25,7 +30,7 @@ module.exports = function (t, year, GetIteratorFlattenable) {
 	forEach(v.nonStrings, function (nonString) {
 		if (!isObject(nonString)) {
 			t['throws'](
-				function () { GetIteratorFlattenable(nonString, 'ITERATE-STRING-PRIMITIVES'); },
+				function () { GetIteratorFlattenable(nonString, iterateStringPrimitives); },
 				TypeError,
 				'ITERATE-STRING-PRIMITIVES + nonStrings: ' + debug(nonString) + ' is a primitive and not a string'
 			);
@@ -33,7 +38,7 @@ module.exports = function (t, year, GetIteratorFlattenable) {
 	});
 
 	t.test('string iterator', function (st) {
-		var stringIter = GetIteratorFlattenable('abc', 'ITERATE-STRING-PRIMITIVES');
+		var stringIter = GetIteratorFlattenable('abc', iterateStringPrimitives);
 		st.deepEqual(
 			stringIter,
 			{
@@ -58,7 +63,7 @@ module.exports = function (t, year, GetIteratorFlattenable) {
 
 	t.test('array iterator', function (st) {
 		var iterable = [1, 2, 3];
-		var result = GetIteratorFlattenable(iterable, 'REJECT-PRIMITIVES');
+		var result = GetIteratorFlattenable(iterable, rejectPrimitives);
 
 		st.deepEqual(
 			result,
@@ -84,7 +89,7 @@ module.exports = function (t, year, GetIteratorFlattenable) {
 	});
 
 	var nonIterable = { nonIterable: true };
-	var result = GetIteratorFlattenable(nonIterable, 'REJECT-PRIMITIVES');
+	var result = GetIteratorFlattenable(nonIterable, rejectPrimitives);
 	t.deepEqual(
 		result,
 		{
@@ -102,7 +107,7 @@ module.exports = function (t, year, GetIteratorFlattenable) {
 			iterable[Symbol.iterator] = next;
 
 			st['throws'](
-				function () { GetIteratorFlattenable(iterable, 'REJECT-PRIMITIVES'); },
+				function () { GetIteratorFlattenable(iterable, rejectPrimitives); },
 				TypeError,
 				'an iterable’s next method returned ' + debug(primitive) + ' instead of an object'
 			);

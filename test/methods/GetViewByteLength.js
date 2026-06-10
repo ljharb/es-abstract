@@ -3,10 +3,14 @@
 var forEach = require('for-each');
 var debug = require('object-inspect');
 
+var specEnum = require('../../helpers/specEnum');
+
 var esV = require('../helpers/v');
 
 module.exports = function (t, year, GetViewByteLength, extras) {
 	t.ok(year >= 2024, 'ES2024+');
+
+	var unordered = specEnum(year, 'unordered');
 
 	var DetachArrayBuffer = extras.getAO('DetachArrayBuffer');
 	var MakeDataViewWithBufferWitnessRecord = extras.getAO('MakeDataViewWithBufferWitnessRecord');
@@ -23,7 +27,7 @@ module.exports = function (t, year, GetViewByteLength, extras) {
 		var ab = new ArrayBuffer(8);
 		var dv = new DataView(ab);
 
-		var record = MakeDataViewWithBufferWitnessRecord(dv, 'UNORDERED');
+		var record = MakeDataViewWithBufferWitnessRecord(dv, unordered);
 
 		st.equal(GetViewByteLength(record), 8, 'non-auto byte length returns it');
 
@@ -36,7 +40,7 @@ module.exports = function (t, year, GetViewByteLength, extras) {
 				var rab = new ArrayBuffer(12, { maxByteLength: 64 });
 				var rdv = new DataView(rab, 8);
 
-				record = MakeDataViewWithBufferWitnessRecord(rdv, 'UNORDERED');
+				record = MakeDataViewWithBufferWitnessRecord(rdv, unordered);
 
 				s2t.equal(GetViewByteLength(record), 4, 'non-auto byte length returns it minus the offset');
 
@@ -51,7 +55,7 @@ module.exports = function (t, year, GetViewByteLength, extras) {
 				var rsab = new SharedArrayBuffer(12, { maxByteLength: 64 });
 				var rsdv = new DataView(rsab, 8);
 
-				record = MakeDataViewWithBufferWitnessRecord(rsdv, 'UNORDERED');
+				record = MakeDataViewWithBufferWitnessRecord(rsdv, unordered);
 
 				s2t.equal(GetViewByteLength(record), 4, 'non-auto byte length returns it minus the offset');
 
@@ -63,7 +67,7 @@ module.exports = function (t, year, GetViewByteLength, extras) {
 			var dab = new ArrayBuffer(1);
 			var ddv = new DataView(dab);
 
-			var ndRecord = MakeDataViewWithBufferWitnessRecord(ddv, 'UNORDERED');
+			var ndRecord = MakeDataViewWithBufferWitnessRecord(ddv, unordered);
 			DetachArrayBuffer(dab);
 
 			s2t['throws'](
@@ -72,7 +76,7 @@ module.exports = function (t, year, GetViewByteLength, extras) {
 				'non-fixed view, detached buffer, non-detached record, throws inside IsViewOutOfBounds'
 			);
 
-			ndRecord = MakeDataViewWithBufferWitnessRecord(ddv, 'UNORDERED'); // reflect detachment
+			ndRecord = MakeDataViewWithBufferWitnessRecord(ddv, unordered); // reflect detachment
 
 			s2t['throws'](
 				function () { GetViewByteLength(ndRecord); },
@@ -87,7 +91,7 @@ module.exports = function (t, year, GetViewByteLength, extras) {
 					var rab = new ArrayBuffer(12, { maxByteLength: 64 });
 					var rdv = new DataView(rab, 8);
 
-					record = MakeDataViewWithBufferWitnessRecord(rdv, 'UNORDERED');
+					record = MakeDataViewWithBufferWitnessRecord(rdv, unordered);
 
 					DetachArrayBuffer(rab);
 
@@ -97,7 +101,7 @@ module.exports = function (t, year, GetViewByteLength, extras) {
 						'detached RAB with non-detached DVBWR throws'
 					);
 
-					record = MakeDataViewWithBufferWitnessRecord(rdv, 'UNORDERED');
+					record = MakeDataViewWithBufferWitnessRecord(rdv, unordered);
 					s3t['throws'](
 						function () { GetViewByteLength(record); },
 						TypeError,

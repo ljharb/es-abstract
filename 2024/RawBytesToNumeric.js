@@ -18,11 +18,17 @@ var bytesAsInteger = require('../helpers/bytesAsInteger');
 var every = require('../helpers/every');
 var IsArray = require('../helpers/IsArray');
 var isByteValue = require('../helpers/isByteValue');
+var specEnum = require('../helpers/specEnum');
 
 var $reverse = callBound('Array.prototype.reverse');
 var $slice = callBound('Array.prototype.slice');
 
 var tableTAO = require('./tables/typed-array-objects');
+
+var year = require('./year');
+
+var FLOAT32 = specEnum(year, 'float32');
+var FLOAT64 = specEnum(year, 'float64');
 
 // https://262.ecma-international.org/15.0/#sec-rawbytestonumeric
 
@@ -55,11 +61,11 @@ module.exports = function RawBytesToNumeric(type, rawBytes, isLittleEndian) {
 		$reverse(rawBytes); // step 2
 	}
 
-	if (type === 'FLOAT32') { // step 3
+	if (type === FLOAT32) { // step 3
 		return bytesAsFloat32(rawBytes);
 	}
 
-	if (type === 'FLOAT64') { // step 4
+	if (type === FLOAT64) { // step 4
 		return bytesAsFloat64(rawBytes);
 	}
 

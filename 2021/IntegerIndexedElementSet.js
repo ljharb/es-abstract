@@ -11,7 +11,13 @@ var typedArrayBuffer = require('typed-array-buffer');
 var typedArrayByteOffset = require('typed-array-byte-offset');
 var whichTypedArray = require('which-typed-array');
 
+var specEnum = require('../helpers/specEnum');
+
 var tableTAO = require('./tables/typed-array-objects');
+
+var year = require('./year');
+
+var UNORDERED = specEnum(year, 'unordered');
 
 // https://262.ecma-international.org/12.0/#sec-integerindexedelementset
 
@@ -26,7 +32,9 @@ module.exports = function IntegerIndexedElementSet(O, index, value) {
 	}
 
 	var contentType = arrayTypeName === 'BigInt64Array' || arrayTypeName === 'BigUint64Array' ? 'BigInt' : 'Number';
-	var numValue = contentType === 'BigInt' ? ToBigInt(value) : ToNumber(value); // steps 2 - 3
+	var numValue = contentType === 'BigInt'
+		? ToBigInt(value)
+		: ToNumber(value); // steps 2 - 3
 
 	if (IsValidIntegerIndex(O, index)) { // step 4
 		var offset = typedArrayByteOffset(O); // step 4.a
@@ -37,7 +45,14 @@ module.exports = function IntegerIndexedElementSet(O, index, value) {
 
 		var indexedPosition = (index * elementSize) + offset; // step 4.d
 
-		SetValueInBuffer(typedArrayBuffer(O), indexedPosition, elementType, numValue, true, 'Unordered'); // step 4.e
+		SetValueInBuffer(
+			typedArrayBuffer(O),
+			indexedPosition,
+			elementType,
+			numValue,
+			true,
+			UNORDERED
+		); // step 4.e
 	}
 
 	// 5. Return NormalCompletion(undefined)

@@ -8,15 +8,21 @@ var IsTypedArrayOutOfBounds = require('./IsTypedArrayOutOfBounds');
 var TypedArrayElementSize = require('./TypedArrayElementSize');
 
 var isTypedArrayWithBufferWitnessRecord = require('../helpers/records/typed-array-with-buffer-witness-record');
+var specEnum = require('../helpers/specEnum');
 
 var typedArrayBuffer = require('typed-array-buffer');
 var typedArrayByteOffset = require('typed-array-byte-offset');
 var typedArrayLength = require('typed-array-length');
 
+var year = require('./year');
+
+var AUTO = specEnum(year, 'auto');
+var DETACHED = specEnum(year, 'detached');
+
 // https://www.ecma-international.org/ecma-262/15.0/#sec-typedarraylength
 
 module.exports = function TypedArrayLength(taRecord) {
-	if (!isTypedArrayWithBufferWitnessRecord(taRecord)) {
+	if (!isTypedArrayWithBufferWitnessRecord(taRecord, year)) {
 		throw new $TypeError('Assertion failed: `taRecord` must be a TypedArray With Buffer Witness Record');
 	}
 
@@ -28,8 +34,8 @@ module.exports = function TypedArrayLength(taRecord) {
 
 	var isFixed = IsFixedLengthArrayBuffer(typedArrayBuffer(O));
 
-	var length = isFixed ? typedArrayLength(O) : 'AUTO';
-	if (length !== 'AUTO') {
+	var length = isFixed ? typedArrayLength(O) : AUTO;
+	if (length !== AUTO) {
 		return length; // step 3
 	}
 
@@ -43,7 +49,7 @@ module.exports = function TypedArrayLength(taRecord) {
 
 	var byteLength = taRecord['[[CachedBufferByteLength]]']; // step 7
 
-	if (byteLength === 'DETACHED') {
+	if (byteLength === DETACHED) {
 		throw new $TypeError('Assertion failed: typed array is detached'); // step 8
 	}
 

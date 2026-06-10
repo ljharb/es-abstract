@@ -3,30 +3,28 @@
 var forEach = require('for-each');
 var debug = require('object-inspect');
 
+var specEnum = require('../../helpers/specEnum');
+
 var esV = require('../helpers/v');
 
 module.exports = function (t, year, IsBigIntElementType) {
 	t.ok(year >= 2020, 'ES2020+');
 
 	forEach(esV.getBigIntTypes(year), function (type) {
-		if (year >= 2024) {
-			type = type.toUpperCase(); // eslint-disable-line no-param-reassign
-		}
+		var typeForYear = specEnum(year, type.toLowerCase());
 		t.equal(
-			IsBigIntElementType(type),
+			IsBigIntElementType(typeForYear),
 			true,
-			debug(type) + ' is a BigInt element type'
+			debug(typeForYear) + ' is a BigInt element type'
 		);
 	});
 
 	forEach(esV.getNumberTypes(year), function (type) {
-		if (year >= 2024) {
-			type = type.toUpperCase(); // eslint-disable-line no-param-reassign
-		}
+		var typeForYear = specEnum(year, type.toLowerCase());
 		t.equal(
-			IsBigIntElementType(type),
+			IsBigIntElementType(typeForYear),
 			false,
-			debug(type) + ' is not a BigInt element type'
+			debug(typeForYear) + ' is not a BigInt element type'
 		);
 	});
 };

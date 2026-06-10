@@ -6,12 +6,19 @@ var $TypeError = require('es-errors/type');
 
 var IsDetachedBuffer = require('./IsDetachedBuffer');
 
+var specEnum = require('../helpers/specEnum');
+
 var isArrayBuffer = require('is-array-buffer');
 var isSharedArrayBuffer = require('is-shared-array-buffer');
 var arrayBufferByteLength = require('array-buffer-byte-length');
 
 var callBound = require('call-bound');
 var $sabByteLength = callBound('SharedArrayBuffer.prototype.byteLength', true);
+
+var year = require('./year');
+
+var SEQ_CST = specEnum(year, 'seq-cst');
+var UNORDERED = specEnum(year, 'unordered');
 
 var isGrowable = false; // TODO: support this
 
@@ -20,8 +27,8 @@ module.exports = function ArrayBufferByteLength(arrayBuffer, order) {
 	if (!isArrayBuffer(arrayBuffer) && !isSAB) {
 		throw new $TypeError('Assertion failed: `arrayBuffer` must be an ArrayBuffer or a SharedArrayBuffer');
 	}
-	if (order !== 'SEQ-CST' && order !== 'UNORDERED') {
-		throw new $TypeError('Assertion failed: `order` must be ~SEQ-CST~ or ~UNORDERED~');
+	if (order !== SEQ_CST && order !== UNORDERED) {
+		throw new $TypeError('Assertion failed: `order` must be `' + SEQ_CST + '` or `' + UNORDERED + '`');
 	}
 
 	// 1. If IsSharedArrayBuffer(arrayBuffer) is true and arrayBuffer has an [[ArrayBufferByteLengthData]] internal slot, then

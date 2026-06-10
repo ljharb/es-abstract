@@ -5,6 +5,8 @@ var debug = require('object-inspect');
 var v = require('es-value-fixtures');
 var esV = require('../helpers/v');
 
+var specEnum = require('../../helpers/specEnum');
+
 module.exports = function (t, year, SetDataSize) {
 	t.ok(year >= 2025, 'ES2025+');
 
@@ -17,7 +19,7 @@ module.exports = function (t, year, SetDataSize) {
 	});
 
 	t.equal(
-		SetDataSize('EMPTY'),
+		SetDataSize(specEnum(year, 'empty')),
 		0,
 		'~EMPTY~ works'
 	);

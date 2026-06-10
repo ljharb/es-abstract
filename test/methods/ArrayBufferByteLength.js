@@ -3,12 +3,14 @@
 var forEach = require('for-each');
 var debug = require('object-inspect');
 
+var specEnum = require('../../helpers/specEnum');
+
 var esV = require('../helpers/v');
 
 module.exports = function (t, year, ArrayBufferByteLength) {
 	t.ok(year >= 2024, 'ES2024+');
 
-	var order = 'UNORDERED';
+	var order = specEnum(year, 'unordered');
 
 	forEach(esV.unknowns, function (nonAB) {
 		t['throws'](

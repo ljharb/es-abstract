@@ -8,12 +8,18 @@ var SetValueInBuffer = require('./SetValueInBuffer');
 var ToBigInt = require('./ToBigInt');
 var ToNumber = require('./ToNumber');
 
+var specEnum = require('../helpers/specEnum');
+
 var typedArrayBuffer = require('typed-array-buffer');
 var typedArrayByteOffset = require('typed-array-byte-offset');
 var typedArrayLength = require('typed-array-length');
 var whichTypedArray = require('which-typed-array');
 
 var tableTAO = require('./tables/typed-array-objects');
+
+var year = require('./year');
+
+var UNORDERED = specEnum(year, 'unordered');
 
 // https://262.ecma-international.org/11.0/#sec-integerindexedelementset
 
@@ -28,7 +34,9 @@ module.exports = function IntegerIndexedElementSet(O, index, value) {
 	}
 
 	var contentType = arrayTypeName === 'BigInt64Array' || arrayTypeName === 'BigUint64Array' ? 'BigInt' : 'Number';
-	var numValue = contentType === 'BigInt' ? ToBigInt(value) : ToNumber(value); // steps 3 - 4
+	var numValue = contentType === 'BigInt'
+		? ToBigInt(value)
+		: ToNumber(value); // steps 3 - 4
 
 	var buffer = typedArrayBuffer(O); // step 5
 
@@ -54,7 +62,14 @@ module.exports = function IntegerIndexedElementSet(O, index, value) {
 
 	var indexedPosition = (index * elementSize) + offset; // step 11
 
-	SetValueInBuffer(buffer, indexedPosition, elementType, numValue, true, 'Unordered'); // step 13
+	SetValueInBuffer(
+		buffer,
+		indexedPosition,
+		elementType,
+		numValue,
+		true,
+		UNORDERED
+	); // step 13
 
 	return true; // step 14
 };

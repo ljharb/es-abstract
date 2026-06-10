@@ -4,12 +4,14 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+var specEnum = require('../../helpers/specEnum');
+
 var esV = require('../helpers/v');
 
 module.exports = function (t, year, StringLastIndexOf) {
 	t.ok(year >= 2025, 'ES2025+');
 
-	var notFound = 'NOT-FOUND';
+	var notFound = specEnum(year, 'not-found');
 
 	forEach(v.nonStrings, function (nonString) {
 		t['throws'](

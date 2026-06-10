@@ -9,6 +9,12 @@ var typedArrayLength = require('typed-array-length');
 var IsFixedLengthArrayBuffer = require('./IsFixedLengthArrayBuffer');
 var IsSharedArrayBuffer = require('./IsSharedArrayBuffer');
 
+var specEnum = require('../helpers/specEnum');
+
+var year = require('./year');
+
+var AUTO = specEnum(year, 'auto');
+
 // https://262.ecma-international.org/16.0/#sec-istypedarrayfixedlength
 
 module.exports = function IsTypedArrayFixedLength(O) {
@@ -21,8 +27,8 @@ module.exports = function IsTypedArrayFixedLength(O) {
 
 	var isFixed = IsFixedLengthArrayBuffer(buffer);
 
-	var length = isFixed ? typedArrayLength(O) : 'AUTO';
-	if (length === 'AUTO') {
+	var length = isFixed ? typedArrayLength(O) : AUTO;
+	if (length === AUTO) {
 		return false; // step 1
 	}
 

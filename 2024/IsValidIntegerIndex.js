@@ -10,8 +10,14 @@ var TypedArrayLength = require('./TypedArrayLength');
 var isInteger = require('math-intrinsics/isInteger');
 var isNegativeZero = require('math-intrinsics/isNegativeZero');
 
+var specEnum = require('../helpers/specEnum');
+
 var isTypedArray = require('is-typed-array');
 var typedArrayBuffer = require('typed-array-buffer');
+
+var year = require('./year');
+
+var UNORDERED = specEnum(year, 'unordered');
 
 // https://262.ecma-international.org/15.0/#sec-isvalidintegerindex
 
@@ -31,7 +37,7 @@ module.exports = function IsValidIntegerIndex(O, index) {
 
 	if (isNegativeZero(index)) { return false; } // step 3
 
-	var taRecord = MakeTypedArrayWithBufferWitnessRecord(O, 'UNORDERED'); // step 4
+	var taRecord = MakeTypedArrayWithBufferWitnessRecord(O, UNORDERED); // step 4
 	if (IsTypedArrayOutOfBounds(taRecord)) {
 		return false; // step 6
 	}

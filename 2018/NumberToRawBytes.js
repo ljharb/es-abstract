@@ -14,8 +14,14 @@ var ToUint8Clamp = require('./ToUint8Clamp');
 var valueToFloat32Bytes = require('../helpers/valueToFloat32Bytes');
 var valueToFloat64Bytes = require('../helpers/valueToFloat64Bytes');
 var integerToNBytes = require('../helpers/integerToNBytes');
+var specEnum = require('../helpers/specEnum');
 
 var tableTAO = require('./tables/typed-array-objects');
+
+var year = require('./year');
+
+var FLOAT32 = specEnum(year, 'float32');
+var FLOAT64 = specEnum(year, 'float64');
 
 // https://262.ecma-international.org/8.0/#table-50
 
@@ -43,9 +49,9 @@ module.exports = function NumberToRawBytes(type, value, isLittleEndian) {
 		throw new $TypeError('Assertion failed: `isLittleEndian` must be a Boolean');
 	}
 
-	if (type === 'Float32') { // step 1
+	if (type === FLOAT32) { // step 1
 		return valueToFloat32Bytes(value, isLittleEndian);
-	} else if (type === 'Float64') { // step 2
+	} else if (type === FLOAT64) { // step 2
 		return valueToFloat64Bytes(value, isLittleEndian);
 	} // step 3
 

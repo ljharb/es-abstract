@@ -10,6 +10,12 @@ var $toLowerCase = callBound('String.prototype.toLowerCase');
 
 var StringPad = require('./StringPad');
 
+var specEnum = require('../helpers/specEnum');
+
+var year = require('./year');
+
+var START = specEnum(year, 'start');
+
 // https://262.ecma-international.org/11.0/#sec-unicodeescape
 
 module.exports = function UnicodeEscape(C) {
@@ -21,5 +27,5 @@ module.exports = function UnicodeEscape(C) {
 		throw new $TypeError('`Assertion failed: numeric value of `C` must be <= 0xFFFF');
 	}
 
-	return '\\u' + StringPad($toLowerCase($numberToString(n, 16)), 4, '0', 'start');
+	return '\\u' + StringPad($toLowerCase($numberToString(n, 16)), 4, '0', START);
 };

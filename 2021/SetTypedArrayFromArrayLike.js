@@ -20,7 +20,13 @@ var ToNumber = require('./ToNumber');
 var ToObject = require('./ToObject');
 var ToString = require('./ToString');
 
+var specEnum = require('../helpers/specEnum');
+
 var tableTAO = require('./tables/typed-array-objects');
+
+var year = require('./year');
+
+var UNORDERED = specEnum(year, 'unordered');
 
 // https://262.ecma-international.org/12.0/#sec-settypedarrayfromarraylike
 
@@ -87,7 +93,7 @@ module.exports = function SetTypedArrayFromArrayLike(target, targetOffset, sourc
 			throw new $TypeError('target’s buffer is detached'); // step 16.e
 		}
 
-		SetValueInBuffer(targetBuffer, targetByteIndex, targetType, value, true, 'Unordered'); // step 16.f
+		SetValueInBuffer(targetBuffer, targetByteIndex, targetType, value, true, UNORDERED); // step 16.f
 
 		k += 1; // step 16.g
 

@@ -3,10 +3,14 @@
 var forEach = require('for-each');
 var debug = require('object-inspect');
 
+var specEnum = require('../../helpers/specEnum');
+
 var esV = require('../helpers/v');
 
 module.exports = function (t, year, IsTypedArrayOutOfBounds, extras) {
 	t.ok(year >= 2024, 'ES2024+');
+
+	var order = specEnum(year, 'unordered');
 
 	var DetachArrayBuffer = extras.getAO('DetachArrayBuffer');
 	var MakeTypedArrayWithBufferWitnessRecord = extras.getAO('MakeTypedArrayWithBufferWitnessRecord');
@@ -27,13 +31,13 @@ module.exports = function (t, year, IsTypedArrayOutOfBounds, extras) {
 
 		var ta = new Uint8Array(ab);
 
-		var preDetachedRecord = MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
+		var preDetachedRecord = MakeTypedArrayWithBufferWitnessRecord(ta, order);
 
 		st.equal(IsTypedArrayOutOfBounds(preDetachedRecord), false);
 
 		DetachArrayBuffer(ab);
 
-		var postDetachedRecord = MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
+		var postDetachedRecord = MakeTypedArrayWithBufferWitnessRecord(ta, order);
 
 		st['throws'](
 			function () { IsTypedArrayOutOfBounds(preDetachedRecord); },

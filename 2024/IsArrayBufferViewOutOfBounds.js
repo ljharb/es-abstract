@@ -7,8 +7,14 @@ var IsViewOutOfBounds = require('./IsViewOutOfBounds');
 var MakeDataViewWithBufferWitnessRecord = require('./MakeDataViewWithBufferWitnessRecord');
 var MakeTypedArrayWithBufferWitnessRecord = require('./MakeTypedArrayWithBufferWitnessRecord');
 
+var specEnum = require('../helpers/specEnum');
+
 var isDataView = require('is-data-view');
 var isTypedArray = require('is-typed-array');
+
+var year = require('./year');
+
+var SEQ_CST = specEnum(year, 'seq-cst');
 
 // https://262.ecma-international.org/15.0/#sec-isarraybufferviewoutofbounds
 
@@ -19,12 +25,12 @@ module.exports = function IsArrayBufferViewOutOfBounds(O) {
 	}
 
 	if (isDV) { // step 1
-		var viewRecord = MakeDataViewWithBufferWitnessRecord(O, 'SEQ-CST'); // step 1.a
+		var viewRecord = MakeDataViewWithBufferWitnessRecord(O, SEQ_CST); // step 1.a
 
 		return IsViewOutOfBounds(viewRecord); // step 1.b
 	}
 
-	var taRecord = MakeTypedArrayWithBufferWitnessRecord(O, 'SEQ-CST'); // step 2
+	var taRecord = MakeTypedArrayWithBufferWitnessRecord(O, SEQ_CST); // step 2
 
 	return IsTypedArrayOutOfBounds(taRecord); // step 3
 };

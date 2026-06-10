@@ -19,12 +19,28 @@ var tableTAO = require('./tables/typed-array-objects');
 
 var defaultEndianness = require('../helpers/defaultEndianness');
 var forEach = require('../helpers/forEach');
+var specEnum = require('../helpers/specEnum');
 
-// https://262.ecma-international.org/15.0/#sec-setvalueinbuffer
+var year = require('./year');
+
+var SEQ_CST = specEnum(year, 'seq-cst');
+var UNORDERED = specEnum(year, 'unordered');
+var INIT = specEnum(year, 'init');
+var BIGINT64 = specEnum(year, 'bigint64');
+var BIGUINT64 = specEnum(year, 'biguint64');
+
+// https://262.ecma-international.org/12.0/#sec-setvalueinbuffer
 
 /* eslint max-params: 0 */
 
-module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value, isTypedArray, order) {
+module.exports = function SetValueInBuffer(
+	arrayBuffer,
+	byteIndex,
+	type,
+	value,
+	isTypedArray,
+	order
+) {
 	var isSAB = isSharedArrayBuffer(arrayBuffer);
 	if (!isArrayBuffer(arrayBuffer) && !isSAB) {
 		throw new $TypeError('Assertion failed: `arrayBuffer` must be an ArrayBuffer or a SharedArrayBuffer');
@@ -45,8 +61,8 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value, 
 	if (typeof isTypedArray !== 'boolean') {
 		throw new $TypeError('Assertion failed: `isTypedArray` must be a boolean');
 	}
-	if (order !== 'SEQ-CST' && order !== 'UNORDERED' && order !== 'INIT') {
-		throw new $TypeError('Assertion failed: `order` must be `"SEQ-CST"`, `"UNORDERED"`, or `"INIT"`');
+	if (order !== SEQ_CST && order !== UNORDERED && order !== INIT) {
+		throw new $TypeError('Assertion failed: `order` must be `' + SEQ_CST + '`, `' + UNORDERED + '`, or `' + INIT + '`');
 	}
 
 	if (arguments.length > 6 && typeof arguments[6] !== 'boolean') {
@@ -60,7 +76,7 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value, 
 	// 2. Assert: There are sufficient bytes in arrayBuffer starting at byteIndex to represent a value of type.
 
 	if (IsBigIntElementType(type) ? typeof value !== 'bigint' : typeof value !== 'number') { // step 3
-		throw new $TypeError('Assertion failed: `value` must be a BigInt if type is ~BIGINT64~ or ~BIGUINT64~, otherwise a Number');
+		throw new $TypeError('Assertion failed: `value` must be a BigInt if type is `' + BIGINT64 + '` or `' + BIGUINT64 + '`, otherwise a Number');
 	}
 
 	// 4. Let block be arrayBuffer’s [[ArrayBufferData]] internal slot.
@@ -82,7 +98,11 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value, 
 		throw new $SyntaxError('SharedArrayBuffer is not supported by this implementation');
 	} else {
 		// 9. Store the individual bytes of rawBytes into block, in order, starting at block[byteIndex].
-		var arr = new $Uint8Array(arrayBuffer, byteIndex, elementSize);
+		var arr = new $Uint8Array(
+			arrayBuffer,
+			byteIndex,
+			elementSize
+		);
 		forEach(rawBytes, function (rawByte, i) {
 			arr[i] = rawByte;
 		});

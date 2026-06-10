@@ -21,7 +21,7 @@ function addOpToYear(year, op, opPath) {
 }
 
 const writtenOps = [5].concat(years).flatMap((year, i, arr) => {
-	const ops = fs.readdirSync(path.join(process.cwd(), String(year)));
+	const ops = fs.readdirSync(path.join(process.cwd(), String(year))).filter((f) => f !== 'year.js');
 	return ops.flatMap((opFile) => {
 		const maybeDirPath = path.join(process.cwd(), String(year), opFile);
 		if (fs.statSync(maybeDirPath).isDirectory()) {

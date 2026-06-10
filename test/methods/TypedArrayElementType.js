@@ -3,6 +3,8 @@
 var forEach = require('for-each');
 var debug = require('object-inspect');
 
+var specEnum = require('../../helpers/specEnum');
+
 var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
@@ -23,7 +25,7 @@ module.exports = function (t, year, TypedArrayElementType) {
 			var expected = TA.replace(/(?:lamped)?Array$/, '');
 			st.equal(
 				TypedArrayElementType(ta),
-				year >= 2024 ? expected.toUpperCase() : expected,
+				specEnum(year, expected.toLowerCase()),
 				debug(ta) + ' (which should be a ' + TA + ') has correct element type'
 			);
 

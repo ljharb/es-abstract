@@ -6,12 +6,18 @@ var GetValueFromBuffer = require('./GetValueFromBuffer');
 var IsDetachedBuffer = require('./IsDetachedBuffer');
 var IsValidIntegerIndex = require('./IsValidIntegerIndex');
 
+var specEnum = require('../helpers/specEnum');
+
 var typedArrayLength = require('typed-array-length');
 var typedArrayBuffer = require('typed-array-buffer');
 var typedArrayByteOffset = require('typed-array-byte-offset');
 var whichTypedArray = require('which-typed-array');
 
 var tableTAO = require('./tables/typed-array-objects');
+
+var year = require('./year');
+
+var UNORDERED = specEnum(year, 'unordered');
 
 // https://262.ecma-international.org/11.0/#sec-integerindexedelementget
 
@@ -49,5 +55,5 @@ module.exports = function IntegerIndexedElementGet(O, index) {
 
 	var indexedPosition = (index * elementSize) + offset; // step 9
 
-	return GetValueFromBuffer(buffer, indexedPosition, elementType, true, 'Unordered'); // step 11
+	return GetValueFromBuffer(buffer, indexedPosition, elementType, true, UNORDERED); // step 11
 };

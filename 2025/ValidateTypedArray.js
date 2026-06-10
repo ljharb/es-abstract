@@ -6,13 +6,20 @@ var isObject = require('es-object-atoms/isObject');
 var IsTypedArrayOutOfBounds = require('./IsTypedArrayOutOfBounds');
 var MakeTypedArrayWithBufferWitnessRecord = require('./MakeTypedArrayWithBufferWitnessRecord');
 
+var specEnum = require('../helpers/specEnum');
+
 var isTypedArray = require('is-typed-array');
+
+var year = require('./year');
+
+var SEQ_CST = specEnum(year, 'seq-cst');
+var UNORDERED = specEnum(year, 'unordered');
 
 // https://262.ecma-international.org/15.0/#sec-validatetypedarray
 
 module.exports = function ValidateTypedArray(O, order) {
-	if (order !== 'SEQ-CST' && order !== 'UNORDERED') {
-		throw new $TypeError('Assertion failed: `order` must be ~SEQ-CST~ or ~UNORDERED~');
+	if (order !== SEQ_CST && order !== UNORDERED) {
+		throw new $TypeError('Assertion failed: `order` must be `' + SEQ_CST + '` or `' + UNORDERED + '`');
 	}
 
 	if (!isObject(O)) {

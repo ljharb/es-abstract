@@ -9,6 +9,13 @@ var callBound = require('call-bound');
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 
 var forEach = require('../helpers/forEach');
+var specEnum = require('../helpers/specEnum');
+
+var year = require('./year');
+
+var KEY = specEnum(year, 'key');
+var VALUE = specEnum(year, 'value');
+var KEY_VALUE = specEnum(year, 'key+value');
 
 // https://262.ecma-international.org/14.0/#sec-enumerableownproperties
 
@@ -18,19 +25,19 @@ module.exports = function EnumerableOwnProperties(O, kind) {
 	}
 
 	var keys = objectKeys(O);
-	if (kind === 'key') {
+	if (kind === KEY) {
 		return keys;
 	}
-	if (kind === 'value' || kind === 'key+value') {
+	if (kind === VALUE || kind === KEY_VALUE) {
 		var results = [];
 		forEach(keys, function (key) {
 			if ($isEnumerable(O, key)) {
 				safePushApply(results, [
-					kind === 'value' ? O[key] : [key, O[key]]
+					kind === VALUE ? O[key] : [key, O[key]]
 				]);
 			}
 		});
 		return results;
 	}
-	throw new $TypeError('Assertion failed: "kind" is not "key", "value", or "key+value": ' + kind);
+	throw new $TypeError('Assertion failed: "kind" is not `' + KEY + '`, `' + VALUE + '`, or `' + KEY_VALUE + '`: ' + kind);
 };

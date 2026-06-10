@@ -8,14 +8,19 @@ var TypedArrayElementSize = require('./TypedArrayElementSize');
 var TypedArrayLength = require('./TypedArrayLength');
 
 var isTypedArrayWithBufferWitnessRecord = require('../helpers/records/typed-array-with-buffer-witness-record');
+var specEnum = require('../helpers/specEnum');
 
 var typedArrayByffer = require('typed-array-buffer');
 var typedArrayByteLength = require('typed-array-byte-length');
 
+var year = require('./year');
+
+var AUTO = specEnum(year, 'auto');
+
 // https://262.ecma-international.org/15.0/#sec-typedarraybytelength
 
 module.exports = function TypedArrayByteLength(taRecord) {
-	if (!isTypedArrayWithBufferWitnessRecord(taRecord)) {
+	if (!isTypedArrayWithBufferWitnessRecord(taRecord, year)) {
 		throw new $TypeError('Assertion failed: `taRecord` must be a TypedArray With Buffer Witness Record');
 	}
 
@@ -32,8 +37,8 @@ module.exports = function TypedArrayByteLength(taRecord) {
 
 	var isFixed = IsFixedLengthArrayBuffer(typedArrayByffer(O));
 
-	var byteLength = isFixed ? typedArrayByteLength(O) : 'AUTO';
-	if (byteLength !== 'AUTO') {
+	var byteLength = isFixed ? typedArrayByteLength(O) : AUTO;
+	if (byteLength !== AUTO) {
 		return byteLength; // step 5
 	}
 

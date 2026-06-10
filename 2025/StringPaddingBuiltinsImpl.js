@@ -6,11 +6,18 @@ var StringPad = require('./StringPad');
 var ToLength = require('./ToLength');
 var ToString = require('./ToString');
 
+var specEnum = require('../helpers/specEnum');
+
+var year = require('./year');
+
+var START = specEnum(year, 'start');
+var END = specEnum(year, 'end');
+
 // https://262.ecma-international.org/15.0/#sec-stringpaddingbuiltinsimpl
 
 module.exports = function StringPaddingBuiltinsImpl(O, maxLength, fillString, placement) {
-	if (placement !== 'start' && placement !== 'end' && placement !== 'START' && placement !== 'END') {
-		throw new $TypeError('Assertion failed: `placement` must be ~START~ or ~END~');
+	if (placement !== START && placement !== END && placement !== 'START' && placement !== 'END') {
+		throw new $TypeError('Assertion failed: `placement` must be `' + START + '` or `' + END + '`');
 	}
 
 	var S = ToString(O); // step 1

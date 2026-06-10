@@ -6,21 +6,28 @@ var debug = require('object-inspect');
 var hasOwn = require('hasown');
 var $defineProperty = require('es-define-property');
 
+var specEnum = require('../../helpers/specEnum');
+
 var defineProperty = require('../helpers/defineProperty');
 
 module.exports = function (t, year, actual) {
 	t.ok(year >= 2015, 'ES2015+');
 
-	var EnumerableOwnProperties = year >= 2017 ? actual : function EnumerableOwnNames(obj, kind) {
-		if (kind !== 'key') {
-			throw new EvalError('test error: this wrapper should only be invoked with kind `key`');
+	var KEY = specEnum(year, 'key');
+	var VALUE = specEnum(year, 'value');
+	var KEY_VALUE = specEnum(year, 'key+value');
+
+	// pre-2017, the AO is `EnumerableOwnNames(O)`: it takes no `kind`, and has only `key` semantics
+	var EnumerableOwnProperties = function (obj, kind) {
+		if (year < 2017 && kind !== KEY) {
+			throw new EvalError('test error: pre-ES2017, only kind `key` may be tested');
 		}
-		return actual(obj);
+		return actual(obj, kind); // pre-2017, the extra `kind` argument is ignored
 	};
 
 	forEach(v.primitives, function (nonObject) {
 		t['throws'](
-			function () { EnumerableOwnProperties(nonObject, 'key'); },
+			function () { EnumerableOwnProperties(nonObject, KEY); },
 			debug(nonObject) + ' is not an Object'
 		);
 	});
@@ -60,20 +67,20 @@ module.exports = function (t, year, actual) {
 	t.equal(Object.prototype.propertyIsEnumerable.call(Object.prototype, 'toString'), false, 'has non-enumerable "toString"');
 
 	t.deepEqual(
-		EnumerableOwnProperties(obj, 'key'),
+		EnumerableOwnProperties(obj, KEY),
 		['own'],
 		'returns enumerable own ' + (year < 2017 ? 'names' : 'keys')
 	);
 
 	if (year >= 2017) {
 		t.deepEqual(
-			EnumerableOwnProperties(obj, 'value'),
+			EnumerableOwnProperties(obj, VALUE),
 			[obj.own],
 			'returns enumerable own values'
 		);
 
 		t.deepEqual(
-			EnumerableOwnProperties(obj, 'key+value'),
+			EnumerableOwnProperties(obj, KEY_VALUE),
 			[['own', obj.own]],
 			'returns enumerable own entries'
 		);
@@ -90,13 +97,13 @@ module.exports = function (t, year, actual) {
 			defineProperty(o, 'c', { enumerable: false });
 
 			st.deepEqual(
-				EnumerableOwnProperties(o, 'key'),
+				EnumerableOwnProperties(o, KEY),
 				['a', 'b', 'd'],
 				'`key` kind returns all initially enumerable own keys'
 			);
 
 			st.deepEqual(
-				EnumerableOwnProperties(o, 'key+value'),
+				EnumerableOwnProperties(o, KEY_VALUE),
 				[['a', 1], ['d', 4]],
 				'key+value returns only own enumerable entries that remain enumerable at the time they are visited'
 			);

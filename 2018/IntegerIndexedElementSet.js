@@ -14,7 +14,13 @@ var typedArrayByteOffset = require('typed-array-byte-offset');
 var typedArrayLength = require('typed-array-length');
 var whichTypedArray = require('which-typed-array');
 
+var specEnum = require('../helpers/specEnum');
+
 var tableTAO = require('./tables/typed-array-objects');
+
+var year = require('./year');
+
+var UNORDERED = specEnum(year, 'unordered');
 
 // https://262.ecma-international.org/8.0/#sec-integerindexedelementset
 
@@ -56,7 +62,14 @@ module.exports = function IntegerIndexedElementSet(O, index, value) {
 
 	var indexedPosition = (index * elementSize) + offset; // step 14
 
-	SetValueInBuffer(buffer, indexedPosition, elementType, numValue, true, 'Unordered'); // step 16
+	SetValueInBuffer(
+		buffer,
+		indexedPosition,
+		elementType,
+		numValue,
+		true,
+		UNORDERED
+	); // step 16
 
 	return true; // step 17
 };

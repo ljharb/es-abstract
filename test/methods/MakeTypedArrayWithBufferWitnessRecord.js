@@ -3,15 +3,19 @@
 var forEach = require('for-each');
 var debug = require('object-inspect');
 
+var specEnum = require('../../helpers/specEnum');
+
 var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
 module.exports = function (t, year, MakeTypedArrayWithBufferWitnessRecord) {
 	t.ok(year >= 2024, 'ES2024+');
 
+	var order = specEnum(year, 'unordered');
+
 	forEach(esV.unknowns, function (nonTA) {
 		t['throws'](
-			function () { MakeTypedArrayWithBufferWitnessRecord(nonTA, 'UNORDERED'); },
+			function () { MakeTypedArrayWithBufferWitnessRecord(nonTA, order); },
 			TypeError,
 			debug(nonTA) + ' is not a TypedArray'
 		);
@@ -30,7 +34,7 @@ module.exports = function (t, year, MakeTypedArrayWithBufferWitnessRecord) {
 					'invalid order enum value throws'
 				);
 
-				var record = MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
+				var record = MakeTypedArrayWithBufferWitnessRecord(ta, order);
 				tat.deepEqual(record, {
 					'[[Object]]': ta,
 					'[[CachedBufferByteLength]]': ta.byteLength

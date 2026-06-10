@@ -4,14 +4,18 @@ var forEach = require('for-each');
 var debug = require('object-inspect');
 var v = require('es-value-fixtures');
 
+var specEnum = require('../../helpers/specEnum');
+
 var esV = require('../helpers/v');
 
 module.exports = function (t, year, MakeDataViewWithBufferWitnessRecord) {
 	t.ok(year >= 2024, 'ES2024+');
 
+	var unordered = specEnum(year, 'unordered');
+
 	forEach(esV.unknowns, function (nonDV) {
 		t['throws'](
-			function () { MakeDataViewWithBufferWitnessRecord(nonDV, 'UNORDERED'); },
+			function () { MakeDataViewWithBufferWitnessRecord(nonDV, unordered); },
 			TypeError,
 			debug(nonDV) + ' is not a DataView'
 		);
@@ -30,13 +34,13 @@ module.exports = function (t, year, MakeDataViewWithBufferWitnessRecord) {
 		var dv = new DataView(ab);
 
 		st.deepEqual(
-			MakeDataViewWithBufferWitnessRecord(dv, 'UNORDERED'),
+			MakeDataViewWithBufferWitnessRecord(dv, unordered),
 			{ '[[Object]]': dv, '[[CachedBufferByteLength]]': ab.byteLength },
 			'works with a DataView, unordered'
 		);
 
 		st.deepEqual(
-			MakeDataViewWithBufferWitnessRecord(dv, 'SEQ-CST'),
+			MakeDataViewWithBufferWitnessRecord(dv, specEnum(year, 'seq-cst')),
 			{ '[[Object]]': dv, '[[CachedBufferByteLength]]': ab.byteLength },
 			'works with a DataView, seq-cst'
 		);

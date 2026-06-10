@@ -5,6 +5,8 @@ var debug = require('object-inspect');
 var v = require('es-value-fixtures');
 var SLOT = require('internal-slot');
 
+var specEnum = require('../../helpers/specEnum');
+
 module.exports = function (t, year, GeneratorResume) {
 	t.ok(year >= 2025, 'ES2025+');
 
@@ -25,7 +27,7 @@ module.exports = function (t, year, GeneratorResume) {
 	);
 
 	var generator = {};
-	var state = 'SUSPENDED-START';
+	var state = specEnum(year, 'suspended-start');
 	SLOT.set(generator, '[[GeneratorState]]', 'not suspended start/yield or completed');
 	SLOT.set(generator, '[[GeneratorBrand]]', brand);
 	SLOT.set(generator, '[[GeneratorContext]]', null);
@@ -53,9 +55,9 @@ module.exports = function (t, year, GeneratorResume) {
 		[undefined, [sentinel]],
 		'generator context is called with proper arguments, and return value is proxied through'
 	);
-	t.equal(SLOT.get(generator, '[[GeneratorState]]'), 'EXECUTING', 'state is executing');
+	t.equal(SLOT.get(generator, '[[GeneratorState]]'), specEnum(year, 'executing'), 'state is executing');
 
-	SLOT.set(generator, '[[GeneratorState]]', 'COMPLETED');
+	SLOT.set(generator, '[[GeneratorState]]', specEnum(year, 'completed'));
 	t.deepEqual(
 		GeneratorResume(generator, 42, brand),
 		{

@@ -3,10 +3,14 @@
 var forEach = require('for-each');
 var debug = require('object-inspect');
 
+var specEnum = require('../../helpers/specEnum');
+
 var esV = require('../helpers/v');
 
 module.exports = function (t, year, IsViewOutOfBounds, extras) {
 	t.ok(year >= 2024, 'ES2024+');
+
+	var order = specEnum(year, 'unordered');
 
 	var DetachArrayBuffer = extras.getAO('DetachArrayBuffer');
 	var MakeDataViewWithBufferWitnessRecord = extras.getAO('MakeDataViewWithBufferWitnessRecord');
@@ -26,7 +30,7 @@ module.exports = function (t, year, IsViewOutOfBounds, extras) {
 			var dab = new ArrayBuffer(1);
 			var ddv = new DataView(dab);
 
-			var ndRecord = MakeDataViewWithBufferWitnessRecord(ddv, 'UNORDERED');
+			var ndRecord = MakeDataViewWithBufferWitnessRecord(ddv, order);
 
 			DetachArrayBuffer(dab);
 
@@ -36,7 +40,7 @@ module.exports = function (t, year, IsViewOutOfBounds, extras) {
 				'detached view with no-detached record throws'
 			);
 
-			var dRecord = MakeDataViewWithBufferWitnessRecord(ddv, 'UNORDERED');
+			var dRecord = MakeDataViewWithBufferWitnessRecord(ddv, order);
 
 			s2t.equal(IsViewOutOfBounds(dRecord), true, 'detached view with detached record is out of bounds');
 
@@ -47,7 +51,7 @@ module.exports = function (t, year, IsViewOutOfBounds, extras) {
 			var dv = new DataView(new ArrayBuffer(8));
 			var badRecord = {
 				'[[Object]]': dv,
-				'[[CachedBufferByteLength]]': year >= 2026 ? '~DETACHED~' : 'DETACHED'
+				'[[CachedBufferByteLength]]': year >= 2026 ? '~DETACHED~' : specEnum(year, 'detached')
 			};
 			s2t['throws'](
 				function () { IsViewOutOfBounds(badRecord); },
@@ -73,7 +77,7 @@ module.exports = function (t, year, IsViewOutOfBounds, extras) {
 
 		for (var i = 0; i < 8; i += 1) {
 			st.equal(
-				IsViewOutOfBounds(MakeDataViewWithBufferWitnessRecord(new DataView(ab, i), 'UNORDERED')),
+				IsViewOutOfBounds(MakeDataViewWithBufferWitnessRecord(new DataView(ab, i), order)),
 				false,
 				'byteOffset ' + i + ' is not out of bounds'
 			);
@@ -85,7 +89,7 @@ module.exports = function (t, year, IsViewOutOfBounds, extras) {
 			function (tsat) {
 				var rab = new ArrayBuffer(24, { maxByteLength: 64 });
 				var dv = new DataView(rab);
-				var record = MakeDataViewWithBufferWitnessRecord(dv, 'UNORDERED');
+				var record = MakeDataViewWithBufferWitnessRecord(dv, order);
 
 				tsat.equal(
 					IsViewOutOfBounds(record),
@@ -103,7 +107,7 @@ module.exports = function (t, year, IsViewOutOfBounds, extras) {
 			function (tsat) {
 				var rab = new ArrayBuffer(24, { maxByteLength: 64 });
 				var dv = new DataView(rab);
-				var record = MakeDataViewWithBufferWitnessRecord(dv, 'UNORDERED');
+				var record = MakeDataViewWithBufferWitnessRecord(dv, order);
 
 				DetachArrayBuffer(rab);
 
@@ -113,7 +117,7 @@ module.exports = function (t, year, IsViewOutOfBounds, extras) {
 					'detached RAB with a non-detached DVWBR throws'
 				);
 
-				record = MakeDataViewWithBufferWitnessRecord(dv, 'UNORDERED');
+				record = MakeDataViewWithBufferWitnessRecord(dv, order);
 				tsat.equal(
 					IsViewOutOfBounds(record),
 					true,

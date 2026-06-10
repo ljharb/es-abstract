@@ -21,10 +21,22 @@ var safeConcat = require('safe-array-concat');
 var tableTAO = require('./tables/typed-array-objects');
 
 var defaultEndianness = require('../helpers/defaultEndianness');
+var specEnum = require('../helpers/specEnum');
+
+var year = require('./year');
+
+var SEQ_CST = specEnum(year, 'seq-cst');
+var UNORDERED = specEnum(year, 'unordered');
 
 // https://262.ecma-international.org/11.0/#sec-getvaluefrombuffer
 
-module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type, isTypedArray, order) {
+module.exports = function GetValueFromBuffer(
+	arrayBuffer,
+	byteIndex,
+	type,
+	isTypedArray,
+	order
+) {
 	var isSAB = isSharedArrayBuffer(arrayBuffer);
 	if (!isArrayBuffer(arrayBuffer) && !isSAB) {
 		throw new $TypeError('Assertion failed: `arrayBuffer` must be an ArrayBuffer or a SharedArrayBuffer');
@@ -42,8 +54,8 @@ module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type, isTyp
 		throw new $TypeError('Assertion failed: `isTypedArray` must be a boolean');
 	}
 
-	if (order !== 'SeqCst' && order !== 'Unordered') {
-		throw new $TypeError('Assertion failed: `order` must be either `SeqCst` or `Unordered`');
+	if (order !== SEQ_CST && order !== UNORDERED) {
+		throw new $TypeError('Assertion failed: `order` must be either `' + SEQ_CST + '` or `' + UNORDERED + '`');
 	}
 
 	if (arguments.length > 5 && typeof arguments[5] !== 'boolean') {
@@ -82,7 +94,11 @@ module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type, isTyp
 		throw new $SyntaxError('SharedArrayBuffer is not supported by this implementation');
 	} else {
 		// 7. Let rawValue be a List of elementSize containing, in order, the elementSize sequence of bytes starting with block[byteIndex].
-		rawValue = $slice(new $Uint8Array(arrayBuffer, byteIndex), 0, elementSize); // step 6
+		rawValue = $slice(
+			new $Uint8Array(arrayBuffer, byteIndex),
+			0,
+			elementSize
+		); // step 6
 	}
 
 	// 8. If isLittleEndian is not present, set isLittleEndian to either true or false. The choice is implementation dependent and should be the alternative that is most efficient for the implementation. An implementation must use the same value each time this step is executed and the same value must be used for the corresponding step in the SetValueInBuffer abstract operation.
@@ -91,6 +107,5 @@ module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type, isTyp
 	var bytes = isLittleEndian
 		? $slice(safeConcat([0, 0, 0, 0, 0, 0, 0, 0], rawValue), -elementSize)
 		: $slice(safeConcat(rawValue, [0, 0, 0, 0, 0, 0, 0, 0]), 0, elementSize);
-
 	return RawBytesToNumeric(type, bytes, isLittleEndian);
 };

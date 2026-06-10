@@ -7,13 +7,20 @@ var callBound = require('call-bound');
 var ToLength = require('./ToLength');
 var ToString = require('./ToString');
 
+var specEnum = require('../helpers/specEnum');
+
 var $strSlice = callBound('String.prototype.slice');
+
+var year = require('./year');
+
+var START = specEnum(year, 'start');
+var END = specEnum(year, 'end');
 
 // https://262.ecma-international.org/11.0/#sec-stringpad
 
 module.exports = function StringPad(O, maxLength, fillString, placement) {
-	if (placement !== 'start' && placement !== 'end') {
-		throw new $TypeError('Assertion failed: `placement` must be "start" or "end"');
+	if (placement !== START && placement !== END) {
+		throw new $TypeError('Assertion failed: `placement` must be `' + START + '` or `' + END + '`');
 	}
 	var S = ToString(O);
 	var intMaxLength = ToLength(maxLength);
@@ -34,7 +41,7 @@ module.exports = function StringPad(O, maxLength, fillString, placement) {
 	}
 	truncatedStringFiller = $strSlice(truncatedStringFiller, 0, fillLen);
 
-	if (placement === 'start') {
+	if (placement === START) {
 		return truncatedStringFiller + S;
 	}
 	return S + truncatedStringFiller;

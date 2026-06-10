@@ -3,11 +3,15 @@
 var forEach = require('for-each');
 var debug = require('object-inspect');
 
+var specEnum = require('../../helpers/specEnum');
+
 var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
 module.exports = function (t, year, TypedArrayLength, extras) {
 	t.ok(year >= 2024, 'ES2024+');
+
+	var unordered = specEnum(year, 'unordered');
 
 	var DetachArrayBuffer = extras.getAO('DetachArrayBuffer');
 	var MakeTypedArrayWithBufferWitnessRecord = extras.getAO('MakeTypedArrayWithBufferWitnessRecord');
@@ -30,14 +34,14 @@ module.exports = function (t, year, TypedArrayLength, extras) {
 			st.test('Typed Array: ' + type, function (tat) {
 				var TA = global[type];
 				var ta = new TA(8);
-				var record = MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
+				var record = MakeTypedArrayWithBufferWitnessRecord(ta, unordered);
 
 				tat.equal(TypedArrayLength(record), 8, 'fixed length array, returns byteLength');
 
 				tat.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 					DetachArrayBuffer(ta.buffer);
 
-					record = MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
+					record = MakeTypedArrayWithBufferWitnessRecord(ta, unordered);
 
 					s2t['throws'](
 						function () { TypedArrayLength(record); },
@@ -58,7 +62,7 @@ module.exports = function (t, year, TypedArrayLength, extras) {
 					function (tsat) {
 						var rab = new ArrayBuffer(24, { maxByteLength: 64 });
 						var arr = new TA(rab, 8);
-						record = MakeTypedArrayWithBufferWitnessRecord(arr, 'UNORDERED');
+						record = MakeTypedArrayWithBufferWitnessRecord(arr, unordered);
 
 						tsat.equal(
 							TypedArrayLength(record),
@@ -76,7 +80,7 @@ module.exports = function (t, year, TypedArrayLength, extras) {
 					function (tsat) {
 						var rab = new ArrayBuffer(24, { maxByteLength: 64 });
 						var arr = new TA(rab, 8);
-						record = MakeTypedArrayWithBufferWitnessRecord(arr, 'UNORDERED');
+						record = MakeTypedArrayWithBufferWitnessRecord(arr, unordered);
 
 						DetachArrayBuffer(rab);
 
@@ -86,7 +90,7 @@ module.exports = function (t, year, TypedArrayLength, extras) {
 							'detached RAB with a non-detached TAWBR throws'
 						);
 
-						record = MakeTypedArrayWithBufferWitnessRecord(arr, 'UNORDERED');
+						record = MakeTypedArrayWithBufferWitnessRecord(arr, unordered);
 						tsat['throws'](
 							function () { TypedArrayLength(record); },
 							TypeError,

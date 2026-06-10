@@ -20,10 +20,22 @@ var safeConcat = require('safe-array-concat');
 var tableTAO = require('./tables/typed-array-objects');
 
 var defaultEndianness = require('../helpers/defaultEndianness');
+var specEnum = require('../helpers/specEnum');
+
+var year = require('./year');
+
+var SEQ_CST = specEnum(year, 'seq-cst');
+var UNORDERED = specEnum(year, 'unordered');
 
 // https://262.ecma-international.org/15.0/#sec-getvaluefrombuffer
 
-module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type, isTypedArray, order) {
+module.exports = function GetValueFromBuffer(
+	arrayBuffer,
+	byteIndex,
+	type,
+	isTypedArray,
+	order
+) {
 	var isSAB = isSharedArrayBuffer(arrayBuffer);
 	if (!isArrayBuffer(arrayBuffer) && !isSAB) {
 		throw new $TypeError('Assertion failed: `arrayBuffer` must be an ArrayBuffer or a SharedArrayBuffer');
@@ -41,8 +53,8 @@ module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type, isTyp
 		throw new $TypeError('Assertion failed: `isTypedArray` must be a boolean');
 	}
 
-	if (order !== 'SEQ-CST' && order !== 'UNORDERED') {
-		throw new $TypeError('Assertion failed: `order` must be either `SEQ-CST` or `UNORDERED`');
+	if (order !== SEQ_CST && order !== UNORDERED) {
+		throw new $TypeError('Assertion failed: `order` must be either `' + SEQ_CST + '` or `' + UNORDERED + '`');
 	}
 
 	if (arguments.length > 5 && typeof arguments[5] !== 'boolean') {

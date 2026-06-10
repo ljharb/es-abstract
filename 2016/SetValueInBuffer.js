@@ -35,8 +35,14 @@ var TypeToAO = {
 var defaultEndianness = require('../helpers/defaultEndianness');
 var forEach = require('../helpers/forEach');
 var integerToNBytes = require('../helpers/integerToNBytes');
+var specEnum = require('../helpers/specEnum');
 var valueToFloat32Bytes = require('../helpers/valueToFloat32Bytes');
 var valueToFloat64Bytes = require('../helpers/valueToFloat64Bytes');
+
+var year = require('./year');
+
+var FLOAT32 = specEnum(year, 'float32');
+var FLOAT64 = specEnum(year, 'float64');
 
 // https://262.ecma-international.org/6.0/#sec-setvalueinbuffer
 
@@ -86,9 +92,9 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value) 
 	var isLittleEndian = arguments.length > 4 ? arguments[4] : defaultEndianness === 'little'; // step 8
 
 	var rawBytes;
-	if (type === 'Float32') { // step 1
+	if (type === FLOAT32) { // step 1
 		rawBytes = valueToFloat32Bytes(value, isLittleEndian);
-	} else if (type === 'Float64') { // step 2
+	} else if (type === FLOAT64) { // step 2
 		rawBytes = valueToFloat64Bytes(value, isLittleEndian);
 	} else {
 		var n = elementSize; // step 3.a

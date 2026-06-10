@@ -4,6 +4,8 @@ var $RangeError = require('es-errors/range');
 var $TypeError = require('es-errors/type');
 var isInteger = require('math-intrinsics/isInteger');
 
+var specEnum = require('../helpers/specEnum');
+
 var isTypedArray = require('is-typed-array');
 var whichTypedArray = require('which-typed-array');
 
@@ -15,6 +17,10 @@ var ToObject = require('./ToObject');
 var ToString = require('./ToString');
 var TypedArrayLength = require('./TypedArrayLength');
 var TypedArraySetElement = require('./TypedArraySetElement');
+
+var year = require('./year');
+
+var SEQ_CST = specEnum(year, 'seq-cst');
 
 // https://262.ecma-international.org/15.0/#sec-settypedarrayfromarraylike
 
@@ -32,7 +38,7 @@ module.exports = function SetTypedArrayFromArrayLike(target, targetOffset, sourc
 		throw new $TypeError('Assertion failed: `source` must not be a Typed Array');
 	}
 
-	var targetRecord = MakeTypedArrayWithBufferWitnessRecord(target, 'SEQ-CST'); // step 1
+	var targetRecord = MakeTypedArrayWithBufferWitnessRecord(target, SEQ_CST); // step 1
 
 	if (IsTypedArrayOutOfBounds(targetRecord)) {
 		throw new $TypeError('target is out of bounds'); // step 2

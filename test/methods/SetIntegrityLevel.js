@@ -4,10 +4,15 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+var specEnum = require('../../helpers/specEnum');
+
 var esV = require('../helpers/v');
 
 module.exports = function (t, year, SetIntegrityLevel) {
 	t.ok(year >= 2015, 'ES2015+');
+
+	var SEALED = specEnum(year, 'sealed');
+	var FROZEN = specEnum(year, 'frozen');
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
@@ -25,7 +30,7 @@ module.exports = function (t, year, SetIntegrityLevel) {
 
 	var O = { a: 1 };
 	t.test('sealed', { skip: !Object.preventExtensions || esV.noThrowOnStrictViolation }, function (st) {
-		st.equal(SetIntegrityLevel(O, 'sealed'), true);
+		st.equal(SetIntegrityLevel(O, SEALED), true);
 		st['throws'](
 			function () { O.b = 2; },
 			/^TypeError: (Cannot|Can't) add property b, object is not extensible$/,
@@ -37,7 +42,7 @@ module.exports = function (t, year, SetIntegrityLevel) {
 	});
 
 	t.test('frozen', { skip: !Object.freeze || esV.noThrowOnStrictViolation }, function (st) {
-		st.equal(SetIntegrityLevel(O, 'frozen'), true);
+		st.equal(SetIntegrityLevel(O, FROZEN), true);
 		st['throws'](
 			function () { O.a = 3; },
 			/^TypeError: Cannot assign to read only property 'a' of /,

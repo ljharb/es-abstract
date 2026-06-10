@@ -23,6 +23,13 @@ var SetValueInBuffer = require('./SetValueInBuffer');
 var TypedArrayElementSize = require('./TypedArrayElementSize');
 var TypedArrayElementType = require('./TypedArrayElementType');
 
+var specEnum = require('../helpers/specEnum');
+
+var year = require('./year');
+
+var UINT8 = specEnum(year, 'uint8');
+var UNORDERED = specEnum(year, 'unordered');
+
 // https://262.ecma-international.org/13.0/#sec-settypedarrayfromtypedarray
 
 module.exports = function SetTypedArrayFromTypedArray(target, targetOffset, source) {
@@ -94,7 +101,12 @@ module.exports = function SetTypedArrayFromTypedArray(target, targetOffset, sour
 	if (same) { // step 18
 		var srcByteLength = typedArrayByteLength(source); // step 18.a
 
-		srcBuffer = CloneArrayBuffer(srcBuffer, srcByteOffset, srcByteLength, $ArrayBuffer); // step 18.b
+		srcBuffer = CloneArrayBuffer(
+			srcBuffer,
+			srcByteOffset,
+			srcByteLength,
+			$ArrayBuffer
+		); // step 18.b
 
 		// c. NOTE: %ArrayBuffer% is used to clone srcBuffer because is it known to not have any observable side-effects.
 
@@ -112,9 +124,9 @@ module.exports = function SetTypedArrayFromTypedArray(target, targetOffset, sour
 		// a. NOTE: If srcType and targetType are the same, the transfer must be performed in a manner that preserves the bit-level encoding of the source data.
 
 		while (targetByteIndex < limit) { // step 22.b
-			value = GetValueFromBuffer(srcBuffer, srcByteIndex, 'Uint8', true, 'Unordered'); // step 22.b.i
+			value = GetValueFromBuffer(srcBuffer, srcByteIndex, UINT8, true, UNORDERED); // step 22.b.i
 
-			SetValueInBuffer(targetBuffer, targetByteIndex, 'Uint8', value, true, 'Unordered'); // step 22.b.ii
+			SetValueInBuffer(targetBuffer, targetByteIndex, UINT8, value, true, UNORDERED); // step 22.b.ii
 
 			srcByteIndex += 1; // step 22.b.iii
 
@@ -122,9 +134,9 @@ module.exports = function SetTypedArrayFromTypedArray(target, targetOffset, sour
 		}
 	} else { // step 23
 		while (targetByteIndex < limit) { // step 23.a
-			value = GetValueFromBuffer(srcBuffer, srcByteIndex, srcType, true, 'Unordered'); // step 23.a.i
+			value = GetValueFromBuffer(srcBuffer, srcByteIndex, srcType, true, UNORDERED); // step 23.a.i
 
-			SetValueInBuffer(targetBuffer, targetByteIndex, targetType, value, true, 'Unordered'); // step 23.a.ii
+			SetValueInBuffer(targetBuffer, targetByteIndex, targetType, value, true, UNORDERED); // step 23.a.ii
 
 			srcByteIndex += srcElementSize; // step 23.a.iii
 

@@ -5,8 +5,12 @@ var debug = require('object-inspect');
 var v = require('es-value-fixtures');
 var esV = require('../helpers/v');
 
+var specEnum = require('../../helpers/specEnum');
+
 module.exports = function (t, year, SetDataHas) {
 	t.ok(year >= 2025, 'ES2025+');
+
+	var empty = specEnum(year, 'empty');
 
 	forEach(v.nonArrays, function (nonArray) {
 		t['throws'](
@@ -17,7 +21,7 @@ module.exports = function (t, year, SetDataHas) {
 	});
 
 	t.equal(
-		SetDataHas('EMPTY', 'EMPTY'),
+		SetDataHas(empty, empty),
 		false,
 		'~EMPTY~ works'
 	);

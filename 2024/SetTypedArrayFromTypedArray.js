@@ -16,6 +16,8 @@ var TypedArrayElementSize = require('./TypedArrayElementSize');
 var TypedArrayElementType = require('./TypedArrayElementType');
 var TypedArrayLength = require('./TypedArrayLength');
 
+var specEnum = require('../helpers/specEnum');
+
 var typedArrayBuffer = require('typed-array-buffer');
 var typedArrayByteOffset = require('typed-array-byte-offset');
 var whichTypedArray = require('which-typed-array');
@@ -23,6 +25,12 @@ var GetIntrinsic = require('get-intrinsic');
 var isInteger = require('math-intrinsics/isInteger');
 
 var $ArrayBuffer = GetIntrinsic('%ArrayBuffer%', true);
+
+var year = require('./year');
+
+var SEQ_CST = specEnum(year, 'seq-cst');
+var UNORDERED = specEnum(year, 'unordered');
+var UINT8 = specEnum(year, 'uint8');
 
 // https://262.ecma-international.org/15.0/#sec-settypedarrayfromtypedarray
 
@@ -43,7 +51,7 @@ module.exports = function SetTypedArrayFromTypedArray(target, targetOffset, sour
 
 	var targetBuffer = typedArrayBuffer(target); // step 1
 
-	var targetRecord = MakeTypedArrayWithBufferWitnessRecord(target, 'SEQ-CST'); // step 2
+	var targetRecord = MakeTypedArrayWithBufferWitnessRecord(target, SEQ_CST); // step 2
 
 	if (IsTypedArrayOutOfBounds(targetRecord)) {
 		throw new $TypeError('target is out of bounds'); // step 3
@@ -53,7 +61,7 @@ module.exports = function SetTypedArrayFromTypedArray(target, targetOffset, sour
 
 	var srcBuffer = typedArrayBuffer(source); // step 5
 
-	var srcRecord = MakeTypedArrayWithBufferWitnessRecord(source, 'SEQ-CST'); // step 6
+	var srcRecord = MakeTypedArrayWithBufferWitnessRecord(source, SEQ_CST); // step 6
 
 	if (IsTypedArrayOutOfBounds(srcRecord)) {
 		throw new $TypeError('target is out of bounds'); // step 7
@@ -96,7 +104,12 @@ module.exports = function SetTypedArrayFromTypedArray(target, targetOffset, sour
 	var srcByteIndex;
 	if (SameValue(srcBuffer, targetBuffer) || sameSharedArrayBuffer) { // step 19
 		var srcByteLength = TypedArrayByteLength(srcRecord); // step 19.a
-		srcBuffer = CloneArrayBuffer(srcBuffer, srcByteOffset, srcByteLength, $ArrayBuffer); // step 19.b
+		srcBuffer = CloneArrayBuffer(
+			srcBuffer,
+			srcByteOffset,
+			srcByteLength,
+			$ArrayBuffer
+		); // step 19.b
 		srcByteIndex = 0; // step 19.c
 	} else { // step 20
 		srcByteIndex = srcByteOffset; // step 20.a
@@ -111,9 +124,9 @@ module.exports = function SetTypedArrayFromTypedArray(target, targetOffset, sour
 		// a. NOTE: The transfer must be performed in a manner that preserves the bit-level encoding of the source data.
 
 		while (targetByteIndex < limit) { // step 23.b
-			value = GetValueFromBuffer(srcBuffer, srcByteIndex, 'UINT8', true, 'UNORDERED'); // step 23.b.i
+			value = GetValueFromBuffer(srcBuffer, srcByteIndex, UINT8, true, UNORDERED); // step 23.b.i
 
-			SetValueInBuffer(targetBuffer, targetByteIndex, 'UINT8', value, true, 'UNORDERED'); // step 23.b.ii
+			SetValueInBuffer(targetBuffer, targetByteIndex, UINT8, value, true, UNORDERED); // step 23.b.ii
 
 			srcByteIndex += 1; // step 23.b.iii
 
@@ -121,9 +134,9 @@ module.exports = function SetTypedArrayFromTypedArray(target, targetOffset, sour
 		}
 	} else { // step 24
 		while (targetByteIndex < limit) { // step 24.a
-			value = GetValueFromBuffer(srcBuffer, srcByteIndex, srcType, true, 'UNORDERED'); // step 24.a.i
+			value = GetValueFromBuffer(srcBuffer, srcByteIndex, srcType, true, UNORDERED); // step 24.a.i
 
-			SetValueInBuffer(targetBuffer, targetByteIndex, targetType, value, true, 'UNORDERED'); // step 24.a.ii
+			SetValueInBuffer(targetBuffer, targetByteIndex, targetType, value, true, UNORDERED); // step 24.a.ii
 
 			srcByteIndex += srcElementSize; // step 24.a.iii
 

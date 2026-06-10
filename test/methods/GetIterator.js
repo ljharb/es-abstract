@@ -4,6 +4,8 @@ var debug = require('object-inspect');
 var forEach = require('for-each');
 var v = require('es-value-fixtures');
 
+var specEnum = require('../../helpers/specEnum');
+
 var testIterator = require('../helpers/testIterator');
 var testAsyncIterator = require('../helpers/testAsyncIterator');
 var makeIteratorRecord = require('../helpers/makeIteratorRecord');
@@ -22,8 +24,8 @@ module.exports = function (t, year, actual) {
 		return actual(obj);
 	};
 
-	var hintS = year < 2024 ? 'sync' : 'SYNC';
-	var hintA = year < 2024 ? 'async' : 'ASYNC';
+	var hintS = specEnum(year, 'sync');
+	var hintA = specEnum(year, 'async');
 
 	testIterator(t, unwrap(GetIterator(arr, hintS)), arr);
 

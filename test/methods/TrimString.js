@@ -4,6 +4,8 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
+var specEnum = require('../../helpers/specEnum');
+
 module.exports = function (t, year, TrimString) {
 	t.ok(year >= 2019, 'ES2019+');
 
@@ -24,7 +26,21 @@ module.exports = function (t, year, TrimString) {
 	);
 
 	var string = ' \n abc  \n ';
-	t.equal(TrimString(string, 'start'), string.slice(string.indexOf('a')));
-	t.equal(TrimString(string, 'end'), string.slice(0, string.lastIndexOf('c') + 1));
-	t.equal(TrimString(string, 'start+end'), string.slice(string.indexOf('a'), string.lastIndexOf('c') + 1));
+
+	var start = specEnum(year, 'start');
+	var end = specEnum(year, 'end');
+	var both = specEnum(year, 'start+end');
+
+	t.equal(
+		TrimString(string, start),
+		string.slice(string.indexOf('a'))
+	);
+	t.equal(
+		TrimString(string, end),
+		string.slice(0, string.lastIndexOf('c') + 1)
+	);
+	t.equal(
+		TrimString(string, both),
+		string.slice(string.indexOf('a'), string.lastIndexOf('c') + 1)
+	);
 };

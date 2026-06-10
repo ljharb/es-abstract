@@ -5,6 +5,8 @@ var forEach = require('for-each');
 var debug = require('object-inspect');
 var v = require('es-value-fixtures');
 
+var specEnum = require('../../helpers/specEnum');
+
 var esV = require('../helpers/v');
 
 module.exports = function (t, year, ArrayBufferCopyAndDetach, extras) {
@@ -12,9 +14,11 @@ module.exports = function (t, year, ArrayBufferCopyAndDetach, extras) {
 
 	var IsDetachedBuffer = extras.getAO('IsDetachedBuffer');
 
+	var fixedLength = specEnum(year, 'fixed-length');
+
 	forEach(esV.unknowns, function (nonAB) {
 		t['throws'](
-			function () { ArrayBufferCopyAndDetach(nonAB, 0, 'FIXED-LENGTH'); },
+			function () { ArrayBufferCopyAndDetach(nonAB, 0, fixedLength); },
 			TypeError,
 			debug(nonAB) + ' is not an ArrayBuffer or a SharedArrayBuffer'
 		);
@@ -25,7 +29,7 @@ module.exports = function (t, year, ArrayBufferCopyAndDetach, extras) {
 
 		st.test('can not detach', { skip: esV.canDetach }, function (s2t) {
 			s2t['throws'](
-				function () { ArrayBufferCopyAndDetach(new ArrayBuffer(8), 0, 'FIXED-LENGTH'); },
+				function () { ArrayBufferCopyAndDetach(new ArrayBuffer(8), 0, fixedLength); },
 				SyntaxError,
 				'throws a syntax error when it can not detach'
 			);
@@ -43,24 +47,24 @@ module.exports = function (t, year, ArrayBufferCopyAndDetach, extras) {
 			});
 
 			s2t.equal(IsDetachedBuffer(ab), false, 'buffer is not detached');
-			var newBuffer = ArrayBufferCopyAndDetach(ab, undefined, 'FIXED-LENGTH');
+			var newBuffer = ArrayBufferCopyAndDetach(ab, undefined, fixedLength);
 			s2t.equal(IsDetachedBuffer(ab), true, 'buffer is now detached');
 			s2t.deepEqual(new Uint8Array(newBuffer), new Uint8Array([1, 2, 3, 4]), 'new buffer has expected data');
 
-			var newSameBuffer = ArrayBufferCopyAndDetach(newBuffer, 4, 'FIXED-LENGTH');
+			var newSameBuffer = ArrayBufferCopyAndDetach(newBuffer, 4, fixedLength);
 			s2t.equal(IsDetachedBuffer(newBuffer), true, 'buffer is now detached');
 			s2t.deepEqual(new Uint8Array(newSameBuffer), new Uint8Array([1, 2, 3, 4]), 'new buffer has expected data');
 
-			var newSmallerBuffer = ArrayBufferCopyAndDetach(newSameBuffer, 2, 'FIXED-LENGTH');
+			var newSmallerBuffer = ArrayBufferCopyAndDetach(newSameBuffer, 2, fixedLength);
 			s2t.equal(IsDetachedBuffer(newSameBuffer), true, 'buffer is now detached');
 			s2t.deepEqual(new Uint8Array(newSmallerBuffer), new Uint8Array([1, 2]), 'new buffer has expected data');
 
-			var newLargerBuffer = ArrayBufferCopyAndDetach(newSmallerBuffer, 4, 'FIXED-LENGTH');
+			var newLargerBuffer = ArrayBufferCopyAndDetach(newSmallerBuffer, 4, fixedLength);
 			s2t.equal(IsDetachedBuffer(newSmallerBuffer), true, 'buffer is now detached');
 			s2t.deepEqual(new Uint8Array(newLargerBuffer), new Uint8Array([1, 2, 0, 0]), 'new buffer has expected data');
 
 			s2t['throws'](
-				function () { ArrayBufferCopyAndDetach(ab, 0, 'FIXED-LENGTH'); },
+				function () { ArrayBufferCopyAndDetach(ab, 0, fixedLength); },
 				TypeError,
 				'throws on already-detached buffer'
 			);
@@ -71,12 +75,12 @@ module.exports = function (t, year, ArrayBufferCopyAndDetach, extras) {
 
 				s3t.equal(IsDetachedBuffer(rab), false, 'buffer is not detached');
 				s3t.equal(rab.resizable, true, 'buffer is resizable');
-				var newResizableBuffer = ArrayBufferCopyAndDetach(rab, undefined, 'PRESERVE-RESIZABILITY');
+				var newResizableBuffer = ArrayBufferCopyAndDetach(rab, undefined, specEnum(year, 'preserve-resizability'));
 				s3t.equal(IsDetachedBuffer(rab), true, 'buffer is now detached');
 				s3t.deepEqual(new Uint8Array(newResizableBuffer), new Uint8Array([1, 2, 3, 4]), 'new buffer has expected data');
 				s3t.equal(newResizableBuffer.resizable, true, 'new buffer is resizable');
 
-				var newFixedBuffer = ArrayBufferCopyAndDetach(newResizableBuffer, undefined, 'FIXED-LENGTH');
+				var newFixedBuffer = ArrayBufferCopyAndDetach(newResizableBuffer, undefined, fixedLength);
 				s3t.equal(IsDetachedBuffer(newResizableBuffer), true, 'buffer is now detached');
 				s3t.deepEqual(new Uint8Array(newFixedBuffer), new Uint8Array([1, 2, 3, 4]), 'new buffer has expected data');
 				s3t.equal(newFixedBuffer.resizable, false, 'new buffer is not resizable');
@@ -94,7 +98,7 @@ module.exports = function (t, year, ArrayBufferCopyAndDetach, extras) {
 		var sab = new SharedArrayBuffer(1);
 
 		st['throws'](
-			function () { ArrayBufferCopyAndDetach(sab, undefined, 'FIXED-LENGTH'); },
+			function () { ArrayBufferCopyAndDetach(sab, undefined, fixedLength); },
 			TypeError,
 			debug(sab) + ' is not a non-shared ArrayBuffer'
 		);

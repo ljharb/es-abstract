@@ -6,15 +6,21 @@ var IsDetachedBuffer = require('./IsDetachedBuffer');
 var IsFixedLengthArrayBuffer = require('./IsFixedLengthArrayBuffer');
 
 var isDataViewWithBufferWitnessRecord = require('../helpers/records/data-view-with-buffer-witness-record');
+var specEnum = require('../helpers/specEnum');
 
 var dataViewBuffer = require('data-view-buffer');
 var dataViewByteLength = require('data-view-byte-length');
 var dataViewByteOffset = require('data-view-byte-offset');
 
+var year = require('./year');
+
+var DETACHED = specEnum(year, 'detached');
+var AUTO = specEnum(year, 'auto');
+
 // https://262.ecma-international.org/15.0/#sec-isviewoutofbounds
 
 module.exports = function IsViewOutOfBounds(viewRecord) {
-	if (!isDataViewWithBufferWitnessRecord(viewRecord)) {
+	if (!isDataViewWithBufferWitnessRecord(viewRecord, year)) {
 		throw new $TypeError('Assertion failed: `viewRecord` must be a DataView With Buffer Witness Record');
 	}
 
@@ -22,12 +28,12 @@ module.exports = function IsViewOutOfBounds(viewRecord) {
 
 	var bufferByteLength = viewRecord['[[CachedBufferByteLength]]']; // step 2
 
-	if (IsDetachedBuffer(dataViewBuffer(view)) !== (bufferByteLength === 'DETACHED')) {
+	if (IsDetachedBuffer(dataViewBuffer(view)) !== (bufferByteLength === DETACHED)) {
 		// step 3
-		throw new $TypeError('Assertion failed: `IsDetachedBuffer(dataViewBuffer(view))` must be true if and only if `bufferByteLength === ~DETACHED~');
+		throw new $TypeError('Assertion failed: `IsDetachedBuffer(dataViewBuffer(view))` must be true if and only if `bufferByteLength` === `' + DETACHED + '`');
 	}
 
-	if (bufferByteLength === 'DETACHED') {
+	if (bufferByteLength === DETACHED) {
 		return true; // step 4
 	}
 
@@ -35,8 +41,8 @@ module.exports = function IsViewOutOfBounds(viewRecord) {
 
 	var isFixed = IsFixedLengthArrayBuffer(dataViewBuffer(view));
 
-	var viewByteLength = isFixed ? dataViewByteLength(view) : 'AUTO'; // view.[[ByteLength]]
-	var byteOffsetEnd = viewByteLength === 'AUTO' ? bufferByteLength : byteOffsetStart + viewByteLength; // steps 6 - 7
+	var viewByteLength = isFixed ? dataViewByteLength(view) : AUTO; // view.[[ByteLength]]
+	var byteOffsetEnd = viewByteLength === AUTO ? bufferByteLength : byteOffsetStart + viewByteLength; // steps 6 - 7
 
 	if (byteOffsetStart > bufferByteLength || byteOffsetEnd > bufferByteLength) {
 		return true; // step 8

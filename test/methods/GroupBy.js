@@ -4,16 +4,19 @@ var forEach = require('for-each');
 var debug = require('object-inspect');
 var v = require('es-value-fixtures');
 
+var specEnum = require('../../helpers/specEnum');
+
 module.exports = function (t, year, GroupBy) {
 	t.ok(year >= 2024, 'ES2024+');
 
 	t['throws'](function () { GroupBy([], function () {}, 'unknown'); }, 'keyCoercion is not ~PROPERTY~ or ~ZERO~');
 
-	var nonProperty = year >= 2025 ? 'COLLECTION' : 'ZERO';
+	var property = specEnum(year, 'property');
+	var nonProperty = specEnum(year, year >= 2025 ? 'collection' : 'zero');
 
 	forEach(v.nullPrimitives, function (nullish) {
 		t['throws'](
-			function () { GroupBy(nullish, function () {}, 'PROPERTY'); },
+			function () { GroupBy(nullish, function () {}, property); },
 			TypeError,
 			debug(nullish) + ' is not an Object'
 		);
@@ -21,7 +24,7 @@ module.exports = function (t, year, GroupBy) {
 
 	forEach(v.nonFunctions, function (nonFunction) {
 		t['throws'](
-			function () { GroupBy([], nonFunction, 'PROPERTY'); },
+			function () { GroupBy([], nonFunction, property); },
 			TypeError,
 			debug(nonFunction) + ' is not a Function'
 		);
@@ -29,14 +32,14 @@ module.exports = function (t, year, GroupBy) {
 
 	forEach(v.nonStrings, function (nonIterable) {
 		t['throws'](
-			function () { GroupBy(nonIterable, function () {}, 'PROPERTY'); },
+			function () { GroupBy(nonIterable, function () {}, property); },
 			TypeError,
 			debug(nonIterable) + ' is not iterable'
 		);
 	});
 
 	var tenEx = t.captureFn(function (x) { return x * 10; });
-	var result = GroupBy([-0, 0, 1, 2], tenEx, 'PROPERTY');
+	var result = GroupBy([-0, 0, 1, 2], tenEx, property);
 	t.deepEqual(
 		result,
 		[
@@ -74,7 +77,7 @@ module.exports = function (t, year, GroupBy) {
 	]);
 
 	t['throws'](
-		function () { GroupBy([1, 2, 3], function (x) { throw new EvalError(x); }, 'PROPERTY'); },
+		function () { GroupBy([1, 2, 3], function (x) { throw new EvalError(x); }, property); },
 		EvalError,
 		'callback throws -> throw'
 	);
@@ -84,7 +87,7 @@ module.exports = function (t, year, GroupBy) {
 		iter['return'] = st.captureFn(function () {});
 
 		st['throws'](
-			function () { GroupBy(iter, function (x) { if (x === 2) { throw new EvalError(x); } return x; }, 'PROPERTY'); },
+			function () { GroupBy(iter, function (x) { if (x === 2) { throw new EvalError(x); } return x; }, property); },
 			EvalError,
 			'callback throws -> throw'
 		);
@@ -100,7 +103,7 @@ module.exports = function (t, year, GroupBy) {
 		var iterC = [{ toString: function () { throw new EvalError(); } }][Symbol.iterator]();
 		iterC['return'] = t.captureFn(function () {});
 		st['throws'](
-			function () { GroupBy(iterC, function (x) { return x; }, 'PROPERTY'); },
+			function () { GroupBy(iterC, function (x) { return x; }, property); },
 			EvalError,
 			'key coercion throws -> throw'
 		);
@@ -117,7 +120,7 @@ module.exports = function (t, year, GroupBy) {
 
 	var iterable = [{ toString: function () { throw new EvalError(); } }];
 	t['throws'](
-		function () { GroupBy(iterable, function (x) { return x; }, 'PROPERTY'); },
+		function () { GroupBy(iterable, function (x) { return x; }, property); },
 		EvalError,
 		'key coercion throws -> throw'
 	);

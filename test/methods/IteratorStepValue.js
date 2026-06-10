@@ -4,6 +4,8 @@ var forEach = require('for-each');
 var debug = require('object-inspect');
 var $defineProperty = require('es-define-property');
 
+var specEnum = require('../../helpers/specEnum');
+
 var makeIteratorRecord = require('../helpers/makeIteratorRecord');
 var esV = require('../helpers/v');
 
@@ -18,7 +20,7 @@ module.exports = function (t, year, IteratorStepValue) {
 		);
 	});
 
-	var done = year >= 2025 ? false : 'DONE';
+	var done = year >= 2025 ? false : specEnum(year, 'done');
 
 	t.test('sync iterator record', function (st) {
 		var i = 0;

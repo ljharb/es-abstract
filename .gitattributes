@@ -1461,6 +1461,7 @@
 /2024/IsIntegralNumber.js	spackled linguist-generated=true
 /2024/IsLessThan.js	spackled linguist-generated=true
 /2024/IsLooselyEqual.js	spackled linguist-generated=true
+/2024/IsNoTearConfiguration.js	spackled linguist-generated=true
 /2024/IsPromise.js	spackled linguist-generated=true
 /2024/IsPropertyKey.js	spackled linguist-generated=true
 /2024/IsRegExp.js	spackled linguist-generated=true
@@ -1468,6 +1469,8 @@
 /2024/IsStrictlyEqual.js	spackled linguist-generated=true
 /2024/IsStringWellFormedUnicode.js	spackled linguist-generated=true
 /2024/IsTimeZoneOffsetString.js	spackled linguist-generated=true
+/2024/IsUnclampedIntegerElementType.js	spackled linguist-generated=true
+/2024/IsUnsignedElementType.js	spackled linguist-generated=true
 /2024/IsWordChar.js	spackled linguist-generated=true
 /2024/IteratorComplete.js	spackled linguist-generated=true
 /2024/IteratorValue.js	spackled linguist-generated=true
@@ -1527,6 +1530,7 @@
 /2024/SetFunctionLength.js	spackled linguist-generated=true
 /2024/SetFunctionName.js	spackled linguist-generated=true
 /2024/SetIntegrityLevel.js	spackled linguist-generated=true
+/2024/SetValueInBuffer.js	spackled linguist-generated=true
 /2024/SortIndexedProperties.js	spackled linguist-generated=true
 /2024/SpeciesConstructor.js	spackled linguist-generated=true
 /2024/StringCreate.js	spackled linguist-generated=true

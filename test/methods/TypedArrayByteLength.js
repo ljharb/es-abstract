@@ -3,11 +3,15 @@
 var forEach = require('for-each');
 var debug = require('object-inspect');
 
+var specEnum = require('../../helpers/specEnum');
+
 var getTypedArrays = require('../helpers/typedArrays');
 var esV = require('../helpers/v');
 
 module.exports = function (t, year, TypedArrayByteLength, extras) {
 	t.ok(year >= 2024, 'ES2024+');
+
+	var unordered = specEnum(year, 'unordered');
 
 	var DetachArrayBuffer = extras.getAO('DetachArrayBuffer');
 	var MakeTypedArrayWithBufferWitnessRecord = extras.getAO('MakeTypedArrayWithBufferWitnessRecord');
@@ -29,7 +33,7 @@ module.exports = function (t, year, TypedArrayByteLength, extras) {
 			st.test('Typed Array: ' + TypedArray, function (tat) {
 				var TA = global[TypedArray];
 				var ta = new TA(8);
-				var record = MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
+				var record = MakeTypedArrayWithBufferWitnessRecord(ta, unordered);
 
 				var elementSize = esV.elementSizes['$' + TypedArray];
 
@@ -37,14 +41,14 @@ module.exports = function (t, year, TypedArrayByteLength, extras) {
 
 				var zta = new TA(0);
 
-				var zRecord = MakeTypedArrayWithBufferWitnessRecord(zta, 'UNORDERED');
+				var zRecord = MakeTypedArrayWithBufferWitnessRecord(zta, unordered);
 
 				tat.equal(TypedArrayByteLength(zRecord), 0, 'fixed zero length array, returns zero');
 
 				tat.test('can detach', { skip: !esV.canDetach }, function (s2t) {
 					DetachArrayBuffer(ta.buffer);
 
-					record = MakeTypedArrayWithBufferWitnessRecord(ta, 'UNORDERED');
+					record = MakeTypedArrayWithBufferWitnessRecord(ta, unordered);
 
 					s2t.equal(TypedArrayByteLength(record), 0, 'detached returns zero');
 
@@ -58,7 +62,7 @@ module.exports = function (t, year, TypedArrayByteLength, extras) {
 					var rta = new Uint8Array(ab);
 
 					tast.equal(
-						TypedArrayByteLength(MakeTypedArrayWithBufferWitnessRecord(rta, 'UNORDERED')),
+						TypedArrayByteLength(MakeTypedArrayWithBufferWitnessRecord(rta, unordered)),
 						8,
 						'resizable ArrayBuffer’s Typed Array has expected byteLength'
 					);
@@ -73,7 +77,7 @@ module.exports = function (t, year, TypedArrayByteLength, extras) {
 					DetachArrayBuffer(ab);
 
 					tast.equal(
-						TypedArrayByteLength(MakeTypedArrayWithBufferWitnessRecord(rta, 'UNORDERED')),
+						TypedArrayByteLength(MakeTypedArrayWithBufferWitnessRecord(rta, unordered)),
 						0,
 						'resizable ArrayBuffer’s detached Typed Array returns zero'
 					);

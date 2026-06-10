@@ -9,8 +9,13 @@ var TypedArrayLength = require('./TypedArrayLength');
 var ValidateTypedArray = require('./ValidateTypedArray');
 
 var IsArray = require('../helpers/IsArray');
+var specEnum = require('../helpers/specEnum');
 
 var availableTypedArrays = require('available-typed-arrays')();
+
+var year = require('./year');
+
+var SEQ_CST = specEnum(year, 'seq-cst');
 
 // https://262.ecma-international.org/15.0/#typedarraycreatefromconstructor
 
@@ -37,7 +42,7 @@ module.exports = function TypedArrayCreateFromConstructor(constructor, argumentL
 		newTypedArray = new constructor(argumentList[0], argumentList[1], argumentList[2]);
 	}
 
-	var taRecord = ValidateTypedArray(newTypedArray, 'SEQ-CST'); // step 2
+	var taRecord = ValidateTypedArray(newTypedArray, SEQ_CST); // step 2
 
 	if (argumentList.length === 1 && typeof argumentList[0] === 'number') { // step 3
 		if (IsTypedArrayOutOfBounds(taRecord)) {

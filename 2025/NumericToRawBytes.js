@@ -17,8 +17,15 @@ var valueToFloat16Bytes = require('../helpers/valueToFloat16Bytes');
 var valueToFloat32Bytes = require('../helpers/valueToFloat32Bytes');
 var valueToFloat64Bytes = require('../helpers/valueToFloat64Bytes');
 var integerToNBytes = require('../helpers/integerToNBytes');
+var specEnum = require('../helpers/specEnum');
 
 var tableTAO = require('./tables/typed-array-objects');
+
+var year = require('./year');
+
+var FLOAT16 = specEnum(year, 'float16');
+var FLOAT32 = specEnum(year, 'float32');
+var FLOAT64 = specEnum(year, 'float64');
 
 // https://262.ecma-international.org/15.0/#table-the-typedarray-constructors
 var TypeToAO = {
@@ -47,11 +54,11 @@ module.exports = function NumericToRawBytes(type, value, isLittleEndian) {
 		throw new $TypeError('Assertion failed: `isLittleEndian` must be a Boolean');
 	}
 
-	if (type === 'FLOAT16') { // step 1
+	if (type === FLOAT16) { // step 1
 		return valueToFloat16Bytes(value, isLittleEndian);
-	} else if (type === 'FLOAT32') { // step 2
+	} else if (type === FLOAT32) { // step 2
 		return valueToFloat32Bytes(value, isLittleEndian);
-	} else if (type === 'FLOAT64') { // step 3
+	} else if (type === FLOAT64) { // step 3
 		return valueToFloat64Bytes(value, isLittleEndian);
 	} // step 4
 

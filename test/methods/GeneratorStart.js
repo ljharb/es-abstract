@@ -5,8 +5,13 @@ var debug = require('object-inspect');
 var v = require('es-value-fixtures');
 var SLOT = require('internal-slot');
 
+var specEnum = require('../../helpers/specEnum');
+
 module.exports = function (t, year, GeneratorStart, extras) {
 	t.ok(year >= 2025, 'ES2025+');
+
+	var suspendedYield = specEnum(year, 'suspended-yield');
+	var completed = specEnum(year, 'completed');
 
 	var CreateIteratorResultObject = extras.getAO('CreateIteratorResultObject');
 
@@ -48,7 +53,7 @@ module.exports = function (t, year, GeneratorStart, extras) {
 
 	t.equal(SLOT.get(generator, '[[GeneratorState]]'), null, 'precondition');
 	GeneratorStart(generator, closure);
-	t.equal(SLOT.get(generator, '[[GeneratorState]]'), 'SUSPENDED-START', 'generator state is started');
+	t.equal(SLOT.get(generator, '[[GeneratorState]]'), specEnum(year, 'suspended-start'), 'generator state is started');
 
 	var context = SLOT.get(generator, '[[GeneratorContext]]');
 	t.equal(typeof context, 'function', 'generator context is a function');
@@ -57,15 +62,15 @@ module.exports = function (t, year, GeneratorStart, extras) {
 
 	retValue = function () { return 42; };
 	t.deepEqual(context(), CreateIteratorResultObject(42, false), 'generator context returns expected iterator result');
-	t.equal(SLOT.get(generator, '[[GeneratorState]]'), 'SUSPENDED-YIELD', 'generator state is suspended-yield');
+	t.equal(SLOT.get(generator, '[[GeneratorState]]'), suspendedYield, 'generator state is suspended-yield');
 
 	retValue = function () { return sentinel; };
 	t.deepEqual(context(), CreateIteratorResultObject(void undefined, true), 'generator context returns done iterator result');
-	t.equal(SLOT.get(generator, '[[GeneratorState]]'), 'COMPLETED', 'generator state is completed');
+	t.equal(SLOT.get(generator, '[[GeneratorState]]'), completed, 'generator state is completed');
 	t.equal(SLOT.get(generator, '[[GeneratorContext]]'), null, 'generator context is now null');
 
 	// wind state back
-	SLOT.set(generator, '[[GeneratorState]]', 'SUSPENDED-YIELD');
+	SLOT.set(generator, '[[GeneratorState]]', suspendedYield);
 	SLOT.set(generator, '[[GeneratorContext]]', context);
 	retValue = function () { throw new EvalError('42'); };
 	t['throws'](
@@ -73,6 +78,6 @@ module.exports = function (t, year, GeneratorStart, extras) {
 		EvalError,
 		'generator context throws'
 	);
-	t.equal(SLOT.get(generator, '[[GeneratorState]]'), 'COMPLETED', 'generator state is again completed');
+	t.equal(SLOT.get(generator, '[[GeneratorState]]'), completed, 'generator state is again completed');
 	t.equal(SLOT.get(generator, '[[GeneratorContext]]'), null, 'generator context is again null');
 };

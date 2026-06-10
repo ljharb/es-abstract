@@ -4,16 +4,16 @@ var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
 
-module.exports = function (t, year, actual) {
+var specEnum = require('../../helpers/specEnum');
+
+module.exports = function (t, year, FindViaPredicate) {
 	t.ok(year >= 2023, 'ES2023+');
 
-	var FindViaPredicate = year >= 2024 ? actual : function FindViaPredicate(O, len, direction, predicate, thisArg) {
-		return actual(O, len, direction.toLowerCase(), predicate, thisArg);
-	};
+	var ascending = specEnum(year, 'ascending');
 
 	forEach(v.primitives, function (primitive) {
 		t['throws'](
-			function () { FindViaPredicate(primitive, 0, 'ASCENDING', function () {}); },
+			function () { FindViaPredicate(primitive, 0, ascending, function () {}); },
 			TypeError,
 			debug(primitive) + ' is not an object'
 		);
@@ -21,7 +21,7 @@ module.exports = function (t, year, actual) {
 
 	forEach(v.notNonNegativeIntegers, function (notNonNegativeInteger) {
 		t['throws'](
-			function () { FindViaPredicate({}, notNonNegativeInteger, 'ASCENDING', function () {}); },
+			function () { FindViaPredicate({}, notNonNegativeInteger, ascending, function () {}); },
 			TypeError,
 			debug(notNonNegativeInteger) + ' is not a non-negative integer'
 		);
@@ -29,7 +29,7 @@ module.exports = function (t, year, actual) {
 
 	forEach(v.nonFunctions, function (nonFunction) {
 		t['throws'](
-			function () { FindViaPredicate({}, 0, 'ASCENDING', nonFunction); },
+			function () { FindViaPredicate({}, 0, ascending, nonFunction); },
 			TypeError,
 			debug(nonFunction) + ' is not a function'
 		);
@@ -48,7 +48,7 @@ module.exports = function (t, year, actual) {
 		var expectedIndex = 1;
 		st.plan(((expectedIndex + 1) * 3) + 1);
 
-		var result = FindViaPredicate(arr, fakeLength, 'ASCENDING', function (element, index, obj) {
+		var result = FindViaPredicate(arr, fakeLength, ascending, function (element, index, obj) {
 			st.equal(element, arr[index], 'first callback arg is in O, at second callback arg');
 			st.equal(obj, arr, 'third callback arg is O');
 			st.equal(this, sentinel, 'callback receiver is thisArg');
@@ -65,7 +65,7 @@ module.exports = function (t, year, actual) {
 		var expectedIndex = 3;
 		st.plan((((arr.length - expectedIndex) + 1) * 3) + 1);
 
-		var result = FindViaPredicate(arr, fakeLength, 'descending', function (element, index, obj) {
+		var result = FindViaPredicate(arr, fakeLength, specEnum(year, 'descending'), function (element, index, obj) {
 			st.equal(element, arr[index], 'first callback arg is in O, at second callback arg');
 			st.equal(obj, arr, 'third callback arg is O');
 			st.equal(this, sentinel, 'callback receiver is thisArg');
@@ -81,7 +81,7 @@ module.exports = function (t, year, actual) {
 	t.test('not found', function (st) {
 		st.plan((fakeLength * 3) + 1);
 
-		var result = FindViaPredicate(arr, fakeLength, 'ASCENDING', function (element, index, obj) {
+		var result = FindViaPredicate(arr, fakeLength, ascending, function (element, index, obj) {
 			st.equal(element, arr[index], 'first callback arg is in O, at second callback arg (' + index + ')');
 			st.equal(obj, arr, 'third callback arg is O');
 			st.equal(this, sentinel, 'callback receiver is thisArg');

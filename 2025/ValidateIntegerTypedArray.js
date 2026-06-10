@@ -7,6 +7,14 @@ var IsUnclampedIntegerElementType = require('./IsUnclampedIntegerElementType');
 var TypedArrayElementType = require('./TypedArrayElementType');
 var ValidateTypedArray = require('./ValidateTypedArray');
 
+var specEnum = require('../helpers/specEnum');
+
+var year = require('./year');
+
+var UNORDERED = specEnum(year, 'unordered');
+var INT32 = specEnum(year, 'int32');
+var BIGINT64 = specEnum(year, 'bigint64');
+
 // https://262.ecma-international.org/15.0/#sec-validateintegertypedarray
 
 module.exports = function ValidateIntegerTypedArray(typedArray, waitable) {
@@ -14,13 +22,13 @@ module.exports = function ValidateIntegerTypedArray(typedArray, waitable) {
 		throw new $TypeError('Assertion failed: `waitable` must be a Boolean');
 	}
 
-	var taRecord = ValidateTypedArray(typedArray, 'UNORDERED'); // step 1
+	var taRecord = ValidateTypedArray(typedArray, UNORDERED); // step 1
 
 	// 2. NOTE: Bounds checking is not a synchronizing operation when typedArray's backing buffer is a growable SharedArrayBuffer.
 
 	var type = TypedArrayElementType(typedArray); // step 4.a
 	if (waitable) { // step 3
-		if (type !== 'INT32' && type !== 'BIGINT64') {
+		if (type !== INT32 && type !== BIGINT64) {
 			throw new $TypeError('Assertion failed: `typedArray` must be an Int32Array or BigInt64Array when `waitable` is true'); // step 5.a
 		}
 	} else if (!IsUnclampedIntegerElementType(type) && !IsBigIntElementType(type)) { // step 4

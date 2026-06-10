@@ -5,6 +5,8 @@ var debug = require('object-inspect');
 var v = require('es-value-fixtures');
 var SLOT = require('internal-slot');
 
+var specEnum = require('../../helpers/specEnum');
+
 module.exports = function (t, year, CreateIteratorFromClosure) {
 	t.ok(year >= 2025, 'ES2025+');
 
@@ -81,5 +83,5 @@ module.exports = function (t, year, CreateIteratorFromClosure) {
 	t.deepEqual(closure.calls, [], 'closure is not called yet');
 	t.deepEqual(cIA.calls, [], 'closeIfAbrupt is not called yet');
 
-	t.equal(SLOT.get(result, '[[GeneratorState]]'), 'SUSPENDED-START', 'generator state starts suspended');
+	t.equal(SLOT.get(result, '[[GeneratorState]]'), specEnum(year, 'suspended-start'), 'generator state starts suspended');
 };

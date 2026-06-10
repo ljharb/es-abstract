@@ -5,6 +5,8 @@ var debug = require('object-inspect');
 var v = require('es-value-fixtures');
 var SLOT = require('internal-slot');
 
+var specEnum = require('../../helpers/specEnum');
+
 module.exports = function (t, year, GeneratorValidate) {
 	t.ok(year >= 2025, 'ES2025+');
 
@@ -36,7 +38,7 @@ module.exports = function (t, year, GeneratorValidate) {
 	);
 	t.equal(GeneratorValidate(generator, brand), state, 'generator with good brand and state, returns state');
 
-	SLOT.set(generator, '[[GeneratorState]]', 'EXECUTING');
+	SLOT.set(generator, '[[GeneratorState]]', specEnum(year, 'executing'));
 	t['throws'](
 		function () { GeneratorValidate(generator, brand); },
 		TypeError,

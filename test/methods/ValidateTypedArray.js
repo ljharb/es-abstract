@@ -3,13 +3,15 @@
 var forEach = require('for-each');
 var debug = require('object-inspect');
 
+var specEnum = require('../../helpers/specEnum');
+
 var esV = require('../helpers/v');
 var getTypedArrays = require('../helpers/typedArrays');
 
 module.exports = function (t, year, actual, extras) {
 	t.ok(year >= 2015, 'ES2015+');
 
-	var order = 'UNORDERED';
+	var unordered = specEnum(year, 'unordered');
 
 	var ValidateTypedArray = year >= 2024 ? actual : function ValidateTypedArray(typedArray) {
 		return actual(typedArray);
@@ -22,7 +24,7 @@ module.exports = function (t, year, actual, extras) {
 		[[]]
 	), function (nonTA) {
 		t['throws'](
-			function () { ValidateTypedArray(nonTA, order); },
+			function () { ValidateTypedArray(nonTA, unordered); },
 			TypeError,
 			debug(nonTA) + ' is not a TypedArray'
 		);
@@ -34,7 +36,7 @@ module.exports = function (t, year, actual, extras) {
 		forEach(availableTypedArrays, function (TypedArray) {
 			var ta = new global[TypedArray](0);
 			st.doesNotThrow(
-				function () { ValidateTypedArray(ta, order); },
+				function () { ValidateTypedArray(ta, unordered); },
 				debug(ta) + ' is a TypedArray'
 			);
 
@@ -42,7 +44,7 @@ module.exports = function (t, year, actual, extras) {
 				DetachArrayBuffer(ta.buffer);
 
 				s2t['throws'](
-					function () { ValidateTypedArray(ta, order); },
+					function () { ValidateTypedArray(ta, unordered); },
 					TypeError,
 					debug(ta) + ' is a detached TypedArray'
 				);

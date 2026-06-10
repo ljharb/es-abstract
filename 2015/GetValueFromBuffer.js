@@ -16,6 +16,7 @@ var bytesAsFloat32 = require('../helpers/bytesAsFloat32');
 var bytesAsFloat64 = require('../helpers/bytesAsFloat64');
 var bytesAsInteger = require('../helpers/bytesAsInteger');
 var defaultEndianness = require('../helpers/defaultEndianness');
+var specEnum = require('../helpers/specEnum');
 
 var IsDetachedBuffer = require('./IsDetachedBuffer');
 
@@ -25,6 +26,11 @@ var safeConcat = require('safe-array-concat');
 var tableTAO = require('./tables/typed-array-objects');
 
 var isUnsignedElementType = function isUnsignedElementType(type) { return $charAt(type, 0) === 'U'; };
+
+var year = require('./year');
+
+var FLOAT32 = specEnum(year, 'float32');
+var FLOAT64 = specEnum(year, 'float64');
 
 // https://262.ecma-international.org/6.0/#sec-getvaluefrombuffer
 
@@ -63,7 +69,11 @@ module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type) {
 	}
 
 	// 6. Let rawValue be a List of elementSize containing, in order, the elementSize sequence of bytes starting with block[byteIndex].
-	var rawValue = $slice(new $Uint8Array(arrayBuffer, byteIndex), 0, elementSize); // step 6
+	var rawValue = $slice(
+		new $Uint8Array(arrayBuffer, byteIndex),
+		0,
+		elementSize
+	); // step 6
 
 	// 8. If isLittleEndian is not present, set isLittleEndian to either true or false. The choice is implementation dependent and should be the alternative that is most efficient for the implementation. An implementation must use the same value each time this step is executed and the same value must be used for the corresponding step in the SetValueInBuffer abstract operation.
 	var isLittleEndian = arguments.length > 3 ? arguments[3] : defaultEndianness === 'little'; // step 7
@@ -72,13 +82,15 @@ module.exports = function GetValueFromBuffer(arrayBuffer, byteIndex, type) {
 		$reverse(rawValue); // step 8
 	}
 
-	var bytes = $slice(safeConcat([0, 0, 0, 0, 0, 0, 0, 0], rawValue), -elementSize);
-
-	if (type === 'Float32') { // step 3
+	var bytes = $slice(
+		safeConcat([0, 0, 0, 0, 0, 0, 0, 0], rawValue),
+		-elementSize
+	);
+	if (type === FLOAT32) { // step 3
 		return bytesAsFloat32(bytes);
 	}
 
-	if (type === 'Float64') { // step 4
+	if (type === FLOAT64) { // step 4
 		return bytesAsFloat64(bytes);
 	}
 

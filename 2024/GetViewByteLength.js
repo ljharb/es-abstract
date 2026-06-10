@@ -6,15 +6,21 @@ var IsFixedLengthArrayBuffer = require('./IsFixedLengthArrayBuffer');
 var IsViewOutOfBounds = require('./IsViewOutOfBounds');
 
 var isDataViewWithBufferWitnessRecord = require('../helpers/records/data-view-with-buffer-witness-record');
+var specEnum = require('../helpers/specEnum');
 
 var dataViewBuffer = require('data-view-buffer');
 var dataViewByteLength = require('data-view-byte-length');
 var dataViewByteOffset = require('data-view-byte-offset');
 
+var year = require('./year');
+
+var AUTO = specEnum(year, 'auto');
+var DETACHED = specEnum(year, 'detached');
+
 // https://262.ecma-international.org/15.0/#sec-getviewbytelength
 
 module.exports = function GetViewByteLength(viewRecord) {
-	if (!isDataViewWithBufferWitnessRecord(viewRecord)) {
+	if (!isDataViewWithBufferWitnessRecord(viewRecord, year)) {
 		throw new $TypeError('Assertion failed: `viewRecord` must be a DataView with Buffer Witness Record');
 	}
 
@@ -26,8 +32,8 @@ module.exports = function GetViewByteLength(viewRecord) {
 
 	var isFixed = IsFixedLengthArrayBuffer(dataViewBuffer(view));
 
-	var viewByteLength = isFixed ? dataViewByteLength(view) : 'AUTO'; // view.[[ByteLength]]
-	if (viewByteLength !== 'AUTO') {
+	var viewByteLength = isFixed ? dataViewByteLength(view) : AUTO; // view.[[ByteLength]]
+	if (viewByteLength !== AUTO) {
 		return viewByteLength; // step 3
 	}
 
@@ -39,7 +45,7 @@ module.exports = function GetViewByteLength(viewRecord) {
 
 	var byteLength = viewRecord['[[CachedBufferByteLength]]']; // step 6
 
-	if (byteLength === 'DETACHED') {
+	if (byteLength === DETACHED) {
 		throw new $TypeError('Assertion failed: DataView’s ArrayBuffer is detached'); // step 7
 	}
 

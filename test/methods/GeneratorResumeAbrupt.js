@@ -5,6 +5,8 @@ var debug = require('object-inspect');
 var v = require('es-value-fixtures');
 var SLOT = require('internal-slot');
 
+var specEnum = require('../../helpers/specEnum');
+
 module.exports = function (t, year, GeneratorResumeAbrupt, extras) {
 	t.ok(year >= 2025, 'ES2025+');
 
@@ -30,7 +32,7 @@ module.exports = function (t, year, GeneratorResumeAbrupt, extras) {
 	);
 
 	var generator = {};
-	var state = 'SUSPENDED-YIELD';
+	var suspendedYield = specEnum(year, 'suspended-yield');
 	SLOT.set(generator, '[[GeneratorState]]', 'not suspended start/yield or completed');
 	SLOT.set(generator, '[[GeneratorBrand]]', brand);
 	SLOT.set(generator, '[[GeneratorContext]]', null);
@@ -40,7 +42,7 @@ module.exports = function (t, year, GeneratorResumeAbrupt, extras) {
 		TypeError,
 		'generator with bad state, throws'
 	);
-	SLOT.set(generator, '[[GeneratorState]]', state);
+	SLOT.set(generator, '[[GeneratorState]]', suspendedYield);
 	t['throws'](
 		function () { GeneratorResumeAbrupt(generator, completion, 'not brand'); },
 		TypeError,
@@ -62,7 +64,7 @@ module.exports = function (t, year, GeneratorResumeAbrupt, extras) {
 		[undefined, [42]],
 		'generator context is called with proper arguments, and return value is proxied through'
 	);
-	t.equal(SLOT.get(generator, '[[GeneratorState]]'), 'EXECUTING', 'state is executing');
+	t.equal(SLOT.get(generator, '[[GeneratorState]]'), specEnum(year, 'executing'), 'state is executing');
 	t.deepEqual(
 		context.calls,
 		[
@@ -76,7 +78,7 @@ module.exports = function (t, year, GeneratorResumeAbrupt, extras) {
 	);
 	context.calls.length = 0;
 
-	SLOT.set(generator, '[[GeneratorState]]', 'SUSPENDED-YIELD');
+	SLOT.set(generator, '[[GeneratorState]]', suspendedYield);
 	var sentinel = { sentinel: true };
 	var cIA = t.captureFn(function () { return sentinel; });
 	SLOT.set(generator, '[[CloseIfAbrupt]]', cIA);
@@ -88,7 +90,7 @@ module.exports = function (t, year, GeneratorResumeAbrupt, extras) {
 
 	// test re-entrant return() throws TypeError
 	var reentrantGenerator = {};
-	SLOT.set(reentrantGenerator, '[[GeneratorState]]', 'SUSPENDED-YIELD');
+	SLOT.set(reentrantGenerator, '[[GeneratorState]]', suspendedYield);
 	SLOT.set(reentrantGenerator, '[[GeneratorBrand]]', brand);
 	SLOT.set(reentrantGenerator, '[[GeneratorContext]]', null);
 
@@ -115,13 +117,13 @@ module.exports = function (t, year, GeneratorResumeAbrupt, extras) {
 
 	t.equal(enterCount, 1, 'closeIfAbrupt was entered exactly once before throwing');
 
-	SLOT.set(generator, '[[GeneratorState]]', 'SUSPENDED-START');
+	SLOT.set(generator, '[[GeneratorState]]', specEnum(year, 'suspended-start'));
 	t['throws'](
 		function () { GeneratorResumeAbrupt(generator, completion, brand); },
 		42,
 		'SUSPENDED-START with throw completion transitions to COMPLETED then throws'
 	);
-	t.equal(SLOT.get(generator, '[[GeneratorState]]'), 'COMPLETED', 'state is completed');
+	t.equal(SLOT.get(generator, '[[GeneratorState]]'), specEnum(year, 'completed'), 'state is completed');
 	t.equal(SLOT.get(generator, '[[GeneratorContext]]'), null, 'context is unset');
 
 	t.deepEqual(

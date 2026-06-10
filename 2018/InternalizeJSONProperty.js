@@ -12,6 +12,11 @@ var ToString = require('./ToString');
 
 var forEach = require('../helpers/forEach');
 var IsArray = require('../helpers/IsArray');
+var specEnum = require('../helpers/specEnum');
+
+var year = require('./year');
+
+var KEY = specEnum(year, 'key');
 
 // https://262.ecma-international.org/9.0/#sec-internalizejsonproperty
 
@@ -49,7 +54,7 @@ module.exports = function InternalizeJSONProperty(holder, name, reviver) {
 				I += 1; // step 2.b.iii.4
 			}
 		} else { // step 2.c
-			var keys = EnumerableOwnPropertyNames(val, 'key'); // step 2.c.i
+			var keys = EnumerableOwnPropertyNames(val, KEY); // step 2.c.i
 
 			forEach(keys, function (P) { // step 2.c.ii
 				// eslint-disable-next-line no-shadow

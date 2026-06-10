@@ -9,9 +9,15 @@ var ToNumber = require('./ToNumber');
 var TypedArrayElementSize = require('./TypedArrayElementSize');
 var TypedArrayElementType = require('./TypedArrayElementType');
 
+var specEnum = require('../helpers/specEnum');
+
 var typedArrayBuffer = require('typed-array-buffer');
 var typedArrayByteOffset = require('typed-array-byte-offset');
 var whichTypedArray = require('which-typed-array');
+
+var year = require('./year');
+
+var UNORDERED = specEnum(year, 'unordered');
 
 // http://www.ecma-international.org/ecma-262/15.0/#sec-typedarraysetelement
 
@@ -26,7 +32,9 @@ module.exports = function TypedArraySetElement(O, index, value) {
 
 	var contentType = which === 'BigInt64Array' || which === 'BigUint64Array' ? 'BIGINT' : 'NUMBER';
 
-	var numValue = contentType === 'BIGINT' ? ToBigInt(value) : ToNumber(value); // steps 1 - 2
+	var numValue = contentType === 'BIGINT'
+		? ToBigInt(value)
+		: ToNumber(value); // steps 1 - 2
 
 	if (IsValidIntegerIndex(O, index)) { // step 3
 		var offset = typedArrayByteOffset(O); // step 3.a
@@ -37,6 +45,13 @@ module.exports = function TypedArraySetElement(O, index, value) {
 
 		var elementType = TypedArrayElementType(O); // step 3.d
 
-		SetValueInBuffer(typedArrayBuffer(O), byteIndexInBuffer, elementType, numValue, true, 'UNORDERED'); // step 3.e
+		SetValueInBuffer(
+			typedArrayBuffer(O),
+			byteIndexInBuffer,
+			elementType,
+			numValue,
+			true,
+			UNORDERED
+		); // step 3.e
 	}
 };

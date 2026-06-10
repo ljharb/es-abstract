@@ -7,9 +7,15 @@ var IsValidIntegerIndex = require('./IsValidIntegerIndex');
 var TypedArrayElementSize = require('./TypedArrayElementSize');
 var TypedArrayElementType = require('./TypedArrayElementType');
 
+var specEnum = require('../helpers/specEnum');
+
 var isTypedArray = require('is-typed-array');
 var typedArrayBuffer = require('typed-array-buffer');
 var typedArrayByteOffset = require('typed-array-byte-offset');
+
+var year = require('./year');
+
+var UNORDERED = specEnum(year, 'unordered');
 
 // https://262.ecma-international.org/13.0/#sec-integerindexedelementget
 
@@ -34,5 +40,11 @@ module.exports = function IntegerIndexedElementGet(O, index) {
 
 	var elementType = TypedArrayElementType(O); // step 5
 
-	return GetValueFromBuffer(typedArrayBuffer(O), indexedPosition, elementType, true, 'Unordered'); // step 11
+	return GetValueFromBuffer(
+		typedArrayBuffer(O),
+		indexedPosition,
+		elementType,
+		true,
+		UNORDERED
+	); // step 11
 };

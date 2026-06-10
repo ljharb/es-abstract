@@ -19,6 +19,13 @@ var tableTAO = require('./tables/typed-array-objects');
 
 var defaultEndianness = require('../helpers/defaultEndianness');
 var forEach = require('../helpers/forEach');
+var specEnum = require('../helpers/specEnum');
+
+var year = require('./year');
+
+var SEQ_CST = specEnum(year, 'seq-cst');
+var UNORDERED = specEnum(year, 'unordered');
+var INIT = specEnum(year, 'init');
 
 // https://262.ecma-international.org/8.0/#sec-setvalueinbuffer
 
@@ -45,8 +52,8 @@ module.exports = function SetValueInBuffer(arrayBuffer, byteIndex, type, value, 
 	if (typeof isTypedArray !== 'boolean') {
 		throw new $TypeError('Assertion failed: `isTypedArray` must be a boolean');
 	}
-	if (order !== 'SeqCst' && order !== 'Unordered' && order !== 'Init') {
-		throw new $TypeError('Assertion failed: `order` must be `"SeqCst"`, `"Unordered"`, or `"Init"`');
+	if (order !== SEQ_CST && order !== UNORDERED && order !== INIT) {
+		throw new $TypeError('Assertion failed: `order` must be `' + SEQ_CST + '`, `' + UNORDERED + '`, or `' + INIT + '`');
 	}
 
 	if (arguments.length > 6 && typeof arguments[6] !== 'boolean') {

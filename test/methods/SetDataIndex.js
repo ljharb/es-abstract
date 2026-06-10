@@ -5,8 +5,13 @@ var debug = require('object-inspect');
 var v = require('es-value-fixtures');
 var esV = require('../helpers/v');
 
+var specEnum = require('../../helpers/specEnum');
+
 module.exports = function (t, year, SetDataIndex) {
 	t.ok(year >= 2025, 'ES2025+');
+
+	var empty = specEnum(year, 'empty');
+	var notFound = specEnum(year, 'not-found');
 
 	forEach(v.nonArrays, function (nonArray) {
 		t['throws'](
@@ -17,8 +22,8 @@ module.exports = function (t, year, SetDataIndex) {
 	});
 
 	t.equal(
-		SetDataIndex('EMPTY', 'EMPTY'),
-		'NOT-FOUND',
+		SetDataIndex(empty, empty),
+		notFound,
 		'~EMPTY~ works'
 	);
 
@@ -29,7 +34,7 @@ module.exports = function (t, year, SetDataIndex) {
 	);
 	t.equal(
 		SetDataIndex([null, -0, false], +0),
-		'NOT-FOUND',
+		notFound,
 		'SetData with -0 does not find the index from +0 (SetData is expected to never have -0 in it)'
 	);
 
