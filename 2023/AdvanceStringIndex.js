@@ -6,7 +6,7 @@ var $TypeError = require('es-errors/type');
 var isInteger = require('math-intrinsics/isInteger');
 var MAX_SAFE_INTEGER = require('math-intrinsics/constants/maxSafeInteger');
 
-// https://262.ecma-international.org/12.0/#sec-advancestringindex
+// https://262.ecma-international.org/11.0/#sec-advancestringindex
 
 module.exports = function AdvanceStringIndex(S, index, unicode) {
 	if (typeof S !== 'string') {

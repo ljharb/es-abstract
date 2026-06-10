@@ -567,6 +567,7 @@
 /2019/TimeFromYear.js	spackled linguist-generated=true
 /2019/TimeString.js	spackled linguist-generated=true
 /2019/TimeWithinDay.js	spackled linguist-generated=true
+/2019/TimeZoneString.js	spackled linguist-generated=true
 /2019/ToBoolean.js	spackled linguist-generated=true
 /2019/ToDateString.js	spackled linguist-generated=true
 /2019/ToIndex.js	spackled linguist-generated=true
@@ -612,6 +613,7 @@
 /2020/ArrayCreate.js	spackled linguist-generated=true
 /2020/ArraySetLength.js	spackled linguist-generated=true
 /2020/ArraySpeciesCreate.js	spackled linguist-generated=true
+/2020/AsyncFromSyncIteratorContinuation.js	spackled linguist-generated=true
 /2020/AsyncIteratorClose.js	spackled linguist-generated=true
 /2020/Call.js	spackled linguist-generated=true
 /2020/CanonicalNumericIndexString.js	spackled linguist-generated=true
@@ -707,6 +709,7 @@
 /2020/TimeFromYear.js	spackled linguist-generated=true
 /2020/TimeString.js	spackled linguist-generated=true
 /2020/TimeWithinDay.js	spackled linguist-generated=true
+/2020/TimeZoneString.js	spackled linguist-generated=true
 /2020/ToBoolean.js	spackled linguist-generated=true
 /2020/ToDateString.js	spackled linguist-generated=true
 /2020/ToInt16.js	spackled linguist-generated=true
@@ -743,7 +746,9 @@
 /2021/AbstractEqualityComparison.js	spackled linguist-generated=true
 /2021/AbstractRelationalComparison.js	spackled linguist-generated=true
 /2021/AddEntriesFromIterable.js	spackled linguist-generated=true
+/2021/AdvanceStringIndex.js	spackled linguist-generated=true
 /2021/ArraySetLength.js	spackled linguist-generated=true
+/2021/AsyncFromSyncIteratorContinuation.js	spackled linguist-generated=true
 /2021/BigInt/add.js	spackled linguist-generated=true
 /2021/BigInt/bitwiseAND.js	spackled linguist-generated=true
 /2021/BigInt/bitwiseNOT.js	spackled linguist-generated=true
@@ -824,6 +829,7 @@
 /2021/IsPropertyKey.js	spackled linguist-generated=true
 /2021/IsRegExp.js	spackled linguist-generated=true
 /2021/IsSharedArrayBuffer.js	spackled linguist-generated=true
+/2021/IsStringPrefix.js	spackled linguist-generated=true
 /2021/IsUnclampedIntegerElementType.js	spackled linguist-generated=true
 /2021/IsUnsignedElementType.js	spackled linguist-generated=true
 /2021/IteratorClose.js	spackled linguist-generated=true
@@ -886,6 +892,7 @@
 /2021/TimeFromYear.js	spackled linguist-generated=true
 /2021/TimeString.js	spackled linguist-generated=true
 /2021/TimeWithinDay.js	spackled linguist-generated=true
+/2021/TimeZoneString.js	spackled linguist-generated=true
 /2021/ToBigInt.js	spackled linguist-generated=true
 /2021/ToBigInt64.js	spackled linguist-generated=true
 /2021/ToBigUint64.js	spackled linguist-generated=true
@@ -894,6 +901,7 @@
 /2021/ToInt16.js	spackled linguist-generated=true
 /2021/ToInt32.js	spackled linguist-generated=true
 /2021/ToInt8.js	spackled linguist-generated=true
+/2021/ToNumber.js	spackled linguist-generated=true
 /2021/ToNumeric.js	spackled linguist-generated=true
 /2021/ToObject.js	spackled linguist-generated=true
 /2021/ToPrimitive.js	spackled linguist-generated=true
@@ -913,6 +921,7 @@
 /2021/ValidateTypedArray.js	spackled linguist-generated=true
 /2021/WeekDay.js	spackled linguist-generated=true
 /2021/WordCharacters.js	spackled linguist-generated=true
+/2021/YearFromTime.js	spackled linguist-generated=true
 /2021/abs.js	spackled linguist-generated=true
 /2021/floor.js	spackled linguist-generated=true
 /2021/max.js	spackled linguist-generated=true
@@ -924,6 +933,7 @@
 /2021/thisBooleanValue.js	spackled linguist-generated=true
 /2021/thisNumberValue.js	spackled linguist-generated=true
 /2021/thisStringValue.js	spackled linguist-generated=true
+/2021/thisSymbolValue.js	spackled linguist-generated=true
 /2021/thisTimeValue.js	spackled linguist-generated=true
 /2022/AddEntriesFromIterable.js	spackled linguist-generated=true
 /2022/AddToKeptObjects.js	spackled linguist-generated=true
@@ -932,6 +942,7 @@
 /2022/ArrayCreate.js	spackled linguist-generated=true
 /2022/ArraySetLength.js	spackled linguist-generated=true
 /2022/ArraySpeciesCreate.js	spackled linguist-generated=true
+/2022/AsyncFromSyncIteratorContinuation.js	spackled linguist-generated=true
 /2022/AsyncIteratorClose.js	spackled linguist-generated=true
 /2022/BigInt/add.js	spackled linguist-generated=true
 /2022/BigInt/bitwiseAND.js	spackled linguist-generated=true
