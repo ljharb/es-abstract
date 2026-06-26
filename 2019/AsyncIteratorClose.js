@@ -28,7 +28,7 @@ module.exports = function AsyncIteratorClose(iteratorRecord, completion) {
 		throw new $TypeError('Assertion failed: completion is not a Completion Record instance'); // step 2
 	}
 
-	if (!$then) {
+	if (!$then || !$Promise) {
 		throw new $SyntaxError('This environment does not support Promises.');
 	}
 

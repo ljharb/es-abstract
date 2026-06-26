@@ -63,6 +63,9 @@ module.exports = function ArrayBufferCopyAndDetach(arrayBuffer, newLength, prese
 
 	var newMaxByteLength;
 	if (preserveResizability === 'PRESERVE-RESIZABILITY' && !IsFixedLengthArrayBuffer(arrayBuffer)) { // step 6
+		if (!$maxByteLength) {
+			throw new $TypeError('`maxByteLength` is not supported in this environment');
+		}
 		newMaxByteLength = $maxByteLength(arrayBuffer); // step 6.a
 	} else { // step 7
 		newMaxByteLength = 'EMPTY'; // step 7.a

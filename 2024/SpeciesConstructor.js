@@ -14,6 +14,9 @@ module.exports = function SpeciesConstructor(O, defaultConstructor) {
 	if (!isObject(O)) {
 		throw new $TypeError('Assertion failed: Type(O) is not Object');
 	}
+	if (!IsConstructor(defaultConstructor)) {
+		throw new $TypeError('Assertion failed: `defaultConstructor` must be a constructor');
+	}
 	var C = O.constructor;
 	if (typeof C === 'undefined') {
 		return defaultConstructor;

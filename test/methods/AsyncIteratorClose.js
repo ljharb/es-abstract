@@ -3,10 +3,12 @@
 var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
+var mockProperty = require('mock-property');
 
 var makeIteratorRecord = require('../helpers/makeIteratorRecord');
 var reduce = require('../../helpers/reduce');
 var esV = require('../helpers/v');
+var rerequire = require('../helpers/rerequire');
 
 module.exports = function (t, year, AsyncIteratorClose, extras) {
 	t.ok(year >= 2018, 'ES2018+');
@@ -155,6 +157,32 @@ module.exports = function (t, year, AsyncIteratorClose, extras) {
 			});
 		});
 
+		st.end();
+	});
+
+	t.test('throws when %Promise% intrinsic is absent', function (st) {
+		var noopIter = {
+			'[[Iterator]]': { 'return': function () { return {}; } },
+			'[[NextMethod]]': function () { return {}; },
+			'[[Done]]': false
+		};
+		var normalCompletionRecord = NormalCompletion(sentinel);
+		var Fresh = AsyncIteratorClose;
+		if (typeof Promise === 'function') {
+			var aoPath = require.resolve('../../' + year + '/AsyncIteratorClose');
+			st.teardown(mockProperty(global, 'Promise', { value: undefined }));
+			st.teardown(rerequire(
+				aoPath,
+				require.resolve('get-intrinsic'),
+				require.resolve('call-bound')
+			));
+			Fresh = require(aoPath); // eslint-disable-line global-require
+		}
+		st['throws'](
+			function () { Fresh(noopIter, normalCompletionRecord); },
+			/does not support Promises/,
+			'guard throws "does not support Promises" when Promise intrinsic is missing'
+		);
 		st.end();
 	});
 };

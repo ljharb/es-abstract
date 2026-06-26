@@ -6,6 +6,9 @@ var $Number = GetIntrinsic('%Number%');
 var $BigInt = GetIntrinsic('%BigInt%', true);
 
 module.exports = function integerToNBytes(intValue, n, isLittleEndian) {
+	if (typeof intValue === 'bigint' && !$BigInt) {
+		throw new TypeError('BigInt is not supported in this environment');
+	}
 	var Z = typeof intValue === 'bigint' ? $BigInt : $Number;
 	/*
 	if (intValue >= 0) { // step 3.d

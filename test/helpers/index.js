@@ -1,6 +1,7 @@
 'use strict';
 
 require('./getSymbolDescription');
+require('./integerToNBytes');
 require('./isByteValue');
 require('./isCodePoint');
 require('./isFullyPopulatedPropertyDescriptor');

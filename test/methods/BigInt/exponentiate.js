@@ -3,8 +3,11 @@
 var forEach = require('for-each');
 var v = require('es-value-fixtures');
 var debug = require('object-inspect');
+var mockProperty = require('mock-property');
 
 var esV = require('../../helpers/v');
+
+var rerequire = require('../../helpers/rerequire');
 
 module.exports = function (t, year, BigIntExponentiate) {
 	t.ok(year >= 2020, 'ES2020+');
@@ -64,6 +67,21 @@ module.exports = function (t, year, BigIntExponentiate) {
 			st.equal(BigIntExponentiate(base, exponent), expected, debug(base) + ' ** ' + debug(exponent) + ' is ' + debug(expected));
 		});
 
+		st.end();
+	});
+
+	t.test('throws when %BigInt% intrinsic is absent', { skip: !esV.hasBigInts }, function (st) {
+		var bigTwo = BigInt(2);
+		var bigThree = BigInt(3);
+		var aoPath = require.resolve('../../../' + year + '/BigInt/exponentiate');
+		st.teardown(mockProperty(global, 'BigInt', { value: undefined }));
+		st.teardown(rerequire(aoPath, require.resolve('get-intrinsic')));
+		var Fresh = require(aoPath); // eslint-disable-line global-require
+		st['throws'](
+			function () { Fresh(bigTwo, bigThree); },
+			/BigInt is not supported/,
+			'guard throws explicit "BigInt is not supported"'
+		);
 		st.end();
 	});
 };

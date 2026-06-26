@@ -4,10 +4,15 @@ var assign = require('object.assign');
 var forEach = require('for-each');
 var debug = require('object-inspect');
 var v = require('es-value-fixtures');
+var mockProperty = require('mock-property');
 
 var specEnum = require('../../helpers/specEnum');
 
 var esV = require('../helpers/v');
+
+var hasResizableAB = require('has-resizable-array-buffers')();
+
+var rerequire = require('../helpers/rerequire');
 
 module.exports = function (t, year, ArrayBufferCopyAndDetach, extras) {
 	t.ok(year >= 2024, 'ES2024+');
@@ -101,6 +106,25 @@ module.exports = function (t, year, ArrayBufferCopyAndDetach, extras) {
 			function () { ArrayBufferCopyAndDetach(sab, undefined, fixedLength); },
 			TypeError,
 			debug(sab) + ' is not a non-shared ArrayBuffer'
+		);
+
+		st.end();
+	});
+
+	t.test('throws when %ArrayBuffer.prototype.maxByteLength% is absent', { skip: !hasResizableAB }, function (st) {
+		var aoPath = require.resolve('../../' + year + '/ArrayBufferCopyAndDetach');
+		var ab = new ArrayBuffer(8, { maxByteLength: 16 });
+		st.teardown(mockProperty(ArrayBuffer.prototype, 'maxByteLength', { value: undefined }));
+		st.teardown(rerequire(
+			aoPath,
+			require.resolve('get-intrinsic'),
+			require.resolve('call-bound')
+		));
+		var FreshABCAD = require(aoPath); // eslint-disable-line global-require
+		st['throws'](
+			function () { FreshABCAD(ab, undefined, specEnum(year, 'preserve-resizability')); },
+			/maxByteLength.* is not supported/,
+			'guard throws "maxByteLength is not supported" when intrinsic is missing'
 		);
 
 		st.end();

@@ -1,5 +1,7 @@
 'use strict';
 
+var debug = require('object-inspect');
+var forEach = require('for-each');
 var v = require('es-value-fixtures');
 
 var hasSpecies = v.hasSymbols && Symbol.species;
@@ -11,6 +13,14 @@ module.exports = function (t, year, SpeciesConstructor) {
 	t['throws'](function () { SpeciesConstructor(undefined); }, TypeError);
 
 	var defaultConstructor = function Foo() {};
+
+	forEach(v.nonFunctions, function (nonConstructor) {
+		t['throws'](
+			function () { SpeciesConstructor({}, nonConstructor); },
+			TypeError,
+			'defaultConstructor of ' + debug(nonConstructor) + ' (non-function) throws'
+		);
+	});
 
 	t.equal(
 		SpeciesConstructor({ constructor: undefined }, defaultConstructor),
