@@ -112,7 +112,7 @@
 		"which-typed-array": "^1.1.22"
 	},
 	"devDependencies": {
-		"@ljharb/eslint-config": "^22.2.3",
+		"@ljharb/eslint-config": "^22.2.4",
 		"@unicode/unicode-15.0.0": "^1.6.17",
 		"array.from": "^1.1.6",
 		"array.prototype.filter": "^1.0.4",
@@ -125,7 +125,7 @@
 		"diff": "^7.0.0",
 		"eclint": "^2.8.1",
 		"es-value-fixtures": "^1.7.1",
-		"eslint": "^9.39.4",
+		"eslint": "^10.10.0",
 		"for-each": "^0.3.5",
 		"function-bind": "^1.1.2",
 		"functions-have-names": "^1.2.3",
@@ -148,7 +148,7 @@
 		"object.fromentries": "^2.0.8",
 		"safe-bigint": "^1.1.1",
 		"safe-publish-latest": "^2.0.0",
-		"ses": "^2.2.0",
+		"ses": "^2.3.0",
 		"tape": "^5.10.2"
 	},
 	"testling": {
