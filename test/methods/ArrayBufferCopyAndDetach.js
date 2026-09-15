@@ -114,7 +114,14 @@ module.exports = function (t, year, ArrayBufferCopyAndDetach, extras) {
 	t.test('throws when %ArrayBuffer.prototype.maxByteLength% is absent', { skip: !hasResizableAB }, function (st) {
 		var aoPath = require.resolve('../../' + year + '/ArrayBufferCopyAndDetach');
 		var ab = new ArrayBuffer(8, { maxByteLength: 16 });
-		st.teardown(mockProperty(ArrayBuffer.prototype, 'maxByteLength', { value: undefined }));
+		try {
+			st.teardown(mockProperty(ArrayBuffer.prototype, 'maxByteLength', { value: undefined }));
+		} catch (e) {
+			st.comment('this is SES; it makes a nonconfigurable maxByteLength');
+
+			st.end();
+			return;
+		}
 		st.teardown(rerequire(
 			aoPath,
 			require.resolve('get-intrinsic'),
