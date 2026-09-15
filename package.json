@@ -94,7 +94,7 @@
 		"object-inspect": "^1.13.4",
 		"object-keys": "^1.1.1",
 		"object.assign": "^4.1.7",
-		"own-keys": "^1.0.1",
+		"own-keys": "^1.0.2",
 		"regexp.prototype.flags": "^1.5.4",
 		"safe-array-concat": "^1.1.4",
 		"safe-push-apply": "^1.0.0",
