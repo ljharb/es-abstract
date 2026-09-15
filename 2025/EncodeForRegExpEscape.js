@@ -13,7 +13,7 @@ var isTrailingSurrogate = require('../helpers/isTrailingSurrogate');
 var $TypeError = require('es-errors/type');
 
 var isCodePoint = require('../helpers/isCodePoint');
-var forEach = require('for-each');
+var forEach = require('../helpers/forEach');
 var regexTester = require('safe-regex-test');
 
 var isWhiteSpace = regexTester(/^\s$/);
