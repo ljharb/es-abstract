@@ -36,7 +36,7 @@
 		"test": "npm run tests-only && npm run test:ses",
 		"test:ses": "node --stack-size=5120 test/ses-compat",
 		"posttest": "npx npm@'>= 10.2' audit --production",
-		"tests-only": "nyc node --stack-size=5120 test",
+		"tests-only": "nyc node test",
 		"lint": "eslint .",
 		"eccheck": "eclint check $(git ls-files | xargs find 2> /dev/null | grep -vE 'node_modules|\\.git')"
 	},
@@ -149,7 +149,7 @@
 		"safe-bigint": "^1.1.1",
 		"safe-publish-latest": "^2.0.0",
 		"ses": "~2.2.0",
-		"tape": "^5.10.2"
+		"tape": "^5.10.3"
 	},
 	"testling": {
 		"files": "test/index.js",
